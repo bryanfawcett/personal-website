@@ -40,7 +40,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground relative">
       <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block">
         <div className="flex flex-col gap-4">
-          {["intro", "work", "thoughts", "connect"].map((section) => (
+          {["intro", "philosophy", "expertise", "projects", "connect"].map((section) => (
             <button
               key={section}
               onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })}
@@ -59,56 +59,57 @@ export default function Home() {
           ref={(el) => (sectionsRef.current[0] = el)}
           className="min-h-screen flex items-center opacity-0"
         >
-          <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
-            <div className="lg:col-span-3 space-y-6 sm:space-y-8">
-              <div className="space-y-3 sm:space-y-2">
-                <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / 2025</div>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
-                  Felix
-                  <br />
-                  <span className="text-muted-foreground">Macaspac</span>
-                </h1>
-              </div>
-
-              <div className="space-y-6 max-w-md">
-                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Frontend Developer crafting digital experiences at the intersection of
-                  <span className="text-foreground"> design</span>,<span className="text-foreground"> technology</span>,
-                  and
-                  <span className="text-foreground"> user experience</span>.
-                </p>
-
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    Available for work
-                  </div>
-                  <div>Philippines</div>
-                </div>
+          <div className="space-y-8 sm:space-y-12 w-full">
+            <div className="space-y-2">
+              <h1 className="text-7xl sm:text-8xl lg:text-8xl font-light tracking-tight text-balance">Bryan Fawcett</h1>
+              <div className="text-sm text-muted-foreground font-mono tracking-wider">
+                TECHNOLOGY LEADER & DIGITAL CRAFTSMAN / 2025
               </div>
             </div>
 
-            <div className="lg:col-span-2 flex flex-col justify-end space-y-6 sm:space-y-8 mt-8 lg:mt-0">
+            <div className="space-y-4 sm:space-y-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-balance text-muted-foreground">
+                Building Systems That Transform Communities
+              </h2>
+            </div>
+
+            <div className="space-y-6 max-w-2xl">
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+                I'm a full stack developer and systems architect at{" "}
+                <span className="text-foreground">Singapore American School</span>, but my passion lives in{" "}
+                <span className="text-foreground">Nyuchi Africa</span>. I craft digital experiences that bring
+                communities together through <span className="text-foreground">innovation</span>,{" "}
+                <span className="text-foreground">resourcefulness</span>, and{" "}
+                <span className="text-foreground">intentional design</span>.
+              </p>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  Building at Nyuchi Africa
+                </div>
+                <div>Remote-first & Africa-focused</div>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-8 pt-4">
               <div className="space-y-4">
-                <div className="text-sm text-muted-foreground font-mono">CURRENTLY</div>
+                <div className="text-sm text-muted-foreground font-mono">PRIMARY ROLE</div>
                 <div className="space-y-2">
-                  <div className="text-foreground">Frontend Developer</div>
-                  <div className="text-muted-foreground">@ Hububble</div>
-                  <div className="text-xs text-muted-foreground">2021 — Present</div>
+                  <div className="text-foreground font-medium">Full Stack Developer & Systems Architect</div>
+                  <div className="text-muted-foreground text-sm leading-relaxed">
+                    Singapore American School | Educational Technology Leadership
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
-                <div className="flex flex-wrap gap-2">
-                  {["HubL", "React", "TypeScript", "HubSpot CMS", "Node.js"].map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 text-xs border border-border rounded-full hover:border-muted-foreground/50 transition-colors duration-300"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                <div className="text-sm text-muted-foreground font-mono">PASSION PROJECT</div>
+                <div className="space-y-2">
+                  <div className="text-foreground font-medium">Nyuchi Africa Ecosystem</div>
+                  <div className="text-muted-foreground text-sm leading-relaxed">
+                    Learning platforms, travel systems, and tech community building across Africa
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,74 +117,111 @@ export default function Home() {
         </header>
 
         <section
-          id="work"
+          id="philosophy"
           ref={(el) => (sectionsRef.current[1] = el)}
+          className="min-h-screen py-20 sm:py-32 opacity-0 flex items-center"
+        >
+          <div className="space-y-12 sm:space-y-16 w-full">
+            <h2 className="text-3xl sm:text-4xl font-light">Philosophy & Approach</h2>
+
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium">Resourceful Innovation</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Growing up in Africa taught me to do more with less and find elegant solutions under constraints.
+                    This informs every system I build—efficient, resilient, and designed for impact.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium">Community First</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Whether at SAS or driving Nyuchi Africa, I believe technology should serve people and empower
+                    communities. Solutions must be accessible and meaningful.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium">Excellence & Trust</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Security, governance, and best practices aren't afterthoughts—they're foundational. I build systems
+                    that educators, travelers, and communities can rely on.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium">Knowledge Transfer</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Clear documentation and mentorship multiply impact. I empower teams and individuals through
+                    education and shared understanding.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="expertise"
+          ref={(el) => (sectionsRef.current[2] = el)}
           className="min-h-screen py-20 sm:py-32 opacity-0"
         >
           <div className="space-y-12 sm:space-y-16">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-              <h2 className="text-3xl sm:text-4xl font-light">Selected Work</h2>
-              <div className="text-sm text-muted-foreground font-mono">2019 — 2025</div>
+              <h2 className="text-3xl sm:text-4xl font-light">Core Competencies</h2>
+              <div className="text-sm text-muted-foreground font-mono">10+ Years in Enterprise Tech</div>
             </div>
 
             <div className="space-y-8 sm:space-y-12">
               {[
                 {
-                  year: "2023",
-                  role: "Senior Frontend Engineer",
-                  company: "Vercel",
-                  description: "Leading frontend architecture for developer tools and AI-powered features.",
-                  tech: ["React", "TypeScript", "Next.js"],
+                  title: "Full Stack Development",
+                  description:
+                    "End-to-end web applications from architecture to deployment. Expertise in React, Node.js, and modern web technologies. Building educational platforms, travel systems, and community tools.",
+                  highlights: ["Node.js", "React", "Database Design", "API Architecture"],
                 },
                 {
-                  year: "2022",
-                  role: "Frontend Engineer",
-                  company: "Linear",
-                  description: "Built performant interfaces for project management and team collaboration.",
-                  tech: ["React", "GraphQL", "Framer Motion"],
+                  title: "Systems Architecture",
+                  description:
+                    "Designing scalable, resilient systems that serve real needs. From learning management platforms to information systems and organizational dashboards—built for reliability and growth.",
+                  highlights: ["Infrastructure Design", "System Scalability", "Data Architecture"],
                 },
                 {
-                  year: "2021",
-                  role: "Full Stack Developer",
-                  company: "Stripe",
-                  description: "Developed payment infrastructure and merchant-facing dashboard features.",
-                  tech: ["Ruby", "React", "PostgreSQL"],
+                  title: "Education Technology",
+                  description:
+                    "Deep expertise in EdTech solutions that enhance learning at scale. Building platforms that empower educators and students with accessible, intuitive tools and resources.",
+                  highlights: ["Learning Platforms", "Educational Tools", "EdTech Strategy"],
                 },
                 {
-                  year: "2019",
-                  role: "Software Engineer",
-                  company: "Airbnb",
-                  description: "Created booking flow optimizations and host management tools.",
-                  tech: ["React", "Node.js", "MySQL"],
+                  title: "Digital Product Strategy",
+                  description:
+                    "End-to-end product development from concept to market. Creating digital experiences that serve communities—from travel platforms to learning ecosystems to tech director networks.",
+                  highlights: ["Product Vision", "Technical Leadership", "Community Impact"],
                 },
-              ].map((job, index) => (
+              ].map((item, index) => (
                 <div
                   key={index}
                   className="group grid lg:grid-cols-12 gap-4 sm:gap-8 py-6 sm:py-8 border-b border-border/50 hover:border-border transition-colors duration-500"
                 >
-                  <div className="lg:col-span-2">
-                    <div className="text-xl sm:text-2xl font-light text-muted-foreground group-hover:text-foreground transition-colors duration-500">
-                      {job.year}
-                    </div>
+                  <div className="lg:col-span-4">
+                    <h3 className="text-lg sm:text-xl font-medium group-hover:text-muted-foreground transition-colors duration-500">
+                      {item.title}
+                    </h3>
                   </div>
 
-                  <div className="lg:col-span-6 space-y-3">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-medium">{job.role}</h3>
-                      <div className="text-muted-foreground">{job.company}</div>
+                  <div className="lg:col-span-8 space-y-4">
+                    <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {item.highlights.map((highlight) => (
+                        <span
+                          key={highlight}
+                          className="px-2 py-1 text-xs text-muted-foreground rounded group-hover:border-muted-foreground/50 transition-colors duration-500"
+                        >
+                          {highlight}
+                        </span>
+                      ))}
                     </div>
-                    <p className="text-muted-foreground leading-relaxed max-w-lg">{job.description}</p>
-                  </div>
-
-                  <div className="lg:col-span-4 flex flex-wrap gap-2 lg:justify-end mt-2 lg:mt-0">
-                    {job.tech.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2 py-1 text-xs text-muted-foreground rounded group-hover:border-muted-foreground/50 transition-colors duration-500"
-                      >
-                        {tech}
-                      </span>
-                    ))}
                   </div>
                 </div>
               ))}
@@ -192,95 +230,174 @@ export default function Home() {
         </section>
 
         <section
-          id="thoughts"
-          ref={(el) => (sectionsRef.current[2] = el)}
+          id="projects"
+          ref={(el) => (sectionsRef.current[3] = el)}
           className="min-h-screen py-20 sm:py-32 opacity-0"
         >
           <div className="space-y-12 sm:space-y-16">
-            <h2 className="text-3xl sm:text-4xl font-light">Recent Thoughts</h2>
+            <h2 className="text-3xl sm:text-4xl font-light">Projects & Work</h2>
 
-            <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
-              {[
-                {
-                  title: "The Future of Web Development",
-                  excerpt: "Exploring how AI and automation are reshaping the way we build for the web.",
-                  date: "Dec 2024",
-                  readTime: "5 min",
-                },
-                {
-                  title: "Design Systems at Scale",
-                  excerpt: "Lessons learned from building and maintaining design systems across multiple products.",
-                  date: "Nov 2024",
-                  readTime: "8 min",
-                },
-                {
-                  title: "Performance-First Development",
-                  excerpt: "Why performance should be a first-class citizen in your development workflow.",
-                  date: "Oct 2024",
-                  readTime: "6 min",
-                },
-                {
-                  title: "The Art of Code Review",
-                  excerpt: "Building better software through thoughtful and constructive code reviews.",
-                  date: "Sep 2024",
-                  readTime: "4 min",
-                },
-              ].map((post, index) => (
-                <article
-                  key={index}
-                  className="group p-6 sm:p-8 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg cursor-pointer"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
-                      <span>{post.date}</span>
-                      <span>{post.readTime}</span>
-                    </div>
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-muted-foreground font-mono">NYUCHI AFRICA ECOSYSTEM</h3>
+                <p className="text-sm text-muted-foreground max-w-2xl mb-6">
+                  My passion project building digital solutions across Africa—from educational platforms to travel
+                  systems and community networks.
+                </p>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {[
+                    {
+                      title: "Nyuchi",
+                      url: "https://www.nyuchi.com",
+                      description: "The core Nyuchi platform",
+                    },
+                    {
+                      title: "Nyuchi Learning",
+                      url: "https://learning.nyuchi.com",
+                      description: "Educational platform for accessible learning experiences",
+                    },
+                    {
+                      title: "Mukoko",
+                      url: "https://mukoko.com",
+                      description: "Community-focused digital platform",
+                    },
+                    {
+                      title: "Zimbabwe Travel Info",
+                      url: "https://travel-info.co.zw",
+                      description: "Comprehensive travel information system",
+                    },
+                    {
+                      title: "Tech Directors Africa",
+                      url: "https://techdirectors.africa",
+                      description: "Connecting technology leaders across Africa",
+                    },
+                    {
+                      title: "Iconic Expeditions",
+                      url: "https://iconic-expeditions.com",
+                      description: "Adventure and expedition platform",
+                    },
+                  ].map((project) => (
+                    <Link
+                      key={project.title}
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group p-6 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
+                    >
+                      <div className="space-y-2">
+                        <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                          {project.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">{project.description}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                          <span>Visit project</span>
+                          <svg
+                            className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
-                    <h3 className="text-lg sm:text-xl font-medium group-hover:text-muted-foreground transition-colors duration-300">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-muted-foreground leading-relaxed">{post.excerpt}</p>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                      <span>Read more</span>
-                      <svg
-                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </article>
-              ))}
+              <div className="pt-8 space-y-4 border-t border-border/50">
+                <h3 className="text-lg font-medium text-muted-foreground font-mono">SINGAPORE AMERICAN SCHOOL</h3>
+                <p className="text-sm text-muted-foreground max-w-2xl mb-6">
+                  Full Stack Developer building educational platforms and digital tools for innovation and learning.
+                </p>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {[
+                    {
+                      title: "Digital Toolkit",
+                      repo: "SAS-Technology-Innovation/digital-toolkit",
+                      description: "Comprehensive digital tools and resources",
+                    },
+                    {
+                      title: "Knowledge Base",
+                      repo: "SAS-Technology-Innovation/knowledge",
+                      description: "Centralized knowledge management system",
+                    },
+                    {
+                      title: "Educator Eval",
+                      repo: "SAS-Technology-Innovation/EducatorEval",
+                      description: "Educator evaluation and assessment platform",
+                    },
+                    {
+                      title: "EOI Dashboard",
+                      repo: "SAS-Technology-Innovation/Expression-of-Interest-Dashboard",
+                      description: "Expression of interest tracking dashboard",
+                    },
+                  ].map((project) => (
+                    <Link
+                      key={project.repo}
+                      href={`https://github.com/${project.repo}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group p-6 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                          </svg>
+                          <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                            {project.title}
+                          </h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{project.description}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                          <span>View repository</span>
+                          <svg
+                            className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="connect" ref={(el) => (sectionsRef.current[3] = el)} className="py-20 sm:py-32 opacity-0">
+        <section id="connect" ref={(el) => (sectionsRef.current[4] = el)} className="py-20 sm:py-32 opacity-0">
           <div className="grid lg:grid-cols-2 gap-12 sm:gap-16">
             <div className="space-y-6 sm:space-y-8">
               <h2 className="text-3xl sm:text-4xl font-light">Let's Connect</h2>
 
               <div className="space-y-6">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Always interested in new opportunities, collaborations, and conversations about technology and design.
+                  Whether you're interested in EdTech solutions, African tech initiatives, or digital innovation
+                  strategy, I'd love to explore opportunities for collaboration and meaningful impact.
                 </p>
 
                 <div className="space-y-4">
                   <Link
-                    href="mailto:test@example.com"
+                    href="mailto:bryan@nyuchi.com"
                     className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
                   >
-                    <span className="text-base sm:text-lg">test@example.com</span>
+                    <span className="text-base sm:text-lg">bryan@nyuchi.com</span>
                     <svg
                       className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
@@ -295,18 +412,24 @@ export default function Home() {
             </div>
 
             <div className="space-y-6 sm:space-y-8">
-              <div className="text-sm text-muted-foreground font-mono">ELSEWHERE</div>
+              <div className="text-sm text-muted-foreground font-mono">CONNECT WITH ME</div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { name: "GitHub", handle: "@felixmacaspac", url: "#" },
-                  { name: "v0.dev", handle: "@felixmacaspac", url: "#" },
-                  { name: "HubSpot Community", handle: "@felixmacaspac", url: "#" },
-                  { name: "LinkedIn", handle: "felixmacaspac", url: "#" },
+                  {
+                    name: "LinkedIn",
+                    handle: "bryandavidfawcett",
+                    url: "https://www.linkedin.com/in/bryandavidfawcett/",
+                  },
+                  { name: "GitHub", handle: "bryanfawcett", url: "https://github.com/bryanfawcett/" },
+                  { name: "Twitter", handle: "@bryanfawcett", url: "https://x.com/bryanfawcett" },
+                  { name: "Email", handle: "bryan@nyuchi.com", url: "mailto:bryan@nyuchi.com" },
                 ].map((social) => (
                   <Link
                     key={social.name}
                     href={social.url}
+                    target={social.url.startsWith("http") ? "_blank" : undefined}
+                    rel={social.url.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="group p-4 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
                   >
                     <div className="space-y-2">
@@ -325,8 +448,10 @@ export default function Home() {
         <footer className="py-12 sm:py-16 border-t border-border">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">© 2025 Felix Macaspac. All rights reserved.</div>
-              <div className="text-xs text-muted-foreground">Built with v0.dev by Felix Macaspac</div>
+              <div className="text-sm text-muted-foreground">© 2025 Bryan Fawcett. All rights reserved.</div>
+              <div className="text-xs text-muted-foreground">
+                Technology leader, digital craftsman, builder of communities
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -356,22 +481,6 @@ export default function Home() {
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                   </svg>
                 )}
-              </button>
-
-              <button className="group p-3 rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300">
-                <svg
-                  className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  />
-                </svg>
               </button>
             </div>
           </div>
