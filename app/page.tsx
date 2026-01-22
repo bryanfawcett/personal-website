@@ -80,7 +80,7 @@ export default function Home() {
                   name="Bryan Fawcett"
                   tagline="DIGITAL CRAFTSMAN / 2025"
                   subtitle="I craft dynamic ecosystems that unite and empower communities."
-                  imageSrc="/profile.jpg"
+                  imageSrc="/profile.png"
                   imageAlt="Bryan Fawcett"
                   description={
                     <>

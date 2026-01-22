@@ -99,8 +99,8 @@ describe('Hero', () => {
 
   it('shows skeleton while image is loading', () => {
     const { container } = render(<Hero />)
-    // Skeleton should be visible before image loads
-    const skeleton = container.querySelector('.animate-skeleton')
+    // Skeleton should be visible before image loads (shadcn uses animate-pulse)
+    const skeleton = container.querySelector('.animate-pulse')
     expect(skeleton).toBeInTheDocument()
   })
 
@@ -169,10 +169,10 @@ describe('Hero', () => {
 
   it('renders default section chips', () => {
     render(<Hero />)
-    expect(screen.getByText('About')).toBeInTheDocument()
+    expect(screen.getByText('Philosophy')).toBeInTheDocument()
+    expect(screen.getByText('Expertise')).toBeInTheDocument()
     expect(screen.getByText('Projects')).toBeInTheDocument()
-    expect(screen.getByText('Experience')).toBeInTheDocument()
-    expect(screen.getByText('Contact')).toBeInTheDocument()
+    expect(screen.getByText('Connect')).toBeInTheDocument()
   })
 
   it('renders custom social links', () => {

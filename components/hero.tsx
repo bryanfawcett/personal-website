@@ -2,9 +2,12 @@
 
 import Image from "next/image"
 import { useState, type ReactNode } from "react"
-import { Skeleton } from "./skeleton"
+import { Skeleton } from "./ui/skeleton"
 import { Button } from "./ui/button"
 import { ButtonGroup } from "./ui/button-group"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+import { Badge } from "./ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
 interface SocialLink {
   name: string
@@ -89,12 +92,12 @@ const defaultSocialLinks: SocialLink[] = [
   }
 ]
 
-// Default section chips
+// Default section chips - matching page section IDs
 const defaultSectionChips: SectionChip[] = [
-  { label: "About", href: "#about" },
+  { label: "Philosophy", href: "#philosophy" },
+  { label: "Expertise", href: "#expertise" },
   { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" }
+  { label: "Connect", href: "#connect" }
 ]
 
 export function Hero({
@@ -114,152 +117,172 @@ export function Hero({
   const [imageError, setImageError] = useState(false)
 
   return (
-    <div className="relative w-full">
-      {/* Full-screen hero image container */}
-      <div className="relative h-[100dvh] min-h-[500px] w-full">
-        {/* Background image */}
-        <div className="absolute inset-0 w-full h-full">
-          {/* Loading skeleton */}
-          {!imageLoaded && !imageError && (
-            <Skeleton className="absolute inset-0 w-full h-full" />
-          )}
+    <TooltipProvider>
+      <div className="relative w-full">
+        {/* Full-screen hero image container */}
+        <div className="relative h-[100dvh] min-h-[500px] w-full">
+          {/* Background image */}
+          <div className="absolute inset-0 w-full h-full">
+            {/* Loading skeleton */}
+            {!imageLoaded && !imageError && (
+              <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+            )}
 
-          {/* Actual image */}
-          {!imageError && (
-            <Image
-              src={imageSrc}
-              alt={imageAlt}
-              fill
-              priority
-              className={`object-cover object-top transition-opacity duration-700 ${
-                imageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-              sizes="100vw"
-            />
-          )}
+            {/* Actual image */}
+            {!imageError && (
+              <Image
+                src={imageSrc}
+                alt={imageAlt}
+                fill
+                priority
+                className={`object-cover object-top transition-opacity duration-700 ${
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                sizes="100vw"
+              />
+            )}
 
-          {/* Fallback gradient background */}
-          {imageError && (
-            <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background" />
-          )}
+            {/* Fallback gradient background */}
+            {imageError && (
+              <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background" />
+            )}
 
-          {/* Bottom fade gradient - blends image into background */}
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/95 to-transparent" />
-        </div>
-
-        {/* Name and social icons - in the gradient fade area at bottom */}
-        <div className="absolute bottom-4 left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
-          {/* Name - cursive, centered */}
-          <h1 className="font-cursive text-4xl sm:text-6xl lg:text-7xl tracking-tight text-foreground drop-shadow-lg">
-            {name}
-          </h1>
-
-          {/* Tagline */}
-          <div className="mt-1 text-xs sm:text-sm text-muted-foreground font-mono tracking-wider">
-            {tagline}
+            {/* Bottom fade gradient - blends image into background */}
+            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/95 to-transparent" />
           </div>
 
-          {/* Subtitle */}
-          <h2 className="mt-2 sm:mt-3 text-base sm:text-lg lg:text-xl font-light tracking-tight text-balance text-foreground/90 max-w-md mx-auto">
-            {subtitle}
-          </h2>
+          {/* Name and social icons - in the gradient fade area at bottom */}
+          <div className="absolute bottom-4 left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
+            {/* Name - cursive, centered */}
+            <h1 className="font-cursive text-4xl sm:text-6xl lg:text-7xl tracking-tight text-foreground drop-shadow-lg">
+              {name}
+            </h1>
 
-          {/* Social Icons - clean row like Linktree */}
-          {socialLinks && socialLinks.length > 0 && (
-            <div className="mt-4 flex justify-center items-center gap-5">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground/80 hover:text-foreground hover:scale-110 transition-all duration-200"
-                  aria-label={link.name}
-                >
-                  {link.icon}
-                </a>
-              ))}
+            {/* Tagline as Badge */}
+            <div className="mt-2">
+              <Badge variant="secondary" className="font-mono tracking-wider">
+                {tagline}
+              </Badge>
+            </div>
+
+            {/* Subtitle */}
+            <h2 className="mt-2 sm:mt-3 text-base sm:text-lg lg:text-xl font-light tracking-tight text-balance text-foreground/90 max-w-md mx-auto">
+              {subtitle}
+            </h2>
+
+            {/* Social Icons with Tooltips */}
+            {socialLinks && socialLinks.length > 0 && (
+              <div className="mt-4 flex justify-center items-center gap-5">
+                {socialLinks.map((link) => (
+                  <Tooltip key={link.name}>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground/80 hover:text-foreground hover:scale-110 transition-all duration-200"
+                        aria-label={link.name}
+                      >
+                        {link.icon}
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{link.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sticky Section Navigation - ButtonGroup style */}
+        {sectionChips && sectionChips.length > 0 && (
+          <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50">
+            <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
+              <ButtonGroup>
+                {sectionChips.map((chip) => (
+                  <Button
+                    key={chip.label}
+                    variant="outline"
+                    size="sm"
+                    asChild
+                  >
+                    <a href={chip.href || `#${chip.label.toLowerCase()}`}>
+                      {chip.label}
+                    </a>
+                  </Button>
+                ))}
+              </ButtonGroup>
+            </div>
+          </div>
+        )}
+
+        {/* Content below hero - flows into background */}
+        <div className="relative z-10 px-6 sm:px-8 lg:px-16 max-w-4xl mx-auto pt-8 sm:pt-12">
+          {/* Description */}
+          {description && (
+            <div className="space-y-6 max-w-2xl">
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+                {description}
+              </p>
+
+              {/* Status indicator with Badge */}
+              {status && (
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  <Badge variant="outline" className="w-fit">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2" />
+                    {status.text}
+                  </Badge>
+                  {status.secondary && (
+                    <Badge variant="secondary">{status.secondary}</Badge>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Role cards using Card component */}
+          {(primaryRole || passionProject) && (
+            <div className="mt-8 sm:mt-12 grid sm:grid-cols-2 gap-4 max-w-2xl">
+              {primaryRole && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardDescription className="font-mono tracking-wider text-xs">
+                      PRIMARY ROLE
+                    </CardDescription>
+                    <CardTitle className="text-base">{primaryRole.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {primaryRole.subtitle}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {passionProject && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardDescription className="font-mono tracking-wider text-xs">
+                      PASSION PROJECT
+                    </CardDescription>
+                    <CardTitle className="text-base">{passionProject.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {passionProject.subtitle}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </div>
       </div>
-
-      {/* Sticky Section Navigation - ButtonGroup style */}
-      {sectionChips && sectionChips.length > 0 && (
-        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50">
-          <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
-            <ButtonGroup>
-              {sectionChips.map((chip) => (
-                <Button
-                  key={chip.label}
-                  variant="outline"
-                  size="sm"
-                  asChild
-                >
-                  <a href={chip.href || `#${chip.label.toLowerCase()}`}>
-                    {chip.label}
-                  </a>
-                </Button>
-              ))}
-            </ButtonGroup>
-          </div>
-        </div>
-      )}
-
-      {/* Content below hero - flows into background */}
-      <div className="relative z-10 px-6 sm:px-8 lg:px-16 max-w-4xl mx-auto pt-8 sm:pt-12">
-        {/* Description */}
-        {description && (
-          <div className="space-y-6 max-w-2xl">
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-              {description}
-            </p>
-
-            {/* Status indicator */}
-            {status && (
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  {status.text}
-                </div>
-                {status.secondary && <div>{status.secondary}</div>}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Role cards */}
-        {(primaryRole || passionProject) && (
-          <div className="mt-8 sm:mt-12 grid sm:grid-cols-2 gap-8 max-w-2xl">
-            {primaryRole && (
-              <div className="space-y-3">
-                <div className="text-xs text-muted-foreground font-mono tracking-wider">PRIMARY ROLE</div>
-                <div className="space-y-1">
-                  <div className="text-foreground font-medium">{primaryRole.title}</div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
-                    {primaryRole.subtitle}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {passionProject && (
-              <div className="space-y-3">
-                <div className="text-xs text-muted-foreground font-mono tracking-wider">PASSION PROJECT</div>
-                <div className="space-y-1">
-                  <div className="text-foreground font-medium">{passionProject.title}</div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
-                    {passionProject.subtitle}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+    </TooltipProvider>
   )
 }
 
