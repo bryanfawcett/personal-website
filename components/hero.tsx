@@ -198,27 +198,6 @@ export function Hero({
           </div>
         </div>
 
-        {/* Fixed Section Navigation - ButtonGroup style, always visible at top */}
-        {sectionChips && sectionChips.length > 0 && (
-          <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-            <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
-              <ButtonGroup>
-                {sectionChips.map((chip) => (
-                  <Button
-                    key={chip.label}
-                    variant="outline"
-                    size="sm"
-                    asChild
-                  >
-                    <a href={chip.href || `#${chip.label.toLowerCase()}`}>
-                      {chip.label}
-                    </a>
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </div>
-          </div>
-        )}
 
         {/* Content below hero - flows into background */}
         <div className="relative z-10 px-6 sm:px-8 lg:px-16 max-w-4xl mx-auto pt-8 sm:pt-12">

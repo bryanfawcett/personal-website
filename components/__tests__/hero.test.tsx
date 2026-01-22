@@ -167,14 +167,6 @@ describe('Hero', () => {
     expect(screen.getByLabelText('WhatsApp')).toBeInTheDocument()
   })
 
-  it('renders default section chips', () => {
-    render(<Hero />)
-    expect(screen.getByText('Philosophy')).toBeInTheDocument()
-    expect(screen.getByText('Expertise')).toBeInTheDocument()
-    expect(screen.getByText('Projects')).toBeInTheDocument()
-    expect(screen.getByText('Connect')).toBeInTheDocument()
-  })
-
   it('renders custom social links', () => {
     const customLinks = [
       {
@@ -188,11 +180,4 @@ describe('Hero', () => {
     expect(screen.getByTestId('custom-icon')).toBeInTheDocument()
   })
 
-  it('renders custom section chips', () => {
-    const customChips = [
-      { label: 'Custom Section', href: '#custom' }
-    ]
-    render(<Hero sectionChips={customChips} />)
-    expect(screen.getByText('Custom Section')).toBeInTheDocument()
-  })
 })
