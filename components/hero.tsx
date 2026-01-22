@@ -76,7 +76,7 @@ export function Hero({
         </div>
 
         {/* Name and subtitle positioned in the fade area - centered like iOS contact card */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-6 sm:px-8 lg:px-16 pb-8 sm:pb-12 text-center">
+        <div className="absolute bottom-16 sm:bottom-20 lg:bottom-24 left-0 right-0 z-10 px-6 sm:px-8 lg:px-16 text-center">
           {/* Name - cursive, centered */}
           <h1 className="font-cursive text-5xl sm:text-7xl lg:text-8xl tracking-tight text-foreground drop-shadow-lg">
             {name}
