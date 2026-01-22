@@ -28,8 +28,8 @@ describe('Hero', () => {
   it('renders with default props', () => {
     render(<Hero />)
     expect(screen.getByText('Bryan Fawcett')).toBeInTheDocument()
-    expect(screen.getByText('TECHNOLOGY LEADER & DIGITAL CRAFTSMAN / 2025')).toBeInTheDocument()
-    expect(screen.getByText('Building Systems That Transform Communities')).toBeInTheDocument()
+    expect(screen.getByText('DIGITAL CRAFTSMAN / 2025')).toBeInTheDocument()
+    expect(screen.getByText('I craft dynamic ecosystems that unite and empower communities.')).toBeInTheDocument()
   })
 
   it('renders custom name and tagline', () => {
@@ -117,22 +117,24 @@ describe('Hero', () => {
     })
   })
 
-  it('shows fallback initials when image fails to load', async () => {
-    render(<Hero name="Bryan Fawcett" />)
+  it('shows fallback gradient when image fails to load', async () => {
+    const { container } = render(<Hero />)
     const image = screen.getByTestId('hero-image')
 
     // Simulate image error
     fireEvent.error(image)
 
     await waitFor(() => {
-      expect(screen.getByText('BF')).toBeInTheDocument()
+      // Fallback gradient should be shown
+      const fallbackGradient = container.querySelector('.bg-gradient-to-b')
+      expect(fallbackGradient).toBeInTheDocument()
     })
   })
 
-  it('applies hero-image-fade class for gradient effect', () => {
-    render(<Hero />)
-    const imageContainer = document.querySelector('.hero-image-fade')
-    expect(imageContainer).toBeInTheDocument()
+  it('renders full-screen hero with proper structure', () => {
+    const { container } = render(<Hero />)
+    const heroContainer = container.querySelector('.min-h-screen')
+    expect(heroContainer).toBeInTheDocument()
   })
 
   it('renders ReactNode description correctly', () => {

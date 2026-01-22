@@ -66,28 +66,28 @@ export default function Home() {
           </div>
         </nav>
 
-        <main className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-16">
+        <main>
           <SectionErrorBoundary sectionName="Hero section">
             <header
               id="intro"
               ref={(el) => { sectionsRef.current[0] = el }}
-              className="min-h-screen flex items-center opacity-0"
+              className="opacity-0"
             >
               {isLoading ? (
                 <SkeletonHero />
               ) : (
                 <Hero
                   name="Bryan Fawcett"
-                  tagline="TECHNOLOGY LEADER & DIGITAL CRAFTSMAN / 2025"
-                  subtitle="Building Systems That Transform Communities"
+                  tagline="DIGITAL CRAFTSMAN / 2025"
+                  subtitle="I craft dynamic ecosystems that unite and empower communities."
                   imageSrc="/profile.jpg"
-                  imageAlt="Bryan Fawcett - Technology Leader"
+                  imageAlt="Bryan Fawcett"
                   description={
                     <>
-                      I&apos;m a full stack developer and systems architect at{" "}
-                      <span className="text-foreground">Singapore American School</span>, but my passion lives in{" "}
-                      <span className="text-foreground">Nyuchi Africa</span>. I craft digital experiences that bring
-                      communities together through <span className="text-foreground">innovation</span>,{" "}
+                      Full stack developer and systems architect at{" "}
+                      <span className="text-foreground">Singapore American School</span>, building my passion at{" "}
+                      <span className="text-foreground">Nyuchi Africa</span>. Creating digital experiences through{" "}
+                      <span className="text-foreground">innovation</span>,{" "}
                       <span className="text-foreground">resourcefulness</span>, and{" "}
                       <span className="text-foreground">intentional design</span>.
                     </>
@@ -98,23 +98,24 @@ export default function Home() {
                   }}
                   primaryRole={{
                     title: "Full Stack Developer & Systems Architect",
-                    subtitle: "Singapore American School | Educational Technology Leadership"
+                    subtitle: "Singapore American School"
                   }}
                   passionProject={{
                     title: "Nyuchi Africa Ecosystem",
-                    subtitle: "Learning platforms, travel systems, and tech community building across Africa"
+                    subtitle: "Learning, travel, and community platforms"
                   }}
                 />
               )}
             </header>
           </SectionErrorBoundary>
 
-          <SectionErrorBoundary sectionName="Philosophy section">
-            <section
-              id="philosophy"
-              ref={(el) => { sectionsRef.current[1] = el }}
-              className="min-h-screen py-20 sm:py-32 opacity-0 flex items-center"
-            >
+          <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-16">
+            <SectionErrorBoundary sectionName="Philosophy section">
+              <section
+                id="philosophy"
+                ref={(el) => { sectionsRef.current[1] = el }}
+                className="min-h-screen py-20 sm:py-32 opacity-0 flex items-center"
+              >
               {isLoading ? (
                 <SkeletonSection />
               ) : (
@@ -455,16 +456,16 @@ export default function Home() {
                 </div>
               </div>
             </section>
-          </SectionErrorBoundary>
+            </SectionErrorBoundary>
 
-          <footer className="py-12 sm:py-16 border-t border-border">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">© 2025 Bryan Fawcett. All rights reserved.</div>
-                <div className="text-xs text-muted-foreground">
-                  Technology leader, digital craftsman, builder of communities
+            <footer className="py-12 sm:py-16 border-t border-border">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
+                <div className="space-y-2">
+                  <div className="text-sm text-muted-foreground">© 2025 Bryan Fawcett. All rights reserved.</div>
+                  <div className="text-xs text-muted-foreground">
+                    Digital craftsman, builder of communities
+                  </div>
                 </div>
-              </div>
 
               <div className="flex items-center gap-4">
                 <button
@@ -496,9 +497,10 @@ export default function Home() {
                     </svg>
                   )}
                 </button>
+                </div>
               </div>
-            </div>
-          </footer>
+            </footer>
+          </div>
         </main>
 
         <div className="fixed bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />

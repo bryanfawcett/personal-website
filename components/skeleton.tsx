@@ -55,44 +55,45 @@ export function SkeletonHero({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "min-h-screen flex items-center",
+        "relative w-full min-h-screen flex flex-col",
         className
       )}
       aria-label="Loading content"
       role="status"
     >
-      <div className="space-y-8 w-full max-w-4xl mx-auto px-6">
-        {/* Profile image skeleton */}
-        <div className="flex justify-center mb-8">
-          <Skeleton className="w-48 h-48 sm:w-64 sm:h-64 rounded-full" />
-        </div>
+      {/* Full-screen background skeleton */}
+      <Skeleton className="absolute inset-0 w-full h-full" />
 
+      {/* Bottom fade gradient overlay */}
+      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/80 to-transparent" />
+
+      {/* Content skeleton overlay */}
+      <div className="relative z-10 flex-1 flex flex-col justify-end pb-16 sm:pb-24 lg:pb-32 px-6 sm:px-8 lg:px-16">
         {/* Name skeleton */}
-        <Skeleton className="h-16 sm:h-20 w-3/4 mx-auto" />
+        <Skeleton className="h-16 sm:h-24 lg:h-32 w-3/4 max-w-lg" />
 
         {/* Tagline skeleton */}
-        <Skeleton className="h-4 w-1/2 mx-auto" />
+        <Skeleton className="h-4 w-48 mt-4" />
+
+        {/* Subtitle skeleton */}
+        <Skeleton className="h-8 sm:h-10 lg:h-12 w-full max-w-2xl mt-6" />
 
         {/* Description skeleton */}
-        <div className="space-y-3 max-w-2xl mx-auto">
-          <Skeleton className="h-8 sm:h-10 w-full" />
-          <Skeleton className="h-8 sm:h-10 w-5/6" />
+        <div className="mt-6 space-y-3 max-w-2xl">
+          <SkeletonText lines={3} />
         </div>
 
-        {/* Paragraph skeleton */}
-        <SkeletonText lines={4} className="max-w-2xl mx-auto" />
-
         {/* Info cards skeleton */}
-        <div className="grid sm:grid-cols-2 gap-8 pt-4">
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-24" />
+        <div className="mt-8 grid sm:grid-cols-2 gap-8 max-w-2xl">
+          <div className="space-y-3">
+            <Skeleton className="h-3 w-20" />
             <Skeleton className="h-5 w-48" />
-            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-32" />
           </div>
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-24" />
+          <div className="space-y-3">
+            <Skeleton className="h-3 w-20" />
             <Skeleton className="h-5 w-48" />
-            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-32" />
           </div>
         </div>
       </div>

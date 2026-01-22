@@ -75,10 +75,10 @@ describe('SkeletonHero', () => {
     expect(screen.getByLabelText('Loading content')).toBeInTheDocument()
   })
 
-  it('renders profile image placeholder', () => {
+  it('renders full-screen background skeleton', () => {
     const { container } = render(<SkeletonHero />)
-    const profileSkeleton = container.querySelector('.rounded-full')
-    expect(profileSkeleton).toBeInTheDocument()
+    const backgroundSkeleton = container.querySelector('.absolute.inset-0')
+    expect(backgroundSkeleton).toBeInTheDocument()
   })
 })
 
