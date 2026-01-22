@@ -133,7 +133,7 @@ describe('Hero', () => {
 
   it('renders full-screen hero with proper structure', () => {
     const { container } = render(<Hero />)
-    const heroContainer = container.querySelector('.min-h-screen')
+    const heroContainer = container.querySelector('.h-screen')
     expect(heroContainer).toBeInTheDocument()
   })
 
