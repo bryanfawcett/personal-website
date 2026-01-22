@@ -113,8 +113,8 @@ export function Hero({
 
   return (
     <div className="relative w-full">
-      {/* Full-screen hero image container - use dvh for mobile browser compatibility */}
-      <div className="relative h-[100dvh] min-h-[600px] w-full">
+      {/* Full-screen hero image container */}
+      <div className="relative h-[100dvh] min-h-[500px] w-full">
         {/* Background image */}
         <div className="absolute inset-0 w-full h-full">
           {/* Loading skeleton */}
@@ -147,26 +147,26 @@ export function Hero({
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/95 to-transparent" />
         </div>
 
-        {/* Name, social icons, and chips - positioned higher for mobile visibility */}
-        <div className="absolute bottom-[28%] sm:bottom-[25%] lg:bottom-[22%] left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
+        {/* Name and social icons - in the gradient fade area at bottom */}
+        <div className="absolute bottom-4 left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
           {/* Name - cursive, centered */}
-          <h1 className="font-cursive text-5xl sm:text-7xl lg:text-8xl tracking-tight text-foreground drop-shadow-lg">
+          <h1 className="font-cursive text-4xl sm:text-6xl lg:text-7xl tracking-tight text-foreground drop-shadow-lg">
             {name}
           </h1>
 
           {/* Tagline */}
-          <div className="mt-2 text-sm text-muted-foreground font-mono tracking-wider">
+          <div className="mt-1 text-xs sm:text-sm text-muted-foreground font-mono tracking-wider">
             {tagline}
           </div>
 
           {/* Subtitle */}
-          <h2 className="mt-3 sm:mt-4 text-lg sm:text-xl lg:text-2xl font-light tracking-tight text-balance text-foreground/90 max-w-xl mx-auto">
+          <h2 className="mt-2 sm:mt-3 text-base sm:text-lg lg:text-xl font-light tracking-tight text-balance text-foreground/90 max-w-md mx-auto">
             {subtitle}
           </h2>
 
           {/* Social Icons - clean row like Linktree */}
           {socialLinks && socialLinks.length > 0 && (
-            <div className="mt-5 flex justify-center items-center gap-6">
+            <div className="mt-4 flex justify-center items-center gap-5">
               {socialLinks.map((link) => (
                 <a
                   key={link.name}
@@ -181,23 +181,25 @@ export function Hero({
               ))}
             </div>
           )}
-
-          {/* Section Chips */}
-          {sectionChips && sectionChips.length > 0 && (
-            <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3">
-              {sectionChips.map((chip) => (
-                <a
-                  key={chip.label}
-                  href={chip.href || `#${chip.label.toLowerCase()}`}
-                  className="px-4 py-2 text-sm font-medium rounded-full bg-background/60 backdrop-blur-sm text-foreground/90 hover:bg-background/90 hover:text-foreground transition-all duration-200 border border-foreground/10"
-                >
-                  {chip.label}
-                </a>
-              ))}
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Sticky Section Chips - Apple contact card style */}
+      {sectionChips && sectionChips.length > 0 && (
+        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50">
+          <div className="flex justify-center items-center gap-1 sm:gap-2 py-3 px-4 overflow-x-auto scrollbar-hide">
+            {sectionChips.map((chip) => (
+              <a
+                key={chip.label}
+                href={chip.href || `#${chip.label.toLowerCase()}`}
+                className="flex-shrink-0 px-4 sm:px-6 py-2 text-sm font-medium rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
+                {chip.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Content below hero - flows into background */}
       <div className="relative z-10 px-6 sm:px-8 lg:px-16 max-w-4xl mx-auto pt-8 sm:pt-12">
