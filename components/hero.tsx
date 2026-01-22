@@ -128,14 +128,14 @@ export function Hero({
               <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
             )}
 
-            {/* Actual image */}
+            {/* Actual image - object-top on portrait, object-center on landscape */}
             {!imageError && (
               <Image
                 src={imageSrc}
                 alt={imageAlt}
                 fill
                 priority
-                className={`object-cover object-top transition-opacity duration-700 ${
+                className={`object-cover object-top landscape:object-center transition-opacity duration-700 ${
                   imageLoaded ? "opacity-100" : "opacity-0"
                 }`}
                 onLoad={() => setImageLoaded(true)}
@@ -149,8 +149,8 @@ export function Hero({
               <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background" />
             )}
 
-            {/* Bottom fade gradient - blends image into background */}
-            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/95 to-transparent" />
+            {/* Bottom fade gradient - subtle natural fade into background */}
+            <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
           </div>
 
           {/* Name and social icons - in the gradient fade area at bottom */}
