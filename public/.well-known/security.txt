@@ -1,0 +1,7 @@
+# Security Policy for bryanfawcett.com
+
+Contact: mailto:bryan@nyuchi.com
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+
+# If you discover a security vulnerability, please report it responsibly.

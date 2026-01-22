@@ -1,0 +1,11 @@
+# robots.txt for bryanfawcett.com
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://bryanfawcett.com/sitemap.xml
+
+# LLMs context file
+# See: https://bryanfawcett.com/llms.txt
