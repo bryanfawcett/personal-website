@@ -52,19 +52,39 @@ export default function Home() {
       {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
 
       <div className={`min-h-screen bg-background text-foreground relative ${isLoading ? "overflow-hidden" : ""}`}>
+        {/* Skip to main content link for accessibility */}
+        <a
+          href="#intro"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-lg"
+        >
+          Skip to main content
+        </a>
+
         {/* Sticky Navigation - handles its own positioning via JS */}
         {!isLoading && <StickyNav />}
 
-        <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block">
-          <div className="flex flex-col gap-4">
-            {["intro", "philosophy", "expertise", "projects", "connect"].map((section) => (
+        <nav
+          className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block"
+          aria-label="Page sections"
+          role="navigation"
+        >
+          <div className="flex flex-col gap-4" role="list">
+            {[
+              { id: "intro", label: "Introduction" },
+              { id: "philosophy", label: "Philosophy & Approach" },
+              { id: "expertise", label: "Core Competencies" },
+              { id: "projects", label: "Projects & Work" },
+              { id: "connect", label: "Contact" },
+            ].map((section) => (
               <button
-                key={section}
-                onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })}
+                key={section.id}
+                onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth" })}
                 className={`w-2 h-8 rounded-full transition-all duration-500 ${
-                  activeSection === section ? "bg-foreground" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                  activeSection === section.id ? "bg-foreground" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
                 }`}
-                aria-label={`Navigate to ${section}`}
+                aria-label={`Navigate to ${section.label}`}
+                aria-current={activeSection === section.id ? "true" : undefined}
+                role="listitem"
               />
             ))}
           </div>
@@ -120,12 +140,13 @@ export default function Home() {
                 id="philosophy"
                 ref={(el) => { sectionsRef.current[1] = el }}
                 className="min-h-screen py-20 sm:py-32 opacity-0 flex items-center"
+                aria-labelledby="philosophy-heading"
               >
               {isLoading ? (
                 <SkeletonSection />
               ) : (
                 <div className="space-y-12 sm:space-y-16 w-full">
-                  <h2 className="text-3xl sm:text-4xl font-light">Philosophy & Approach</h2>
+                  <h2 id="philosophy-heading" className="text-3xl sm:text-4xl font-light">Philosophy & Approach</h2>
 
                   <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
                     <div className="space-y-6">
@@ -172,10 +193,11 @@ export default function Home() {
               id="expertise"
               ref={(el) => { sectionsRef.current[2] = el }}
               className="min-h-screen py-20 sm:py-32 opacity-0"
+              aria-labelledby="expertise-heading"
             >
               <div className="space-y-12 sm:space-y-16">
                 <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                  <h2 className="text-3xl sm:text-4xl font-light">Core Competencies</h2>
+                  <h2 id="expertise-heading" className="text-3xl sm:text-4xl font-light">Core Competencies</h2>
                   <div className="text-sm text-muted-foreground font-mono">10+ Years in Enterprise Tech</div>
                 </div>
 
@@ -241,9 +263,10 @@ export default function Home() {
               id="projects"
               ref={(el) => { sectionsRef.current[3] = el }}
               className="min-h-screen py-20 sm:py-32 opacity-0"
+              aria-labelledby="projects-heading"
             >
               <div className="space-y-12 sm:space-y-16">
-                <h2 className="text-3xl sm:text-4xl font-light">Projects & Work</h2>
+                <h2 id="projects-heading" className="text-3xl sm:text-4xl font-light">Projects & Work</h2>
 
                 {isLoading ? (
                   <SkeletonProjectGrid />
@@ -407,10 +430,15 @@ export default function Home() {
           </SectionErrorBoundary>
 
           <SectionErrorBoundary sectionName="Connect section">
-            <section id="connect" ref={(el) => { sectionsRef.current[4] = el }} className="py-20 sm:py-32 opacity-0">
+            <section
+              id="connect"
+              ref={(el) => { sectionsRef.current[4] = el }}
+              className="py-20 sm:py-32 opacity-0"
+              aria-labelledby="connect-heading"
+            >
               <div className="grid lg:grid-cols-2 gap-12 sm:gap-16">
                 <div className="space-y-6 sm:space-y-8">
-                  <h2 className="text-3xl sm:text-4xl font-light">Let&apos;s Connect</h2>
+                  <h2 id="connect-heading" className="text-3xl sm:text-4xl font-light">Let&apos;s Connect</h2>
 
                   <div className="space-y-6">
                     <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
@@ -473,20 +501,24 @@ export default function Home() {
             </section>
             </SectionErrorBoundary>
 
-            <footer className="py-12 sm:py-16 border-t border-border">
+            <footer className="py-12 sm:py-16 border-t border-border" role="contentinfo">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
                 <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">© 2025 Bryan Fawcett. All rights reserved.</div>
-                  <div className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
+                    <small>© 2025 Bryan Fawcett. All rights reserved.</small>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
                     Digital craftsman, builder of communities
-                  </div>
+                  </p>
                 </div>
 
               <div className="flex items-center gap-4">
                 <button
                   onClick={toggleTheme}
                   className="group p-3 rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300"
-                  aria-label="Toggle theme"
+                  aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                  aria-pressed={isDark}
+                  type="button"
                 >
                   {isDark ? (
                     <svg
@@ -494,7 +526,9 @@ export default function Home() {
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       aria-hidden="true"
+                      role="img"
                     >
+                      <title>Sun icon</title>
                       <path
                         fillRule="evenodd"
                         d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -507,7 +541,9 @@ export default function Home() {
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       aria-hidden="true"
+                      role="img"
                     >
+                      <title>Moon icon</title>
                       <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   )}
