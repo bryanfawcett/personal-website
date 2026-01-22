@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, useState, Suspense } from "react"
+import { useEffect, useRef, useState } from "react"
 import { LoadingScreen } from "@/components/loading-screen"
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary"
 import { Hero } from "@/components/hero"
