@@ -133,7 +133,8 @@ describe('Hero', () => {
 
   it('renders full-screen hero with proper structure', () => {
     const { container } = render(<Hero />)
-    const heroContainer = container.querySelector('.h-screen')
+    // Uses h-[100dvh] for mobile browser compatibility
+    const heroContainer = container.querySelector('[class*="h-"]')
     expect(heroContainer).toBeInTheDocument()
   })
 

@@ -6,10 +6,15 @@ import "./globals.css"
 // Google Fonts are loaded via CSS @import in the head for better offline compatibility
 
 export const metadata: Metadata = {
-  title: "Bryan Fawcett - Technology Leader & Systems Architect",
+  title: "Bryan Fawcett - Digital Craftsman",
   description:
-    "Crafting digital ecosystems that empower organizations. 10+ years in enterprise technology, system architecture, and IT governance.",
+    "I craft dynamic ecosystems that unite and empower communities.",
   generator: "v0.app",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+  },
 }
 
 export default function RootLayout({

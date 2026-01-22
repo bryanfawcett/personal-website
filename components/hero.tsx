@@ -113,8 +113,8 @@ export function Hero({
 
   return (
     <div className="relative w-full">
-      {/* Full-screen hero image container */}
-      <div className="relative h-screen w-full">
+      {/* Full-screen hero image container - use dvh for mobile browser compatibility */}
+      <div className="relative h-[100dvh] min-h-[600px] w-full">
         {/* Background image */}
         <div className="absolute inset-0 w-full h-full">
           {/* Loading skeleton */}
@@ -147,8 +147,8 @@ export function Hero({
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/95 to-transparent" />
         </div>
 
-        {/* Name, social icons, and chips - positioned higher like iOS contact card */}
-        <div className="absolute bottom-[20%] sm:bottom-[22%] lg:bottom-[25%] left-0 right-0 z-10 px-6 sm:px-8 lg:px-16 text-center">
+        {/* Name, social icons, and chips - positioned higher for mobile visibility */}
+        <div className="absolute bottom-[28%] sm:bottom-[25%] lg:bottom-[22%] left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
           {/* Name - cursive, centered */}
           <h1 className="font-cursive text-5xl sm:text-7xl lg:text-8xl tracking-tight text-foreground drop-shadow-lg">
             {name}
