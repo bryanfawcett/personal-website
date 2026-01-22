@@ -19,13 +19,13 @@ const defaultItems: NavItem[] = [
 ]
 
 export function StickyNav({ items = defaultItems }: StickyNavProps) {
-  const [isSticky, setIsSticky] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      // Get the hero height (100dvh) and check if we've scrolled past it
+      // Show sticky nav after scrolling past the hero (100vh)
       const heroHeight = window.innerHeight
-      setIsSticky(window.scrollY > heroHeight - 60)
+      setIsVisible(window.scrollY > heroHeight - 60)
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -34,12 +34,11 @@ export function StickyNav({ items = defaultItems }: StickyNavProps) {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Don't render until we've scrolled past the hero
+  if (!isVisible) return null
+
   return (
-    <div
-      className={`${
-        isSticky ? "fixed top-0" : "absolute bottom-0"
-      } left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 transition-all duration-300`}
-    >
+    <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
         <div className="inline-flex rounded-lg border border-border bg-background shadow-sm">
           {items.map((item, index) => (

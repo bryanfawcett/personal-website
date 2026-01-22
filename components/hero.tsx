@@ -136,8 +136,8 @@ export function Hero({
             <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
           </div>
 
-          {/* Name and social icons - in the gradient fade area at bottom */}
-          <div className="absolute bottom-4 left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center pb-safe">
+          {/* Name and social icons - lifted higher in the gradient fade area */}
+          <div className="absolute bottom-24 left-0 right-0 z-10 px-4 sm:px-8 lg:px-16 text-center">
             {/* Name - cursive, centered */}
             <h1 className="font-cursive text-4xl sm:text-6xl lg:text-7xl tracking-tight text-foreground drop-shadow-lg">
               {name}
@@ -178,6 +178,32 @@ export function Hero({
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Navigation tabs - at bottom of hero, becomes sticky */}
+          <div id="hero-nav" className="absolute bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50 pb-safe">
+            <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
+              <div className="inline-flex rounded-lg border border-border bg-background shadow-sm">
+                {[
+                  { label: "Philosophy", href: "#philosophy" },
+                  { label: "Expertise", href: "#expertise" },
+                  { label: "Projects", href: "#projects" },
+                  { label: "Connect", href: "#connect" }
+                ].map((item, index, arr) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className={`px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
+                      index === 0 ? "rounded-l-lg" : ""
+                    } ${
+                      index === arr.length - 1 ? "rounded-r-lg" : "border-r border-border"
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
