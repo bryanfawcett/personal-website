@@ -1,0 +1,16 @@
+/* TEAM */
+Creator: Bryan Fawcett
+Site: bryanfawcett.com
+Twitter: @bryanfawcett
+Location: Singapore
+
+/* THANKS */
+Nyuchi Africa Team
+Singapore American School Technology & Innovation Team
+
+/* SITE */
+Last update: 2025/01/22
+Language: English
+Standards: HTML5, CSS3, ES6+
+Components: shadcn/ui, Radix UI
+Software: Next.js 16, React 19, TypeScript, Tailwind CSS 4

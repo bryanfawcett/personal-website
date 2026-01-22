@@ -1,0 +1,53 @@
+# Bryan Fawcett - Personal Portfolio
+
+> Technology & Innovation Coordinator building digital ecosystems that unite and empower communities.
+
+## About
+
+Bryan Fawcett is a Technology & Innovation Coordinator at Singapore American School with 10+ years of experience in EdTech across Africa and Asia. He founded Nyuchi Africa, building digital solutions for African communities under the Ubuntu philosophy ("I am because we are").
+
+## Current Role
+
+- **Position:** Associate Technology & Innovation Coordinator
+- **Organization:** Singapore American School (SAS)
+- **Focus:** Integrating technology within educational practices and operational efficiencies
+- **Previous SAS Roles:** Privacy & Governance Manager, IT Infrastructure Manager, Application System Engineer
+
+## Background
+
+- 10+ years in EdTech across Africa and Asia
+- Previously Technology Coordinator at Osaka YMCA International School
+- Teaching and administrative roles across schools in Zimbabwe
+- Expertise: Cybersecurity, process optimization, IT governance, system architecture
+
+## Nyuchi Africa Ecosystem
+
+Bryan's passion project building digital solutions for African communities:
+
+- **Nyuchi Africa** (nyuchi.com) - Community-focused business platform for African entrepreneurship
+- **Nyuchi Learning** (learning.nyuchi.com) - Open-source K-12 digital transformation frameworks for African schools
+- **Nyuchi Lingo** (lingo.nyuchi.com) - Language learning platform for African languages
+- **Mukoko** (mukoko.com) - Privacy-focused social platform with 6 integrated apps (ID, Clips, Pulse, Connect, Novels, Events)
+- **Mukoko News** (news.mukoko.com) - Pan-African news aggregation from trusted regional sources
+- **Nhimbe** (nhimbe.com) - Community events and gatherings platform
+- **Zimbabwe Travel Info** (travel-info.co.zw) - Comprehensive travel guide for Zimbabwe
+- **Iconic Expeditions** (iconic-expeditions.com) - Luxury bespoke safaris across Southern and Eastern Africa
+
+## Contact
+
+- **Email:** bryan@nyuchi.com
+- **LinkedIn:** linkedin.com/in/bryandavidfawcett
+- **GitHub:** github.com/bryanfawcett
+- **Twitter/X:** @bryanfawcett
+- **Website:** bryanfawcett.com
+
+## Location
+
+Singapore (Remote-first, Africa-focused)
+
+## Philosophy
+
+- **Resourceful Innovation:** Growing up in Africa taught doing more with less and finding elegant solutions under constraints
+- **Community First:** Technology should serve people and empower communities
+- **Excellence & Trust:** Security, governance, and best practices are foundational
+- **Knowledge Transfer:** Clear documentation and mentorship multiply impact

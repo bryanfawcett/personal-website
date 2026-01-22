@@ -8,13 +8,60 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Bryan Fawcett - Digital Craftsman",
   description:
-    "I craft dynamic ecosystems that unite and empower communities.",
-  generator: "v0.app",
+    "Technology & Innovation Coordinator building digital ecosystems that unite and empower communities. Founder of Nyuchi Africa.",
+  generator: "Next.js",
+  authors: [{ name: "Bryan Fawcett", url: "https://bryanfawcett.com" }],
+  creator: "Bryan Fawcett",
+  publisher: "Bryan Fawcett",
+  keywords: [
+    "Bryan Fawcett",
+    "Technology Coordinator",
+    "EdTech",
+    "Nyuchi Africa",
+    "Singapore American School",
+    "Digital Innovation",
+    "Africa Tech",
+    "Education Technology",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://bryanfawcett.com",
+    siteName: "Bryan Fawcett",
+    title: "Bryan Fawcett - Digital Craftsman",
+    description:
+      "Technology & Innovation Coordinator building digital ecosystems that unite and empower communities. Founder of Nyuchi Africa.",
+    images: [
+      {
+        url: "/profile.png",
+        width: 1200,
+        height: 630,
+        alt: "Bryan Fawcett",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bryan Fawcett - Digital Craftsman",
+    description:
+      "Technology & Innovation Coordinator building digital ecosystems that unite and empower communities.",
+    creator: "@bryanfawcett",
+    images: ["/profile.png"],
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,
     viewportFit: "cover",
   },
+  metadataBase: new URL("https://bryanfawcett.com"),
 }
 
 export default function RootLayout({
