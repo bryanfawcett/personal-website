@@ -3,8 +3,6 @@
 import Image from "next/image"
 import { useState, type ReactNode } from "react"
 import { Skeleton } from "./ui/skeleton"
-import { Button } from "./ui/button"
-import { ButtonGroup } from "./ui/button-group"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
@@ -15,11 +13,6 @@ interface SocialLink {
   icon: ReactNode
 }
 
-interface SectionChip {
-  label: string
-  href?: string
-}
-
 interface HeroProps {
   name?: string
   tagline?: string
@@ -28,7 +21,6 @@ interface HeroProps {
   imageSrc?: string
   imageAlt?: string
   socialLinks?: SocialLink[]
-  sectionChips?: SectionChip[]
   primaryRole?: {
     title: string
     subtitle: string
@@ -92,14 +84,6 @@ const defaultSocialLinks: SocialLink[] = [
   }
 ]
 
-// Default section chips - matching page section IDs
-const defaultSectionChips: SectionChip[] = [
-  { label: "Philosophy", href: "#philosophy" },
-  { label: "Expertise", href: "#expertise" },
-  { label: "Projects", href: "#projects" },
-  { label: "Connect", href: "#connect" }
-]
-
 export function Hero({
   name = "Bryan Fawcett",
   tagline = "DIGITAL CRAFTSMAN / 2025",
@@ -108,7 +92,6 @@ export function Hero({
   imageSrc = "/profile.png",
   imageAlt = "Bryan Fawcett",
   socialLinks = defaultSocialLinks,
-  sectionChips = defaultSectionChips,
   primaryRole,
   passionProject,
   status
