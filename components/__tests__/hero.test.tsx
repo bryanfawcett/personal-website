@@ -1,0 +1,151 @@
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { Hero } from '../hero'
+
+// Mock Next.js Image component
+vi.mock('next/image', () => ({
+  default: ({ src, alt, onLoad, onError, className, ...props }: {
+    src: string
+    alt: string
+    onLoad?: () => void
+    onError?: () => void
+    className?: string
+    [key: string]: unknown
+  }) => (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onLoad={onLoad}
+      onError={onError}
+      data-testid="hero-image"
+      {...props}
+    />
+  )
+}))
+
+describe('Hero', () => {
+  it('renders with default props', () => {
+    render(<Hero />)
+    expect(screen.getByText('Bryan Fawcett')).toBeInTheDocument()
+    expect(screen.getByText('TECHNOLOGY LEADER & DIGITAL CRAFTSMAN / 2025')).toBeInTheDocument()
+    expect(screen.getByText('Building Systems That Transform Communities')).toBeInTheDocument()
+  })
+
+  it('renders custom name and tagline', () => {
+    render(
+      <Hero
+        name="John Doe"
+        tagline="CUSTOM TAGLINE / 2025"
+        subtitle="Custom Subtitle"
+      />
+    )
+    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    expect(screen.getByText('CUSTOM TAGLINE / 2025')).toBeInTheDocument()
+    expect(screen.getByText('Custom Subtitle')).toBeInTheDocument()
+  })
+
+  it('renders description when provided', () => {
+    render(<Hero description="This is a test description" />)
+    expect(screen.getByText('This is a test description')).toBeInTheDocument()
+  })
+
+  it('renders status indicator when provided', () => {
+    render(
+      <Hero
+        description="Test description"
+        status={{
+          text: "Currently building",
+          secondary: "Remote work"
+        }}
+      />
+    )
+    expect(screen.getByText('Currently building')).toBeInTheDocument()
+    expect(screen.getByText('Remote work')).toBeInTheDocument()
+  })
+
+  it('renders primary role when provided', () => {
+    render(
+      <Hero
+        primaryRole={{
+          title: "Software Engineer",
+          subtitle: "Big Tech Company"
+        }}
+      />
+    )
+    expect(screen.getByText('PRIMARY ROLE')).toBeInTheDocument()
+    expect(screen.getByText('Software Engineer')).toBeInTheDocument()
+    expect(screen.getByText('Big Tech Company')).toBeInTheDocument()
+  })
+
+  it('renders passion project when provided', () => {
+    render(
+      <Hero
+        passionProject={{
+          title: "Open Source Project",
+          subtitle: "Making the world better"
+        }}
+      />
+    )
+    expect(screen.getByText('PASSION PROJECT')).toBeInTheDocument()
+    expect(screen.getByText('Open Source Project')).toBeInTheDocument()
+    expect(screen.getByText('Making the world better')).toBeInTheDocument()
+  })
+
+  it('renders image with correct alt text', () => {
+    render(<Hero imageAlt="Custom alt text" />)
+    expect(screen.getByAltText('Custom alt text')).toBeInTheDocument()
+  })
+
+  it('shows skeleton while image is loading', () => {
+    const { container } = render(<Hero />)
+    // Skeleton should be visible before image loads
+    const skeleton = container.querySelector('.animate-skeleton')
+    expect(skeleton).toBeInTheDocument()
+  })
+
+  it('hides skeleton after image loads', async () => {
+    const { container } = render(<Hero />)
+    const image = screen.getByTestId('hero-image')
+
+    // Simulate image load
+    fireEvent.load(image)
+
+    await waitFor(() => {
+      const skeleton = container.querySelector('.animate-skeleton.absolute')
+      expect(skeleton).not.toBeInTheDocument()
+    })
+  })
+
+  it('shows fallback initials when image fails to load', async () => {
+    render(<Hero name="Bryan Fawcett" />)
+    const image = screen.getByTestId('hero-image')
+
+    // Simulate image error
+    fireEvent.error(image)
+
+    await waitFor(() => {
+      expect(screen.getByText('BF')).toBeInTheDocument()
+    })
+  })
+
+  it('applies hero-image-fade class for gradient effect', () => {
+    render(<Hero />)
+    const imageContainer = document.querySelector('.hero-image-fade')
+    expect(imageContainer).toBeInTheDocument()
+  })
+
+  it('renders ReactNode description correctly', () => {
+    render(
+      <Hero
+        description={
+          <>
+            Text with <span data-testid="highlight">highlighted</span> content
+          </>
+        }
+      />
+    )
+    expect(screen.getByTestId('highlight')).toBeInTheDocument()
+    expect(screen.getByText('highlighted')).toBeInTheDocument()
+  })
+})
