@@ -156,4 +156,42 @@ describe('Hero', () => {
     expect(screen.getByTestId('highlight')).toBeInTheDocument()
     expect(screen.getByText('highlighted')).toBeInTheDocument()
   })
+
+  it('renders default social links', () => {
+    render(<Hero />)
+    expect(screen.getByLabelText('LinkedIn')).toBeInTheDocument()
+    expect(screen.getByLabelText('GitHub')).toBeInTheDocument()
+    expect(screen.getByLabelText('Instagram')).toBeInTheDocument()
+    expect(screen.getByLabelText('TikTok')).toBeInTheDocument()
+    expect(screen.getByLabelText('WhatsApp')).toBeInTheDocument()
+  })
+
+  it('renders default section chips', () => {
+    render(<Hero />)
+    expect(screen.getByText('About')).toBeInTheDocument()
+    expect(screen.getByText('Projects')).toBeInTheDocument()
+    expect(screen.getByText('Experience')).toBeInTheDocument()
+    expect(screen.getByText('Contact')).toBeInTheDocument()
+  })
+
+  it('renders custom social links', () => {
+    const customLinks = [
+      {
+        name: 'Custom',
+        href: 'https://example.com',
+        icon: <span data-testid="custom-icon">Icon</span>
+      }
+    ]
+    render(<Hero socialLinks={customLinks} />)
+    expect(screen.getByLabelText('Custom')).toBeInTheDocument()
+    expect(screen.getByTestId('custom-icon')).toBeInTheDocument()
+  })
+
+  it('renders custom section chips', () => {
+    const customChips = [
+      { label: 'Custom Section', href: '#custom' }
+    ]
+    render(<Hero sectionChips={customChips} />)
+    expect(screen.getByText('Custom Section')).toBeInTheDocument()
+  })
 })
