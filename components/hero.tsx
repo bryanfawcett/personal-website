@@ -3,6 +3,8 @@
 import Image from "next/image"
 import { useState, type ReactNode } from "react"
 import { Skeleton } from "./skeleton"
+import { Button } from "./ui/button"
+import { ButtonGroup } from "./ui/button-group"
 
 interface SocialLink {
   name: string
@@ -184,19 +186,24 @@ export function Hero({
         </div>
       </div>
 
-      {/* Sticky Section Chips - Apple contact card style */}
+      {/* Sticky Section Navigation - ButtonGroup style */}
       {sectionChips && sectionChips.length > 0 && (
         <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50">
-          <div className="flex justify-center items-center gap-1 sm:gap-2 py-3 px-4 overflow-x-auto scrollbar-hide">
-            {sectionChips.map((chip) => (
-              <a
-                key={chip.label}
-                href={chip.href || `#${chip.label.toLowerCase()}`}
-                className="flex-shrink-0 px-4 sm:px-6 py-2 text-sm font-medium rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-              >
-                {chip.label}
-              </a>
-            ))}
+          <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
+            <ButtonGroup>
+              {sectionChips.map((chip) => (
+                <Button
+                  key={chip.label}
+                  variant="outline"
+                  size="sm"
+                  asChild
+                >
+                  <a href={chip.href || `#${chip.label.toLowerCase()}`}>
+                    {chip.label}
+                  </a>
+                </Button>
+              ))}
+            </ButtonGroup>
           </div>
         </div>
       )}
