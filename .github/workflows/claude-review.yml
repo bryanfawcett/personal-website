@@ -1,0 +1,63 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - '**'
+  issue_comment:
+    types: [created]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    # Run on PR events, push events, OR when someone comments @claude on a PR
+    if: |
+      github.event_name == 'pull_request' ||
+      github.event_name == 'push' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude'))
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          model: claude-sonnet-4-20250514
+          direct_prompt: |
+            Review this code change and post a review comment. Analyze the changes for:
+
+            1. **Security vulnerabilities** - XSS, injection, sensitive data exposure
+            2. **Performance issues** - inefficient code, memory leaks, unnecessary re-renders
+            3. **Best practices** - React/Next.js patterns, TypeScript usage, code organization
+            4. **Accessibility** - ARIA attributes, keyboard navigation, screen reader support
+            5. **Type safety** - proper TypeScript types, any types to avoid
+
+            Format your review as:
+            ## Summary
+            Brief overview of the changes
+
+            ## Immediate Actions Required
+            Critical issues that MUST be fixed before merge (security, bugs, breaking changes).
+            Use a checkbox list: - [ ] Action item
+
+            ## Issues Found
+            List any problems (or "None" if clean)
+
+            ## Suggestions
+            Optional improvements for future consideration
+
+            ## Verdict
+            ✅ Approved / ⚠️ Changes Requested / ❌ Blocked
+
+            Be concise and actionable. Focus on significant issues, not style nitpicks.
