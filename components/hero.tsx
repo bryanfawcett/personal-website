@@ -75,9 +75,9 @@ export function Hero({
           <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/90 to-transparent" />
         </div>
 
-        {/* Name and subtitle positioned in the fade area */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-6 sm:px-8 lg:px-16 max-w-4xl mx-auto">
-          {/* Name - cursive */}
+        {/* Name and subtitle positioned in the fade area - centered like iOS contact card */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-6 sm:px-8 lg:px-16 pb-8 sm:pb-12 text-center">
+          {/* Name - cursive, centered */}
           <h1 className="font-cursive text-5xl sm:text-7xl lg:text-8xl tracking-tight text-foreground drop-shadow-lg">
             {name}
           </h1>
@@ -88,7 +88,7 @@ export function Hero({
           </div>
 
           {/* Subtitle */}
-          <h2 className="mt-4 sm:mt-6 text-xl sm:text-2xl lg:text-3xl font-light tracking-tight text-balance text-foreground/90 max-w-2xl">
+          <h2 className="mt-4 sm:mt-6 text-xl sm:text-2xl lg:text-3xl font-light tracking-tight text-balance text-foreground/90 max-w-2xl mx-auto">
             {subtitle}
           </h2>
         </div>

@@ -137,6 +137,12 @@ describe('Hero', () => {
     expect(heroContainer).toBeInTheDocument()
   })
 
+  it('renders centered text in hero area', () => {
+    const { container } = render(<Hero />)
+    const textContainer = container.querySelector('.text-center')
+    expect(textContainer).toBeInTheDocument()
+  })
+
   it('renders ReactNode description correctly', () => {
     render(
       <Hero
