@@ -88,7 +88,7 @@ export default function Home() {
                   imageAlt="Bryan Fawcett"
                   description={
                     <>
-                      Full stack developer and systems architect at{" "}
+                      Technology & Innovation Coordinator at{" "}
                       <span className="text-foreground">Singapore American School</span>, building my passion at{" "}
                       <span className="text-foreground">Nyuchi Africa</span>. Creating digital experiences through{" "}
                       <span className="text-foreground">innovation</span>,{" "}
@@ -101,7 +101,7 @@ export default function Home() {
                     secondary: "Remote-first & Africa-focused"
                   }}
                   primaryRole={{
-                    title: "Full Stack Developer & Systems Architect",
+                    title: "Technology & Innovation Coordinator",
                     subtitle: "Singapore American School"
                   }}
                   passionProject={{
@@ -258,34 +258,44 @@ export default function Home() {
                       <div className="grid gap-4 lg:grid-cols-2">
                         {[
                           {
-                            title: "Nyuchi",
+                            title: "Nyuchi Africa",
                             url: "https://www.nyuchi.com",
-                            description: "The core Nyuchi platform",
+                            description: "Community-focused business platform for African entrepreneurship",
                           },
                           {
                             title: "Nyuchi Learning",
                             url: "https://learning.nyuchi.com",
-                            description: "Educational platform for accessible learning experiences",
+                            description: "Open-source K-12 digital transformation frameworks for African schools",
                           },
                           {
                             title: "Mukoko",
                             url: "https://mukoko.com",
-                            description: "Community-focused digital platform",
+                            description: "Privacy-focused social platform with 6 integrated apps",
+                          },
+                          {
+                            title: "Mukoko News",
+                            url: "https://news.mukoko.com",
+                            description: "Pan-African news aggregation from trusted regional sources",
+                          },
+                          {
+                            title: "Nhimbe",
+                            url: "https://nhimbe.com",
+                            description: "Community events and gatherings platform",
                           },
                           {
                             title: "Zimbabwe Travel Info",
                             url: "https://travel-info.co.zw",
-                            description: "Comprehensive travel information system",
-                          },
-                          {
-                            title: "Tech Directors Africa",
-                            url: "https://techdirectors.africa",
-                            description: "Connecting technology leaders across Africa",
+                            description: "Comprehensive travel guide for Zimbabwe",
                           },
                           {
                             title: "Iconic Expeditions",
                             url: "https://iconic-expeditions.com",
-                            description: "Adventure and expedition platform",
+                            description: "Luxury bespoke safaris across Southern and Eastern Africa",
+                          },
+                          {
+                            title: "Nyuchi Lingo",
+                            url: "https://lingo.nyuchi.com",
+                            description: "Language learning platform for African languages",
                           },
                         ].map((project) => (
                           <Link
@@ -326,7 +336,7 @@ export default function Home() {
                     <div className="pt-8 space-y-4 border-t border-border/50">
                       <h3 className="text-lg font-medium text-muted-foreground font-mono">SINGAPORE AMERICAN SCHOOL</h3>
                       <p className="text-sm text-muted-foreground max-w-2xl mb-6">
-                        Full Stack Developer building educational platforms and digital tools for innovation and learning.
+                        Technology & Innovation Coordinator building educational platforms and digital tools for learning.
                       </p>
                       <div className="grid gap-4 lg:grid-cols-2">
                         {[

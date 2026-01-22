@@ -24,10 +24,12 @@ Bryan founded Nyuchi Africa, building digital solutions for African communities 
 |----------|-----|-------------|
 | **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
 | **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
-| **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform |
+| **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform for African languages |
 | **Mukoko** | mukoko.com | Privacy-focused social platform with 6 apps (ID, Clips, Pulse, Connect, Novels, Events) |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
+| **Nhimbe** | nhimbe.com | Community events and gatherings platform (part of Mukoko ecosystem) |
 | **Zimbabwe Travel Info** | travel-info.co.zw | Comprehensive travel guide for Zimbabwe |
+| **Iconic Expeditions** | iconic-expeditions.com | Luxury bespoke safaris across Southern and Eastern Africa |
 | **Workspace Tools** | (internal) | Gmail signature management for Google Workspace |
 
 ### GitHub Organizations
@@ -302,35 +304,18 @@ When adding new shadcn components, follow the existing pattern with:
 - `cn()` for class merging
 - TypeScript interfaces extending Radix props
 
-## Known Content Issues to Address
+## Content Notes
 
-The following inaccuracies exist in the current website content (`app/page.tsx`):
+The website content has been updated to reflect accurate information. Key details:
 
-### Job Title
-- **Current:** "Full Stack Developer & Systems Architect at Singapore American School"
-- **Correct:** "Associate Technology & Innovation Coordinator at Singapore American School"
+### Projects Listed
+The Nyuchi Africa Ecosystem section includes:
+- Nyuchi Africa, Nyuchi Learning, Nyuchi Lingo
+- Mukoko (social platform), Mukoko News (news aggregation), Nhimbe (events)
+- Zimbabwe Travel Info, Iconic Expeditions
 
-### LinkedIn URL in `components/hero.tsx`
-- **Current default:** `linkedin.com/in/bryanfawcett`
-- **Correct:** `linkedin.com/in/bryandavidfawcett`
-
-### Project Descriptions Need Updates
-
-| Project | Current Description | More Accurate Description |
-|---------|---------------------|---------------------------|
-| Nyuchi | "The core Nyuchi platform" | Community-focused business platform for African entrepreneurship |
-| Nyuchi Learning | "Educational platform for accessible learning experiences" | Open-source K-12 digital transformation frameworks (Digital Campus, Digital Literacy, Support Process) |
-| Mukoko | "Community-focused digital platform" | Privacy-focused social platform with 6 integrated apps (ID, Clips, Pulse, Connect, Novels, Events) |
-
-### Missing Projects
-These projects are part of the Nyuchi ecosystem but not listed on the website:
-- **Mukoko News** (news.mukoko.com) - Pan-African news aggregation
-- **Workspace Tools** - Gmail signature management for Google Workspace
-
-### Unverified Projects
-These projects are listed but couldn't be verified:
-- Tech Directors Africa (techdirectors.africa)
-- Iconic Expeditions (iconic-expeditions.com)
+### Internal Tools (Not Listed on Website)
+- **Workspace Tools** - Gmail signature management for Google Workspace (supports 9 brands)
 
 ## Tech Stack Used Across Nyuchi Projects
 
