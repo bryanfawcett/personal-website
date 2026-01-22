@@ -3,14 +3,18 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - main
-      - master
+  issue_comment:
+    types: [created]
 
 jobs:
   claude-review:
     runs-on: ubuntu-latest
+    # Run on PR events OR when someone comments @claude on a PR
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude'))
     permissions:
       contents: read
       pull-requests: write
@@ -26,12 +30,26 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           model: claude-sonnet-4-20250514
-          prompt: |
-            Review this code change for:
-            1. Security vulnerabilities (XSS, injection, etc.)
-            2. Performance issues
-            3. Best practices violations
-            4. Accessibility concerns
-            5. Type safety issues
+          direct_prompt: |
+            Review this pull request and post a review comment. Analyze the code changes for:
 
-            Be concise and actionable. Focus on significant issues.
+            1. **Security vulnerabilities** - XSS, injection, sensitive data exposure
+            2. **Performance issues** - inefficient code, memory leaks, unnecessary re-renders
+            3. **Best practices** - React/Next.js patterns, TypeScript usage, code organization
+            4. **Accessibility** - ARIA attributes, keyboard navigation, screen reader support
+            5. **Type safety** - proper TypeScript types, any types to avoid
+
+            Format your review as:
+            ## Summary
+            Brief overview of the changes
+
+            ## Issues Found
+            List any problems (or "None" if clean)
+
+            ## Suggestions
+            Optional improvements
+
+            ## Verdict
+            ✅ Approved / ⚠️ Changes Requested / ❌ Blocked
+
+            Be concise and actionable. Focus on significant issues, not style nitpicks.
