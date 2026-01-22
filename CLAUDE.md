@@ -2,6 +2,47 @@
 
 This document provides essential context for AI assistants working on this Next.js portfolio website.
 
+## About Bryan Fawcett
+
+**Current Role:** Associate Technology & Innovation Coordinator at Singapore American School (SAS)
+- Focuses on integrating technology within educational practices and operational efficiencies
+- Previous SAS roles: Privacy & Governance Manager, IT Infrastructure Manager, Application System Engineer
+
+**Background:**
+- 10+ years in EdTech across Africa and Asia
+- Previously Technology Coordinator at Osaka YMCA International School
+- Teaching and administrative roles across schools in Zimbabwe
+- Expertise: Cybersecurity, process optimization, IT governance, system architecture
+
+**Location:** Singapore | **Email:** bryan@nyuchi.com
+
+### Nyuchi Africa Ecosystem (Passion Project)
+
+Bryan founded Nyuchi Africa, building digital solutions for African communities under the Ubuntu philosophy ("I am because we are").
+
+| Platform | URL | Description |
+|----------|-----|-------------|
+| **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
+| **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
+| **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform |
+| **Mukoko** | mukoko.com | Privacy-focused social platform with 6 apps (ID, Clips, Pulse, Connect, Novels, Events) |
+| **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
+| **Zimbabwe Travel Info** | travel-info.co.zw | Comprehensive travel guide for Zimbabwe |
+| **Workspace Tools** | (internal) | Gmail signature management for Google Workspace |
+
+### GitHub Organizations
+
+- **Personal:** [github.com/bryanfawcett](https://github.com/bryanfawcett)
+- **Nyuchitech:** [github.com/nyuchitech](https://github.com/nyuchitech) - 13+ public repos
+- **SAS Tech Innovation:** [github.com/SAS-Technology-Innovation](https://github.com/SAS-Technology-Innovation) - 5 public repos
+
+### Social Links (Canonical)
+
+- **LinkedIn:** linkedin.com/in/bryandavidfawcett
+- **GitHub:** github.com/bryanfawcett
+- **Twitter/X:** @bryanfawcett
+- **Website:** bryanfawcett.com
+
 ## Quick Reference
 
 ```bash
@@ -260,3 +301,45 @@ When adding new shadcn components, follow the existing pattern with:
 - `cva` for variants
 - `cn()` for class merging
 - TypeScript interfaces extending Radix props
+
+## Known Content Issues to Address
+
+The following inaccuracies exist in the current website content (`app/page.tsx`):
+
+### Job Title
+- **Current:** "Full Stack Developer & Systems Architect at Singapore American School"
+- **Correct:** "Associate Technology & Innovation Coordinator at Singapore American School"
+
+### LinkedIn URL in `components/hero.tsx`
+- **Current default:** `linkedin.com/in/bryanfawcett`
+- **Correct:** `linkedin.com/in/bryandavidfawcett`
+
+### Project Descriptions Need Updates
+
+| Project | Current Description | More Accurate Description |
+|---------|---------------------|---------------------------|
+| Nyuchi | "The core Nyuchi platform" | Community-focused business platform for African entrepreneurship |
+| Nyuchi Learning | "Educational platform for accessible learning experiences" | Open-source K-12 digital transformation frameworks (Digital Campus, Digital Literacy, Support Process) |
+| Mukoko | "Community-focused digital platform" | Privacy-focused social platform with 6 integrated apps (ID, Clips, Pulse, Connect, Novels, Events) |
+
+### Missing Projects
+These projects are part of the Nyuchi ecosystem but not listed on the website:
+- **Mukoko News** (news.mukoko.com) - Pan-African news aggregation
+- **Workspace Tools** - Gmail signature management for Google Workspace
+
+### Unverified Projects
+These projects are listed but couldn't be verified:
+- Tech Directors Africa (techdirectors.africa)
+- Iconic Expeditions (iconic-expeditions.com)
+
+## Tech Stack Used Across Nyuchi Projects
+
+For context, the broader Nyuchi ecosystem uses:
+- **Frontend:** Next.js 15, React, Astro, Tailwind CSS, shadcn/ui
+- **Backend:** Hono framework, Cloudflare Workers
+- **Database:** Supabase PostgreSQL
+- **Storage:** Cloudflare R2
+- **AI:** DeepSeek via Cloudflare AI Gateway
+- **Payments:** Stripe
+- **Deployment:** Vercel (frontend), Cloudflare (workers)
+- **Monorepo:** Turbo v2 with npm workspaces
