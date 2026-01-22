@@ -3,15 +3,19 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - '**'
   issue_comment:
     types: [created]
 
 jobs:
   claude-review:
     runs-on: ubuntu-latest
-    # Run on PR events OR when someone comments @claude on a PR
+    # Run on PR events, push events, OR when someone comments @claude on a PR
     if: |
       github.event_name == 'pull_request' ||
+      github.event_name == 'push' ||
       (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request &&
        contains(github.event.comment.body, '@claude'))
@@ -31,7 +35,7 @@ jobs:
         with:
           model: claude-sonnet-4-20250514
           direct_prompt: |
-            Review this pull request and post a review comment. Analyze the code changes for:
+            Review this code change and post a review comment. Analyze the changes for:
 
             1. **Security vulnerabilities** - XSS, injection, sensitive data exposure
             2. **Performance issues** - inefficient code, memory leaks, unnecessary re-renders
