@@ -43,11 +43,15 @@ jobs:
             ## Summary
             Brief overview of the changes
 
+            ## Immediate Actions Required
+            Critical issues that MUST be fixed before merge (security, bugs, breaking changes).
+            Use a checkbox list: - [ ] Action item
+
             ## Issues Found
             List any problems (or "None" if clean)
 
             ## Suggestions
-            Optional improvements
+            Optional improvements for future consideration
 
             ## Verdict
             ✅ Approved / ⚠️ Changes Requested / ❌ Blocked
