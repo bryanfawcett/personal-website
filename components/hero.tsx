@@ -198,9 +198,9 @@ export function Hero({
           </div>
         </div>
 
-        {/* Sticky Section Navigation - ButtonGroup style */}
+        {/* Fixed Section Navigation - ButtonGroup style, always visible at top */}
         {sectionChips && sectionChips.length > 0 && (
-          <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50">
+          <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
             <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
               <ButtonGroup>
                 {sectionChips.map((chip) => (
