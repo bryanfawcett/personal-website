@@ -160,11 +160,12 @@ describe('Hero', () => {
 
   it('renders default social links', () => {
     render(<Hero />)
-    expect(screen.getByLabelText('LinkedIn')).toBeInTheDocument()
-    expect(screen.getByLabelText('GitHub')).toBeInTheDocument()
-    expect(screen.getByLabelText('Instagram')).toBeInTheDocument()
-    expect(screen.getByLabelText('TikTok')).toBeInTheDocument()
-    expect(screen.getByLabelText('WhatsApp')).toBeInTheDocument()
+    // Aria labels now use "Visit {name} profile" pattern for better accessibility
+    expect(screen.getByLabelText('Visit LinkedIn profile')).toBeInTheDocument()
+    expect(screen.getByLabelText('Visit GitHub profile')).toBeInTheDocument()
+    expect(screen.getByLabelText('Visit Instagram profile')).toBeInTheDocument()
+    expect(screen.getByLabelText('Visit TikTok profile')).toBeInTheDocument()
+    expect(screen.getByLabelText('Visit WhatsApp profile')).toBeInTheDocument()
   })
 
   it('renders custom social links', () => {
@@ -176,7 +177,7 @@ describe('Hero', () => {
       }
     ]
     render(<Hero socialLinks={customLinks} />)
-    expect(screen.getByLabelText('Custom')).toBeInTheDocument()
+    expect(screen.getByLabelText('Visit Custom profile')).toBeInTheDocument()
     expect(screen.getByTestId('custom-icon')).toBeInTheDocument()
   })
 
