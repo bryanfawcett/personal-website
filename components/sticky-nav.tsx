@@ -5,30 +5,24 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 
-interface NavItem {
-  label: string
-  href: string
-  isExternal?: boolean
-}
-
 interface StickyNavProps {
-  items?: NavItem[]
-  showPageLinks?: boolean
+  showSectionLinks?: boolean
 }
 
-const defaultItems: NavItem[] = [
+const sectionLinks = [
   { label: "Philosophy", href: "#philosophy" },
   { label: "Expertise", href: "#expertise" },
   { label: "Projects", href: "#projects" },
   { label: "Connect", href: "#connect" }
 ]
 
-const pageLinks: NavItem[] = [
+const pageLinks = [
+  { label: "Profile", href: "/" },
   { label: "Experience", href: "/experience" },
   { label: "Book a Call", href: "/book" }
 ]
 
-export function StickyNav({ items = defaultItems, showPageLinks = true }: StickyNavProps) {
+export function StickyNav({ showSectionLinks = true }: StickyNavProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -53,8 +47,9 @@ export function StickyNav({ items = defaultItems, showPageLinks = true }: Sticky
         className="flex justify-center items-center gap-4 py-3 px-4 overflow-x-auto scrollbar-hide"
         aria-label="Main navigation"
       >
+        {/* Global page navigation */}
         <ButtonGroup>
-          {items.map((item) => (
+          {pageLinks.map((item) => (
             <Button
               key={item.label}
               variant="outline"
@@ -62,24 +57,25 @@ export function StickyNav({ items = defaultItems, showPageLinks = true }: Sticky
               className="text-sm"
               asChild
             >
-              <a href={item.href}>{item.label}</a>
+              <Link href={item.href}>{item.label}</Link>
             </Button>
           ))}
         </ButtonGroup>
 
-        {showPageLinks && (
+        {/* Section links for homepage */}
+        {showSectionLinks && (
           <>
             <span className="text-border">|</span>
             <ButtonGroup>
-              {pageLinks.map((item) => (
+              {sectionLinks.map((item) => (
                 <Button
                   key={item.label}
-                  variant="outline"
+                  variant="ghost"
                   size="touch"
                   className="text-sm"
                   asChild
                 >
-                  <Link href={item.href}>{item.label}</Link>
+                  <a href={item.href}>{item.label}</a>
                 </Button>
               ))}
             </ButtonGroup>

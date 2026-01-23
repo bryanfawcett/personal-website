@@ -26,21 +26,21 @@ export default function BookPage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-        <nav className="max-w-4xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
+        <nav className="max-w-4xl mx-auto px-6 sm:px-8 py-3 flex items-center justify-between" aria-label="Main navigation">
           <Link
             href="/"
-            className="text-lg font-medium hover:text-muted-foreground transition-colors"
+            className="text-lg font-medium hover:text-muted-foreground transition-colors min-h-[44px] flex items-center"
           >
             Bryan Fawcett
           </Link>
           <ButtonGroup>
             <Button variant="outline" size="touch" className="text-sm" asChild>
-              <Link href="/">Home</Link>
+              <Link href="/">Profile</Link>
             </Button>
             <Button variant="outline" size="touch" className="text-sm" asChild>
               <Link href="/experience">Experience</Link>
             </Button>
-            <Button variant="outline" size="touch" className="text-sm" asChild>
+            <Button variant="default" size="touch" className="text-sm" asChild>
               <Link href="/book">Book a Call</Link>
             </Button>
           </ButtonGroup>
@@ -160,17 +160,17 @@ export default function BookPage() {
           <p className="text-sm text-muted-foreground">
             © 2025 Bryan Fawcett. All rights reserved.
           </p>
-          <div className="flex gap-4">
+          <nav className="flex gap-4" aria-label="Footer navigation">
             <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
-              Home
+              Profile
             </Link>
             <Link href="/experience" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
               Experience
             </Link>
             <Link href="/book" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
-              Book
+              Book a Call
             </Link>
-          </div>
+          </nav>
         </div>
       </footer>
 

@@ -187,9 +187,25 @@ export function Hero({
           <nav
             id="hero-nav"
             className="absolute bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50 pb-safe"
-            aria-label="Section navigation"
+            aria-label="Main navigation"
           >
             <div className="flex justify-center items-center gap-4 py-3 px-4 overflow-x-auto scrollbar-hide">
+              {/* Global page navigation */}
+              <ButtonGroup>
+                <Button variant="default" size="touch" className="text-sm" asChild>
+                  <Link href="/">Profile</Link>
+                </Button>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/experience">Experience</Link>
+                </Button>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/book">Book a Call</Link>
+                </Button>
+              </ButtonGroup>
+
+              <span className="text-border">|</span>
+
+              {/* Section links */}
               <ButtonGroup>
                 {[
                   { label: "Philosophy", href: "#philosophy" },
@@ -199,7 +215,7 @@ export function Hero({
                 ].map((item) => (
                   <Button
                     key={item.label}
-                    variant="outline"
+                    variant="ghost"
                     size="touch"
                     className="text-sm"
                     asChild
@@ -207,17 +223,6 @@ export function Hero({
                     <a href={item.href}>{item.label}</a>
                   </Button>
                 ))}
-              </ButtonGroup>
-
-              <span className="text-border">|</span>
-
-              <ButtonGroup>
-                <Button variant="outline" size="touch" className="text-sm" asChild>
-                  <Link href="/experience">Experience</Link>
-                </Button>
-                <Button variant="outline" size="touch" className="text-sm" asChild>
-                  <Link href="/book">Book a Call</Link>
-                </Button>
               </ButtonGroup>
             </div>
           </nav>
