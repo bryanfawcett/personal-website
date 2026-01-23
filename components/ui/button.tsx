@@ -23,9 +23,11 @@ const buttonVariants = cva(
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
+        touch: "h-11 min-h-[44px] px-5 py-3", // WCAG 2.2 AAA 44px minimum
         icon: "h-9 w-9",
         "icon-sm": "h-8 w-8",
         "icon-lg": "h-10 w-10",
+        "icon-touch": "h-11 w-11 min-h-[44px] min-w-[44px]", // WCAG 2.2 AAA 44px minimum
       },
     },
     defaultVariants: {

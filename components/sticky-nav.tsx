@@ -50,7 +50,8 @@ export function StickyNav({ items = defaultItems }: StickyNavProps) {
             <Button
               key={item.label}
               variant="outline"
-              size="sm"
+              size="touch"
+              className="text-sm"
               asChild
             >
               <a href={item.href}>{item.label}</a>

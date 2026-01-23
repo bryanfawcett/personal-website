@@ -52,10 +52,10 @@ export default function Home() {
       {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
 
       <div className={`min-h-screen bg-background text-foreground relative ${isLoading ? "overflow-hidden" : ""}`}>
-        {/* Skip to main content link for accessibility */}
+        {/* Skip to main content link for accessibility - WCAG 2.2 AAA */}
         <a
           href="#intro"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-lg"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:min-h-[44px] focus:px-4 focus:py-3 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-lg focus:flex focus:items-center"
         >
           Skip to main content
         </a>
@@ -63,12 +63,12 @@ export default function Home() {
         {/* Sticky Navigation - handles its own positioning via JS */}
         {!isLoading && <StickyNav />}
 
+        {/* Sidebar navigation - WCAG 2.2 AAA 44px touch targets */}
         <nav
-          className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block"
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-10 hidden lg:block"
           aria-label="Page sections"
-          role="navigation"
         >
-          <div className="flex flex-col gap-4" role="list">
+          <ul className="flex flex-col gap-1">
             {[
               { id: "intro", label: "Introduction" },
               { id: "philosophy", label: "Philosophy & Approach" },
@@ -76,18 +76,25 @@ export default function Home() {
               { id: "projects", label: "Projects & Work" },
               { id: "connect", label: "Contact" },
             ].map((section) => (
-              <button
-                key={section.id}
-                onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth" })}
-                className={`w-2 h-8 rounded-full transition-all duration-500 ${
-                  activeSection === section.id ? "bg-foreground" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
-                }`}
-                aria-label={`Navigate to ${section.label}`}
-                aria-current={activeSection === section.id ? "true" : undefined}
-                role="listitem"
-              />
+              <li key={section.id}>
+                <button
+                  onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth" })}
+                  className={`flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full transition-all duration-500 hover:bg-muted/50 ${
+                    activeSection === section.id ? "bg-muted" : ""
+                  }`}
+                  aria-label={`Navigate to ${section.label}`}
+                  aria-current={activeSection === section.id ? "true" : undefined}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full transition-all duration-500 ${
+                      activeSection === section.id ? "bg-foreground scale-150" : "bg-muted-foreground/40"
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
+              </li>
             ))}
-          </div>
+          </ul>
         </nav>
 
         <main>
@@ -139,7 +146,7 @@ export default function Home() {
               <section
                 id="philosophy"
                 ref={(el) => { sectionsRef.current[1] = el }}
-                className="min-h-screen py-20 sm:py-32 opacity-0 flex items-center"
+                className="py-16 sm:py-24 opacity-0"
                 aria-labelledby="philosophy-heading"
               >
               {isLoading ? (
@@ -192,7 +199,7 @@ export default function Home() {
             <section
               id="expertise"
               ref={(el) => { sectionsRef.current[2] = el }}
-              className="min-h-screen py-20 sm:py-32 opacity-0"
+              className="py-16 sm:py-24 opacity-0"
               aria-labelledby="expertise-heading"
             >
               <div className="space-y-12 sm:space-y-16">
@@ -262,7 +269,7 @@ export default function Home() {
             <section
               id="projects"
               ref={(el) => { sectionsRef.current[3] = el }}
-              className="min-h-screen py-20 sm:py-32 opacity-0"
+              className="py-16 sm:py-24 opacity-0"
               aria-labelledby="projects-heading"
             >
               <div className="space-y-12 sm:space-y-16">
@@ -278,7 +285,7 @@ export default function Home() {
                         My passion project building digital solutions across Africa—from educational platforms to travel
                         systems and community networks.
                       </p>
-                      <div className="grid gap-4 lg:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2">
                         {[
                           {
                             title: "Nyuchi Africa",
@@ -326,30 +333,29 @@ export default function Home() {
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group p-6 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
+                            className="group flex flex-col min-h-[44px] p-4 sm:p-5 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-md"
+                            aria-label={`Visit ${project.title}: ${project.description}`}
                           >
-                            <div className="space-y-2">
-                              <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
-                                {project.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground">{project.description}</p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                                <span>Visit project</span>
-                                <svg
-                                  className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                  />
-                                </svg>
-                              </div>
+                            <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                              {project.title}
+                            </h4>
+                            <p className="mt-1 text-sm text-muted-foreground flex-1">{project.description}</p>
+                            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                              <span>Visit project</span>
+                              <svg
+                                className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                />
+                              </svg>
                             </div>
                           </Link>
                         ))}
@@ -361,7 +367,7 @@ export default function Home() {
                       <p className="text-sm text-muted-foreground max-w-2xl mb-6">
                         Technology & Innovation Coordinator building educational platforms and digital tools for learning.
                       </p>
-                      <div className="grid gap-4 lg:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2">
                         {[
                           {
                             title: "Digital Toolkit",
@@ -389,35 +395,34 @@ export default function Home() {
                             href={`https://github.com/${project.repo}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group p-6 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
+                            className="group flex flex-col min-h-[44px] p-4 sm:p-5 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-md"
+                            aria-label={`View ${project.title} repository on GitHub: ${project.description}`}
                           >
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                                </svg>
-                                <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
-                                  {project.title}
-                                </h4>
-                              </div>
-                              <p className="text-sm text-muted-foreground">{project.description}</p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                                <span>View repository</span>
-                                <svg
-                                  className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                  />
-                                </svg>
-                              </div>
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-muted-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                              </svg>
+                              <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                                {project.title}
+                              </h4>
+                            </div>
+                            <p className="mt-1 text-sm text-muted-foreground flex-1">{project.description}</p>
+                            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                              <span>View repository</span>
+                              <svg
+                                className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                />
+                              </svg>
                             </div>
                           </Link>
                         ))}
@@ -433,7 +438,7 @@ export default function Home() {
             <section
               id="connect"
               ref={(el) => { sectionsRef.current[4] = el }}
-              className="py-20 sm:py-32 opacity-0"
+              className="py-16 sm:py-24 opacity-0"
               aria-labelledby="connect-heading"
             >
               <div className="grid lg:grid-cols-2 gap-12 sm:gap-16">
@@ -446,10 +451,10 @@ export default function Home() {
                       strategy, I&apos;d love to explore opportunities for collaboration and meaningful impact.
                     </p>
 
-                    <div className="space-y-4">
+                    <div>
                       <Link
                         href="mailto:bryan@nyuchi.com"
-                        className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
+                        className="group inline-flex items-center gap-3 min-h-[44px] py-2 text-foreground hover:text-muted-foreground transition-colors duration-300"
                       >
                         <span className="text-base sm:text-lg">bryan@nyuchi.com</span>
                         <svg
@@ -469,7 +474,7 @@ export default function Home() {
                 <div className="space-y-6 sm:space-y-8">
                   <div className="text-sm text-muted-foreground font-mono">CONNECT WITH ME</div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                       {
                         name: "LinkedIn",
@@ -485,14 +490,13 @@ export default function Home() {
                         href={social.url}
                         target={social.url.startsWith("http") ? "_blank" : undefined}
                         rel={social.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="group p-4 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
+                        className="group flex flex-col justify-center min-h-[44px] p-4 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
+                        aria-label={`Connect on ${social.name}: ${social.handle}`}
                       >
-                        <div className="space-y-2">
-                          <div className="text-foreground group-hover:text-muted-foreground transition-colors duration-300">
-                            {social.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{social.handle}</div>
+                        <div className="text-foreground group-hover:text-muted-foreground transition-colors duration-300">
+                          {social.name}
                         </div>
+                        <div className="text-sm text-muted-foreground">{social.handle}</div>
                       </Link>
                     ))}
                   </div>
@@ -512,23 +516,22 @@ export default function Home() {
                   </p>
                 </div>
 
-              <div className="flex items-center gap-4">
+              {/* Theme toggle - WCAG 2.2 AAA 44px touch target */}
+              <div className="flex items-center">
                 <button
                   onClick={toggleTheme}
-                  className="group p-3 rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300"
+                  className="group flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300"
                   aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
                   aria-pressed={isDark}
                   type="button"
                 >
                   {isDark ? (
                     <svg
-                      className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
+                      className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       aria-hidden="true"
-                      role="img"
                     >
-                      <title>Sun icon</title>
                       <path
                         fillRule="evenodd"
                         d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -537,18 +540,16 @@ export default function Home() {
                     </svg>
                   ) : (
                     <svg
-                      className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
+                      className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       aria-hidden="true"
-                      role="img"
                     >
-                      <title>Moon icon</title>
                       <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   )}
                 </button>
-                </div>
+              </div>
               </div>
             </footer>
           </div>
