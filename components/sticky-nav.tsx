@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
@@ -7,10 +8,12 @@ import { ButtonGroup } from "@/components/ui/button-group"
 interface NavItem {
   label: string
   href: string
+  isExternal?: boolean
 }
 
 interface StickyNavProps {
   items?: NavItem[]
+  showPageLinks?: boolean
 }
 
 const defaultItems: NavItem[] = [
@@ -20,7 +23,12 @@ const defaultItems: NavItem[] = [
   { label: "Connect", href: "#connect" }
 ]
 
-export function StickyNav({ items = defaultItems }: StickyNavProps) {
+const pageLinks: NavItem[] = [
+  { label: "Experience", href: "/experience" },
+  { label: "Book a Call", href: "/book" }
+]
+
+export function StickyNav({ items = defaultItems, showPageLinks = true }: StickyNavProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -42,7 +50,7 @@ export function StickyNav({ items = defaultItems }: StickyNavProps) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <nav
-        className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide"
+        className="flex justify-center items-center gap-4 py-3 px-4 overflow-x-auto scrollbar-hide"
         aria-label="Main navigation"
       >
         <ButtonGroup>
@@ -58,6 +66,25 @@ export function StickyNav({ items = defaultItems }: StickyNavProps) {
             </Button>
           ))}
         </ButtonGroup>
+
+        {showPageLinks && (
+          <>
+            <span className="text-border">|</span>
+            <ButtonGroup>
+              {pageLinks.map((item) => (
+                <Button
+                  key={item.label}
+                  variant="outline"
+                  size="touch"
+                  className="text-sm"
+                  asChild
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </Button>
+              ))}
+            </ButtonGroup>
+          </>
+        )}
       </nav>
     </header>
   )

@@ -516,8 +516,16 @@ export default function Home() {
                   </p>
                 </div>
 
-              {/* Theme toggle - WCAG 2.2 AAA 44px touch target */}
-              <div className="flex items-center">
+              {/* Navigation and theme toggle */}
+              <div className="flex items-center gap-6">
+                <nav className="flex gap-4" aria-label="Footer navigation">
+                  <Link href="/experience" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
+                    Experience
+                  </Link>
+                  <Link href="/book" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
+                    Book a Call
+                  </Link>
+                </nav>
                 <button
                   onClick={toggleTheme}
                   className="group flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300"

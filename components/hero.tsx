@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useState, type ReactNode } from "react"
 import { Skeleton } from "./ui/skeleton"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
@@ -188,7 +189,7 @@ export function Hero({
             className="absolute bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50 pb-safe"
             aria-label="Section navigation"
           >
-            <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
+            <div className="flex justify-center items-center gap-4 py-3 px-4 overflow-x-auto scrollbar-hide">
               <ButtonGroup>
                 {[
                   { label: "Philosophy", href: "#philosophy" },
@@ -206,6 +207,17 @@ export function Hero({
                     <a href={item.href}>{item.label}</a>
                   </Button>
                 ))}
+              </ButtonGroup>
+
+              <span className="text-border">|</span>
+
+              <ButtonGroup>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/experience">Experience</Link>
+                </Button>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/book">Book a Call</Link>
+                </Button>
               </ButtonGroup>
             </div>
           </nav>
