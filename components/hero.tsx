@@ -1,11 +1,14 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useState, type ReactNode } from "react"
 import { Skeleton } from "./ui/skeleton"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { Button } from "./ui/button"
+import { ButtonGroup } from "./ui/button-group"
 
 interface SocialLink {
   name: string
@@ -155,9 +158,9 @@ export function Hero({
               {subtitle}
             </h2>
 
-            {/* Social Icons with Tooltips */}
+            {/* Social Icons with Tooltips - WCAG 2.2 AAA 44px touch targets */}
             {socialLinks && socialLinks.length > 0 && (
-              <div className="mt-4 flex justify-center items-center gap-5">
+              <div className="mt-4 flex justify-center items-center gap-2">
                 {socialLinks.map((link) => (
                   <Tooltip key={link.name}>
                     <TooltipTrigger asChild>
@@ -165,8 +168,8 @@ export function Hero({
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-foreground/80 hover:text-foreground hover:scale-110 transition-all duration-200"
-                        aria-label={link.name}
+                        className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-foreground/80 hover:text-foreground hover:bg-foreground/10 hover:scale-110 transition-all duration-200"
+                        aria-label={`Visit ${link.name} profile`}
                       >
                         {link.icon}
                       </a>
@@ -181,30 +184,48 @@ export function Hero({
           </div>
 
           {/* Navigation tabs - at bottom of hero, becomes sticky */}
-          <div id="hero-nav" className="absolute bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50 pb-safe">
-            <div className="flex justify-center py-3 px-4 overflow-x-auto scrollbar-hide">
-              <div className="inline-flex rounded-lg border border-border bg-background shadow-sm">
+          <nav
+            id="hero-nav"
+            className="absolute bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/50 pb-safe"
+            aria-label="Main navigation"
+          >
+            <div className="flex justify-center items-center gap-4 py-3 px-4 overflow-x-auto scrollbar-hide">
+              {/* Global page navigation */}
+              <ButtonGroup>
+                <Button variant="default" size="touch" className="text-sm" asChild>
+                  <Link href="/">Profile</Link>
+                </Button>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/experience">Experience</Link>
+                </Button>
+                <Button variant="outline" size="touch" className="text-sm" asChild>
+                  <Link href="/book">Book a Call</Link>
+                </Button>
+              </ButtonGroup>
+
+              <span className="text-border">|</span>
+
+              {/* Section links */}
+              <ButtonGroup>
                 {[
                   { label: "Philosophy", href: "#philosophy" },
                   { label: "Expertise", href: "#expertise" },
                   { label: "Projects", href: "#projects" },
                   { label: "Connect", href: "#connect" }
-                ].map((item, index, arr) => (
-                  <a
+                ].map((item) => (
+                  <Button
                     key={item.label}
-                    href={item.href}
-                    className={`px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
-                      index === 0 ? "rounded-l-lg" : ""
-                    } ${
-                      index === arr.length - 1 ? "rounded-r-lg" : "border-r border-border"
-                    }`}
+                    variant="ghost"
+                    size="touch"
+                    className="text-sm"
+                    asChild
                   >
-                    {item.label}
-                  </a>
+                    <a href={item.href}>{item.label}</a>
+                  </Button>
                 ))}
-              </div>
+              </ButtonGroup>
             </div>
-          </div>
+          </nav>
         </div>
 
 
