@@ -92,6 +92,17 @@ python3 scripts/fetch-fonts.py
 
 Push to `main`. CI type-checks and builds; the Worker deploys via `pnpm deploy`.
 
+### Vercel is switched off deliberately
+
+The repo is still Git-connected to the `bryanfawcett-portfolio` Vercel project,
+which built the old Next.js app. That app no longer exists here, so every push
+failed that deployment. `vercel.json` sets `git.deploymentEnabled: false` to stop
+Vercel building a project it can no longer build.
+
+Delete `vercel.json` if the site ever moves back to Vercel. Disconnecting the
+Git integration in the Vercel dashboard would also work and is tidier, but that
+is a dashboard setting rather than something the repo can control.
+
 ## Conventions
 
 - **Everything is Astro and TypeScript.** No React, no client framework. The only
