@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import portrait from '../assets/bryan-fawcett.png';
 import { NAV, PROFILE } from '../data/profile.js';
 
 interface Props {
@@ -16,8 +18,20 @@ function isCurrent(href: string): boolean {
 <header class="nav shell">
   <nav class="nav__inner" aria-label="Main">
     <a class="nav__wordmark" href="/">
-      <span class="nav__name">{PROFILE.name}</span>
-      <span class="nav__role">{PROFILE.title}</span>
+      <Image
+        class="nav__portrait"
+        src={portrait}
+        alt=""
+        width={46}
+        height={46}
+        densities={[1, 2]}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span class="nav__id">
+        <span class="nav__name">{PROFILE.name}</span>
+        <span class="nav__role">{PROFILE.title}</span>
+      </span>
     </a>
 
     <ul class="nav__list">
@@ -55,21 +69,43 @@ function isCurrent(href: string): boolean {
 
   .nav__wordmark {
     display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  /*
+   * Square crop of a 835×1052 portrait: object-fit alone would centre on the
+   * chest, so the position pulls the frame up onto the face.
+   */
+  .nav__portrait {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    object-position: 50% 22%;
+    border: 1px solid var(--ink-faint);
+    filter: grayscale(0.5) contrast(1.05);
+  }
+
+  .nav__id {
+    display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   .nav__name {
-    font-size: 1.375rem;
+    font-size: 1.625rem;
     font-weight: 700;
     letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--ink);
   }
 
   .nav__role {
     font-family: var(--mono);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }

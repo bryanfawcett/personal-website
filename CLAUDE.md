@@ -65,8 +65,9 @@ bryanfawcett.com, built with:
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
 - **Mzizi design system** for colour, surfaces and semantics
-- **Dark only** — no light ramp, no theme toggle. The site is a cyanotype:
-  deep Prussian-blue ground, pale line work.
+- **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
+  a print rather than a wash: near-black ground with a blue cast, line work in
+  white. The ground is `#05090F`; the ink is `#F2F6FB`.
 
 TypeScript is pinned to 6.x because `@astrojs/check` peers on `^5 || ^6`; TypeScript 7
 is published but not yet supported by the Astro tooling.
@@ -75,15 +76,16 @@ is published but not yet supported by the Astro tooling.
 
 ```
 src/
+  assets/         bryan-fawcett.png — the portrait, resized by sharp at build
   brand/          Design tokens — the single source of truth for the look
     minerals.ts   The seven Mzizi minerals, with origin and meaning
-    tokens.ts     Sheet, ink, marks, grid, type → CSS custom properties
+    tokens.ts     Sheet, ground, ink, measure, marks, grid, type → CSS props
   components/     Astro components
   data/           Content as typed TypeScript
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
   pages/          One file per route
   styles/         fonts.css (generated), global.css
-scripts/          fetch-fonts.py, verify-fonts.py
+scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
 ```
 
@@ -144,6 +146,32 @@ same ink, the same dashed rule. Nothing is a card.
 Do not reintroduce drop shadows, `transform` lifts on hover, or heavy solid
 borders on panels. That was the earlier treatment and it made every container
 read as a card floating over the sheet instead of part of it.
+
+### Measure is a token, not a guess
+
+Cormorant is an unusually narrow face — about 6.8px per character at 18px — so
+a column that *looks* right runs far past a comfortable line. A 37rem column
+measured 87 characters. Anything holding running prose takes `--measure`
+(33rem, ~77 characters); larger type takes `--measure-wide`. Set a new
+max-width by running the readability pass and reading the number, never by eye.
+
+### The portrait
+
+`src/assets/bryan-fawcett.png` is the only raster on the site. It goes through
+`astro:assets` with `imageService: 'compile'`, so sharp resizes it at build
+time — 1470 kB of source becomes four WebP variants, the largest 24 kB. Keep it
+in `src/assets/`, not `public/`: a file in `public/` is copied verbatim.
+
+`Portrait.astro` frames it like every other container — hairline, corner
+brackets, ruled caption — and desaturates it halfway, enough to belong to the
+drawing without the face going muddy.
+
+The social card is separate: `pnpm og` renders `public/og-bryan-fawcett.jpg`
+from the same source with the site's own faces. It is not a build step, because
+`og:image` needs a stable unhashed URL that scrapers can cache. Rerun it when
+the portrait or the wording changes. librsvg reads fontconfig rather than
+woff2, so install the vendored fonts as TTF into `~/.fonts` first or the card
+silently falls back to a system sans.
 
 ### Content lives in `src/data/`
 
@@ -209,6 +237,13 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 `feat:` · `fix:` · `chore:` · `docs:` · `refactor:`
 
+### Deployment
+
+Cloudflare's GitHub app deploys the Worker; the repo has no deploy workflow of
+its own, and adding one back would mean two things racing for the same Worker.
+To push a build by hand, `npx wrangler deploy` with `CLOUDFLARE_API_TOKEN` in
+the environment.
+
 ### CI (every push and PR)
 
 1. `pnpm check` — TypeScript under `strictest`
@@ -216,9 +251,19 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 3. `scripts/verify-fonts.py` — every font reference resolves
 4. `pnpm audit --audit-level high`
 
-Accessibility is checked with axe-core (WCAG 2.2 AA + best-practice) plus an
-independent contrast pass that composites text over the gradient ground, which
-axe reports as `incomplete` rather than testing. Both must stay clean.
+Accessibility is checked with axe-core (WCAG 2.2 AA + best-practice), plus two
+passes axe cannot do:
+
+- **Contrast** — composites text over the painted ground. axe reports a
+  gradient parent as `incomplete` rather than testing it.
+- **Readability** — for every text block: composited contrast, rendered size,
+  leading, and characters per line taken from the real line boxes. Targets are
+  ≥16px and ≥1.5 leading for prose, ≥10px for mono uppercase labels, and 45–85
+  characters. Count lines as `height / line-height`: `getClientRects()` merges
+  adjacent line boxes in Chromium and under-reports, which inflates
+  chars-per-line by the same factor.
+
+All three must stay clean.
 
 ## Content Notes
 

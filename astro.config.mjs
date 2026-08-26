@@ -7,10 +7,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://bryanfawcett.com',
   adapter: cloudflare({
-    // Every image on the site is a plain <img> or inline SVG — nothing uses
-    // astro:assets — so the Cloudflare Images binding would be declared and
-    // never called. `passthrough` drops it.
-    imageService: 'passthrough',
+    // The portrait is the only raster on the site, and every route prerenders,
+    // so sharp resizes it once at build time and the Worker just serves files.
+    // `cloudflare` here would declare an Images binding that nothing calls at
+    // runtime; `passthrough` would ship the 1.5 MB source untouched.
+    imageService: 'compile',
   }),
   output: 'static',
   integrations: [sitemap()],

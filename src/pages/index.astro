@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Panel from '../components/Panel.astro';
+import Portrait from '../components/Portrait.astro';
 import WorkshopStrip from '../components/WorkshopStrip.astro';
 import { PROFILE } from '../data/profile.js';
 import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data/work.js';
@@ -34,11 +35,15 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
   <section class="section reveal" aria-labelledby="quote-heading">
     <h2 class="visually-hidden" id="quote-heading">Message from the bench</h2>
     <Panel fig="Message from the bench" class="quote">
-      <blockquote>
-        &ldquo;It doesn&rsquo;t matter where you start — it&rsquo;s what you <strong>build</strong> from
-        there, and <strong>who</strong> you build it with.&rdquo;
-      </blockquote>
-      <span class="quote__sig hand">— Bryan</span>
+      <Portrait width={176} caption="Fig. 00 — The draughtsman" class="quote__portrait" eager />
+
+      <div class="quote__body">
+        <blockquote>
+          &ldquo;It doesn&rsquo;t matter where you start — it&rsquo;s what you{' '}
+          <strong>build</strong> from there, and <strong>who</strong> you build it with.&rdquo;
+        </blockquote>
+        <span class="quote__sig hand">— Bryan</span>
+      </div>
     </Panel>
   </section>
 
@@ -276,14 +281,19 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
   /* --- pull quote --- */
 
   .quote {
-    padding: 3.5rem 2.5rem;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 2.75rem;
+    padding: 3rem 2.5rem;
+  }
+
+  .quote__body {
+    flex: 1;
+    min-width: 0;
   }
 
   .quote blockquote {
-    max-width: 47.5rem;
-    margin-inline: auto;
-    font-size: clamp(1.5rem, 4.4vw, 2.375rem);
+    font-size: clamp(1.375rem, 3.6vw, 2.0625rem);
     font-weight: 500;
     font-style: italic;
     line-height: 1.22;
@@ -300,9 +310,23 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
 
   .quote__sig {
     display: inline-block;
-    margin-block-start: 1.375rem;
+    margin-block-start: 1.25rem;
     font-size: 2.125rem;
     transform: rotate(-3deg);
+  }
+
+  /* Below the fold of a phone the plate stacks and centres over the quote. */
+  @media (max-width: 51rem) {
+    .quote {
+      flex-direction: column;
+      gap: 1.75rem;
+      text-align: center;
+    }
+
+    .quote :global(.quote__portrait) {
+      margin-inline: auto;
+      align-items: center;
+    }
   }
 
   /* --- link panels --- */

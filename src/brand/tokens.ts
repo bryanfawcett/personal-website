@@ -1,49 +1,75 @@
 /**
  * The site's design tokens.
  *
- * The site is a cyanotype — a real blueprint. Deep Prussian-blue ground, pale
- * line work, every container drafted onto the sheet with ruler-graduated
- * corners. Dark only: there is no light ramp and no theme toggle by design.
+ * The site is a cyanotype — a real blueprint, but a print rather than a wash:
+ * near-black ground with a blue cast, line work in white. Dark only: there is
+ * no light ramp and no theme toggle by design.
  *
  * "Ink" here means the colour a line is drawn in, which on a cyanotype is the
- * pale one. The ground is the blue.
+ * pale one. The ground is the near-black.
  */
 
 import { MINERALS } from './minerals.js';
 
-/** The sheet itself — Prussian blue, deepening toward the edges. */
+/** The sheet itself — near-black, the blue only a cast in it. */
 export const SHEET = {
   /** Deepest — the vignette and the media wells. */
-  deep: '#050C15',
+  deep: '#02050A',
   /** Page ground. */
-  base: '#0A1826',
+  base: '#05090F',
   /** One step up: grouped regions. */
-  mid: '#0E2032',
-  /** Raised surfaces — menus, the title block. */
-  raised: '#14293F',
-  /** Panel fill. Translucent so the ruling reads through it. */
-  wash: 'rgb(16 36 57 / 0.55)',
+  mid: '#080D15',
+  /** Raised surfaces — menus, the title block, panels under the pointer. */
+  raised: '#0F151E',
+  /**
+   * Panel fill.
+   *
+   * Opaque enough (0.86) that body copy sits on a settled ground rather than
+   * on whatever the gradient happens to be doing behind it — that swing was
+   * costing about two points of contrast at the lit corner.
+   */
+  wash: 'rgb(7 11 17 / 0.86)',
   /** Brighter wash for chips and inset fields. */
-  washLight: 'rgb(30 58 88 / 0.45)',
+  washLight: 'rgb(20 28 39 / 0.8)',
 } as const;
 
 /**
  * The drawn line, at the weights a technical pen offers.
  *
- * Alpha steps are tuned so `base` and `body` clear WCAG AA for text against
- * SHEET.base, and the fainter two are only ever used for rules and grid.
+ * White rather than the old pale blue: against a near-black ground the blue
+ * cast only muddied it. Alpha steps are tuned so `base` and `body` clear WCAG
+ * AA for text against SHEET.wash, and the fainter two are rules and grid only.
  */
 export const INK = {
   /** Full-strength line and heading text. */
-  base: '#DCE9F7',
+  base: '#F2F6FB',
   /** Body copy inside panels. */
-  body: 'rgb(220 233 247 / 0.82)',
-  /** Secondary text, dimension labels, rule graduations. */
-  soft: 'rgb(220 233 247 / 0.62)',
-  /** Major grid rule and panel borders. Non-text only. */
-  faint: 'rgb(220 233 247 / 0.24)',
+  body: 'rgb(242 246 251 / 0.9)',
+  /** Secondary text and dimension labels. */
+  soft: 'rgb(242 246 251 / 0.72)',
+  /** Major grid rule, panel borders, column rules. Non-text only. */
+  faint: 'rgb(242 246 251 / 0.34)',
   /** Minor grid rule. Non-text only. */
-  hair: 'rgb(220 233 247 / 0.12)',
+  hair: 'rgb(242 246 251 / 0.17)',
+} as const;
+
+/**
+ * Where the light falls across the sheet.
+ *
+ * These were inline in global.css, which broke the rule that no colour is
+ * written outside src/brand.
+ */
+export const GROUND = {
+  /** The lit corner, top left. */
+  lit: 'rgb(20 40 64 / 0.34)',
+  /** The shaded corner, bottom right. */
+  shade: 'rgb(1 2 5 / 0.72)',
+  /** A second, weaker source. */
+  glow: 'rgb(14 32 52 / 0.22)',
+  /** The pool of dark it leaves. */
+  pool: 'rgb(1 3 6 / 0.55)',
+  /** Fall-off at the margins, as a print has. */
+  vignette: 'rgb(0 1 3 / 0.7)',
 } as const;
 
 /** Marks made by hand rather than by pen. */
@@ -53,9 +79,23 @@ export const MARKS = {
   /** The approval stamp. One red, used sparingly. */
   stamp: '#FF7A5C',
   /** Cast shadow under a drafted panel. */
-  shadow: 'rgb(0 0 0 / 0.45)',
+  shadow: 'rgb(0 0 0 / 0.55)',
   /** The hairline inset that gives a panel its thickness. */
-  inset: 'rgb(220 233 247 / 0.06)',
+  inset: 'rgb(242 246 251 / 0.06)',
+} as const;
+
+/**
+ * Line-length caps.
+ *
+ * Measured, not guessed. Cormorant is an unusually narrow face — about 6.8px
+ * per character at 18px — so a 37rem column runs to 87 characters, well past
+ * the 45-85 that stays comfortable to track. Anything holding running prose
+ * takes `--measure`; larger type takes `--measure-wide`, which is the same
+ * character count at a bigger size.
+ */
+export const MEASURE = {
+  base: '33rem',
+  wide: '28rem',
 } as const;
 
 /** Grid geometry for the blueprint ruling. */
@@ -90,7 +130,9 @@ export function tokensToCss(): string {
 
   const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
     ['Sheet', 'sheet', SHEET],
+    ['Ground', 'ground', GROUND],
     ['Ink', 'ink', INK],
+    ['Measure', 'measure', MEASURE],
     ['Marks', '', MARKS],
     ['Grid', 'grid', GRID],
     ['Type', '', TYPE],
