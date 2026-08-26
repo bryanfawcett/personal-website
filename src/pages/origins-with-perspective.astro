@@ -380,6 +380,17 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     margin-block-end: 0.25rem;
   }
 
+  /*
+   * These are standalone heading links, not links inside a sentence, so the
+   * WCAG 2.2 target-size inline exception does not apply — they carry the
+   * full 44px target.
+   */
+  .work-list h3 a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   .work-list h3 a:hover {
     color: var(--item-mineral);
   }

@@ -71,8 +71,8 @@ const jsonLd = {
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#E0CB9E" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#0A1826" />
+    <meta name="color-scheme" content="dark" />
     <meta name="generator" content={Astro.generator} />
 
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -117,8 +117,8 @@ const jsonLd = {
   </head>
 
   <body>
-    {/* The sheet, bottom to top: paper, ruling, drawings, frame, rail. */}
-    <div class="parchment" aria-hidden="true"></div>
+    {/* The sheet, bottom to top: ground, ruling, drawings, frame, rail. */}
+    <div class="sheet-ground" aria-hidden="true"></div>
     <div class="blueprint" aria-hidden="true"></div>
     <Schematics />
     <div class="sheet-frame" aria-hidden="true"></div>

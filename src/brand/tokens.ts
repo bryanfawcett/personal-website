@@ -1,48 +1,61 @@
 /**
  * The site's design tokens.
  *
- * The site is a draughtsman's sheet: aged parchment, a blueprint grid ruled in
- * ink, and every container drafted onto the paper with ruler-graduated corners.
- * The Mzizi minerals survive as the vertical brand rail and as accents; the
- * surface palette is parchment rather than Mzizi's dark ramp, because the
- * drawing only reads on paper.
+ * The site is a cyanotype — a real blueprint. Deep Prussian-blue ground, pale
+ * line work, every container drafted onto the sheet with ruler-graduated
+ * corners. Dark only: there is no light ramp and no theme toggle by design.
  *
- * Light only. There is no dark ramp here and no theme toggle by design.
+ * "Ink" here means the colour a line is drawn in, which on a cyanotype is the
+ * pale one. The ground is the blue.
  */
 
 import { MINERALS } from './minerals.js';
 
-/** The paper itself. */
-export const PARCHMENT = {
-  light: '#EDDCB6',
-  mid: '#E0CB9E',
-  dark: '#C7AC7C',
-  /** Translucent parchment for panel fills, so the grid reads through. */
-  wash: 'rgba(236, 222, 190, 0.55)',
-  /** Slightly brighter wash for chips and inset fields. */
-  washLight: 'rgba(255, 248, 228, 0.4)',
+/** The sheet itself — Prussian blue, deepening toward the edges. */
+export const SHEET = {
+  /** Deepest — the vignette and the media wells. */
+  deep: '#050C15',
+  /** Page ground. */
+  base: '#0A1826',
+  /** One step up: grouped regions. */
+  mid: '#0E2032',
+  /** Raised surfaces — menus, the title block. */
+  raised: '#14293F',
+  /** Panel fill. Translucent so the ruling reads through it. */
+  wash: 'rgb(16 36 57 / 0.55)',
+  /** Brighter wash for chips and inset fields. */
+  washLight: 'rgb(30 58 88 / 0.45)',
 } as const;
 
-/** Drafting ink, at the weights a technical pen actually offers. */
+/**
+ * The drawn line, at the weights a technical pen offers.
+ *
+ * Alpha steps are tuned so `base` and `body` clear WCAG AA for text against
+ * SHEET.base, and the fainter two are only ever used for rules and grid.
+ */
 export const INK = {
-  /** Full-strength line and body text. */
-  base: '#1E3A5F',
+  /** Full-strength line and heading text. */
+  base: '#DCE9F7',
+  /** Body copy inside panels. */
+  body: 'rgb(220 233 247 / 0.82)',
   /** Secondary text, dimension labels, rule graduations. */
-  soft: 'rgba(30, 58, 95, 0.55)',
-  /** Major grid rule. */
-  faint: 'rgba(30, 58, 95, 0.26)',
-  /** Minor grid rule. */
-  hair: 'rgba(30, 58, 95, 0.14)',
-  /** Body copy inside panels — a touch lighter than a drawn line. */
-  body: 'rgba(30, 58, 95, 0.78)',
+  soft: 'rgb(220 233 247 / 0.62)',
+  /** Major grid rule and panel borders. Non-text only. */
+  faint: 'rgb(220 233 247 / 0.24)',
+  /** Minor grid rule. Non-text only. */
+  hair: 'rgb(220 233 247 / 0.12)',
 } as const;
 
 /** Marks made by hand rather than by pen. */
 export const MARKS = {
-  /** Graphite margin notes and signatures. */
-  pencil: '#5A4A32',
+  /** Margin notes and the signature — chalk on a blueprint, not graphite. */
+  pencil: '#E3BE86',
   /** The approval stamp. One red, used sparingly. */
-  stamp: '#8C3B22',
+  stamp: '#FF7A5C',
+  /** Cast shadow under a drafted panel. */
+  shadow: 'rgb(0 0 0 / 0.45)',
+  /** The hairline inset that gives a panel its thickness. */
+  inset: 'rgb(220 233 247 / 0.06)',
 } as const;
 
 /** Grid geometry for the blueprint ruling. */
@@ -69,15 +82,14 @@ export const TYPE = {
 export function tokensToCss(): string {
   const lines: string[] = [':root {'];
 
-  lines.push('  /* Mzizi minerals — the brand rail and accents */');
+  lines.push('  /* Mzizi minerals — the rail and the accents */');
   for (const m of MINERALS) {
     lines.push(`  --mineral-${m.name}: ${m.hex};`);
-    lines.push(`  --mineral-${m.name}-vivid: ${m.vivid};`);
     lines.push(`  --mineral-${m.name}-container: ${m.container};`);
   }
 
   const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
-    ['Parchment', 'parch', PARCHMENT],
+    ['Sheet', 'sheet', SHEET],
     ['Ink', 'ink', INK],
     ['Marks', '', MARKS],
     ['Grid', 'grid', GRID],
@@ -96,7 +108,7 @@ export function tokensToCss(): string {
 }
 
 /**
- * `--parch-light`, `--ink-soft`, `--pencil`.
+ * `--sheet-deep`, `--ink-soft`, `--pencil`.
  *
  * A `base` key means "the group's own name", so INK.base becomes `--ink`
  * rather than `--ink-base`.

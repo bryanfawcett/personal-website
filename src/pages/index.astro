@@ -318,8 +318,8 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
   .link-panel:hover {
     transform: translate(-2px, -2px);
     box-shadow:
-      inset 0 0 0 1px rgb(30 58 95 / 0.08),
-      5px 6px 0 rgb(30 58 95 / 0.18);
+      inset 0 0 0 1px var(--inset),
+      5px 6px 0 var(--shadow);
   }
 
   /* The mineral shows as a bar under the heading — the one hit of colour. */
@@ -369,8 +369,8 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
   .split__card:hover {
     transform: translate(-2px, -2px);
     box-shadow:
-      inset 0 0 0 1px rgb(30 58 95 / 0.08),
-      5px 6px 0 rgb(30 58 95 / 0.18);
+      inset 0 0 0 1px var(--inset),
+      5px 6px 0 var(--shadow);
   }
 
   .split__big {
@@ -450,7 +450,7 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
     align-items: center;
     min-height: 44px;
     padding-inline: 1rem;
-    background: var(--parch-wash-light);
+    background: var(--sheet-wash-light);
     border: 1px solid var(--ink);
     font-family: var(--mono);
     font-size: 0.65625rem;
@@ -464,7 +464,7 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
 
   .socials a:hover {
     background: var(--ink);
-    color: var(--parch-light);
+    color: var(--sheet-raised);
   }
 
   .connect .btn {

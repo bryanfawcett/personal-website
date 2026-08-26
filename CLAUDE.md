@@ -65,7 +65,8 @@ bryanfawcett.com, built with:
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
 - **Mzizi design system** for colour, surfaces and semantics
-- **Dark only** — no light ramp, no theme toggle
+- **Dark only** — no light ramp, no theme toggle. The site is a cyanotype:
+  deep Prussian-blue ground, pale line work.
 
 TypeScript is pinned to 6.x because `@astrojs/check` peers on `^5 || ^6`; TypeScript 7
 is published but not yet supported by the Astro tooling.
@@ -138,7 +139,9 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 ## Accessibility Requirements
 
-- **44px minimum** on every interactive target
+- **44px minimum** on every interactive target, except links inside a sentence,
+  which WCAG 2.2 target size (2.5.8) exempts and which 44px would visibly break
+- **10px floor** on label text — mono uppercase below that is needless work to read
 - **Semantic HTML** — real `section`/`nav`/`header`/`footer`, correct heading order,
   exactly one `h1` per page
 - **`aria-labelledby`** on every section, pointing at its heading
@@ -159,6 +162,12 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 4. **Hard-coded colours.** Use the custom properties.
 5. **Adding a client framework.** Don't; this is a content site.
 6. **Node < 22.12** will not run Astro 7.
+7. **`mix-blend-mode: multiply` on the sheet layers.** On a cyanotype the ruling
+   is lighter than the ground, so the grid needs `plus-lighter` and the grain
+   needs `soft-light`. Multiply makes both vanish.
+8. **`color: transparent` for outline type.** Guard it behind
+   `@supports (-webkit-text-stroke: ...)`; without the guard, a browser that
+   lacks the property renders the text invisible rather than solid.
 
 ## Git Workflow
 
@@ -172,6 +181,10 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 2. `pnpm build` — production build
 3. `scripts/verify-fonts.py` — every font reference resolves
 4. `pnpm audit --audit-level high`
+
+Accessibility is checked with axe-core (WCAG 2.2 AA + best-practice) plus an
+independent contrast pass that composites text over the gradient ground, which
+axe reports as `incomplete` rather than testing. Both must stay clean.
 
 ## Content Notes
 

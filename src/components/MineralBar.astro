@@ -4,7 +4,7 @@
  *
  * Seven segments, one per Mzizi mineral, in system order, running vertically
  * down the binding edge of the sheet. It is the one place saturated colour
- * appears on an otherwise ink-on-parchment drawing, which is what makes it
+ * appears on an otherwise monochrome cyanotype, which is what makes it
  * read as an identity mark rather than decoration.
  *
  * Purely decorative: hidden from assistive technology, with each mineral's
@@ -32,7 +32,7 @@ const { placement = 'edge', thickness = '6px', class: className = '' } = Astro.p
     MINERALS.map((m) => (
       <span
         class="mineral-rail__segment"
-        style={`background: var(--mineral-${m.name}-vivid)`}
+        style={`background: var(--mineral-${m.name})`}
         title={`${m.name} — ${m.symbolism}. From ${m.origin}.`}
       />
     ))

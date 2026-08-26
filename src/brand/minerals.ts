@@ -6,20 +6,21 @@
  * and meaning it was named for — that provenance is the point of the palette,
  * not decoration.
  *
- * This site is drawn on parchment, so `hex` is Mzizi's paper-readable value —
- * the one that holds contrast against a light ground. `vivid` keeps the
- * saturated dark-surface value, which is what the mineral rail is drawn in:
- * a 6px band of pure colour needs no contrast ratio, body text does.
+ * The site is a cyanotype: pale line work on a deep blue ground. `hex` is
+ * therefore Mzizi's dark-surface value, the one that holds contrast against
+ * that ground. `onLight` keeps the paper-readable value so the same file can
+ * serve a light property (StationKit, bundu.org) without a second source of
+ * truth.
  */
 
 export interface Mineral {
   /** Token name, used to build the CSS custom property `--mineral-<name>`. */
   readonly name: string;
-  /** Paper-readable value. Safe for text and rules on parchment. */
+  /** Value this site draws in. Holds contrast against the deep blue ground. */
   readonly hex: string;
-  /** Saturated value. For the mineral rail and other non-text fills only. */
-  readonly vivid: string;
-  /** Pale companion tone for container fills. */
+  /** Paper-readable value, for a light property consuming the same tokens. */
+  readonly onLight: string;
+  /** Companion tone for container fills. */
   readonly container: string;
   /** Where the stone is mined. */
   readonly origin: string;
@@ -32,8 +33,8 @@ export interface Mineral {
 export const MINERALS = [
   {
     name: 'cobalt',
-    hex: '#0047AB',
-    vivid: '#00B0FF',
+    hex: '#00B0FF',
+    onLight: '#0047AB',
     container: '#E3F2FD',
     origin: 'Katanga (DRC) and the Zambian Copperbelt',
     symbolism: 'Digital future, trust, knowledge',
@@ -41,8 +42,8 @@ export const MINERALS = [
   },
   {
     name: 'tanzanite',
-    hex: '#4B0082',
-    vivid: '#B388FF',
+    hex: '#B388FF',
+    onLight: '#4B0082',
     container: '#F3E5F5',
     origin: 'Merelani Hills, Tanzania',
     symbolism: 'Premium, creativity, connection',
@@ -50,8 +51,8 @@ export const MINERALS = [
   },
   {
     name: 'malachite',
-    hex: '#004D40',
-    vivid: '#64FFDA',
+    hex: '#64FFDA',
+    onLight: '#004D40',
     container: '#E0F2F1',
     origin: 'Congo Copper Belt',
     symbolism: 'Growth, nature, success',
@@ -59,8 +60,8 @@ export const MINERALS = [
   },
   {
     name: 'gold',
-    hex: '#9A6F00',
-    vivid: '#FFD740',
+    hex: '#FFD740',
+    onLight: '#9A6F00',
     container: '#FFF8E1',
     origin: 'Ghana, South Africa, Mali',
     symbolism: 'Honey, rewards, warmth',
@@ -68,8 +69,8 @@ export const MINERALS = [
   },
   {
     name: 'terracotta',
-    hex: '#A0522D',
-    vivid: '#E1B07E',
+    hex: '#E1B07E',
+    onLight: '#A0522D',
     container: '#F5E6D3',
     origin: 'the Pan-African Sahel',
     symbolism: 'Earth, community, grounding',
@@ -77,8 +78,8 @@ export const MINERALS = [
   },
   {
     name: 'sodalite',
-    hex: '#283593',
-    vivid: '#3D5AFE',
+    hex: '#3D5AFE',
+    onLight: '#283593',
     container: '#E8EAF6',
     origin: 'the Kunene River, Namibia and South Africa',
     symbolism: 'Intelligence, depth, reasoning',
@@ -86,8 +87,8 @@ export const MINERALS = [
   },
   {
     name: 'copper',
-    hex: '#BF5A36',
-    vivid: '#FF8A65',
+    hex: '#FF8A65',
+    onLight: '#BF5A36',
     container: '#FBE4DA',
     origin: 'the Central African Copperbelt, Zambia and DRC',
     symbolism: 'Connection, foundation, stewardship',

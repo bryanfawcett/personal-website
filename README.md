@@ -5,6 +5,9 @@ American School, founder of Nyuchi Africa.
 
 **Astro 7 · TypeScript · Cloudflare Workers · Mzizi branding · dark only.**
 
+The site is a cyanotype — a real blueprint. Deep Prussian-blue ground, pale line
+work, every container drafted onto the sheet with ruler-graduated corners.
+
 ## Quick reference
 
 ```bash
@@ -71,6 +74,29 @@ nothing downstream hard-codes a hex value.
 
 There is no light ramp and no theme toggle, by design. `color-scheme: dark` is
 declared so form controls and scrollbars follow.
+
+On a cyanotype the ruling is *lighter* than the ground, so the layer blend modes
+matter: the grid uses `plus-lighter` and the paper grain uses `soft-light`.
+`multiply` — correct on paper — makes both disappear here.
+
+`src/brand/minerals.ts` carries each mineral twice: `hex` is the value this site
+draws in, `onLight` is Mzizi's paper-readable value, kept so the same file can
+serve a light property (StationKit, bundu.org) without a second source of truth.
+
+## Accessibility
+
+Audited with axe-core (WCAG 2.0/2.1/2.2 A + AA, plus best-practice) across all
+five routes at 1440x900 and 390x780: **0 violations**.
+
+axe cannot resolve contrast against the gradient ground, so contrast is also
+checked independently by compositing every text-bearing element over the real
+sheet colour. All pass; the lowest is 5.8:1 against a 4.5:1 requirement.
+
+Also verified: 2px focus rings on every stop, `prefers-reduced-motion` disabling
+the rail animation and reveals, and reflow at 320px with no horizontal scroll.
+
+Two inline links sit under 24x24 — WCAG 2.2 target size (2.5.8) exempts targets
+inside a sentence, which these are. Every standalone control carries 44px.
 
 ## Fonts
 
