@@ -1,0 +1,83 @@
+---
+/**
+ * The draughtsman, as a plate on the sheet.
+ *
+ * The photograph is the one raster on the site, so it gets the same treatment
+ * every other container does — a hairline, corner brackets, a ruled caption —
+ * rather than sitting on the sheet as a snapshot. Desaturated only part of the
+ * way: enough to belong to the drawing, not so far that the face goes muddy.
+ *
+ * `astro:assets` resizes it with sharp at build time (see `imageService` in
+ * astro.config.mjs), which is why the source lives in src/assets rather than
+ * public/.
+ */
+import { Image } from 'astro:assets';
+import source from '../assets/bryan-fawcett.png';
+import { PROFILE } from '../data/profile.js';
+
+interface Props {
+  /** Rendered width in px. Height follows the source's 835×1052. */
+  width?: number;
+  /** Ruled caption beneath the plate. */
+  caption?: string | undefined;
+  /** Above the fold — skip lazy loading. */
+  eager?: boolean;
+  class?: string | undefined;
+}
+
+const { width = 200, caption, eager = false, class: className } = Astro.props;
+const height = Math.round((width * source.height) / source.width);
+---
+
+<figure class:list={['portrait', className]}>
+  <span class="portrait__plate">
+    <span class="panel__rule" aria-hidden="true"></span>
+    <Image
+      src={source}
+      alt={`${PROFILE.name}, photographed`}
+      width={width}
+      height={height}
+      densities={[1, 2]}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
+    />
+  </span>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .portrait {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .portrait__plate {
+    --corner: 0.875rem;
+    position: relative;
+    display: block;
+    padding: 6px;
+    background: var(--sheet-wash);
+    border: 1px solid var(--ink-hair);
+  }
+
+  .portrait__plate img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Part-way to the line work, still plainly a photograph. */
+    filter: grayscale(0.5) contrast(1.05) brightness(0.97);
+  }
+
+  figcaption {
+    font-family: var(--mono);
+    /* 10px floor on label text. */
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+</style>

@@ -1,0 +1,152 @@
+---
+/**
+ * The sheet's headline: the title stacked, with the second word drafted in
+ * outline as though it has been ruled but not yet inked in.
+ */
+import { PROFILE } from '../data/profile.js';
+
+interface Props {
+  /** Two words: the first solid, the second in outline. */
+  solid: string;
+  drafted: string;
+  eyebrow: string;
+  sub?: string;
+  /** Pencil note pinned in the right margin. */
+  note?: string;
+  /** Label on the dimension line beneath. */
+  dimension?: string;
+  /** Show the name and role strip under the title. */
+  showByline?: boolean;
+}
+
+const {
+  solid,
+  drafted,
+  eyebrow,
+  sub,
+  note,
+  dimension = 'Drawn to scale',
+  showByline = false,
+} = Astro.props;
+---
+
+<header class="hero">
+  <p class="eyebrow hero__eyebrow">{eyebrow}</p>
+
+  <h1 class="stack">
+    <span class="stack__solid">{solid}</span>
+    <span class="drafted">{drafted}</span>
+  </h1>
+
+  {
+    showByline && (
+      <p class="hero__byline">
+        {PROFILE.roles.map((role, i) => (
+          <>
+            {i > 0 && <span class="hero__sep"> · </span>}
+            <span>
+              {role.title}, {role.org}
+            </span>
+          </>
+        ))}
+      </p>
+    )
+  }
+
+  {sub && <p class="hero__sub">{sub}</p>}
+
+  <div class="dimension hero__dimension">
+    <span class="dimension__line"></span>
+    <span class="dimension__label">{dimension}</span>
+    <span class="dimension__line"></span>
+  </div>
+
+  {
+    note && (
+      <p class="margin-note hero__note">
+        <Fragment set:html={note.replace(/\n/g, '<br>')} />
+        <span class="hero__arrow">↴</span>
+      </p>
+    )
+  }
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: 2.125rem 3.5rem;
+    text-align: center;
+  }
+
+  .hero__eyebrow {
+    justify-content: center;
+    margin-block-end: 1.875rem;
+  }
+
+  .stack {
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    font-size: clamp(3rem, 11.5vw, 7.75rem);
+  }
+
+  .stack__solid {
+    display: block;
+    color: var(--ink);
+  }
+
+  /* Layout only; the outline itself is the global `.drafted` utility. */
+  .stack :global(.drafted) {
+    display: block;
+  }
+
+  .hero__byline {
+    margin-block-start: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .hero__sep {
+    color: var(--ink-soft);
+  }
+
+  .hero__sub {
+    max-width: 35rem;
+    margin: 1.625rem auto 0;
+    font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  .hero__dimension {
+    margin-block-start: 2rem;
+  }
+
+  .hero__note {
+    position: absolute;
+    inset-inline-end: 2%;
+    inset-block-start: 26%;
+    max-width: 9.375rem;
+    text-align: start;
+    font-size: 1.375rem;
+    transform: rotate(-4deg);
+  }
+
+  .hero__arrow {
+    display: block;
+    font-size: 1.625rem;
+    transform: rotate(20deg);
+  }
+
+  @media (max-width: 56rem) {
+    .hero__note {
+      display: none;
+    }
+  }
+</style>

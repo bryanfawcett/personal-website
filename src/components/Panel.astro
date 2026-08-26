@@ -1,0 +1,34 @@
+---
+/**
+ * A surface drafted onto the sheet.
+ *
+ * Carries the span that draws the four corner brackets, and an optional figure
+ * tag notched into the top rule. Use this rather than applying `.panel` by hand
+ * so every container gets its corners.
+ *
+ * Any extra attribute (href, target, style, …) passes through to the element.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Tag = 'section' | 'article' | 'div' | 'li' | 'a';
+
+export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
+  /**
+   * Figure tag notched into the top rule, e.g. "Fig. 01 — Structure".
+   *
+   * Explicitly `| undefined` because `strictest` turns on
+   * `exactOptionalPropertyTypes`, and callers pass indexed lookups.
+   */
+  fig?: string | undefined;
+  /** Element to render as. Defaults to `article`. */
+  as?: T | undefined;
+};
+
+const { fig, as: Element = 'article', class: className, ...rest } = Astro.props;
+---
+
+<Element class:list={['panel', className]} {...rest}>
+  <span class="panel__rule" aria-hidden="true"></span>
+  {fig && <span class="fig">{fig}</span>}
+  <slot />
+</Element>

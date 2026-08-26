@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { NAV } from '../data/profile.js';
+---
+
+<BaseLayout
+  title="Sheet not found"
+  description="That page does not exist on bryanfawcett.com."
+  path="/404"
+  sheet="— / 04"
+>
+  <PageHeader
+    eyebrow="404 · Sheet missing"
+    title="Not on this drawing"
+    lede="The link may be old, or the reference slightly off."
+    note="check the index"
+  />
+
+  <ul class="options">
+    {NAV.map((item) => <li><a class="btn is-ghost" href={item.href}>{item.label}</a></li>)}
+  </ul>
+</BaseLayout>
+
+<style>
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin-block: 2rem 4rem;
+  }
+</style>

@@ -1,0 +1,737 @@
+/*
+ * Static global styles for the drafting sheet.
+ *
+ * Every colour, face and measure resolves to a custom property emitted from
+ * src/brand/tokens.ts — nothing is hard-coded here.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  /* A cyanotype. There is no light ramp. */
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  position: relative;
+  background: var(--sheet);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--mineral-cobalt-container);
+}
+
+/* ==================== LAYER 1 — the blueprint ground ==================== */
+
+/*
+ * Absolute over the document, not fixed to the viewport.
+ *
+ * A fixed ground slides underneath the content as you scroll, which is the one
+ * thing paper never does. Absolute means the ruling, the lighting and the
+ * grain all travel with the surfaces drawn on them.
+ */
+.sheet-ground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /*
+   * The lighting is sized in vh and pinned to the top rather than stretched
+   * over the whole document: a radial sized as a percentage of a 6000px page
+   * is not a fall of light, it is a flat tint.
+   */
+  background:
+    radial-gradient(ellipse 90% 70% at 18% 10%, var(--ground-lit), transparent 60%) top / 100% 140vh
+      no-repeat,
+    radial-gradient(ellipse 42% 30% at 72% 22%, var(--ground-glow), transparent 70%) top / 100%
+      140vh no-repeat,
+    radial-gradient(ellipse 34% 44% at 10% 76%, var(--ground-pool), transparent 70%) bottom / 100%
+      140vh no-repeat,
+    radial-gradient(ellipse 70% 60% at 84% 90%, var(--ground-shade), transparent 65%) bottom / 100%
+      140vh no-repeat,
+    linear-gradient(160deg, var(--sheet-mid) 0%, var(--sheet) 45%, var(--sheet-deep) 100%);
+}
+
+/*
+ * Paper tooth, as fractal noise rather than a bitmap.
+ *
+ * `soft-light` rather than `multiply`: on a dark ground multiply would only
+ * crush the blacks, where soft-light lifts and dips the grain either side of
+ * the base tone, which is what reads as paper.
+ */
+.sheet-ground::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+}
+
+/*
+ * Fall-off at the left and right margins only.
+ *
+ * The old inset box-shadow darkened all four edges, which reads as a vignette
+ * on a fixed ground and as a horizontal band every screenful on a scrolling
+ * one. Sides only, so it holds however far you scroll.
+ */
+.sheet-ground::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--ground-vignette), transparent 14%),
+    linear-gradient(270deg, var(--ground-vignette), transparent 14%);
+}
+
+/* ================= LAYER 2 — the ruling, drawn in pale ink ================= */
+
+.blueprint {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /*
+   * `plus-lighter` rather than `multiply`: on a cyanotype the ruling is lighter
+   * than the ground, so the lines have to add light. Multiply would make them
+   * darker than the sheet and the grid would disappear.
+   */
+  mix-blend-mode: plus-lighter;
+  /*
+   * The ruling is the ground, not the drawing. Held back so the column rules,
+   * section rules and corner brackets — all of them full-strength ink — stay
+   * the lines the eye follows.
+   */
+  opacity: 0.5;
+  background-image:
+    linear-gradient(var(--ink-hair) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-hair) 1px, transparent 1px),
+    linear-gradient(var(--ink-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-faint) 1px, transparent 1px);
+  background-size:
+    var(--grid-minor) var(--grid-minor),
+    var(--grid-minor) var(--grid-minor),
+    var(--grid-major) var(--grid-major),
+    var(--grid-major) var(--grid-major);
+  /* The ruling fades toward the edges, as ink does on a well-used sheet. */
+  mask-image: radial-gradient(
+    ellipse 120% 100% at 50% 40%,
+    #000 55%,
+    rgb(0 0 0 / 0.5) 80%,
+    rgb(0 0 0 / 0.25) 100%
+  );
+}
+
+/* Faint technical drawings floating behind the content. */
+.schematics {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.schematics svg {
+  position: absolute;
+}
+
+/* ============================== layout ============================== */
+
+.page {
+  position: relative;
+  z-index: 3;
+}
+
+/*
+ * The shell is the drawn measure of the sheet, not just a max-width.
+ *
+ * Its border-box edges carry the column rules (`.shell::before/::after`), so
+ * the content column is ruled onto the ground rather than floating over it.
+ * `width` rather than `max-width` keeps a margin at every size, which is what
+ * stops those rules from colliding with the sheet frame on a phone.
+ */
+.shell {
+  --shell-pad: 1.75rem;
+  position: relative;
+  width: min(67.5rem, 100% - 4rem);
+  margin-inline: auto;
+  padding-inline: var(--shell-pad);
+}
+
+/* The two column rules, running the full height of whatever they enclose. */
+.shell::before,
+.shell::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  width: 0;
+  border-inline-start: 1px dashed var(--ink-faint);
+  pointer-events: none;
+}
+
+.shell::before {
+  inset-inline-start: 0;
+}
+
+.shell::after {
+  inset-inline-end: 0;
+}
+
+@media (max-width: 51rem) {
+  .shell {
+    --shell-pad: 1rem;
+    width: min(67.5rem, 100% - 3.5rem);
+  }
+}
+
+/*
+ * A section is a band across the column: ruled off at the foot, with a node
+ * square where that rule crosses each column rule. Same line weight and the
+ * same ink as the ground ruling — the container is the drawing.
+ */
+.section {
+  position: relative;
+  padding-block: 3.25rem;
+}
+
+.section::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: calc(var(--shell-pad) * -1);
+  height: 0;
+  border-block-start: 1px dashed var(--ink-faint);
+  pointer-events: none;
+}
+
+/* The nodes, centred on the two intersections. */
+.section::before {
+  content: '';
+  position: absolute;
+  inset-block-end: -2px;
+  inset-inline: calc((var(--shell-pad) + 2px) * -1);
+  height: 5px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--ink-soft) 0 0) left center / 5px 5px no-repeat,
+    linear-gradient(var(--ink-soft) 0 0) right center / 5px 5px no-repeat;
+}
+
+/* The last band on a page closes on the title block, so it needs no rule. */
+.section:last-of-type::after,
+.section:last-of-type::before {
+  display: none;
+}
+
+/* ============================ typography ============================ */
+
+.mono {
+  font-family: var(--mono);
+}
+
+.hand {
+  font-family: var(--hand);
+  color: var(--pencil);
+}
+
+/* A ruled label with dimension ticks either side. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  height: 1px;
+  background: var(--ink-soft);
+  flex: 0 0 2.125rem;
+}
+
+.eyebrow.is-open::after {
+  display: none;
+}
+
+.section-title {
+  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.125rem);
+}
+
+.lede {
+  max-width: var(--measure-wide);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--ink-body);
+}
+
+/* A dimension line: ticked rule, centred label, ticked rule. */
+.dimension {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  max-width: 27.5rem;
+  color: var(--ink-soft);
+}
+
+.dimension__line {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--ink-soft);
+}
+
+.dimension__line::before,
+.dimension__line::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--ink-soft);
+}
+
+.dimension__line:first-child::before {
+  inset-inline-start: 0;
+}
+
+.dimension__line:last-child::after {
+  inset-inline-end: 0;
+}
+
+.dimension__label {
+  padding-inline: 1rem;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/*
+ * Type that has been ruled but not yet inked in.
+ *
+ * Global rather than component-scoped because more than one component draws
+ * it — Astro scopes styles to the template they are declared in, so a scoped
+ * version silently fails to match anywhere else.
+ */
+.drafted {
+  /*
+   * Fallback first: solid ink. `color: transparent` is only safe once we know
+   * the stroke will actually paint — without that guard, a browser lacking
+   * -webkit-text-stroke renders half the h1 completely invisible.
+   */
+  color: var(--ink);
+}
+
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .drafted {
+    /*
+     * Stroked *and* filled. A hollow outline read as unfinished rather than
+     * drafted; the fill gives it the weight of the solid word above it while
+     * the stroke keeps it a drawing.
+     */
+    color: transparent;
+    -webkit-text-fill-color: var(--ink-drafted);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke;
+  }
+}
+
+/* ==================== panels — drafted on the sheet ==================== */
+
+/*
+ * Registered so it can be animated. A bare custom property is a token stream
+ * with no type, and a transition on one snaps rather than interpolates.
+ */
+@property --corner {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0.875rem;
+}
+
+.panel {
+  --corner: 0.875rem;
+  position: relative;
+  background: var(--sheet-wash);
+  border: 1px solid var(--ink-hair);
+  padding: 2.125rem 1.875rem 1.875rem;
+}
+
+/*
+ * Corner brackets, drawn by subtraction.
+ *
+ * The span carries a complete 1px rule; the mask then keeps only eight short
+ * segments of it, two at each corner. Growing `--corner` to 50% closes those
+ * segments into the full rule, so a hover *finishes the drawing* rather than
+ * lifting the panel off the sheet.
+ */
+.panel__rule {
+  --corner: inherit;
+  --seg: linear-gradient(#000, #000);
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border: 1px solid var(--ink);
+  mask:
+    var(--seg) 0 0 / var(--corner) 1px no-repeat,
+    var(--seg) 100% 0 / var(--corner) 1px no-repeat,
+    var(--seg) 0 100% / var(--corner) 1px no-repeat,
+    var(--seg) 100% 100% / var(--corner) 1px no-repeat,
+    var(--seg) 0 0 / 1px var(--corner) no-repeat,
+    var(--seg) 0 100% / 1px var(--corner) no-repeat,
+    var(--seg) 100% 0 / 1px var(--corner) no-repeat,
+    var(--seg) 100% 100% / 1px var(--corner) no-repeat;
+  transition: --corner 0.45s ease-out;
+}
+
+.panel:hover {
+  --corner: 50%;
+}
+
+/* Light catching the top edge, as it does on a sheet lifted off the board. */
+.panel::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--ink-faint) 50%, transparent);
+}
+
+/* The figure tag, notched into the panel's top rule. */
+.fig {
+  position: absolute;
+  inset-block-start: -11px;
+  inset-inline-start: 1.75rem;
+  z-index: 1;
+  padding: 2px 10px;
+  background: var(--sheet-raised);
+  border: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.panel h2 {
+  font-size: 1.625rem;
+  margin-block-end: 0.625rem;
+}
+
+.panel h3 {
+  font-size: 1.25rem;
+  margin-block-end: 0.375rem;
+}
+
+.panel p {
+  /* A measure, not a column width: prose stops before it gets hard to track. */
+  max-width: var(--measure);
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+
+/* ============================== chips ============================== */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin-block-start: 1.125rem;
+}
+
+.chip {
+  padding: 5px 10px;
+  background: var(--sheet-wash-light);
+  border: 1px solid var(--ink-soft);
+  font-family: var(--mono);
+  /* 10px floor: 9.5px uppercase mono is legible but needlessly hard work. */
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ============================= buttons ============================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 1.875rem;
+  background: var(--ink);
+  border: 1.5px solid var(--ink);
+  color: var(--sheet-raised);
+  font-family: var(--mono);
+  font-size: 0.71875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--shadow);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.btn.is-ghost {
+  background: var(--sheet-wash-light);
+  color: var(--ink);
+}
+
+/* A margin note in pencil, set at a slight angle. */
+.margin-note {
+  font-family: var(--hand);
+  color: var(--pencil);
+  font-size: 1.375rem;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+}
+
+/* The approval stamp. One red, used sparingly. */
+.stamp {
+  position: absolute;
+  inset-inline-end: 1.625rem;
+  inset-block-start: -1.5rem;
+  padding: 7px 14px;
+  border: 2px solid var(--stamp);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  transform: rotate(-6deg);
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+}
+
+/* ====================== unrolling the sheet ====================== */
+
+/*
+ * Keyframes for the page transition declared in src/brand/transitions.ts.
+ *
+ * `clip-path` does the unrolling; the small translate and the `scaleY` off
+ * `transform-origin` give it the spring a real sheet has as it flattens out.
+ */
+@keyframes sheet-unroll-down {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-0.75rem) scaleY(0.985);
+    opacity: 0.35;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-roll-up {
+  from {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-0.75rem) scaleY(0.985);
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-unroll-up {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.75rem) scaleY(0.985);
+    opacity: 0.35;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-roll-down {
+  from {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.75rem) scaleY(0.985);
+    opacity: 0;
+  }
+}
+
+main {
+  transform-origin: top center;
+}
+
+/*
+ * The blanket reduced-motion rule earlier in this file selects `*` and its
+ * ::before/::after, which never matches a view-transition pseudo-element.
+ * These have to be named.
+ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ========================== scroll reveal ========================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.no-js .reveal,
+.no-js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================== a11y ============================== */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  background: var(--sheet-raised);
+  border: 1.5px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  transform: translateY(-200%);
+  transition: transform 0.2s ease-out;
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}

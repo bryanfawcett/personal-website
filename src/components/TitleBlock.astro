@@ -1,0 +1,163 @@
+---
+/**
+ * The title block — the footer, as a drawing sheet has one.
+ *
+ * Project, draughtsman, sheet number and revision, ruled into cells, with the
+ * site navigation carried in the bottom strip where a real sheet carries
+ * its references.
+ */
+import { NAV, PROFILE } from '../data/profile.js';
+
+interface Props {
+  sheet?: string;
+}
+
+const { sheet = '01 / 04' } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="title-block" aria-label="Title block">
+  <div class="tb-cell tb-name">
+    <span class="k">Project</span>
+    <span class="v">{PROFILE.name} — {PROFILE.title}</span>
+  </div>
+  <div class="tb-cell">
+    <span class="k">Drawn by</span>
+    <span class="v">B.D.F.</span>
+  </div>
+  <div class="tb-cell">
+    <span class="k">Sheet</span>
+    <span class="v">{sheet}</span>
+  </div>
+  <div class="tb-cell">
+    <span class="k">Rev</span>
+    <span class="v">A — {year}</span>
+  </div>
+
+  <div class="tb-foot">
+    <nav aria-label="Footer">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ul class="tb-social">
+      {
+        PROFILE.socials.map((social) => (
+          <li>
+            <a
+              href={social.href}
+              target={social.href.startsWith('http') ? '_blank' : undefined}
+              rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {social.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <span class="tb-copy">© {year} {PROFILE.name}</span>
+  </div>
+</footer>
+
+<style>
+  .title-block {
+    margin-block: 4rem 3rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background: var(--sheet-wash);
+    border: 1px solid var(--ink-faint);
+  }
+
+  .tb-cell {
+    padding: 0.75rem 1rem;
+    border-inline-end: 1px solid var(--ink-faint);
+    font-family: var(--mono);
+  }
+
+  .tb-cell:nth-child(4) {
+    border-inline-end: none;
+  }
+
+  .tb-cell .k {
+    display: block;
+    margin-block-end: 4px;
+    font-size: 0.625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .tb-cell .v {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .tb-name {
+    font-family: var(--serif);
+  }
+
+  .tb-name .v {
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .tb-foot {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding: 0.5rem 1rem;
+    border-block-start: 1px solid var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .tb-foot ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .tb-foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    transition: color 0.2s ease;
+  }
+
+  .tb-foot a:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 40rem) {
+    .title-block {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .tb-name {
+      grid-column: 1 / -1;
+      border-inline-end: none;
+    }
+
+    .tb-cell:nth-child(3) {
+      border-inline-end: none;
+    }
+  }
+</style>

@@ -12,5 +12,5 @@ Singapore American School Technology & Innovation Team
 Last update: 2025/01/22
 Language: English
 Standards: HTML5, CSS3, ES6+
-Components: shadcn/ui, Radix UI
-Software: Next.js 16, React 19, TypeScript, Tailwind CSS 4
+Components: hand-written Astro components; Mzizi design system
+Software: Astro 7, TypeScript, Cloudflare Workers

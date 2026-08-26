@@ -1,0 +1,181 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { tokensToCss } from '../brand/tokens.js';
+import { unroll } from '../brand/transitions.js';
+import MineralBar from '../components/MineralBar.astro';
+import Schematics from '../components/Schematics.astro';
+import SiteNav from '../components/SiteNav.astro';
+import TitleBlock from '../components/TitleBlock.astro';
+import { PROFILE } from '../data/profile.js';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path only, e.g. "/experience". Used for canonical and nav state. */
+  path?: string;
+  /** Sheet number shown in the title block, e.g. "02 / 04". */
+  sheet?: string;
+  ogType?: 'website' | 'profile' | 'article';
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  sheet = '01 / 04',
+  ogType = 'website',
+} = Astro.props;
+
+const canonical = new URL(path, Astro.site ?? 'https://bryanfawcett.com').href;
+const fullTitle = path === '/' ? title : `${title} | ${PROFILE.name}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': 'https://bryanfawcett.com/#person',
+      name: PROFILE.name,
+      givenName: 'Bryan',
+      familyName: 'Fawcett',
+      jobTitle: PROFILE.roles.map((r) => r.title),
+      description: PROFILE.summary,
+      url: 'https://bryanfawcett.com',
+      email: `mailto:${PROFILE.email}`,
+      image: 'https://bryanfawcett.com/og-bryan-fawcett.jpg',
+      sameAs: PROFILE.socials.map((s) => s.href),
+      worksFor: PROFILE.roles.map((r) => ({ '@type': 'Organization', name: r.org })),
+      founder: [
+        { '@type': 'Organization', name: 'Nyuchi Africa', url: 'https://nyuchi.com' },
+        { '@type': 'Organization', name: 'The Bundu Foundation', url: 'https://www.bundu.org' },
+      ],
+      knowsAbout: PROFILE.knowsAbout,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://bryanfawcett.com/#website',
+      url: 'https://bryanfawcett.com',
+      name: `${PROFILE.name} — ${PROFILE.title}`,
+      publisher: { '@id': 'https://bryanfawcett.com/#person' },
+      inLanguage: 'en',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" dir="ltr" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0A1826" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={PROFILE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://bryanfawcett.com/og-bryan-fawcett.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bryan Fawcett — Digital Craftsman" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@bryanfawcett" />
+
+    {/* Fonts are self-hosted (see scripts/fetch-fonts.py) — no third-party request. */}
+    <link
+      rel="preload"
+      href="/fonts/cormorant-garamond-500-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-mono-500-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/* Design tokens, generated from src/brand/tokens.ts at build time. */}
+    <style is:global set:html={tokensToCss()}></style>
+
+    <script is:inline>
+      // Flip off the no-JS fallback before first paint so revealed sections
+      // start hidden rather than flashing in and then animating.
+      document.documentElement.classList.remove('no-js');
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    {/* The sheet, bottom to top: ground, ruling, drawings, rail. */}
+    <div class="sheet-ground" aria-hidden="true"></div>
+    <div class="blueprint" aria-hidden="true"></div>
+    <Schematics />
+    <MineralBar placement="edge" transition:persist />
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="page">
+      <SiteNav path={path} />
+
+      <main id="main" class="shell" transition:animate={unroll}>
+        <slot />
+      </main>
+
+      <div class="shell">
+        <TitleBlock sheet={sheet} />
+      </div>
+    </div>
+
+    <script>
+      // Reveal sections as they enter the viewport.
+      //
+      // threshold 0: a section taller than the viewport can never reach a
+      // meaningful intersection ratio, so anything long would otherwise stay
+      // at opacity 0 forever on a phone.
+      //
+      // Bound to astro:page-load rather than run once: the ClientRouter swaps
+      // the document without a reload, so a one-shot observer would only ever
+      // see the first page's sections and every later page would stay at
+      // opacity 0. The old observer is disconnected first so they do not stack.
+      let observer: IntersectionObserver | undefined;
+
+      document.addEventListener('astro:page-load', () => {
+        observer?.disconnect();
+
+        observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer?.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -6% 0px', threshold: 0 },
+        );
+
+        for (const target of document.querySelectorAll<HTMLElement>('.reveal')) {
+          observer.observe(target);
+        }
+      });
+    </script>
+  </body>
+</html>

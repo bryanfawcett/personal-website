@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bryanfawcett-site",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // The site is fully prerendered, so this is an assets-only Worker: there is
+  // no `main` script. Astro's cloudflare adapter emits the deployable tree to
+  // dist/client (dist/server stays empty while every route is static).
+  "assets": {
+    "directory": "./dist/client",
+    // Default html_handling (auto-trailing-slash) is right now that Astro
+    // emits minerals.html rather than minerals/index.html: /minerals serves
+    // directly and /minerals/ redirects to it. See `build.format` in
+    // astro.config.mjs — that is what decides this, not a setting here.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

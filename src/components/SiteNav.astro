@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/bryan-fawcett.png';
+import { NAV, PROFILE } from '../data/profile.js';
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+
+/** `/` matches only itself; every other route also matches its children. */
+function isCurrent(href: string): boolean {
+  return href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+}
+---
+
+<header class="nav shell">
+  <nav class="nav__inner" aria-label="Main">
+    <a class="nav__wordmark" href="/">
+      <Image
+        class="nav__portrait"
+        src={portrait}
+        alt=""
+        width={46}
+        height={46}
+        densities={[1, 2]}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span class="nav__id">
+        <span class="nav__name">{PROFILE.name}</span>
+        <span class="nav__role">{PROFILE.title}</span>
+      </span>
+    </a>
+
+    <ul class="nav__list">
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              class:list={['nav__link', { 'is-current': isCurrent(item.href) }]}
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    padding-block-start: 2.25rem;
+  }
+
+  .nav__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block-end: 0.75rem;
+    border-block-end: 1px solid var(--ink-faint);
+  }
+
+  .nav__wordmark {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  /*
+   * Square crop of a 835×1052 portrait: object-fit alone would centre on the
+   * chest, so the position pulls the frame up onto the face.
+   */
+  .nav__portrait {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    object-position: 50% 22%;
+    border: 1px solid var(--ink-faint);
+    filter: grayscale(0.5) contrast(1.05);
+  }
+
+  .nav__id {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .nav__name {
+    font-size: 1.625rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .nav__role {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav__link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 0.875rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid transparent;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .nav__link:hover {
+    color: var(--ink);
+    border-color: var(--ink-faint);
+  }
+
+  .nav__link.is-current {
+    color: var(--ink);
+    background: var(--sheet-wash-light);
+    border-color: var(--ink);
+  }
+
+  @media (max-width: 40rem) {
+    .nav__inner {
+      align-items: flex-start;
+    }
+
+    .nav__list {
+      margin-inline-start: -0.875rem;
+    }
+  }
+</style>
