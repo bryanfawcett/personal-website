@@ -16,21 +16,35 @@ This document provides essential context for AI assistants working on this Astro
 
 **Location:** Singapore | **Email:** bryan@nyuchi.com
 
-### Nyuchi Africa Ecosystem (Passion Project)
+### The Bundu Ecosystem (Passion Project)
 
-Bryan founded Nyuchi Africa, building digital solutions for African communities under the Ubuntu philosophy ("I am because we are").
+Bryan is Founder & CEO of Nyuchi Africa and Founder of **The Bundu Foundation** — a
+Zimbabwean company limited by guarantee that governs an open agricultural data commons
+and the standards it runs on, under the Ubuntu philosophy ("I am because we are").
+Nyuchi Africa, Mukoko and Shamwari AI are the Foundation's three pillars; StationKit
+and Mukoko Weather are how the commons gets filled and put to use.
 
 | Platform | URL | Description |
 |----------|-----|-------------|
+| **The Bundu Foundation** | bundu.org | Governance: research, open standards, the agricultural data commons |
 | **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
+| **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar-powered weather + soil station, from $25 |
 | **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
 | **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform for African languages |
 | **Mukoko** | mukoko.com | Privacy-focused social platform with 6 apps (ID, Clips, Pulse, Connect, Novels, Events) |
+| **Mukoko Weather** | weather.mukoko.com | AI-powered hyperlocal forecasts for farming, mining and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
 | **Nhimbe** | nhimbe.com | Community events and gatherings platform (part of Mukoko ecosystem) |
+| **Shamwari AI** | shamwari.ai | Open-source, culturally-grounded AI model for low-bandwidth African hardware |
 | **Zimbabwe Travel Info** | travel-info.co.zw | Comprehensive travel guide for Zimbabwe |
 | **Iconic Expeditions** | iconic-expeditions.com | Luxury bespoke safaris across Southern and Eastern Africa |
 | **Workspace Tools** | (internal) | Gmail signature management for Google Workspace |
+
+The Foundation also directly maintains six open-source technical projects (Neural
+Transfer Layer, Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi
+itself) across the `bundu-labs`, `openNTL` and `siafuDB` GitHub organizations. None
+of those are showcased individually on this site — Mzizi is, as the branding layer
+this site is built on.
 
 ### GitHub Organizations
 
@@ -323,8 +337,12 @@ All three must stay clean.
 
 ### Projects Listed
 
-The Nyuchi Africa Ecosystem section includes Nyuchi Africa, Nyuchi Learning, Nyuchi
-Lingo, Mukoko, Mukoko News, Nhimbe, Zimbabwe Travel Info and Iconic Expeditions.
+`src/data/work.ts` (`NYUCHI_PROJECTS`) is the single source of truth for the ecosystem
+grid on `/` — The Bundu Foundation, Mzizi, Nyuchi Africa, Nyuchi StationKit, Nyuchi
+Learning, Nyuchi Lingo, Mukoko, Mukoko Weather, Mukoko News, Nhimbe, Shamwari AI,
+Zimbabwe Travel Info and Iconic Expeditions. Add new ecosystem projects there — the
+homepage section-head text describes the Foundation/pillar relationship in general
+terms rather than naming each project, so it should not need to change alongside it.
 
 ### Internal Tools (Not Listed on the Website)
 
