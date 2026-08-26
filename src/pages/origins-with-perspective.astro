@@ -1,0 +1,490 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { JOURNEY, OPEN_QUESTIONS, PINK_APTITUDES, SCHOOL_WORK, NYUCHI_WORK } from '../data/origins.js';
+
+const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
+---
+
+<BaseLayout
+  title="Origins with a Perspective on Human Potential"
+  description="Equity and the assumptions we make in learning — what growing up in Zimbabwe taught me about measuring capability instead of credentials, and how that shapes the technology work I do now."
+  path="/origins-with-perspective"
+  ogType="article"
+>
+  <PageHeader
+    eyebrow="Talk / Equity & Assessment"
+    title="Origins with a Perspective on Human Potential"
+    lede="Equity: the assumptions we make in learning. Where I came from, where education itself began, and the gap between what we say we value and what we actually measure."
+  >
+    <p class="header-actions">
+      <a class="button" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
+        Open the presentation
+      </a>
+    </p>
+  </PageHeader>
+
+  <!-- Why -->
+  <section class="section shell reveal" aria-labelledby="why-heading">
+    <p class="eyebrow">Why this exists</p>
+    <h2 class="section-title" id="why-heading">The lens I bring</h2>
+
+    <div class="prose">
+      <p>
+        I work in technology at an international school. Most of my colleagues know me as the person
+        who fixes things, rolls out systems, and lately introduces AI tools. That is a fair
+        description of the job. It is not a complete description of the lens I bring to it.
+      </p>
+      <p>
+        I am from Zimbabwe — for a long stretch, the only person on my team who is a citizen of a
+        country outside the first world. Growing up there in the nineties and two-thousands taught me
+        something that has never left me: <em
+          >skills meant survival and success, not grades or the name of a good school.</em
+        > When infrastructure fails on a schedule, when the problems in front of you are not in any textbook,
+        when innovation is the difference between thriving and merely getting by, you end up with a different
+        working definition of intelligence.
+      </p>
+      <p>
+        So when our school turned its equity lens on the assumptions we make about students, I wanted
+        to bring that definition into the room. Not as a critique — as a question I genuinely cannot
+        answer alone.
+      </p>
+    </div>
+  </section>
+
+  <!-- The argument -->
+  <section class="section shell reveal" aria-labelledby="argument-heading">
+    <p class="eyebrow">The argument</p>
+    <h2 class="section-title" id="argument-heading">Capability over credentials</h2>
+
+    <div class="prose">
+      <p>
+        In Zimbabwe, you succeeded on what you could actually do — adapt, collaborate, solve the
+        unexpected — rather than by following the well-lit path of good grades to good college to
+        good job. Capability mattered more than credentials, because credentials alone did not keep
+        the lights on.
+      </p>
+      <p>
+        That made me curious about education&rsquo;s own origins. The great centres of learning, from
+        Alexandria to the Renaissance academies, evaluated scholars on their ability to contribute
+        new knowledge, argue well, and solve genuinely hard problems. Not on recall under artificial
+        time pressure.
+      </p>
+    </div>
+
+    <blockquote class="pull">
+      When did we shift from cultivating intellectual excellence to measuring test-taking ability?
+    </blockquote>
+
+    <div class="prose">
+      <p>
+        Here is the tension I keep running into in my own work: I am helping introduce technologies
+        that handle information recall instantly, while we still often assess students on their
+        ability to memorise information under time pressure. Both things are true at once, and I do
+        not think we have fully reckoned with that.
+      </p>
+    </div>
+  </section>
+
+  <!-- Journey -->
+  <section class="section shell reveal" aria-labelledby="journey-heading">
+    <p class="eyebrow">The path here</p>
+    <h2 class="section-title" id="journey-heading">How I got here</h2>
+    <p class="lede">
+      Zimbabwe to South Africa to Japan to Singapore. Classroom to server room to strategy — which is
+      why I keep asking questions that sit awkwardly between all three.
+    </p>
+
+    <ol class="journey">
+      {
+        JOURNEY.map((stop) => (
+          <li class="journey__item" style={`--stop-mineral: var(--mineral-${stop.mineral})`}>
+            <p class="journey__meta">
+              {stop.period} &middot; {stop.place}
+            </p>
+            <h3 class="journey__title">{stop.title}</h3>
+            <p class="journey__body">{stop.detail}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Current work -->
+  <section class="section shell reveal" aria-labelledby="now-heading">
+    <p class="eyebrow">Now</p>
+    <h2 class="section-title" id="now-heading">What I&rsquo;m working on</h2>
+    <p class="lede">Two halves of the same question — one inside a school, one across a continent.</p>
+
+    <div class="columns">
+      <div>
+        <p class="eyebrow">Singapore American School</p>
+        <ul class="work-list">
+          {
+            SCHOOL_WORK.map((item) => (
+              <li style={`--item-mineral: var(--mineral-${item.mineral})`}>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Nyuchi Africa</p>
+        <ul class="work-list">
+          {
+            NYUCHI_WORK.map((item) => (
+              <li style={`--item-mineral: var(--mineral-${item.mineral})`}>
+                <h3>
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      {item.title}
+                    </a>
+                  ) : (
+                    item.title
+                  )}
+                </h3>
+                <p>{item.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <p class="aside">
+      The Nyuchi work was built for places where credentials were never the thing that got you
+      through. That is the same instinct I bring to the work at school.
+    </p>
+  </section>
+
+  <!-- Conceptual age -->
+  <section class="section shell reveal" aria-labelledby="pink-heading">
+    <p class="eyebrow">The Conceptual Age</p>
+    <h2 class="section-title" id="pink-heading">Six aptitudes</h2>
+
+    <div class="prose">
+      <p>
+        Daniel Pink&rsquo;s <a
+          href="https://www.danpink.com/books/whole-new-mind/"
+          target="_blank"
+          rel="noopener noreferrer">A Whole New Mind</a
+        > argues that abundance, automation and Asia have moved the premium away from logical, linear,
+        spreadsheet work and toward what he calls high concept and high touch — the abilities that are
+        hard to outsource and hard to automate.
+      </p>
+      <p>
+        What struck me reading it is that these are the skills that drove success in Zimbabwe out of
+        necessity. The Conceptual Age is not a forecast for me. It is a description of where I grew
+        up.
+      </p>
+    </div>
+
+    <ul class="aptitudes">
+      {
+        PINK_APTITUDES.map((aptitude) => (
+          <li style={`--aptitude-mineral: var(--mineral-${aptitude.mineral})`}>
+            <h3>{aptitude.name}</h3>
+            <p>{aptitude.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Questions -->
+  <section class="section shell reveal" aria-labelledby="questions-heading">
+    <p class="eyebrow">Open</p>
+    <h2 class="section-title" id="questions-heading">The questions that matter</h2>
+    <p class="lede">
+      I don&rsquo;t have answers — just questions from someone seeing the work through a different
+      lens.
+    </p>
+
+    <ul class="questions">
+      {
+        OPEN_QUESTIONS.map((question) => (
+          <li style={`--question-mineral: var(--mineral-${question.mineral})`}>
+            <h3>{question.title}</h3>
+            <p>{question.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <blockquote class="pull">
+      Are there brilliant minds we&rsquo;re missing because we&rsquo;re measuring the wrong things?
+    </blockquote>
+  </section>
+
+  <!-- Presentation -->
+  <section class="section shell reveal" aria-labelledby="deck-heading">
+    <p class="eyebrow">The deck</p>
+    <h2 class="section-title" id="deck-heading">The presentation</h2>
+    <p class="lede">The original scrolling deck, as it was delivered. It reads best full screen.</p>
+
+    <div class="deck">
+      <iframe
+        src={PRESENTATION_URL}
+        title="Origins with a Perspective on Human Potential — presentation"
+        loading="lazy"></iframe>
+    </div>
+
+    <p class="header-actions">
+      <a class="button" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
+        Open full screen
+      </a>
+    </p>
+  </section>
+
+  <!-- CTA -->
+  <section class="section shell reveal" aria-labelledby="cta-heading">
+    <h2 class="section-title" id="cta-heading">What have you noticed?</h2>
+    <p class="lede">
+      If you work in education, assessment, or anywhere the gap between capability and credentials
+      shows up — I&rsquo;d like to hear how it looks from where you sit.
+    </p>
+    <p class="header-actions">
+      <a class="button" href="/book">Book a call</a>
+      <a class="button is-ghost" href="mailto:bryan@nyuchi.com">bryan@nyuchi.com</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-title {
+    margin-block: 0.5rem 1.5rem;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 1.5rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 1.35rem;
+    border-radius: var(--full);
+    background: var(--foreground);
+    color: var(--base);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .button:hover {
+    background: var(--mineral-gold);
+  }
+
+  .button.is-ghost {
+    background: transparent;
+    color: var(--foreground);
+    border: 1px solid var(--border-strong);
+  }
+
+  .button.is-ghost:hover {
+    background: var(--container);
+    color: var(--foreground);
+  }
+
+  .prose {
+    max-width: 44rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    color: var(--muted);
+  }
+
+  .prose em {
+    color: var(--foreground);
+    font-style: normal;
+  }
+
+  .prose a {
+    color: var(--mineral-cobalt);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .pull {
+    max-width: 44rem;
+    margin-block: 2.5rem;
+    padding-inline-start: 1.5rem;
+    border-inline-start: 2px solid var(--mineral-gold);
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+    font-weight: 300;
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+
+  /* --- journey --- */
+
+  .journey {
+    list-style: none;
+    padding: 0;
+    margin-block-start: 2.5rem;
+  }
+
+  .journey__item {
+    position: relative;
+    padding: 0 0 2.25rem 2rem;
+    border-inline-start: 1px solid var(--border);
+  }
+
+  .journey__item:last-child {
+    padding-block-end: 0;
+    border-inline-start-color: transparent;
+  }
+
+  .journey__item::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: -5px;
+    inset-block-start: 0.35rem;
+    width: 9px;
+    height: 9px;
+    border-radius: var(--full);
+    background: var(--stop-mineral);
+  }
+
+  .journey__meta {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .journey__title {
+    margin-block: 0.35rem 0.5rem;
+    font-size: 1.1875rem;
+    font-weight: 300;
+  }
+
+  .journey__body {
+    max-width: 42rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  /* --- columns --- */
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+    gap: 2.5rem;
+    margin-block-start: 2.5rem;
+  }
+
+  .work-list {
+    list-style: none;
+    padding: 0;
+    margin-block-start: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .work-list li {
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-inline-start: 3px solid var(--item-mineral);
+    border-radius: var(--md);
+  }
+
+  .work-list h3 {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-block-end: 0.25rem;
+  }
+
+  .work-list h3 a:hover {
+    color: var(--item-mineral);
+  }
+
+  .work-list p {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .aside {
+    max-width: 44rem;
+    margin-block-start: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--container);
+    border-radius: var(--lg);
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  /* --- aptitudes & questions --- */
+
+  .aptitudes,
+  .questions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin-block-start: 2rem;
+  }
+
+  .aptitudes li,
+  .questions li {
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--lg);
+  }
+
+  .aptitudes h3,
+  .questions h3 {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-block-end: 0.35rem;
+  }
+
+  .aptitudes h3 {
+    color: var(--aptitude-mineral);
+  }
+
+  .questions h3 {
+    color: var(--question-mineral);
+  }
+
+  .aptitudes p,
+  .questions p {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* --- deck --- */
+
+  .deck {
+    margin-block-start: 2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--lg);
+    overflow: hidden;
+    background: var(--pitch);
+  }
+
+  .deck iframe {
+    display: block;
+    width: 100%;
+    height: min(70dvh, 40rem);
+    min-height: 30rem;
+    border: 0;
+  }
+</style>

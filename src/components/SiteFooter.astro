@@ -1,0 +1,112 @@
+---
+import { NAV, PROFILE } from '../data/profile.js';
+import MineralBar from './MineralBar.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <MineralBar thickness="2px" />
+
+  <div class="footer__inner shell">
+    <div class="footer__identity">
+      <p class="footer__wordmark">{PROFILE.name}</p>
+      <p class="eyebrow">Digital craftsman, builder of communities</p>
+      <p class="footer__copy">© {year} {PROFILE.name}. All rights reserved.</p>
+    </div>
+
+    <div class="footer__columns">
+      <nav class="footer__nav" aria-label="Footer">
+        <p class="eyebrow">Site</p>
+        <ul>
+          {
+            NAV.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="footer__nav">
+        <p class="eyebrow">Elsewhere</p>
+        <ul>
+          {
+            PROFILE.socials.map((social) => (
+              <li>
+                <a
+                  href={social.href}
+                  target={social.href.startsWith('http') ? '_blank' : undefined}
+                  rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  {social.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-block-start: 4rem;
+    background: var(--void);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3rem;
+    padding-block: 3rem;
+  }
+
+  .footer__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer__wordmark {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .footer__copy {
+    font-size: 0.8125rem;
+    color: var(--faint);
+    margin-block-start: 0.5rem;
+  }
+
+  .footer__columns {
+    display: flex;
+    gap: 3rem;
+  }
+
+  .footer__nav ul {
+    list-style: none;
+    padding: 0;
+    margin-block-start: 0.75rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer__nav a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    font-size: 0.875rem;
+    color: var(--muted);
+    transition: color 0.25s ease;
+  }
+
+  .footer__nav a:hover {
+    color: var(--foreground);
+  }
+</style>

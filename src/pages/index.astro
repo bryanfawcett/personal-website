@@ -1,0 +1,323 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import LinkCard from '../components/LinkCard.astro';
+import { PROFILE } from '../data/profile.js';
+import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data/work.js';
+---
+
+<BaseLayout
+  title={`${PROFILE.name} — ${PROFILE.title}`}
+  description={PROFILE.summary}
+  path="/"
+  ogType="profile"
+  bare
+>
+  <Hero slot="hero" />
+
+  <!-- Philosophy -->
+  <section class="section shell reveal" id="philosophy" aria-labelledby="philosophy-heading">
+    <p class="eyebrow">Philosophy &amp; Approach</p>
+    <h2 class="section-title" id="philosophy-heading">How I build</h2>
+
+    <div class="principles">
+      {
+        PRINCIPLES.map((principle) => (
+          <article class="principle" style={`--principle-mineral: var(--mineral-${principle.mineral})`}>
+            <h3 class="principle__title">{principle.title}</h3>
+            <p class="principle__body">{principle.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Competencies -->
+  <section class="section shell reveal" id="expertise" aria-labelledby="expertise-heading">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Core Competencies</p>
+        <h2 class="section-title" id="expertise-heading">What I do</h2>
+      </div>
+      <p class="eyebrow">10+ years in enterprise tech</p>
+    </div>
+
+    <div class="competencies">
+      {
+        COMPETENCIES.map((competency) => (
+          <article class="competency">
+            <h3 class="competency__title">{competency.title}</h3>
+            <p class="competency__body">{competency.description}</p>
+            <ul class="chips">
+              {competency.highlights.map((highlight) => (
+                <li class="chip">{highlight}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section shell reveal" id="projects" aria-labelledby="projects-heading">
+    <p class="eyebrow">Projects &amp; Work</p>
+    <h2 class="section-title" id="projects-heading">What I&rsquo;ve built</h2>
+
+    <div class="project-group">
+      <p class="eyebrow">Nyuchi Africa Ecosystem</p>
+      <p class="lede">
+        My passion project building digital solutions across Africa — from educational platforms to
+        travel systems and community networks.
+      </p>
+      <div class="grid-2">
+        {
+          NYUCHI_PROJECTS.map((project) => (
+            <LinkCard
+              title={project.title}
+              description={project.description}
+              href={project.href}
+              mineral={project.mineral}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="project-group">
+      <p class="eyebrow">Singapore American School</p>
+      <p class="lede">
+        Technology &amp; Innovation Coordinator, building educational platforms and digital tools for
+        learning.
+      </p>
+      <div class="grid-2">
+        {
+          SAS_PROJECTS.map((project) => (
+            <LinkCard
+              title={project.title}
+              description={project.description}
+              href={project.href}
+              mineral={project.mineral}
+              cta="View repository"
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="project-group">
+      <p class="eyebrow">Talks &amp; Perspectives</p>
+      <div class="grid-1">
+        <LinkCard
+          title="Origins with a Perspective on Human Potential"
+          description="Equity and the assumptions we make in learning — a Zimbabwe perspective on capability, credentials, and what we might be measuring wrong."
+          href="/origins-with-perspective"
+          mineral="gold"
+          cta="Read the talk"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect -->
+  <section class="section shell reveal" id="connect" aria-labelledby="connect-heading">
+    <p class="eyebrow">Contact</p>
+    <h2 class="section-title" id="connect-heading">Let&rsquo;s connect</h2>
+
+    <div class="connect">
+      <p class="lede">
+        Whether you&rsquo;re interested in EdTech solutions, African tech initiatives, or digital
+        innovation strategy, I&rsquo;d love to explore opportunities for collaboration and meaningful
+        impact.
+      </p>
+
+      <ul class="connect__links">
+        {
+          PROFILE.socials.map((social) => (
+            <li>
+              <a
+                class="connect__link"
+                href={social.href}
+                target={social.href.startsWith('http') ? '_blank' : undefined}
+                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                <span class="connect__name">{social.name}</span>
+                <span class="connect__handle">{social.handle}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .section-title {
+    margin-block: 0.5rem 2.5rem;
+  }
+
+  .section-head .section-title {
+    margin-block-end: 0;
+  }
+
+  .section-head + .competencies {
+    margin-block-start: 2.5rem;
+  }
+
+  /* --- principles --- */
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+    gap: 2rem;
+  }
+
+  .principle {
+    padding-inline-start: 1.25rem;
+    border-inline-start: 2px solid var(--border);
+    transition: border-color 0.35s ease;
+  }
+
+  .principle:hover {
+    border-inline-start-color: var(--principle-mineral);
+  }
+
+  .principle__title {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-block-end: 0.5rem;
+  }
+
+  .principle__body {
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  /* --- competencies --- */
+
+  .competencies {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .competency {
+    padding-block: 2rem;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .competency:last-child {
+    border-block-end: 1px solid var(--border);
+  }
+
+  .competency__title {
+    font-size: 1.375rem;
+    font-weight: 300;
+    margin-block-end: 0.75rem;
+  }
+
+  .competency__body {
+    max-width: 44rem;
+    color: var(--muted);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin-block-start: 1rem;
+  }
+
+  .chip {
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--full);
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+  }
+
+  /* --- projects --- */
+
+  .project-group + .project-group {
+    margin-block-start: 3.5rem;
+  }
+
+  .project-group .lede {
+    margin-block: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .project-group .eyebrow + .grid-1 {
+    margin-block-start: 1.5rem;
+  }
+
+  .grid-1 {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: 0.75rem;
+  }
+
+  /* --- connect --- */
+
+  .connect {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .connect__links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .connect__link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.85rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--md);
+    transition:
+      border-color 0.25s ease,
+      background-color 0.25s ease;
+  }
+
+  .connect__link:hover {
+    background: var(--container);
+    border-color: var(--border-strong);
+  }
+
+  .connect__name {
+    font-size: 0.9375rem;
+  }
+
+  .connect__handle {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--faint);
+  }
+</style>

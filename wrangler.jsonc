@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bryanfawcett-site",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // The site is fully prerendered, so this is an assets-only Worker: there is
+  // no `main` script. Astro's cloudflare adapter emits the deployable tree to
+  // dist/client (dist/server stays empty while every route is static).
+  "assets": {
+    "directory": "./dist/client",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

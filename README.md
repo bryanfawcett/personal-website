@@ -1,205 +1,108 @@
-# Bryan Fawcett - Personal Portfolio
+# bryanfawcett.com
 
-A modern, accessible portfolio website built with Next.js 16, featuring animated loading screens, comprehensive error handling, and full test coverage.
+Personal site for Bryan Fawcett — Technology & Innovation Coordinator at Singapore
+American School, founder of Nyuchi Africa.
 
-## Features
+**Astro 7 · TypeScript · Cloudflare Workers · Mzizi branding · dark only.**
 
-- **Animated Loading Screen** - Cursive name reveal animation using Dancing Script font
-- **Typography System** - Noto Serif for headings, Poppins for body text
-- **Hero Section** - Profile image with fade-to-background effect
-- **Skeleton Loading States** - Comprehensive loading UI for all sections
-- **Error Boundaries** - Graceful error handling with retry functionality
-- **Theme Toggle** - Dark/light mode support
-- **Responsive Design** - Mobile-first, works on all devices
-- **Accessibility** - ARIA labels, keyboard navigation, screen reader support
-- **Full Test Coverage** - 48 tests covering all components
-
-## Tech Stack
-
-- **Framework**: [Next.js 16](https://nextjs.org/) with App Router
-- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Testing**: [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/)
-- **Package Manager**: [pnpm](https://pnpm.io/)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20+
-- pnpm 10+
-
-### Installation
+## Quick reference
 
 ```bash
-# Clone the repository
-git clone https://github.com/bryanfawcett/personal-website.git
-cd personal-website
-
-# Install dependencies
-pnpm install
-
-# Run development server
-pnpm dev
+pnpm dev        # dev server at localhost:4321
+pnpm check      # astro check (TypeScript, under `strictest`)
+pnpm build      # production build to dist/
+pnpm preview    # run the built site in workerd via wrangler
+pnpm deploy     # build and deploy the Worker
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the portfolio.
+**Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
 
-### Available Scripts
+## Architecture
+
+The site is fully prerendered and served from an assets-only Cloudflare Worker —
+there is no `main` script in `wrangler.jsonc` because no route needs a server.
+`@astrojs/cloudflare` emits the deployable tree to `dist/client`; `dist/server`
+stays empty while every route is static. Add one non-prerendered route and the
+adapter starts populating it, at which point `wrangler.jsonc` needs a `main`.
+
+This repo is the main site. Satellite properties — the Origins presentation, and
+whatever comes next — are their own Workers with their own repos, sharing this
+branding layer rather than this codebase.
+
+```
+src/
+  brand/          Design tokens. The single source of truth for the look.
+    minerals.ts   The seven Mzizi minerals, with origin and meaning.
+    tokens.ts     Surfaces, ink, lines, semantics, type, radii → CSS custom properties.
+  components/     Astro components. No client framework anywhere.
+  data/           Content as typed TypeScript, so pages stay markup.
+  layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal.
+  pages/          One file per route.
+  styles/
+    fonts.css     Generated. Self-hosted @font-face rules.
+    global.css    Reset, layout primitives, shared utilities.
+scripts/
+  fetch-fonts.py  Regenerates fonts.css and public/fonts.
+  verify-fonts.py Fails CI if fonts.css references a file that isn't vendored.
+```
+
+## Branding
+
+Colour, surfaces and semantics come from the [Mzizi design system](https://mzizi.dev):
+seven minerals named for where they are mined and what they stand for, plus a warm
+dark ramp. Mirrored into `src/brand/` rather than fetched at build time, so a build
+never depends on a network call and the two can only drift when someone edits the file.
+
+The typographic identity stays the site's own — Dancing Script wordmark, Noto Serif
+headings, Poppins body — with JetBrains Mono for eyebrow labels and metadata. Noto
+Serif and JetBrains Mono are shared with Mzizi; the display and body faces are what
+make this site look like this site rather than any other property in the ecosystem.
+
+The **mineral bar** is the brand signature: seven segments, one per mineral, pinned
+across the top of every page and repeated above the footer. It is the one place
+colour appears at full strength on an otherwise monochrome site, which is what stops
+it reading as decoration.
+
+Everything else uses colour as a reward rather than a default — a card's edge on
+hover, a timeline node, a link. To change the whole palette, edit `src/brand/`;
+nothing downstream hard-codes a hex value.
+
+### Dark only
+
+There is no light ramp and no theme toggle, by design. `color-scheme: dark` is
+declared so form controls and scrollbars follow.
+
+## Fonts
+
+Self-hosted. `scripts/fetch-fonts.py` downloads the Latin and Latin Extended subsets
+into `public/fonts/` and regenerates `src/styles/fonts.css`. Latin Extended matters
+here because the content carries African names and place-names with diacritics.
+
+Several families are variable fonts where Google serves one file per subset covering
+every weight — `scripts/verify-fonts.py` runs in CI to catch CSS that references a
+file which was never downloaded.
+
+Re-run after changing the type stack in `src/brand/tokens.ts`:
 
 ```bash
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
-pnpm test         # Run tests in watch mode
-pnpm test:run     # Run tests once
-pnpm test:coverage # Run tests with coverage report
+python3 scripts/fetch-fonts.py
 ```
 
-## Project Structure
+## Deployment
 
-```
-├── app/
-│   ├── layout.tsx      # Root layout with font configuration
-│   ├── page.tsx        # Main portfolio page
-│   └── globals.css     # Global styles and animations
-├── components/
-│   ├── __tests__/      # Component tests
-│   ├── error-boundary.tsx
-│   ├── hero.tsx
-│   ├── loading-screen.tsx
-│   └── skeleton.tsx
-├── lib/
-│   └── utils.ts        # Utility functions
-├── public/
-│   └── profile.jpg     # Profile image
-├── .github/
-│   ├── dependabot.yml  # Automated dependency updates
-│   └── workflows/
-│       ├── ci.yml      # CI pipeline (lint, test, build)
-│       └── claude-review.yml # Claude Code review
-└── vitest.config.ts    # Test configuration
-```
+Push to `main`. CI type-checks and builds; the Worker deploys via `pnpm deploy`.
 
-## Components
+## Conventions
 
-### LoadingScreen
-Animated loading screen with cursive name reveal.
+- **Everything is Astro and TypeScript.** No React, no client framework. The only
+  client JavaScript is the scroll-reveal observer and the deferred Cal.com loader.
+- **`astro check` runs under `strictest`** and must stay at zero errors.
+- **Content lives in `src/data/`,** typed, so pages stay markup and copy edits do
+  not mean touching layout.
+- **No hard-coded colours** outside `src/brand/`. Use the custom properties.
+- **44px minimum touch targets** on anything interactive.
+- **Third-party scripts load on request,** never on page load.
 
-```tsx
-import { LoadingScreen } from '@/components/loading-screen'
+## Commit prefixes
 
-<LoadingScreen
-  onLoadingComplete={() => setLoading(false)}
-  minimumDisplayTime={2500}
-/>
-```
-
-### Hero
-Profile section with image and gradient fade effect.
-
-```tsx
-import { Hero } from '@/components/hero'
-
-<Hero
-  name="Bryan Fawcett"
-  tagline="TECHNOLOGY LEADER"
-  subtitle="Building Systems That Transform Communities"
-  imageSrc="/profile.jpg"
-  description={<>Your description with <span>highlights</span></>}
-  primaryRole={{ title: "Role", subtitle: "Company" }}
-  passionProject={{ title: "Project", subtitle: "Description" }}
-  status={{ text: "Currently building", secondary: "Remote" }}
-/>
-```
-
-### ErrorBoundary
-Error boundary with retry functionality.
-
-```tsx
-import { ErrorBoundary, SectionErrorBoundary } from '@/components/error-boundary'
-
-<ErrorBoundary fallback={<CustomError />}>
-  <YourComponent />
-</ErrorBoundary>
-
-<SectionErrorBoundary sectionName="Projects">
-  <ProjectsSection />
-</SectionErrorBoundary>
-```
-
-### Skeleton Components
-Loading state placeholders.
-
-```tsx
-import { Skeleton, SkeletonText, SkeletonCard, SkeletonHero } from '@/components/skeleton'
-
-<Skeleton className="h-10 w-full" />
-<SkeletonText lines={3} />
-<SkeletonCard />
-<SkeletonHero />
-```
-
-## CI/CD
-
-### GitHub Actions
-
-- **CI Pipeline** (`ci.yml`): Runs on every push and PR
-  - Linting and type checking
-  - Unit tests
-  - Production build
-  - Security audit
-
-- **Claude Code Review** (`claude-review.yml`): AI-powered code review on every PR
-
-### Dependabot
-
-Automated dependency updates configured for:
-- npm packages (weekly on Mondays)
-- GitHub Actions
-
-## Customization
-
-### Profile Image
-Replace `public/profile.jpg` with your own image. The Hero component will handle loading states and fallbacks automatically.
-
-### Fonts
-Fonts are loaded via Google Fonts in `app/layout.tsx`:
-- **Noto Serif** - Headings
-- **Poppins** - Body text
-- **Dancing Script** - Cursive loading animation
-
-### Colors
-Theme colors are defined as CSS custom properties in `app/globals.css`. Supports both light and dark modes via oklch color space.
-
-## Testing
-
-```bash
-# Run all tests
-pnpm test:run
-
-# Run tests in watch mode
-pnpm test
-
-# Run with coverage
-pnpm test:coverage
-```
-
-Current coverage: 48 tests across 4 test files.
-
-## Security
-
-- Dependabot enabled for automated security updates
-- Security audit runs in CI pipeline
-- All external links use `rel="noopener noreferrer"`
-- Error boundaries prevent crash propagation
-
-## License
-
-Open source under the [MIT License](LICENSE).
-
----
-
-**Built by Bryan Fawcett**
+`feat:` · `fix:` · `chore:` · `docs:` · `refactor:`

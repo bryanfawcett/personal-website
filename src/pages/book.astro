@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { PROFILE } from '../data/profile.js';
+
+const TOPICS = [
+  {
+    title: 'EdTech & digital transformation',
+    detail:
+      'Platform selection, rollout, governance, and the change management that decides whether any of it sticks.',
+    mineral: 'cobalt',
+  },
+  {
+    title: 'Systems & architecture',
+    detail:
+      'Infrastructure, identity, device management, and building systems that stay up when you are asleep.',
+    mineral: 'sodalite',
+  },
+  {
+    title: 'Building for African communities',
+    detail:
+      'What the Nyuchi ecosystem has taught me about designing for constrained connectivity and real budgets.',
+    mineral: 'terracotta',
+  },
+  {
+    title: 'Something else entirely',
+    detail: 'If it sits near any of the above, it is probably worth a conversation.',
+    mineral: 'gold',
+  },
+] as const;
+---
+
+<BaseLayout
+  title="Book a Call"
+  description="Book a conversation with Bryan Fawcett about EdTech, digital transformation, systems architecture, or building for African communities."
+  path="/book"
+>
+  <PageHeader
+    eyebrow="Contact"
+    title="Book a call"
+    lede="Let's discuss your project, explore collaboration, or talk about EdTech, digital transformation, and building for African communities."
+  />
+
+  <section class="section shell reveal" aria-labelledby="topics-heading">
+    <p class="eyebrow">What to expect</p>
+    <h2 class="section-title" id="topics-heading">Worth talking about</h2>
+
+    <ul class="topics">
+      {
+        TOPICS.map((topic) => (
+          <li style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
+            <h3>{topic.title}</h3>
+            <p>{topic.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section shell reveal" aria-labelledby="scheduler-heading">
+    <p class="eyebrow">Scheduling</p>
+    <h2 class="section-title" id="scheduler-heading">Pick a time</h2>
+
+    <div class="scheduler">
+      <!--
+        Cal.com is loaded only when the visitor asks for it. A third-party
+        scheduler embed on every page load is a tracker the reader did not
+        request, and it is the heaviest thing on the page.
+      -->
+      <div id="cal-embed" class="scheduler__embed" data-cal-link="bryanfawcett"></div>
+      <button id="cal-load" class="button" type="button">Load the scheduler</button>
+      <p class="scheduler__fallback">
+        Prefer email? <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const button = document.getElementById('cal-load');
+  const embed = document.getElementById('cal-embed');
+
+  button?.addEventListener(
+    'click',
+    () => {
+      if (!embed) return;
+
+      button.remove();
+      embed.dataset['state'] = 'loading';
+
+      const script = document.createElement('script');
+      script.src = 'https://app.cal.com/embed/embed.js';
+      script.async = true;
+      script.addEventListener('load', () => {
+        embed.dataset['state'] = 'ready';
+      });
+      script.addEventListener('error', () => {
+        embed.dataset['state'] = 'error';
+        embed.textContent = 'The scheduler could not load. Email bryan@nyuchi.com instead.';
+      });
+      document.body.appendChild(script);
+    },
+    { once: true },
+  );
+</script>
+
+<style>
+  .section-title {
+    margin-block: 0.5rem 2rem;
+  }
+
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .topics li {
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-inline-start: 3px solid var(--topic-mineral);
+    border-radius: var(--lg);
+  }
+
+  .topics h3 {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-block-end: 0.35rem;
+  }
+
+  .topics p {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .scheduler {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .scheduler__embed:empty {
+    display: none;
+  }
+
+  .scheduler__embed[data-state='loading']::before {
+    content: 'Loading the scheduler…';
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 1.35rem;
+    border-radius: var(--full);
+    background: var(--foreground);
+    color: var(--base);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.25s ease;
+  }
+
+  .button:hover {
+    background: var(--mineral-gold);
+  }
+
+  .scheduler__fallback {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .scheduler__fallback a {
+    color: var(--mineral-cobalt);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

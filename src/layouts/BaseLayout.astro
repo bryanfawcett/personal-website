@@ -1,0 +1,156 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import { tokensToCss } from '../brand/tokens.js';
+import MineralBar from '../components/MineralBar.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { PROFILE } from '../data/profile.js';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path only, e.g. "/experience". Used for canonical and nav state. */
+  path?: string;
+  /** `article` for the talk page, `profile` for the home page. */
+  ogType?: 'website' | 'profile' | 'article';
+  /** Home page renders its own full-bleed hero above the nav. */
+  bare?: boolean;
+}
+
+const { title, description, path = Astro.url.pathname, ogType = 'website', bare = false } = Astro.props;
+
+const canonical = new URL(path, Astro.site ?? 'https://bryanfawcett.com').href;
+const fullTitle = path === '/' ? title : `${title} | ${PROFILE.name}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': 'https://bryanfawcett.com/#person',
+      name: PROFILE.name,
+      givenName: 'Bryan',
+      familyName: 'Fawcett',
+      jobTitle: PROFILE.role,
+      description: PROFILE.summary,
+      url: 'https://bryanfawcett.com',
+      email: `mailto:${PROFILE.email}`,
+      image: 'https://bryanfawcett.com/profile.png',
+      sameAs: PROFILE.socials.map((s) => s.href),
+      worksFor: {
+        '@type': 'EducationalOrganization',
+        name: PROFILE.employer,
+        url: 'https://www.sas.edu.sg',
+      },
+      founder: {
+        '@type': 'Organization',
+        name: 'Nyuchi Africa',
+        url: 'https://nyuchi.com',
+      },
+      knowsAbout: PROFILE.knowsAbout,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://bryanfawcett.com/#website',
+      url: 'https://bryanfawcett.com',
+      name: `${PROFILE.name} — ${PROFILE.title}`,
+      publisher: { '@id': 'https://bryanfawcett.com/#person' },
+      inLanguage: 'en',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" dir="ltr" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0E0D0C" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={PROFILE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://bryanfawcett.com/profile.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@bryanfawcett" />
+
+    {/* Fonts are self-hosted (see scripts/fetch-fonts.py) — no third-party request. */}
+    <link
+      rel="preload"
+      href="/fonts/poppins-300-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/noto-serif-300-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/* Design tokens, generated from src/brand/tokens.ts at build time. */}
+    <style is:global set:html={tokensToCss()}></style>
+
+    <script is:inline>
+      // Flip off the no-JS fallback before first paint so revealed sections
+      // start hidden rather than flashing in and then animating.
+      document.documentElement.classList.remove('no-js');
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <MineralBar placement="top" />
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <slot name="hero" />
+    <SiteNav path={path} floating={bare} />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <script>
+      // Reveal sections as they enter the viewport.
+      //
+      // threshold 0: a section taller than the viewport can never reach a
+      // meaningful intersection ratio, so anything long would otherwise stay
+      // at opacity 0 forever on a phone.
+      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0 },
+      );
+
+      for (const target of targets) {
+        observer.observe(target);
+      }
+    </script>
+  </body>
+</html>

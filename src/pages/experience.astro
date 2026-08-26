@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { CORE_SKILLS, CREDENTIALS, ROLES } from '../data/experience.js';
+import { MINERALS } from '../brand/minerals.js';
+---
+
+<BaseLayout
+  title="Experience"
+  description="Over 10 years in education technology, systems architecture, and digital product development across Africa and Asia."
+  path="/experience"
+>
+  <PageHeader
+    eyebrow="Career"
+    title="Experience"
+    lede="Over ten years in education technology, systems architecture, and digital product development across Africa and Asia."
+  />
+
+  <section class="section shell reveal" aria-labelledby="roles-heading">
+    <h2 class="visually-hidden" id="roles-heading">Work history</h2>
+
+    <ol class="timeline">
+      {
+        ROLES.map((role, index) => (
+          <li
+            class="timeline__item"
+            style={`--node-mineral: var(--mineral-${MINERALS[index % MINERALS.length]!.name})`}
+          >
+            <div class="timeline__head">
+              <div>
+                <h3 class="timeline__title">{role.title}</h3>
+                <p class="timeline__company">{role.company}</p>
+              </div>
+              <div class="timeline__meta">
+                <span>{role.period}</span>
+                <span class="timeline__location">{role.location}</span>
+                {role.duration && <span class="chip">{role.duration}</span>}
+              </div>
+            </div>
+
+            <ul class="timeline__points">
+              {role.description.map((point) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+
+            {role.skills && (
+              <ul class="chips">
+                {role.skills.map((skill) => (
+                  <li class="chip">{skill}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section shell reveal" aria-labelledby="credentials-heading">
+    <p class="eyebrow">Education &amp; Certifications</p>
+    <h2 class="section-title" id="credentials-heading">Credentials</h2>
+
+    <ul class="credentials">
+      {
+        CREDENTIALS.map((credential) => (
+          <li class="credential">
+            <h3 class="credential__title">{credential.title}</h3>
+            <p class="credential__issuer">{credential.issuer}</p>
+            <p class="credential__period">{credential.period}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section shell reveal" aria-labelledby="skills-heading">
+    <p class="eyebrow">Core Skills</p>
+    <h2 class="section-title" id="skills-heading">The toolkit</h2>
+
+    <ul class="chips">
+      {CORE_SKILLS.map((skill) => <li class="chip is-large">{skill}</li>)}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-title {
+    margin-block: 0.5rem 2rem;
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+  }
+
+  .timeline__item {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+    border-inline-start: 1px solid var(--border);
+  }
+
+  .timeline__item:last-child {
+    padding-block-end: 0;
+    border-inline-start-color: transparent;
+  }
+
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: -5px;
+    inset-block-start: 0.4rem;
+    width: 9px;
+    height: 9px;
+    border-radius: var(--full);
+    background: var(--node-mineral);
+  }
+
+  .timeline__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .timeline__title {
+    font-size: 1.25rem;
+    font-weight: 300;
+  }
+
+  .timeline__company {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .timeline__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--faint);
+  }
+
+  @media (min-width: 40rem) {
+    .timeline__meta {
+      align-items: flex-end;
+      text-align: end;
+    }
+  }
+
+  .timeline__points {
+    margin-block-start: 1rem;
+    padding-inline-start: 1.1rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .timeline__points li {
+    margin-block-end: 0.35rem;
+  }
+
+  .timeline__points li::marker {
+    color: var(--node-mineral);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin-block-start: 1rem;
+  }
+
+  .chip {
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--full);
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+
+  .chip.is-large {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    color: var(--muted);
+  }
+
+  .credentials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .credential {
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--lg);
+  }
+
+  .credential__title {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .credential__issuer {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .credential__period {
+    margin-block-start: 0.25rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    color: var(--faint);
+  }
+</style>

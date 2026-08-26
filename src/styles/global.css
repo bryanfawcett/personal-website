@@ -1,0 +1,206 @@
+/*
+ * Static global styles. Every colour, face and radius resolves to a custom
+ * property emitted from src/brand/tokens.ts — nothing is hard-coded here.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  /* Dark only. Declared so form controls and scrollbars follow. */
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--base);
+  color: var(--foreground);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Entry animations park elements off-canvas; never let that scroll sideways. */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--sm);
+}
+
+::selection {
+  background: var(--mineral-tanzanite-container);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.shell {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .shell {
+    padding-inline: 2rem;
+  }
+}
+
+.section {
+  padding-block: 4rem;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding-block: 6rem;
+  }
+}
+
+/* ------------------------------------------------------------ typography */
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.section-title {
+  font-size: clamp(1.875rem, 1.4rem + 2vw, 2.5rem);
+}
+
+.lede {
+  font-size: 1.125rem;
+  color: var(--muted);
+  max-width: 42rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------- scroll reveal */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* No JS, or reduced motion: show everything immediately. */
+.no-js .reveal,
+.no-js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------- a11y */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  background: var(--raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--md);
+  transform: translateY(-150%);
+  transition: transform 0.2s ease-out;
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}

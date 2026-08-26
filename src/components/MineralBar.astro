@@ -1,0 +1,98 @@
+---
+/**
+ * The mineral bar — the site's brand signature.
+ *
+ * Seven segments, one per Mzizi mineral, in system order. It is the one place
+ * colour appears at full strength on an otherwise monochrome site, which is
+ * what makes it read as an identity mark rather than decoration.
+ *
+ * Purely decorative: hidden from assistive technology, with the palette's
+ * meaning available as a tooltip for sighted users who hover.
+ */
+import { MINERALS } from '../brand/minerals.js';
+
+interface Props {
+  /** `top` pins it across the viewport; `inline` sits it in the flow. */
+  placement?: 'top' | 'inline';
+  /** Bar thickness. */
+  thickness?: string;
+  class?: string;
+}
+
+const { placement = 'inline', thickness = '3px', class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['mineral-bar', `is-${placement}`, className]}
+  style={`--bar-thickness: ${thickness}`}
+  aria-hidden="true"
+>
+  {
+    MINERALS.map((m) => (
+      <span
+        class="mineral-bar__segment"
+        style={`background: var(--mineral-${m.name})`}
+        title={`${m.name} — ${m.symbolism}. From ${m.origin}.`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .mineral-bar {
+    display: flex;
+    width: 100%;
+    height: var(--bar-thickness);
+    overflow: hidden;
+  }
+
+  .mineral-bar.is-top {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 60;
+  }
+
+  .mineral-bar__segment {
+    flex: 1;
+    /* Segments settle into place on load rather than snapping in. */
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: mineral-bar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .mineral-bar__segment:nth-child(1) {
+    animation-delay: 0.02s;
+  }
+  .mineral-bar__segment:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+  .mineral-bar__segment:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .mineral-bar__segment:nth-child(4) {
+    animation-delay: 0.14s;
+  }
+  .mineral-bar__segment:nth-child(5) {
+    animation-delay: 0.18s;
+  }
+  .mineral-bar__segment:nth-child(6) {
+    animation-delay: 0.22s;
+  }
+  .mineral-bar__segment:nth-child(7) {
+    animation-delay: 0.26s;
+  }
+
+  @keyframes mineral-bar-in {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mineral-bar__segment {
+      transform: none;
+      animation: none;
+    }
+  }
+</style>
