@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Panel from '../components/Panel.astro';
+import ContactCard from '../components/ContactCard.astro';
 import Portrait from '../components/Portrait.astro';
 import WorkshopStrip from '../components/WorkshopStrip.astro';
 import { PROFILE } from '../data/profile.js';
@@ -202,7 +203,7 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
         EdTech solutions, African tech initiatives, or digital innovation strategy — commissions
         welcome at the workshop.
       </p>
-      <a class="connect__email" href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
+      <ContactCard class="connect__card" />
 
       <ul class="socials">
         {
@@ -439,15 +440,10 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
     margin: 0.625rem auto 0;
   }
 
-  .connect__email {
-    display: inline-block;
-    margin-block-start: 0.75rem;
-    padding-block-end: 2px;
-    border-block-end: 1.5px dashed var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+  .connect :global(.connect__card) {
+    justify-content: center;
+    margin-block-start: 2rem;
+    text-align: start;
   }
 
   .socials {

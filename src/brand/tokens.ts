@@ -51,6 +51,8 @@ export const INK = {
   faint: 'rgb(242 246 251 / 0.34)',
   /** Minor grid rule. Non-text only. */
   hair: 'rgb(242 246 251 / 0.17)',
+  /** Fill inside stroked display type, so the outline still reads as solid. */
+  drafted: 'rgb(242 246 251 / 0.34)',
 } as const;
 
 /**

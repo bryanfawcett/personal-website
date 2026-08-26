@@ -53,6 +53,7 @@ pnpm check      # astro check (TypeScript under `strictest`) — must stay at 0 
 pnpm build      # production build to dist/
 pnpm preview    # run the built site in workerd via wrangler
 pnpm deploy     # build and deploy the Worker
+pnpm og         # re-render the social card (only after the portrait changes)
 ```
 
 **Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
@@ -68,6 +69,8 @@ bryanfawcett.com, built with:
 - **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
   a print rather than a wash: near-black ground with a blue cast, line work in
   white. The ground is `#05090F`; the ink is `#F2F6FB`.
+- **Nothing on the page edge but the mineral rail.** There used to be a sheet
+  frame there. It went, and it should not come back.
 
 TypeScript is pinned to 6.x because `@astrojs/check` peers on `^5 || ^6`; TypeScript 7
 is published but not yet supported by the Astro tooling.
@@ -119,6 +122,40 @@ vertically down the binding edge of the sheet. It is the one place saturated col
 appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward (a
 mineral bar under a heading, a schedule reference number), not a default. That
 restraint is the design; adding colour to more surfaces breaks it.
+
+### The ground travels with the sheet
+
+`.sheet-ground`, `.blueprint` and `.schematics` are `position: absolute` over
+the document, not `fixed` to the viewport. A fixed ground slides underneath the
+content as you scroll, which is the one thing paper never does.
+
+Two consequences to keep in mind:
+
+- The lighting radials are sized `100% 140vh` and pinned top and bottom. Sized
+  as a percentage of a 6000px document they stop being a fall of light and
+  become a flat tint.
+- Fall-off is on the left and right edges only. An inset box-shadow on all four
+  reads as a vignette on a fixed ground and as a horizontal band every
+  screenful on a scrolling one.
+
+### Pages unroll
+
+`ClientRouter` plus the `unroll` animation in `src/brand/transitions.ts`: the
+outgoing sheet rolls away and the incoming one unrolls, `clip-path` doing the
+work with a small `scaleY` off `transform-origin: top` for the spring.
+
+Two things this breaks if you forget them:
+
+- **Anything that initialises on load must bind to `astro:page-load`.** The
+  router swaps the document without a reload, so a one-shot script only ever
+  sees the first page — the scroll-reveal observer would leave every later page
+  at opacity 0. Disconnect the previous observer before making a new one.
+- **`prefers-reduced-motion` needs naming explicitly.** The blanket override at
+  the top of global.css selects `*` and its two pseudo-elements, which never
+  matches `::view-transition-old(root)`.
+
+The mineral rail is `transition:persist` so it does not re-mount and
+re-animate on every navigation.
 
 ### Containers are the drawing, not boxes on it
 
@@ -172,6 +209,23 @@ from the same source with the site's own faces. It is not a build step, because
 the portrait or the wording changes. librsvg reads fontconfig rather than
 woff2, so install the vendored fonts as TTF into `~/.fonts` first or the card
 silently falls back to a system sans.
+
+### The contact card
+
+`ContactCard.astro` carries the portrait, the particulars and a QR. The QR holds
+the **whole vCard**, not a link to one, so scanning it saves the contact with no
+network — the case that matters standing in a room at a conference. Rendered to
+SVG at build time by `src/brand/vcard.ts`; nothing about it ships as JavaScript.
+`/bryan-fawcett.vcf` is a prerendered static endpoint serving the same card.
+
+vCard **3.0**, not 4.0: both mobile platforms read 3.0 without complaint, and
+older Android scanners still choke on 4.0's `KIND` and typed URLs. Lines are
+escaped and folded per RFC 6350 §3.4 — an unfolded long line is the usual reason
+a card imports with a truncated title on one platform and not another.
+
+The QR needs its own opaque ground (`--sheet-deep`). A code sitting over the
+blueprint ruling is a code a phone will not lock onto. If you change the payload
+or the styling, re-verify by decoding a real screen capture, not by eye.
 
 ### Content lives in `src/data/`
 

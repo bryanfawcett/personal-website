@@ -1,7 +1,9 @@
 ---
 import '../styles/fonts.css';
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { tokensToCss } from '../brand/tokens.js';
+import { unroll } from '../brand/transitions.js';
 import MineralBar from '../components/MineralBar.astro';
 import Schematics from '../components/Schematics.astro';
 import SiteNav from '../components/SiteNav.astro';
@@ -117,22 +119,23 @@ const jsonLd = {
     </script>
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+
+    <ClientRouter />
   </head>
 
   <body>
-    {/* The sheet, bottom to top: ground, ruling, drawings, frame, rail. */}
+    {/* The sheet, bottom to top: ground, ruling, drawings, rail. */}
     <div class="sheet-ground" aria-hidden="true"></div>
     <div class="blueprint" aria-hidden="true"></div>
     <Schematics />
-    <div class="sheet-frame" aria-hidden="true"></div>
-    <MineralBar placement="edge" />
+    <MineralBar placement="edge" transition:persist />
 
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <div class="page">
       <SiteNav path={path} />
 
-      <main id="main" class="shell">
+      <main id="main" class="shell" transition:animate={unroll}>
         <slot />
       </main>
 
@@ -147,23 +150,32 @@ const jsonLd = {
       // threshold 0: a section taller than the viewport can never reach a
       // meaningful intersection ratio, so anything long would otherwise stay
       // at opacity 0 forever on a phone.
-      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+      //
+      // Bound to astro:page-load rather than run once: the ClientRouter swaps
+      // the document without a reload, so a one-shot observer would only ever
+      // see the first page's sections and every later page would stay at
+      // opacity 0. The old observer is disconnected first so they do not stack.
+      let observer: IntersectionObserver | undefined;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
+      document.addEventListener('astro:page-load', () => {
+        observer?.disconnect();
+
+        observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer?.unobserve(entry.target);
+              }
             }
-          }
-        },
-        { rootMargin: '0px 0px -6% 0px', threshold: 0 },
-      );
+          },
+          { rootMargin: '0px 0px -6% 0px', threshold: 0 },
+        );
 
-      for (const target of targets) {
-        observer.observe(target);
-      }
+        for (const target of document.querySelectorAll<HTMLElement>('.reveal')) {
+          observer.observe(target);
+        }
+      });
     </script>
   </body>
 </html>

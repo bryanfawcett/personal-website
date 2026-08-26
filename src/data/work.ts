@@ -71,6 +71,13 @@ export interface Project {
 
 export const NYUCHI_PROJECTS: readonly Project[] = [
   {
+    title: 'Mzizi',
+    description:
+      'The design system the whole ecosystem is built on — seven minerals, Ubuntu doctrine, and an accessibility toolkit, served over an API and an MCP',
+    href: 'https://mzizi.dev',
+    mineral: 'sodalite',
+  },
+  {
     title: 'Nyuchi Africa',
     description: 'Community-focused business platform for African entrepreneurship',
     href: 'https://www.nyuchi.com',
@@ -110,7 +117,7 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
     title: 'Zimbabwe Travel Info',
     description: 'Comprehensive travel guide for Zimbabwe',
     href: 'https://travel-info.co.zw',
-    mineral: 'sodalite',
+    mineral: 'cobalt',
   },
   {
     title: 'Iconic Expeditions',

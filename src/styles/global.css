@@ -94,16 +94,32 @@ button {
 
 /* ==================== LAYER 1 — the blueprint ground ==================== */
 
+/*
+ * Absolute over the document, not fixed to the viewport.
+ *
+ * A fixed ground slides underneath the content as you scroll, which is the one
+ * thing paper never does. Absolute means the ruling, the lighting and the
+ * grain all travel with the surfaces drawn on them.
+ */
 .sheet-ground {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /*
+   * The lighting is sized in vh and pinned to the top rather than stretched
+   * over the whole document: a radial sized as a percentage of a 6000px page
+   * is not a fall of light, it is a flat tint.
+   */
   background:
-    radial-gradient(ellipse 90% 70% at 18% 10%, var(--ground-lit), transparent 60%),
-    radial-gradient(ellipse 70% 60% at 84% 90%, var(--ground-shade), transparent 65%),
-    radial-gradient(ellipse 42% 30% at 72% 22%, var(--ground-glow), transparent 70%),
-    radial-gradient(ellipse 34% 44% at 10% 76%, var(--ground-pool), transparent 70%),
+    radial-gradient(ellipse 90% 70% at 18% 10%, var(--ground-lit), transparent 60%) top / 100% 140vh
+      no-repeat,
+    radial-gradient(ellipse 42% 30% at 72% 22%, var(--ground-glow), transparent 70%) top / 100%
+      140vh no-repeat,
+    radial-gradient(ellipse 34% 44% at 10% 76%, var(--ground-pool), transparent 70%) bottom / 100%
+      140vh no-repeat,
+    radial-gradient(ellipse 70% 60% at 84% 90%, var(--ground-shade), transparent 65%) bottom / 100%
+      140vh no-repeat,
     linear-gradient(160deg, var(--sheet-mid) 0%, var(--sheet) 45%, var(--sheet-deep) 100%);
 }
 
@@ -123,20 +139,26 @@ button {
   mix-blend-mode: soft-light;
 }
 
-/* Darkened edges, as a print falls off toward the margins. */
+/*
+ * Fall-off at the left and right margins only.
+ *
+ * The old inset box-shadow darkened all four edges, which reads as a vignette
+ * on a fixed ground and as a horizontal band every screenful on a scrolling
+ * one. Sides only, so it holds however far you scroll.
+ */
 .sheet-ground::after {
   content: '';
   position: absolute;
   inset: 0;
-  box-shadow:
-    inset 0 0 180px 55px var(--ground-vignette),
-    inset 0 0 34px 8px var(--ground-vignette);
+  background:
+    linear-gradient(90deg, var(--ground-vignette), transparent 14%),
+    linear-gradient(270deg, var(--ground-vignette), transparent 14%);
 }
 
 /* ================= LAYER 2 — the ruling, drawn in pale ink ================= */
 
 .blueprint {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
@@ -173,7 +195,7 @@ button {
 
 /* Faint technical drawings floating behind the content. */
 .schematics {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
@@ -181,27 +203,6 @@ button {
 
 .schematics svg {
   position: absolute;
-}
-
-/* ====================== the sheet frame, plain ====================== */
-
-/*
- * A single rule around the sheet. It used to carry ruler graduations along the
- * top and left edges; they read as clutter against the column rules rather
- * than as a scale, so the frame is now just the frame.
- */
-.sheet-frame {
-  position: fixed;
-  inset: 14px 14px 14px 26px; /* extra room on the left for the mineral rail */
-  z-index: 2;
-  pointer-events: none;
-  border: 1px solid var(--ink-faint);
-}
-
-@media (max-width: 51rem) {
-  .sheet-frame {
-    inset: 8px 8px 8px 18px;
-  }
 }
 
 /* ============================== layout ============================== */
@@ -400,7 +401,13 @@ button {
 
 @supports (-webkit-text-stroke: 1px currentColor) {
   .drafted {
+    /*
+     * Stroked *and* filled. A hollow outline read as unfinished rather than
+     * drafted; the fill gives it the weight of the solid word above it while
+     * the stroke keeps it a drawing.
+     */
     color: transparent;
+    -webkit-text-fill-color: var(--ink-drafted);
     -webkit-text-stroke: 1.5px var(--ink);
     paint-order: stroke;
   }
@@ -584,6 +591,87 @@ button {
   transform: rotate(-6deg);
   opacity: 0.82;
   mix-blend-mode: multiply;
+}
+
+/* ====================== unrolling the sheet ====================== */
+
+/*
+ * Keyframes for the page transition declared in src/brand/transitions.ts.
+ *
+ * `clip-path` does the unrolling; the small translate and the `scaleY` off
+ * `transform-origin` give it the spring a real sheet has as it flattens out.
+ */
+@keyframes sheet-unroll-down {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-0.75rem) scaleY(0.985);
+    opacity: 0.35;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-roll-up {
+  from {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-0.75rem) scaleY(0.985);
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-unroll-up {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.75rem) scaleY(0.985);
+    opacity: 0.35;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-roll-down {
+  from {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.75rem) scaleY(0.985);
+    opacity: 0;
+  }
+}
+
+main {
+  transform-origin: top center;
+}
+
+/*
+ * The blanket reduced-motion rule earlier in this file selects `*` and its
+ * ::before/::after, which never matches a view-transition pseudo-element.
+ * These have to be named.
+ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* ========================== scroll reveal ========================== */
