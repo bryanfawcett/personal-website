@@ -154,6 +154,7 @@ export const CREDENTIALS: readonly Credential[] = [
   { title: 'Google IT Support Certificate', issuer: 'Google', period: 'Sept 2022' },
   { title: 'CompTIA A+', issuer: 'CompTIA', period: 'Nov 2022' },
   { title: 'Google Project Management Certificate', issuer: 'Google', period: '2023' },
+  { title: 'BSc Computer Science', issuer: 'University of London', period: 'In progress' },
 ];
 
 export const CORE_SKILLS: readonly string[] = [
@@ -166,12 +167,13 @@ export const CORE_SKILLS: readonly string[] = [
   'UI/UX Design',
   'React',
   'Node.js',
+  'Rust',
   'Google Workspace',
   'Project Management',
   'Network Security',
   'Systems Administration',
   'MDM Management',
-  'Cloud Services (AWS, Azure)',
+  'Cloud Services (AWS, Azure, Cloudflare)',
   'Database Design',
   'API Architecture',
   'Digital Payment Systems',

@@ -73,7 +73,7 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   {
     title: 'The Bundu Foundation',
     description:
-      'The nonprofit that governs it all — research, open standards, and the agricultural data commons behind Nyuchi, Mukoko and Shamwari AI',
+      "The nonprofit researching the standards and open agricultural data commons that Nyuchi, Mukoko and Shamwari AI are building toward — governance in progress, research first",
     href: 'https://bundu.org',
     mineral: 'copper',
   },
@@ -86,7 +86,8 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   },
   {
     title: 'Nyuchi Africa',
-    description: 'Community-focused business platform for African entrepreneurship',
+    description:
+      'The commercial engine of the ecosystem — web presence, payments and hosting that let African entrepreneurs run a business without a large IT team behind them',
     href: 'https://www.nyuchi.com',
     mineral: 'gold',
   },
@@ -99,19 +100,22 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   },
   {
     title: 'Nyuchi Learning',
-    description: 'Open-source K-12 digital transformation frameworks for African schools',
+    description:
+      'Open-source K-12 digital transformation frameworks, so African schools can modernise without locking into expensive proprietary platforms',
     href: 'https://learning.nyuchi.com',
     mineral: 'malachite',
   },
   {
     title: 'Nyuchi Lingo',
-    description: 'Language learning platform for African languages',
+    description:
+      'A language-learning platform for African languages mainstream apps mostly ignore — built to help preserve and spread them',
     href: 'https://lingo.nyuchi.com',
     mineral: 'terracotta',
   },
   {
     title: 'Mukoko',
-    description: 'Privacy-focused social platform with 6 integrated apps',
+    description:
+      'Privacy-focused social platform bundling 6 everyday apps into one account, instead of juggling tools built for other markets',
     href: 'https://mukoko.com',
     mineral: 'tanzanite',
   },
@@ -124,13 +128,15 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   },
   {
     title: 'Mukoko News',
-    description: 'Pan-African news aggregation from trusted regional sources',
+    description:
+      "Pan-African news aggregation from trusted regional sources — context instead of international outlets' framing",
     href: 'https://news.mukoko.com',
     mineral: 'cobalt',
   },
   {
     title: 'Nhimbe',
-    description: 'Community events and gatherings platform',
+    description:
+      'Community events and gatherings, named for the Zimbabwean tradition of neighbours coming together to get work done',
     href: 'https://nhimbe.com',
     mineral: 'copper',
   },
@@ -143,7 +149,7 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   },
   {
     title: 'Zimbabwe Travel Info',
-    description: 'Comprehensive travel guide for Zimbabwe',
+    description: 'A practical travel guide for visitors planning a trip to Zimbabwe',
     href: 'https://travel-info.co.zw',
     mineral: 'cobalt',
   },
@@ -158,25 +164,27 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
 export const SAS_PROJECTS: readonly Project[] = [
   {
     title: 'Digital Toolkit',
-    description: 'Comprehensive digital tools and resources',
+    description: 'A consistent, supported set of digital tools for staff, instead of ad-hoc solutions per department',
     href: 'https://github.com/SAS-Technology-Innovation/digital-toolkit',
     mineral: 'cobalt',
   },
   {
     title: 'Knowledge Base',
-    description: 'Centralised knowledge management system',
+    description:
+      'Centralised institutional knowledge — how-tos, policies, processes — that survives staff turnover instead of living in inboxes',
     href: 'https://github.com/SAS-Technology-Innovation/knowledge',
     mineral: 'sodalite',
   },
   {
     title: 'Educator Eval',
-    description: 'Educator evaluation and assessment platform',
+    description: 'Educator evaluation and assessment, replacing manual, paper-based review cycles',
     href: 'https://github.com/SAS-Technology-Innovation/EducatorEval',
     mineral: 'malachite',
   },
   {
     title: 'EOI Dashboard',
-    description: 'Expression of interest tracking dashboard',
+    description:
+      'A live view of expression-of-interest sign-ups, instead of manually collating forms',
     href: 'https://github.com/SAS-Technology-Innovation/Expression-of-Interest-Dashboard',
     mineral: 'tanzanite',
   },

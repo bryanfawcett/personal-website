@@ -19,14 +19,16 @@ This document provides essential context for AI assistants working on this Astro
 ### The Bundu Ecosystem (Passion Project)
 
 Bryan is Founder & CEO of Nyuchi Africa and Founder of **The Bundu Foundation** — a
-Zimbabwean company limited by guarantee that governs an open agricultural data commons
-and the standards it runs on, under the Ubuntu philosophy ("I am because we are").
-Nyuchi Africa, Mukoko and Shamwari AI are the Foundation's three pillars; StationKit
-and Mukoko Weather are how the commons gets filled and put to use.
+Zimbabwean company limited by guarantee researching the open agricultural data
+commons and the standards it will run on, under the Ubuntu philosophy ("I am
+because we are"). Research comes first there; the governance layer itself is not
+yet fully built. Nyuchi Africa, Mukoko and Shamwari AI are the Foundation's three
+pillars; StationKit and Mukoko Weather are how the commons gets filled and put to
+use once it exists.
 
 | Platform | URL | Description |
 |----------|-----|-------------|
-| **The Bundu Foundation** | bundu.org | Governance: research, open standards, the agricultural data commons |
+| **The Bundu Foundation** | bundu.org | Research, open standards, and the agricultural data commons — in progress |
 | **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
 | **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar-powered weather + soil station, from $25 |
 | **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
