@@ -14,6 +14,18 @@ export default defineConfig({
     imageService: 'compile',
   }),
   output: 'static',
+
+  /*
+   * Every link on the site is written without a trailing slash.
+   *
+   * The default `format: 'directory'` emits minerals/index.html, and an
+   * assets-only Worker can only serve that at /minerals/ — so every internal
+   * link 307s to the slashed form first. No `html_handling` setting fixes it,
+   * because the file genuinely lives at that path. `format: 'file'` emits
+   * minerals.html instead, which is served at /minerals directly.
+   */
+  trailingSlash: 'never',
+  build: { format: 'file' },
   integrations: [sitemap()],
   prefetch: {
     prefetchAll: true,
