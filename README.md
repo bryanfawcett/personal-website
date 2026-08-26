@@ -115,7 +115,22 @@ python3 scripts/fetch-fonts.py
 
 ## Deployment
 
-Push to `main`. CI type-checks and builds; the Worker deploys via `pnpm deploy`.
+Push to `main` and `.github/workflows/deploy.yml` type-checks, builds and deploys.
+It runs on `main` only — deliberately **not** on `pull_request`, so a PR branch can
+never publish itself over production.
+
+It needs two repository secrets:
+
+| Secret | Value |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | a token with Workers Scripts: Edit |
+| `CLOUDFLARE_ACCOUNT_ID` | `125a2dfbc21f76a25c980609609e8218` (Nyuchi Web Services) |
+
+Deploy by hand with `pnpm deploy`.
+
+**Live:** https://bryanfawcett-site.nyuchi.workers.dev — the Worker is up but no
+custom domain is attached, so `bryanfawcett.com` still resolves to the old Vercel
+deployment. Pointing the domain at the Worker is a separate, deliberate step.
 
 ### Vercel is switched off deliberately
 

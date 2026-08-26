@@ -6,7 +6,12 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://bryanfawcett.com',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    // Every image on the site is a plain <img> or inline SVG — nothing uses
+    // astro:assets — so the Cloudflare Images binding would be declared and
+    // never called. `passthrough` drops it.
+    imageService: 'passthrough',
+  }),
   output: 'static',
   integrations: [sitemap()],
   prefetch: {
