@@ -77,7 +77,7 @@ is published but not yet supported by the Astro tooling.
 src/
   brand/          Design tokens — the single source of truth for the look
     minerals.ts   The seven Mzizi minerals, with origin and meaning
-    tokens.ts     Surfaces, ink, lines, semantics, type, radii → CSS custom properties
+    tokens.ts     Sheet, ink, marks, grid, type → CSS custom properties
   components/     Astro components
   data/           Content as typed TypeScript
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
@@ -108,14 +108,15 @@ scroll-reveal observer in `BaseLayout.astro` and the deferred Cal.com loader on
 ### Colour comes from `src/brand/`
 
 Never hard-code a hex value outside `src/brand/`. `tokens.ts` generates CSS custom
-properties at build time; use `var(--mineral-cobalt)`, `var(--surface)`, `var(--muted)`.
+properties at build time; use `var(--mineral-cobalt)`, `var(--sheet)`, `var(--ink-soft)`.
 `MineralName` is a union type derived from the mineral list, so a typo in a component
 prop fails `astro check`.
 
-The **mineral bar** is the brand signature — seven segments, one per mineral, across
-the top of every page and above the footer. It is the one place colour runs at full
-strength. Everywhere else colour is a reward (a hover edge, a timeline node), not a
-default. That restraint is the design; adding colour to more surfaces breaks it.
+The **mineral rail** is the brand signature — seven segments, one per mineral, running
+vertically down the binding edge of the sheet. It is the one place saturated colour
+appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward (a
+mineral bar under a heading, a schedule reference number), not a default. That
+restraint is the design; adding colour to more surfaces breaks it.
 
 ### Content lives in `src/data/`
 
@@ -123,10 +124,10 @@ Typed, so pages stay markup. A copy edit should never mean touching layout.
 
 ### Type identity
 
-Dancing Script wordmark, Noto Serif headings, Poppins body, JetBrains Mono for eyebrow
-labels and metadata. Noto Serif and JetBrains Mono are shared with Mzizi; the display
-and body faces are what distinguish this site from the rest of the ecosystem. Mzizi's
-own sans is Noto Sans — deliberately not used here.
+Cormorant Garamond for display and body, IBM Plex Mono for figure tags, dimension
+labels and the title block, Caveat for margin notes and the signature — written marks
+rather than set ones. Cormorant's italic is load-bearing (the lede, the pull quotes),
+so the vendoring script has to keep roman and italic as separate files.
 
 ### Fonts are self-hosted
 
@@ -145,10 +146,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 - **Semantic HTML** — real `section`/`nav`/`header`/`footer`, correct heading order,
   exactly one `h1` per page
 - **`aria-labelledby`** on every section, pointing at its heading
-- **Focus rings** are cobalt at 2px with 2px offset; never remove them
-- **`prefers-reduced-motion`** disables reveals, the mineral bar animation and smooth
+- **Focus rings** are the stamp red at 2px with 3px offset; never remove them.
+  6.5:1 against the sheet, well over the 3:1 that WCAG 2.2 (1.4.11) asks of them
+- **`prefers-reduced-motion`** disables reveals, the mineral rail animation and smooth
   scrolling — already handled in `global.css`, keep it that way for new animation
-- Decorative elements (the mineral bar, timeline nodes) are `aria-hidden`
+- Decorative elements (the rail, the sheet layers, the schematics) are `aria-hidden`
 
 ## Common Pitfalls
 

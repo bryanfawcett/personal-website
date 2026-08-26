@@ -56,15 +56,14 @@ seven minerals named for where they are mined and what they stand for, plus a wa
 dark ramp. Mirrored into `src/brand/` rather than fetched at build time, so a build
 never depends on a network call and the two can only drift when someone edits the file.
 
-The typographic identity stays the site's own — Dancing Script wordmark, Noto Serif
-headings, Poppins body — with JetBrains Mono for eyebrow labels and metadata. Noto
-Serif and JetBrains Mono are shared with Mzizi; the display and body faces are what
-make this site look like this site rather than any other property in the ecosystem.
+The typographic identity is a draughtsman's: Cormorant Garamond for display and body,
+IBM Plex Mono for figure tags, dimension labels and the title block, and Caveat for
+the margin notes and the signature — written marks rather than set ones.
 
-The **mineral bar** is the brand signature: seven segments, one per mineral, pinned
-across the top of every page and repeated above the footer. It is the one place
-colour appears at full strength on an otherwise monochrome site, which is what stops
-it reading as decoration.
+The **mineral rail** is the brand signature: seven segments, one per mineral, running
+vertically down the binding edge of the sheet. It is the one place saturated colour
+appears on an otherwise monochrome cyanotype, which is what stops it reading as
+decoration.
 
 Everything else uses colour as a reward rather than a default — a card's edge on
 hover, a timeline node, a link. To change the whole palette, edit `src/brand/`;
