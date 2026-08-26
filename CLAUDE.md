@@ -118,6 +118,33 @@ appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward
 mineral bar under a heading, a schedule reference number), not a default. That
 restraint is the design; adding colour to more surfaces breaks it.
 
+### Containers are the drawing, not boxes on it
+
+The ground and the containers share one line vocabulary — the same hairline, the
+same ink, the same dashed rule. Nothing is a card.
+
+- **Column rules.** `.shell` draws a dashed rule down each of its border-box
+  edges. Nav, main and the title block are sibling shells inside `.page`, so
+  those rules run continuously from the masthead to the foot of the sheet. The
+  shell uses `width: min(67.5rem, 100% - 4rem)` rather than `max-width`, so it
+  always keeps a margin — that margin is what stops the column rules colliding
+  with the sheet frame on a phone.
+- **Bands.** `.section` rules itself off at the foot and drops a 5px node square
+  where that rule crosses each column rule (`--shell-pad` reaches back out from
+  the section's box to the shell's edge). `:last-of-type` skips both.
+- **Corner brackets.** `.panel__rule` carries a complete 1px rule and then masks
+  it back to eight short segments, two per corner. `--corner` is registered with
+  `@property` (`syntax: '<length-percentage>'`) so it can be *transitioned*; a
+  plain custom property is an untyped token stream and would snap. Hover grows
+  it to `50%`, closing the segments into the full rule — the hover finishes the
+  drawing rather than lifting the panel off the sheet. If a browser ignores
+  `mask`, the full rule simply shows: a safe degradation, so no `@supports`
+  guard is needed.
+
+Do not reintroduce drop shadows, `transform` lifts on hover, or heavy solid
+borders on panels. That was the earlier treatment and it made every container
+read as a card floating over the sheet instead of part of it.
+
 ### Content lives in `src/data/`
 
 Typed, so pages stay markup. A copy edit should never mean touching layout.
@@ -170,6 +197,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 8. **`color: transparent` for outline type.** Guard it behind
    `@supports (-webkit-text-stroke: ...)`; without the guard, a browser that
    lacks the property renders the text invisible rather than solid.
+9. **Transitioning a custom property.** Register it with `@property` first.
+   `transition: --corner` on an unregistered property is a no-op that snaps.
+10. **`.shell` with `max-width`.** Use `width: min(…, 100% - 4rem)`. With
+    `max-width` the shell goes full-bleed on a phone and its column rules land
+    underneath the sheet frame.
 
 ## Git Workflow
 

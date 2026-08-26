@@ -2,9 +2,9 @@
 /**
  * A surface drafted onto the sheet.
  *
- * Carries the two spans that draw the four ruler-graduated corners, and an
- * optional figure tag notched into the top rule. Use this rather than applying
- * `.panel` by hand so every container gets its corners.
+ * Carries the span that draws the four corner brackets, and an optional figure
+ * tag notched into the top rule. Use this rather than applying `.panel` by hand
+ * so every container gets its corners.
  *
  * Any extra attribute (href, target, style, …) passes through to the element.
  */
@@ -29,7 +29,6 @@ const { fig, as: Element = 'article', class: className, ...rest } = Astro.props;
 
 <Element class:list={['panel', className]} {...rest}>
   <span class="panel__rule" aria-hidden="true"></span>
-  <span class="panel__rule-2" aria-hidden="true"></span>
   {fig && <span class="fig">{fig}</span>}
   <slot />
 </Element>
