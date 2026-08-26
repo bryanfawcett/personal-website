@@ -3,13 +3,18 @@ interface Props {
   eyebrow: string;
   title: string;
   lede?: string;
+  /** Pencil note in the margin. */
+  note?: string;
 }
 
-const { eyebrow, title, lede } = Astro.props;
+const { eyebrow, title, lede, note } = Astro.props;
 ---
 
-<header class="page-header shell">
-  <p class="eyebrow">{eyebrow}</p>
+<header class="page-header">
+  <div class="page-header__top">
+    <p class="eyebrow is-open">{eyebrow}</p>
+    {note && <span class="margin-note">{note}</span>}
+  </div>
   <h1 class="page-header__title">{title}</h1>
   {lede && <p class="lede">{lede}</p>}
   <slot />
@@ -17,19 +22,28 @@ const { eyebrow, title, lede } = Astro.props;
 
 <style>
   .page-header {
-    padding-block: 3.5rem 1rem;
+    padding-block: 2.75rem 1rem;
   }
 
-  @media (min-width: 640px) {
-    .page-header {
-      padding-block-start: 5rem;
-    }
+  .page-header__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-header__top .margin-note {
+    font-size: 1.3125rem;
+    transform: rotate(-2deg);
   }
 
   .page-header__title {
-    margin-block: 0.75rem 1rem;
-    font-size: clamp(2.25rem, 1.6rem + 3vw, 3.25rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
+    margin-block: 1rem 1rem;
+    font-size: clamp(2.5rem, 1.6rem + 5vw, 4.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
   }
 </style>

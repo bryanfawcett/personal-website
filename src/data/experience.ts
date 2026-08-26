@@ -10,7 +10,7 @@ export interface Role {
 
 export const ROLES: readonly Role[] = [
   {
-    title: 'Technology & Innovation Coordinator',
+    title: 'Associate Technology & Innovation Coordinator',
     company: 'Singapore American School',
     location: 'Singapore',
     period: '2023 – Present',
@@ -23,7 +23,7 @@ export const ROLES: readonly Role[] = [
     skills: ['EdTech', 'IT Governance', 'Privacy', 'Infrastructure'],
   },
   {
-    title: 'Founder & Director',
+    title: 'Founder & CEO',
     company: 'Nyuchi Africa',
     location: 'Remote / Africa',
     period: 'Oct 2016 – Present',

@@ -1,6 +1,8 @@
 /*
- * Static global styles. Every colour, face and radius resolves to a custom
- * property emitted from src/brand/tokens.ts — nothing is hard-coded here.
+ * Static global styles for the drafting sheet.
+ *
+ * Every colour, face and measure resolves to a custom property emitted from
+ * src/brand/tokens.ts — nothing is hard-coded here.
  */
 
 *,
@@ -14,8 +16,8 @@
 }
 
 html {
-  /* Dark only. Declared so form controls and scrollbars follow. */
-  color-scheme: dark;
+  /* The sheet is paper. There is no dark ramp. */
+  color-scheme: light;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -36,35 +38,14 @@ html {
 
 body {
   min-height: 100dvh;
-  background: var(--base);
-  color: var(--foreground);
-  /*
-   * The blueprint ground. Four repeating gradients: a fine grid, and a heavier
-   * rule every fifth line, drawn in cobalt at very low alpha. `fixed`
-   * attachment keeps the drawing still while content scrolls over it, which is
-   * what makes the page feel like one sheet rather than a stack of screens.
-   */
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      var(--grid-line-major) 0 1px,
-      transparent 1px var(--grid-size-major)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      var(--grid-line-major) 0 1px,
-      transparent 1px var(--grid-size-major)
-    ),
-    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid-size)),
-    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
-  background-attachment: fixed;
-  font-family: var(--sans);
+  position: relative;
+  background: var(--parch-mid);
+  color: var(--ink);
+  font-family: var(--serif);
   font-size: 1rem;
-  line-height: 1.6;
-  font-weight: 300;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Entry animations park elements off-canvas; never let that scroll sideways. */
   overflow-x: hidden;
 }
 
@@ -73,8 +54,8 @@ h2,
 h3,
 h4 {
   font-family: var(--serif);
-  font-weight: 400;
-  line-height: 1.15;
+  font-weight: 600;
+  line-height: 1.12;
   text-wrap: balance;
 }
 
@@ -103,74 +84,462 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-  border-radius: var(--sm);
+  outline: 2px solid var(--stamp);
+  outline-offset: 3px;
 }
 
 ::selection {
-  background: var(--mineral-tanzanite-container);
-  color: var(--foreground);
+  background: rgb(30 58 95 / 0.15);
 }
 
-/* ---------------------------------------------------------------- layout */
+/* ====================== LAYER 1 — the parchment ====================== */
+
+.parchment {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 70% at 18% 10%, rgb(255 247 222 / 0.6), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 84% 90%, rgb(138 108 58 / 0.3), transparent 65%),
+    radial-gradient(ellipse 42% 30% at 72% 22%, rgb(150 118 66 / 0.18), transparent 70%),
+    radial-gradient(ellipse 34% 44% at 10% 76%, rgb(150 118 66 / 0.22), transparent 70%),
+    linear-gradient(160deg, var(--parch-light) 0%, var(--parch-mid) 45%, var(--parch-dark) 100%);
+}
+
+/* Paper tooth, as fractal noise rather than a bitmap. */
+.parchment::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+}
+
+/* Aged edges. */
+.parchment::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 150px 42px rgb(118 90 46 / 0.45),
+    inset 0 0 26px 5px rgb(88 64 28 / 0.25);
+}
+
+/* ================= LAYER 2 — the blueprint grid, in ink ================= */
+
+.blueprint {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background-image:
+    linear-gradient(var(--ink-hair) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-hair) 1px, transparent 1px),
+    linear-gradient(var(--ink-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-faint) 1px, transparent 1px);
+  background-size:
+    var(--grid-minor) var(--grid-minor),
+    var(--grid-minor) var(--grid-minor),
+    var(--grid-major) var(--grid-major),
+    var(--grid-major) var(--grid-major);
+  /* The ruling fades toward the edges, as ink does on a well-used sheet. */
+  mask-image: radial-gradient(
+    ellipse 120% 100% at 50% 40%,
+    #000 55%,
+    rgb(0 0 0 / 0.5) 80%,
+    rgb(0 0 0 / 0.25) 100%
+  );
+}
+
+/* Faint technical drawings floating behind the content. */
+.schematics {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.schematics svg {
+  position: absolute;
+}
+
+/* ================== the sheet frame, with ruler scales ================== */
+
+.sheet-frame {
+  position: fixed;
+  inset: 14px 14px 14px 26px; /* extra room on the left for the mineral rail */
+  z-index: 2;
+  pointer-events: none;
+  border: 1.5px solid var(--ink-soft);
+  outline: 1px solid var(--ink-faint);
+  outline-offset: 5px;
+  mix-blend-mode: multiply;
+}
+
+.sheet-frame::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 12px;
+  background:
+    repeating-linear-gradient(90deg, var(--ink-soft) 0 1px, transparent 1px 8px) top / 100% 5px
+      no-repeat,
+    repeating-linear-gradient(90deg, var(--ink-soft) 0 1px, transparent 1px 40px) top / 100% 11px
+      no-repeat;
+}
+
+.sheet-frame::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 12px;
+  background:
+    repeating-linear-gradient(0deg, var(--ink-soft) 0 1px, transparent 1px 8px) left / 5px 100%
+      no-repeat,
+    repeating-linear-gradient(0deg, var(--ink-soft) 0 1px, transparent 1px 40px) left / 11px 100%
+      no-repeat;
+}
+
+@media (max-width: 51rem) {
+  .sheet-frame {
+    inset: 8px 8px 8px 18px;
+  }
+}
+
+/* ============================== layout ============================== */
+
+.page {
+  position: relative;
+  z-index: 3;
+}
 
 .shell {
   width: 100%;
-  max-width: 64rem;
+  max-width: 67.5rem;
   margin-inline: auto;
-  padding-inline: 1.5rem;
+  padding-inline: 2rem;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 51rem) {
   .shell {
-    padding-inline: 2rem;
+    padding-inline: 1.25rem;
   }
 }
 
 .section {
-  padding-block: 4rem;
+  padding-block: 3rem;
 }
 
-@media (min-width: 640px) {
-  .section {
-    padding-block: 6rem;
-  }
-}
+/* ============================ typography ============================ */
 
-/* ------------------------------------------------------------ typography */
-
-.eyebrow {
+.mono {
   font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+}
+
+.hand {
+  font-family: var(--hand);
+  color: var(--pencil);
+}
+
+/* A ruled label with dimension ticks either side. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--ink-soft);
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  height: 1px;
+  background: var(--ink-soft);
+  flex: 0 0 2.125rem;
+}
+
+.eyebrow.is-open::after {
+  display: none;
 }
 
 .section-title {
-  font-size: clamp(1.875rem, 1.4rem + 2vw, 2.5rem);
+  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.125rem);
 }
 
 .lede {
-  font-size: 1.125rem;
-  color: var(--muted);
   max-width: 42rem;
+  font-size: 1.0625rem;
+  color: var(--ink-body);
 }
 
-.muted {
-  color: var(--muted);
+/* A dimension line: ticked rule, centred label, ticked rule. */
+.dimension {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  max-width: 27.5rem;
+  color: var(--ink-soft);
 }
 
-/* ----------------------------------------------------------- scroll reveal */
+.dimension__line {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--ink-soft);
+}
+
+.dimension__line::before,
+.dimension__line::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--ink-soft);
+}
+
+.dimension__line:first-child::before {
+  inset-inline-start: 0;
+}
+
+.dimension__line:last-child::after {
+  inset-inline-end: 0;
+}
+
+.dimension__label {
+  padding-inline: 1rem;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ==================== panels — drafted on the sheet ==================== */
+
+.panel {
+  position: relative;
+  background: var(--parch-wash);
+  border: 1.5px solid var(--ink);
+  padding: 2.25rem 1.875rem 1.875rem;
+  box-shadow:
+    inset 0 0 0 1px rgb(30 58 95 / 0.08),
+    2px 3px 0 rgb(30 58 95 / 0.1);
+  backdrop-filter: blur(1px);
+}
+
+/*
+ * Ruler corners.
+ *
+ * Each corner carries graduated ticks along both edges, like the end of a
+ * steel rule laid on the drawing. Two spans carry all four corners so the
+ * panel's own ::before/::after stay free for content.
+ */
+.panel__rule,
+.panel__rule-2 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.panel__rule::before,
+.panel__rule::after,
+.panel__rule-2::before,
+.panel__rule-2::after {
+  content: '';
+  position: absolute;
+  width: 3.625rem;
+  height: 3.625rem;
+}
+
+.panel__rule::before {
+  inset-block-start: -1.5px;
+  inset-inline-start: -1.5px;
+  background:
+    repeating-linear-gradient(90deg, var(--ink) 0 1px, transparent 1px 7px) top left / 3.625rem 5px
+      no-repeat,
+    repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 35px) top left / 3.625rem
+      10px no-repeat,
+    repeating-linear-gradient(0deg, var(--ink) 0 1px, transparent 1px 7px) top left / 5px 3.625rem
+      no-repeat,
+    repeating-linear-gradient(0deg, var(--ink) 0 1.5px, transparent 1.5px 35px) top left / 10px
+      3.625rem no-repeat;
+}
+
+.panel__rule::after {
+  inset-block-start: -1.5px;
+  inset-inline-end: -1.5px;
+  background:
+    repeating-linear-gradient(-90deg, var(--ink) 0 1px, transparent 1px 7px) top right / 3.625rem 5px
+      no-repeat,
+    repeating-linear-gradient(-90deg, var(--ink) 0 1.5px, transparent 1.5px 35px) top right /
+      3.625rem 10px no-repeat,
+    repeating-linear-gradient(0deg, var(--ink) 0 1px, transparent 1px 7px) top right / 5px 3.625rem
+      no-repeat,
+    repeating-linear-gradient(0deg, var(--ink) 0 1.5px, transparent 1.5px 35px) top right / 10px
+      3.625rem no-repeat;
+}
+
+.panel__rule-2::before {
+  inset-block-end: -1.5px;
+  inset-inline-start: -1.5px;
+  background:
+    repeating-linear-gradient(90deg, var(--ink) 0 1px, transparent 1px 7px) bottom left / 3.625rem
+      5px no-repeat,
+    repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 35px) bottom left /
+      3.625rem 10px no-repeat,
+    repeating-linear-gradient(180deg, var(--ink) 0 1px, transparent 1px 7px) bottom left / 5px
+      3.625rem no-repeat,
+    repeating-linear-gradient(180deg, var(--ink) 0 1.5px, transparent 1.5px 35px) bottom left / 10px
+      3.625rem no-repeat;
+}
+
+.panel__rule-2::after {
+  inset-block-end: -1.5px;
+  inset-inline-end: -1.5px;
+  background:
+    repeating-linear-gradient(-90deg, var(--ink) 0 1px, transparent 1px 7px) bottom right / 3.625rem
+      5px no-repeat,
+    repeating-linear-gradient(-90deg, var(--ink) 0 1.5px, transparent 1.5px 35px) bottom right /
+      3.625rem 10px no-repeat,
+    repeating-linear-gradient(180deg, var(--ink) 0 1px, transparent 1px 7px) bottom right / 5px
+      3.625rem no-repeat,
+    repeating-linear-gradient(180deg, var(--ink) 0 1.5px, transparent 1.5px 35px) bottom right / 10px
+      3.625rem no-repeat;
+}
+
+/* The figure tag, notched into the panel's top rule. */
+.fig {
+  position: absolute;
+  inset-block-start: -11px;
+  inset-inline-start: 4.375rem;
+  z-index: 1;
+  padding: 2px 10px;
+  background: var(--parch-light);
+  border: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.panel h2 {
+  font-size: 1.625rem;
+  margin-block-end: 0.625rem;
+}
+
+.panel h3 {
+  font-size: 1.25rem;
+  margin-block-end: 0.375rem;
+}
+
+.panel p {
+  font-size: 1.03125rem;
+  color: var(--ink-body);
+}
+
+/* ============================== chips ============================== */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin-block-start: 1.125rem;
+}
+
+.chip {
+  padding: 5px 10px;
+  background: var(--parch-wash-light);
+  border: 1px solid var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ============================= buttons ============================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 1.875rem;
+  background: var(--ink);
+  border: 1.5px solid var(--ink);
+  color: var(--parch-light);
+  font-family: var(--mono);
+  font-size: 0.71875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 rgb(30 58 95 / 0.35);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgb(30 58 95 / 0.35);
+}
+
+.btn.is-ghost {
+  background: var(--parch-wash-light);
+  color: var(--ink);
+}
+
+/* A margin note in pencil, set at a slight angle. */
+.margin-note {
+  font-family: var(--hand);
+  color: var(--pencil);
+  font-size: 1.375rem;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+}
+
+/* The approval stamp. One red, used sparingly. */
+.stamp {
+  position: absolute;
+  inset-inline-end: 1.625rem;
+  inset-block-start: -1.5rem;
+  padding: 7px 14px;
+  border: 2px solid var(--stamp);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  transform: rotate(-6deg);
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+}
+
+/* ========================== scroll reveal ========================== */
 
 .reveal {
   opacity: 0;
-  transform: translateY(1.25rem);
+  transform: translateY(0.75rem);
   transition:
-    opacity 0.7s ease-out,
-    transform 0.7s ease-out;
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
 }
 
 .reveal.is-visible {
@@ -178,7 +547,6 @@ button {
   transform: none;
 }
 
-/* No JS, or reduced motion: show everything immediately. */
 .no-js .reveal,
 .no-js .reveal.is-visible {
   opacity: 1;
@@ -192,76 +560,7 @@ button {
   }
 }
 
-/* ------------------------------------------------------------- blueprint */
-
-/*
- * A panel drawn onto the blueprint rather than floating above it.
- *
- * Translucent fill so the grid reads through, a hairline rule instead of a
- * shadow, and corner ticks where a draughtsman would mark a cut. Apply
- * `.panel` to any container that should belong to the drawing.
- */
-.panel {
-  position: relative;
-  background: var(--panel-fill);
-  border: 1px solid var(--border);
-  border-radius: var(--md);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.panel:hover {
-  background: var(--panel-fill-active);
-  border-color: var(--border-strong);
-}
-
-/*
- * Corner ticks. Two pseudo-elements carry all four: each draws an L, one
- * pinned top-left and one bottom-right, using only borders so there is no
- * extra markup and nothing to hide from assistive technology.
- */
-.panel::before,
-.panel::after {
-  content: '';
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-color: var(--tick);
-  border-style: solid;
-  /* Visible at rest: the ticks are what make a container read as drawn onto
-     the sheet rather than dropped on top of it. They brighten on hover. */
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.panel::before {
-  inset-block-start: -1px;
-  inset-inline-start: -1px;
-  border-width: 1px 0 0 1px;
-}
-
-.panel::after {
-  inset-block-end: -1px;
-  inset-inline-end: -1px;
-  border-width: 0 1px 1px 0;
-}
-
-.panel:hover::before,
-.panel:hover::after,
-.panel:focus-visible::before,
-.panel:focus-visible::after {
-  opacity: 1;
-}
-
-/* A section heading sits under a drawn rule, like a titled drawing block. */
-.ruled {
-  padding-block-start: 1rem;
-  border-block-start: 1px solid var(--border);
-}
-
-/* --------------------------------------------------------------- a11y */
+/* ============================== a11y ============================== */
 
 .visually-hidden {
   position: absolute;
@@ -276,17 +575,18 @@ button {
 
 .skip-link {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 2rem;
   z-index: 100;
-  padding: 0.75rem 1rem;
-  min-height: 44px;
   display: flex;
   align-items: center;
-  background: var(--raised);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--md);
-  transform: translateY(-150%);
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  background: var(--parch-light);
+  border: 1.5px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  transform: translateY(-200%);
   transition: transform 0.2s ease-out;
 }
 

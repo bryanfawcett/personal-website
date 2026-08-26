@@ -1,312 +1,462 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import LinkCard from '../components/LinkCard.astro';
+import Panel from '../components/Panel.astro';
 import { PROFILE } from '../data/profile.js';
 import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data/work.js';
+
+const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Finish', 'Fig. 04 — Detail'];
 ---
 
 <BaseLayout
   title={`${PROFILE.name} — ${PROFILE.title}`}
   description={PROFILE.summary}
   path="/"
+  sheet="01 / 04"
   ogType="profile"
-  bare
 >
-  <Hero slot="hero" />
+  <Hero
+    eyebrow="Harare → Singapore · Building since 2012"
+    solid="Digital"
+    drafted="Craftsman"
+    sub={PROFILE.tagline}
+    note={'measure twice,\nship once'}
+    showByline
+  />
+
+  <!-- Message from the bench -->
+  <section class="section reveal" aria-labelledby="quote-heading">
+    <h2 class="visually-hidden" id="quote-heading">Message from the bench</h2>
+    <Panel fig="Message from the bench" class="quote">
+      <blockquote>
+        &ldquo;It doesn&rsquo;t matter where you start — it&rsquo;s what you <strong>build</strong> from
+        there, and <strong>who</strong> you build it with.&rdquo;
+      </blockquote>
+      <span class="quote__sig hand">— Bryan</span>
+    </Panel>
+  </section>
 
   <!-- Philosophy -->
-  <section class="section shell reveal" id="philosophy" aria-labelledby="philosophy-heading">
-    <p class="eyebrow">Philosophy &amp; Approach</p>
-    <h2 class="section-title" id="philosophy-heading">How I build</h2>
+  <section class="section reveal" id="philosophy" aria-labelledby="philosophy-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">Sheet 01 · Philosophy</p>
+      <span class="margin-note">how the work gets made</span>
+    </div>
+    <h2 class="visually-hidden" id="philosophy-heading">Philosophy and approach</h2>
 
-    <div class="principles">
+    <div class="board">
       {
         PRINCIPLES.map((principle) => (
-          <article class="principle" style={`--principle-mineral: var(--mineral-${principle.mineral})`}>
-            <h3 class="principle__title">{principle.title}</h3>
-            <p class="principle__body">{principle.body}</p>
-          </article>
+          <Panel
+            class="w6"
+            style={`--panel-mineral: var(--mineral-${principle.mineral})`}
+          >
+            <h3>{principle.title}</h3>
+            <p>{principle.body}</p>
+          </Panel>
         ))
       }
     </div>
   </section>
 
   <!-- Competencies -->
-  <section class="section shell reveal" id="expertise" aria-labelledby="expertise-heading">
+  <section class="section reveal" id="expertise" aria-labelledby="expertise-heading">
     <div class="section-head">
-      <div>
-        <p class="eyebrow">Core Competencies</p>
-        <h2 class="section-title" id="expertise-heading">What I do</h2>
-      </div>
-      <p class="eyebrow">10+ years in enterprise tech</p>
+      <p class="eyebrow is-open">Sheet 02 · Core competencies</p>
+      <span class="margin-note">10+ years at the bench</span>
     </div>
+    <h2 class="visually-hidden" id="expertise-heading">Core competencies</h2>
 
-    <div class="competencies">
+    <div class="board">
       {
-        COMPETENCIES.map((competency) => (
-          <article class="competency">
-            <h3 class="competency__title">{competency.title}</h3>
-            <p class="competency__body">{competency.description}</p>
+        COMPETENCIES.map((competency, i) => (
+          <Panel class="w6" fig={FIGURES[i]}>
+            <h2>{competency.title}</h2>
+            <p>{competency.description}</p>
             <ul class="chips">
               {competency.highlights.map((highlight) => (
                 <li class="chip">{highlight}</li>
               ))}
             </ul>
-          </article>
+          </Panel>
         ))
       }
     </div>
   </section>
 
   <!-- Projects -->
-  <section class="section shell reveal" id="projects" aria-labelledby="projects-heading">
-    <p class="eyebrow">Projects &amp; Work</p>
-    <h2 class="section-title" id="projects-heading">What I&rsquo;ve built</h2>
+  <section class="section reveal" id="projects" aria-labelledby="projects-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">Sheet 03 · Assemblies</p>
+    </div>
+    <h2 class="visually-hidden" id="projects-heading">Projects and work</h2>
 
-    <div class="project-group">
-      <p class="eyebrow">Nyuchi Africa Ecosystem</p>
-      <p class="lede">
-        My passion project building digital solutions across Africa — from educational platforms to
-        travel systems and community networks.
-      </p>
-      <div class="grid-2">
-        {
-          NYUCHI_PROJECTS.map((project) => (
-            <LinkCard
-              title={project.title}
-              description={project.description}
-              href={project.href}
-              mineral={project.mineral}
-            />
-          ))
-        }
-      </div>
+    <p class="group-label">Nyuchi Africa Ecosystem</p>
+    <p class="lede">
+      Digital solutions across Africa — from educational platforms to travel systems and community
+      networks.
+    </p>
+    <div class="board board--tight">
+      {
+        NYUCHI_PROJECTS.map((project) => (
+          <Panel
+            as="a"
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w4 link-panel"
+            style={`--panel-mineral: var(--mineral-${project.mineral})`}
+          >
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <span class="link-panel__path">Visit →</span>
+          </Panel>
+        ))
+      }
     </div>
 
-    <div class="project-group">
-      <p class="eyebrow">Singapore American School</p>
-      <p class="lede">
-        Technology &amp; Innovation Coordinator, building educational platforms and digital tools for
-        learning.
-      </p>
-      <div class="grid-2">
-        {
-          SAS_PROJECTS.map((project) => (
-            <LinkCard
-              title={project.title}
-              description={project.description}
-              href={project.href}
-              mineral={project.mineral}
-              cta="View repository"
-            />
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="project-group">
-      <p class="eyebrow">Talks &amp; Perspectives</p>
-      <div class="grid-1">
-        <LinkCard
-          title="Origins with a Perspective on Human Potential"
-          description="Equity and the assumptions we make in learning — a Zimbabwe perspective on capability, credentials, and what we might be measuring wrong."
-          href="/origins-with-perspective"
-          mineral="gold"
-          cta="Read the talk"
-        />
-      </div>
+    <p class="group-label">Singapore American School</p>
+    <div class="board board--tight">
+      {
+        SAS_PROJECTS.map((project) => (
+          <Panel
+            as="a"
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w6 link-panel"
+            style={`--panel-mineral: var(--mineral-${project.mineral})`}
+          >
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <span class="link-panel__path">Repository →</span>
+          </Panel>
+        ))
+      }
     </div>
   </section>
 
+  <!-- Split navigation -->
+  <section class="section reveal" aria-labelledby="nav-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">Sheet 04 · Navigation</p>
+    </div>
+    <h2 class="visually-hidden" id="nav-heading">Where to next</h2>
+
+    <div class="split">
+      <Panel as="a" href="/experience" class="split__card">
+        <span class="split__big">
+          <span>At the</span><br /><span class="stack__drafted">Bench</span>
+        </span>
+        <p>
+          Current builds, career work, and the systems taking shape — from Nyuchi Africa to EdTech at
+          scale.
+        </p>
+        <span class="split__path">/experience →</span>
+      </Panel>
+
+      <Panel as="a" href="/origins-with-perspective" class="split__card">
+        <span class="split__big">
+          <span>Off the</span><br /><span class="stack__drafted">Bench</span>
+        </span>
+        <p>
+          A talk on equity and the assumptions we make in learning — capability, credentials, and
+          what we might be measuring wrong.
+        </p>
+        <span class="split__path">/origins-with-perspective →</span>
+      </Panel>
+    </div>
+  </section>
+
+  <!-- Toolmarks -->
+  <div class="toolmarks reveal" aria-label="Tools of the trade">
+    {
+      ['Astro', 'TypeScript', 'Cloudflare', 'Hono', 'Supabase', 'Sanity', 'Nyuchi Africa', 'Mukoko', 'Bundu'].map(
+        (tool, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true">·</span>}
+            <span>{tool}</span>
+          </>
+        ),
+      )
+    }
+  </div>
+
   <!-- Connect -->
-  <section class="section shell reveal" id="connect" aria-labelledby="connect-heading">
-    <p class="eyebrow">Contact</p>
-    <h2 class="section-title" id="connect-heading">Let&rsquo;s connect</h2>
-
-    <div class="connect">
-      <p class="lede">
-        Whether you&rsquo;re interested in EdTech solutions, African tech initiatives, or digital
-        innovation strategy, I&rsquo;d love to explore opportunities for collaboration and meaningful
-        impact.
+  <section class="section reveal" id="connect" aria-labelledby="connect-heading">
+    <Panel fig="Fig. 05 — Commission" class="connect">
+      <span class="stamp">Open to work</span>
+      <h2 id="connect-heading">Let&rsquo;s build something together</h2>
+      <p class="connect__lede">
+        EdTech solutions, African tech initiatives, or digital innovation strategy — commissions
+        welcome at the workshop.
       </p>
+      <a class="connect__email" href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
 
-      <ul class="connect__links">
+      <ul class="socials">
         {
-          PROFILE.socials.map((social) => (
-            <li>
-              <a
-                class="connect__link panel"
-                href={social.href}
-                target={social.href.startsWith('http') ? '_blank' : undefined}
-                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              >
-                <span class="connect__name">{social.name}</span>
-                <span class="connect__handle">{social.handle}</span>
-              </a>
-            </li>
-          ))
+          PROFILE.socials
+            .filter((s) => s.href.startsWith('http'))
+            .map((social) => (
+              <li>
+                <a href={social.href} target="_blank" rel="noopener noreferrer">
+                  {social.name}
+                </a>
+              </li>
+            ))
         }
       </ul>
-    </div>
+
+      <a class="btn" href="/book">Book a call</a>
+    </Panel>
   </section>
 </BaseLayout>
 
 <style>
   .section-head {
     display: flex;
-    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-  }
-
-  .section-title {
-    margin-block: 0.5rem 2.5rem;
-  }
-
-  .section-head .section-title {
-    margin-block-end: 0;
-  }
-
-  .section-head + .competencies {
-    margin-block-start: 2.5rem;
-  }
-
-  /* --- principles --- */
-
-  .principles {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
-    gap: 2rem;
-  }
-
-  .principle {
-    padding-inline-start: 1.25rem;
-    border-inline-start: 2px solid var(--border);
-    transition: border-color 0.35s ease;
-  }
-
-  .principle:hover {
-    border-inline-start-color: var(--principle-mineral);
-  }
-
-  .principle__title {
-    font-family: var(--sans);
-    font-size: 1rem;
-    font-weight: 500;
-    margin-block-end: 0.5rem;
-  }
-
-  .principle__body {
-    font-size: 0.9375rem;
-    color: var(--muted);
-  }
-
-  /* --- competencies --- */
-
-  .competencies {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .competency {
-    padding-block: 2rem;
-    border-block-start: 1px solid var(--border);
-  }
-
-  .competency:last-child {
-    border-block-end: 1px solid var(--border);
-  }
-
-  .competency__title {
-    font-size: 1.375rem;
-    font-weight: 300;
-    margin-block-end: 0.75rem;
-  }
-
-  .competency__body {
-    max-width: 44rem;
-    color: var(--muted);
-  }
-
-  .chips {
-    display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 0;
-    margin-block-start: 1rem;
+    margin-block-end: 2.125rem;
   }
 
-  .chip {
-    padding: 0.2rem 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: var(--full);
+  .section-head .margin-note {
+    font-size: 1.3125rem;
+    transform: rotate(-2deg);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.75rem;
+  }
+
+  .board--tight {
+    gap: 1.25rem;
+    margin-block: 1.25rem 3rem;
+  }
+
+  .w6 {
+    grid-column: span 6;
+  }
+
+  .w4 {
+    grid-column: span 4;
+  }
+
+  @media (max-width: 51rem) {
+    .w6,
+    .w4 {
+      grid-column: span 12;
+    }
+  }
+
+  .group-label {
+    margin-block-start: 2.5rem;
     font-family: var(--mono);
     font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    color: var(--faint);
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink);
   }
 
-  /* --- projects --- */
-
-  .project-group + .project-group {
-    margin-block-start: 3.5rem;
+  .group-label + .lede {
+    margin-block-start: 0.5rem;
   }
 
-  .project-group .lede {
-    margin-block: 0.75rem 1.5rem;
-    font-size: 0.9375rem;
+  /* --- pull quote --- */
+
+  .quote {
+    padding: 3.5rem 2.5rem;
+    text-align: center;
   }
 
-  .project-group .eyebrow + .grid-1 {
-    margin-block-start: 1.5rem;
+  .quote blockquote {
+    max-width: 47.5rem;
+    margin-inline: auto;
+    font-size: clamp(1.5rem, 4.4vw, 2.375rem);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.22;
   }
 
-  .grid-1 {
+  .quote blockquote strong {
+    font-style: normal;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 6px;
+    text-decoration-color: var(--ink-soft);
+  }
+
+  .quote__sig {
+    display: inline-block;
+    margin-block-start: 1.375rem;
+    font-size: 2.125rem;
+    transform: rotate(-3deg);
+  }
+
+  /* --- link panels --- */
+
+  .link-panel {
+    display: block;
+    padding: 1.75rem 1.5rem 1.375rem;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .link-panel:hover {
+    transform: translate(-2px, -2px);
+    box-shadow:
+      inset 0 0 0 1px rgb(30 58 95 / 0.08),
+      5px 6px 0 rgb(30 58 95 / 0.18);
+  }
+
+  /* The mineral shows as a bar under the heading — the one hit of colour. */
+  .link-panel h3::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-block-start: 0.5rem;
+    background: var(--panel-mineral);
+  }
+
+  .link-panel__path,
+  .split__path {
+    display: block;
+    margin-block-start: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* --- split nav --- */
+
+  .split {
     display: grid;
-    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
   }
 
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-    gap: 0.75rem;
+  @media (max-width: 51rem) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .split__card {
+    display: block;
+    padding: 2.5rem 2rem;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .split__card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow:
+      inset 0 0 0 1px rgb(30 58 95 / 0.08),
+      5px 6px 0 rgb(30 58 95 / 0.18);
+  }
+
+  .split__big {
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+
+  .split__card p {
+    max-width: 21.25rem;
+    margin-block-start: 0.875rem;
+  }
+
+  /* --- toolmarks --- */
+
+  .toolmarks {
+    margin-block-start: 3rem;
+    padding-block: 1rem;
+    border-block: 1.5px solid var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.375rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
 
   /* --- connect --- */
 
   .connect {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
-    gap: 2.5rem;
-    align-items: start;
+    text-align: center;
+    padding: 3.25rem 2rem;
   }
 
-  .connect__links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  .connect h2 {
+    font-size: 2.125rem;
+  }
+
+  .connect__lede {
+    max-width: 32.5rem;
+    margin: 0.625rem auto 0;
+  }
+
+  .connect__email {
+    display: inline-block;
+    margin-block-start: 0.75rem;
+    padding-block-end: 2px;
+    border-block-end: 1.5px dashed var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.75rem;
     list-style: none;
     padding: 0;
+    margin-block-start: 1.5rem;
   }
 
-  .connect__link {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  .socials a {
+    display: inline-flex;
+    align-items: center;
     min-height: 44px;
-    padding: 0.85rem 1rem;
-  }
-
-  .connect__name {
-    font-size: 0.9375rem;
-  }
-
-  .connect__handle {
+    padding-inline: 1rem;
+    background: var(--parch-wash-light);
+    border: 1px solid var(--ink);
     font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--faint);
+    font-size: 0.65625rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .socials a:hover {
+    background: var(--ink);
+    color: var(--parch-light);
+  }
+
+  .connect .btn {
+    margin-block-start: 1.625rem;
   }
 </style>

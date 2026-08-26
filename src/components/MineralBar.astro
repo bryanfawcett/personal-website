@@ -1,37 +1,38 @@
 ---
 /**
- * The mineral bar — the site's brand signature.
+ * The mineral rail — the site's brand signature.
  *
- * Seven segments, one per Mzizi mineral, in system order. It is the one place
- * colour appears at full strength on an otherwise monochrome site, which is
- * what makes it read as an identity mark rather than decoration.
+ * Seven segments, one per Mzizi mineral, in system order, running vertically
+ * down the binding edge of the sheet. It is the one place saturated colour
+ * appears on an otherwise ink-on-parchment drawing, which is what makes it
+ * read as an identity mark rather than decoration.
  *
- * Purely decorative: hidden from assistive technology, with the palette's
+ * Purely decorative: hidden from assistive technology, with each mineral's
  * meaning available as a tooltip for sighted users who hover.
  */
 import { MINERALS } from '../brand/minerals.js';
 
 interface Props {
-  /** `top` pins it across the viewport; `inline` sits it in the flow. */
-  placement?: 'top' | 'inline';
-  /** Bar thickness. */
+  /** `edge` pins it to the viewport's binding edge; `inline` sits it in flow. */
+  placement?: 'edge' | 'inline';
+  /** Rail thickness. */
   thickness?: string;
   class?: string;
 }
 
-const { placement = 'inline', thickness = '3px', class: className = '' } = Astro.props;
+const { placement = 'edge', thickness = '6px', class: className = '' } = Astro.props;
 ---
 
 <div
-  class:list={['mineral-bar', `is-${placement}`, className]}
-  style={`--bar-thickness: ${thickness}`}
+  class:list={['mineral-rail', `is-${placement}`, className]}
+  style={`--rail-thickness: ${thickness}`}
   aria-hidden="true"
 >
   {
     MINERALS.map((m) => (
       <span
-        class="mineral-bar__segment"
-        style={`background: var(--mineral-${m.name})`}
+        class="mineral-rail__segment"
+        style={`background: var(--mineral-${m.name}-vivid)`}
         title={`${m.name} — ${m.symbolism}. From ${m.origin}.`}
       />
     ))
@@ -39,60 +40,70 @@ const { placement = 'inline', thickness = '3px', class: className = '' } = Astro
 </div>
 
 <style>
-  .mineral-bar {
+  .mineral-rail {
     display: flex;
-    width: 100%;
-    height: var(--bar-thickness);
-    overflow: hidden;
+    flex-direction: column;
+    width: var(--rail-thickness);
   }
 
-  .mineral-bar.is-top {
+  .mineral-rail.is-edge {
     position: fixed;
-    inset-block-start: 0;
-    inset-inline: 0;
+    inset-block: 0;
+    inset-inline-start: 0;
     z-index: 60;
+    height: 100dvh;
   }
 
-  .mineral-bar__segment {
+  .mineral-rail.is-inline {
+    height: 100%;
+  }
+
+  .mineral-rail__segment {
     flex: 1;
-    /* Segments settle into place on load rather than snapping in. */
-    transform: scaleX(0);
-    transform-origin: left center;
-    animation: mineral-bar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    /* Segments draw down the edge on load rather than snapping in. */
+    transform: scaleY(0);
+    transform-origin: center top;
+    animation: mineral-rail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
-  .mineral-bar__segment:nth-child(1) {
+  .mineral-rail__segment:nth-child(1) {
     animation-delay: 0.02s;
   }
-  .mineral-bar__segment:nth-child(2) {
+  .mineral-rail__segment:nth-child(2) {
     animation-delay: 0.06s;
   }
-  .mineral-bar__segment:nth-child(3) {
+  .mineral-rail__segment:nth-child(3) {
     animation-delay: 0.1s;
   }
-  .mineral-bar__segment:nth-child(4) {
+  .mineral-rail__segment:nth-child(4) {
     animation-delay: 0.14s;
   }
-  .mineral-bar__segment:nth-child(5) {
+  .mineral-rail__segment:nth-child(5) {
     animation-delay: 0.18s;
   }
-  .mineral-bar__segment:nth-child(6) {
+  .mineral-rail__segment:nth-child(6) {
     animation-delay: 0.22s;
   }
-  .mineral-bar__segment:nth-child(7) {
+  .mineral-rail__segment:nth-child(7) {
     animation-delay: 0.26s;
   }
 
-  @keyframes mineral-bar-in {
+  @keyframes mineral-rail-in {
     to {
-      transform: scaleX(1);
+      transform: scaleY(1);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mineral-bar__segment {
+    .mineral-rail__segment {
       transform: none;
       animation: none;
+    }
+  }
+
+  @media (max-width: 51rem) {
+    .mineral-rail.is-edge {
+      width: 4px;
     }
   }
 </style>

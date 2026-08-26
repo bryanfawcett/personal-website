@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import Panel from '../components/Panel.astro';
 import { PROFILE } from '../data/profile.js';
 
 const TOPICS = [
@@ -34,32 +35,34 @@ const TOPICS = [
   title="Book a Call"
   description="Book a conversation with Bryan Fawcett about EdTech, digital transformation, systems architecture, or building for African communities."
   path="/book"
+  sheet="04 / 04"
 >
   <PageHeader
-    eyebrow="Contact"
+    eyebrow="Sheet 04 · Commission"
     title="Book a call"
     lede="Let's discuss your project, explore collaboration, or talk about EdTech, digital transformation, and building for African communities."
+    note="bring the drawing"
   />
 
-  <section class="section shell reveal" aria-labelledby="topics-heading">
-    <p class="eyebrow">What to expect</p>
-    <h2 class="section-title" id="topics-heading">Worth talking about</h2>
+  <section class="section reveal" aria-labelledby="topics-heading">
+    <p class="eyebrow is-open">What to expect</p>
+    <h2 class="visually-hidden" id="topics-heading">Worth talking about</h2>
 
     <ul class="topics">
       {
         TOPICS.map((topic) => (
-          <li class="panel" style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
+          <Panel as="li" style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
             <h3>{topic.title}</h3>
             <p>{topic.detail}</p>
-          </li>
+          </Panel>
         ))
       }
     </ul>
   </section>
 
-  <section class="section shell reveal" aria-labelledby="scheduler-heading">
-    <p class="eyebrow">Scheduling</p>
-    <h2 class="section-title" id="scheduler-heading">Pick a time</h2>
+  <section class="section reveal" aria-labelledby="scheduler-heading">
+    <p class="eyebrow is-open">Scheduling</p>
+    <h2 class="visually-hidden" id="scheduler-heading">Pick a time</h2>
 
     <div class="scheduler">
       <!--
@@ -68,7 +71,7 @@ const TOPICS = [
         request, and it is the heaviest thing on the page.
       -->
       <div id="cal-embed" class="scheduler__embed" data-cal-link="bryanfawcett"></div>
-      <button id="cal-load" class="button" type="button">Load the scheduler</button>
+      <button id="cal-load" class="btn" type="button">Load the scheduler</button>
       <p class="scheduler__fallback">
         Prefer email? <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
       </p>
@@ -105,35 +108,31 @@ const TOPICS = [
 </script>
 
 <style>
-  .section-title {
-    margin-block: 0.5rem 2rem;
+  .eyebrow {
+    margin-block-end: 1.5rem;
   }
 
   .topics {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-    gap: 0.75rem;
+    gap: 1.25rem;
     list-style: none;
     padding: 0;
   }
 
-  .topics li {
-    padding: 1.25rem 1.5rem;
-    border-inline-start: 3px solid var(--topic-mineral);
-    border-radius: var(--lg);
+  .topics :global(.panel) {
+    padding: 1.75rem 1.5rem 1.375rem;
   }
 
-  .topics h3 {
-    font-family: var(--sans);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    margin-block-end: 0.35rem;
+  .topics h3::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-block-start: 0.5rem;
+    background: var(--topic-mineral);
   }
 
-  .topics p {
-    font-size: 0.875rem;
-    color: var(--muted);
-  }
 
   .scheduler {
     display: flex;
@@ -148,35 +147,20 @@ const TOPICS = [
 
   .scheduler__embed[data-state='loading']::before {
     content: 'Loading the scheduler…';
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-
-  .button {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 1.35rem;
-    border-radius: var(--full);
-    background: var(--foreground);
-    color: var(--base);
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: background-color 0.25s ease;
-  }
-
-  .button:hover {
-    background: var(--mineral-gold);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
 
   .scheduler__fallback {
-    font-size: 0.875rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   .scheduler__fallback a {
-    color: var(--mineral-cobalt);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    border-block-end: 1.5px dashed var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.875rem;
   }
 </style>

@@ -12,7 +12,7 @@ export interface SocialLink {
 export const PROFILE = {
   name: 'Bryan Fawcett',
   title: 'Digital Craftsman',
-  role: 'Technology & Innovation Coordinator',
+  role: 'Associate Technology & Innovation Coordinator',
   employer: 'Singapore American School',
   location: 'Singapore',
   email: 'bryan@nyuchi.com',
@@ -26,6 +26,12 @@ export const PROFILE = {
     'Digital Innovation',
     'IT Governance',
     'Process Optimization',
+  ],
+  /** Every hat, in the order he'd introduce them. */
+  roles: [
+    { title: 'Founder & CEO', org: 'Nyuchi Africa' },
+    { title: 'Founder', org: 'The Bundu Foundation' },
+    { title: 'Associate Technology & Innovation Coordinator', org: 'Singapore American School' },
   ],
   socials: [
     { name: 'LinkedIn', handle: 'bryandavidfawcett', href: 'https://www.linkedin.com/in/bryandavidfawcett/' },
@@ -43,6 +49,7 @@ export const PROFILE = {
   tagline: string;
   summary: string;
   knowsAbout: readonly string[];
+  roles: readonly { title: string; org: string }[];
   socials: readonly SocialLink[];
 };
 

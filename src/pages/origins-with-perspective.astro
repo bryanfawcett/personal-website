@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import Panel from '../components/Panel.astro';
 import { JOURNEY, OPEN_QUESTIONS, PINK_APTITUDES, SCHOOL_WORK, NYUCHI_WORK } from '../data/origins.js';
 
 const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
@@ -10,24 +11,26 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   title="Origins with a Perspective on Human Potential"
   description="Equity and the assumptions we make in learning — what growing up in Zimbabwe taught me about measuring capability instead of credentials, and how that shapes the technology work I do now."
   path="/origins-with-perspective"
+  sheet="03 / 04"
   ogType="article"
 >
   <PageHeader
-    eyebrow="Talk / Equity & Assessment"
+    eyebrow="Sheet 03 · Off the bench"
     title="Origins with a Perspective on Human Potential"
     lede="Equity: the assumptions we make in learning. Where I came from, where education itself began, and the gap between what we say we value and what we actually measure."
+    note="questions, not answers"
   >
     <p class="header-actions">
-      <a class="button" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
+      <a class="btn" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
         Open the presentation
       </a>
     </p>
   </PageHeader>
 
   <!-- Why -->
-  <section class="section shell reveal" aria-labelledby="why-heading">
-    <p class="eyebrow">Why this exists</p>
-    <h2 class="section-title" id="why-heading">The lens I bring</h2>
+  <section class="section reveal" aria-labelledby="why-heading">
+    <p class="eyebrow is-open">Why this exists</p>
+    <h2 class="section-title sheet-h2" id="why-heading">The lens I bring</h2>
 
     <div class="prose">
       <p>
@@ -53,9 +56,9 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   </section>
 
   <!-- The argument -->
-  <section class="section shell reveal" aria-labelledby="argument-heading">
-    <p class="eyebrow">The argument</p>
-    <h2 class="section-title" id="argument-heading">Capability over credentials</h2>
+  <section class="section reveal" aria-labelledby="argument-heading">
+    <p class="eyebrow is-open">The argument</p>
+    <h2 class="section-title sheet-h2" id="argument-heading">Capability over credentials</h2>
 
     <div class="prose">
       <p>
@@ -87,9 +90,9 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   </section>
 
   <!-- Journey -->
-  <section class="section shell reveal" aria-labelledby="journey-heading">
-    <p class="eyebrow">The path here</p>
-    <h2 class="section-title" id="journey-heading">How I got here</h2>
+  <section class="section reveal" aria-labelledby="journey-heading">
+    <p class="eyebrow is-open">The path here</p>
+    <h2 class="section-title sheet-h2" id="journey-heading">How I got here</h2>
     <p class="lede">
       Zimbabwe to South Africa to Japan to Singapore. Classroom to server room to strategy — which is
       why I keep asking questions that sit awkwardly between all three.
@@ -111,32 +114,32 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   </section>
 
   <!-- Current work -->
-  <section class="section shell reveal" aria-labelledby="now-heading">
-    <p class="eyebrow">Now</p>
-    <h2 class="section-title" id="now-heading">What I&rsquo;m working on</h2>
+  <section class="section reveal" aria-labelledby="now-heading">
+    <p class="eyebrow is-open">Now</p>
+    <h2 class="section-title sheet-h2" id="now-heading">What I&rsquo;m working on</h2>
     <p class="lede">Two halves of the same question — one inside a school, one across a continent.</p>
 
     <div class="columns">
       <div>
-        <p class="eyebrow">Singapore American School</p>
+        <p class="eyebrow is-open">Singapore American School</p>
         <ul class="work-list">
           {
             SCHOOL_WORK.map((item) => (
-              <li class="panel" style={`--item-mineral: var(--mineral-${item.mineral})`}>
+              <Panel as="li" style={`--item-mineral: var(--mineral-${item.mineral})`}>
                 <h3>{item.title}</h3>
                 <p>{item.detail}</p>
-              </li>
+              </Panel>
             ))
           }
         </ul>
       </div>
 
       <div>
-        <p class="eyebrow">Nyuchi Africa</p>
+        <p class="eyebrow is-open">Nyuchi Africa</p>
         <ul class="work-list">
           {
             NYUCHI_WORK.map((item) => (
-              <li class="panel" style={`--item-mineral: var(--mineral-${item.mineral})`}>
+              <Panel as="li" style={`--item-mineral: var(--mineral-${item.mineral})`}>
                 <h3>
                   {item.href ? (
                     <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -147,23 +150,23 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
                   )}
                 </h3>
                 <p>{item.detail}</p>
-              </li>
+              </Panel>
             ))
           }
         </ul>
       </div>
     </div>
 
-    <p class="aside panel">
+    <Panel as="div" class="aside"><p>
       The Nyuchi work was built for places where credentials were never the thing that got you
       through. That is the same instinct I bring to the work at school.
-    </p>
+    </p></Panel>
   </section>
 
   <!-- Conceptual age -->
-  <section class="section shell reveal" aria-labelledby="pink-heading">
-    <p class="eyebrow">The Conceptual Age</p>
-    <h2 class="section-title" id="pink-heading">Six aptitudes</h2>
+  <section class="section reveal" aria-labelledby="pink-heading">
+    <p class="eyebrow is-open">The Conceptual Age</p>
+    <h2 class="section-title sheet-h2" id="pink-heading">Six aptitudes</h2>
 
     <div class="prose">
       <p>
@@ -185,19 +188,19 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     <ul class="aptitudes">
       {
         PINK_APTITUDES.map((aptitude) => (
-          <li class="panel" style={`--aptitude-mineral: var(--mineral-${aptitude.mineral})`}>
+          <Panel as="li" style={`--aptitude-mineral: var(--mineral-${aptitude.mineral})`}>
             <h3>{aptitude.name}</h3>
             <p>{aptitude.detail}</p>
-          </li>
+          </Panel>
         ))
       }
     </ul>
   </section>
 
   <!-- Questions -->
-  <section class="section shell reveal" aria-labelledby="questions-heading">
-    <p class="eyebrow">Open</p>
-    <h2 class="section-title" id="questions-heading">The questions that matter</h2>
+  <section class="section reveal" aria-labelledby="questions-heading">
+    <p class="eyebrow is-open">Open</p>
+    <h2 class="section-title sheet-h2" id="questions-heading">The questions that matter</h2>
     <p class="lede">
       I don&rsquo;t have answers — just questions from someone seeing the work through a different
       lens.
@@ -206,10 +209,10 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     <ul class="questions">
       {
         OPEN_QUESTIONS.map((question) => (
-          <li class="panel" style={`--question-mineral: var(--mineral-${question.mineral})`}>
+          <Panel as="li" style={`--question-mineral: var(--mineral-${question.mineral})`}>
             <h3>{question.title}</h3>
             <p>{question.body}</p>
-          </li>
+          </Panel>
         ))
       }
     </ul>
@@ -220,42 +223,42 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   </section>
 
   <!-- Presentation -->
-  <section class="section shell reveal" aria-labelledby="deck-heading">
-    <p class="eyebrow">The deck</p>
-    <h2 class="section-title" id="deck-heading">The presentation</h2>
+  <section class="section reveal" aria-labelledby="deck-heading">
+    <p class="eyebrow is-open">The deck</p>
+    <h2 class="section-title sheet-h2" id="deck-heading">The presentation</h2>
     <p class="lede">The original scrolling deck, as it was delivered. It reads best full screen.</p>
 
-    <div class="deck panel">
+    <Panel as="div" class="deck">
       <iframe
         src={PRESENTATION_URL}
         title="Origins with a Perspective on Human Potential — presentation"
         loading="lazy"></iframe>
-    </div>
+    </Panel>
 
     <p class="header-actions">
-      <a class="button" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
+      <a class="btn" href={PRESENTATION_URL} target="_blank" rel="noopener noreferrer">
         Open full screen
       </a>
     </p>
   </section>
 
   <!-- CTA -->
-  <section class="section shell reveal" aria-labelledby="cta-heading">
-    <h2 class="section-title" id="cta-heading">What have you noticed?</h2>
+  <section class="section reveal" aria-labelledby="cta-heading">
+    <h2 class="section-title sheet-h2" id="cta-heading">What have you noticed?</h2>
     <p class="lede">
       If you work in education, assessment, or anywhere the gap between capability and credentials
       shows up — I&rsquo;d like to hear how it looks from where you sit.
     </p>
     <p class="header-actions">
-      <a class="button" href="/book">Book a call</a>
+      <a class="btn" href="/book">Book a call</a>
       <a class="button is-ghost" href="mailto:bryan@nyuchi.com">bryan@nyuchi.com</a>
     </p>
   </section>
 </BaseLayout>
 
 <style>
-  .section-title {
-    margin-block: 0.5rem 1.5rem;
+  .sheet-h2 {
+    margin-block: 0.75rem 1.5rem;
   }
 
   .header-actions {
@@ -265,51 +268,22 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     margin-block-start: 1.5rem;
   }
 
-  .button {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 1.35rem;
-    border-radius: var(--full);
-    background: var(--foreground);
-    color: var(--base);
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition:
-      background-color 0.25s ease,
-      color 0.25s ease;
-  }
-
-  .button:hover {
-    background: var(--mineral-gold);
-  }
-
-  .button.is-ghost {
-    background: transparent;
-    color: var(--foreground);
-    border: 1px solid var(--border-strong);
-  }
-
-  .button.is-ghost:hover {
-    background: var(--container);
-    color: var(--foreground);
-  }
 
   .prose {
     max-width: 44rem;
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   .prose em {
-    color: var(--foreground);
+    color: var(--ink);
     font-style: normal;
   }
 
   .prose a {
-    color: var(--mineral-cobalt);
+    color: var(--ink);
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
@@ -318,11 +292,11 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     max-width: 44rem;
     margin-block: 2.5rem;
     padding-inline-start: 1.5rem;
-    border-inline-start: 2px solid var(--mineral-gold);
+    border-inline-start: 3px solid var(--mineral-gold);
     font-family: var(--serif);
     font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
     font-weight: 300;
-    color: var(--foreground);
+    color: var(--ink);
     text-wrap: balance;
   }
 
@@ -337,7 +311,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   .journey__item {
     position: relative;
     padding: 0 0 2.25rem 2rem;
-    border-inline-start: 1px solid var(--border);
+    border-inline-start: 1px solid var(--ink-faint);
   }
 
   .journey__item:last-child {
@@ -352,7 +326,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     inset-block-start: 0.35rem;
     width: 9px;
     height: 9px;
-    border-radius: var(--full);
+    border-radius: 9999px;
     background: var(--stop-mineral);
   }
 
@@ -361,7 +335,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     font-size: 0.6875rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--faint);
+    color: var(--ink-soft);
   }
 
   .journey__title {
@@ -373,7 +347,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   .journey__body {
     max-width: 42rem;
     font-size: 0.9375rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   /* --- columns --- */
@@ -400,7 +374,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   }
 
   .work-list h3 {
-    font-family: var(--sans);
+    font-family: var(--serif);
     font-size: 0.9375rem;
     font-weight: 500;
     margin-block-end: 0.25rem;
@@ -412,16 +386,16 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
 
   .work-list p {
     font-size: 0.875rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   .aside {
     max-width: 44rem;
     margin-block-start: 2rem;
     padding: 1.25rem 1.5rem;
-    border-radius: var(--lg);
+    border-radius: 0;
     font-size: 0.9375rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   /* --- aptitudes & questions --- */
@@ -439,12 +413,12 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   .aptitudes li,
   .questions li {
     padding: 1.25rem 1.5rem;
-    border-radius: var(--lg);
+    border-radius: 0;
   }
 
   .aptitudes h3,
   .questions h3 {
-    font-family: var(--sans);
+    font-family: var(--serif);
     font-size: 0.9375rem;
     font-weight: 500;
     margin-block-end: 0.35rem;
@@ -461,14 +435,14 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   .aptitudes p,
   .questions p {
     font-size: 0.875rem;
-    color: var(--muted);
+    color: var(--ink-body);
   }
 
   /* --- deck --- */
 
   .deck {
     margin-block-start: 2rem;
-    border-radius: var(--lg);
+    border-radius: 0;
     overflow: hidden;
   }
 

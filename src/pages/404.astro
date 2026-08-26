@@ -4,12 +4,22 @@ import PageHeader from '../components/PageHeader.astro';
 import { NAV } from '../data/profile.js';
 ---
 
-<BaseLayout title="Page not found" description="That page does not exist on bryanfawcett.com." path="/404">
-  <PageHeader eyebrow="404" title="That page doesn't exist" lede="The link may be old, or the address slightly off.">
-    <ul class="options">
-      {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-    </ul>
-  </PageHeader>
+<BaseLayout
+  title="Sheet not found"
+  description="That page does not exist on bryanfawcett.com."
+  path="/404"
+  sheet="— / 04"
+>
+  <PageHeader
+    eyebrow="404 · Sheet missing"
+    title="Not on this drawing"
+    lede="The link may be old, or the reference slightly off."
+    note="check the index"
+  />
+
+  <ul class="options">
+    {NAV.map((item) => <li><a class="btn is-ghost" href={item.href}>{item.label}</a></li>)}
+  </ul>
 </BaseLayout>
 
 <style>
@@ -19,21 +29,6 @@ import { NAV } from '../data/profile.js';
     gap: 0.75rem;
     list-style: none;
     padding: 0;
-    margin-block-start: 1.5rem;
-  }
-
-  .options a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 1.1rem;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--full);
-    font-size: 0.875rem;
-    transition: background-color 0.25s ease;
-  }
-
-  .options a:hover {
-    background: var(--container);
+    margin-block: 2rem 4rem;
   }
 </style>

@@ -6,15 +6,20 @@
  * and meaning it was named for — that provenance is the point of the palette,
  * not decoration.
  *
- * This site renders dark only, so `hex` here is the dark-surface value.
+ * This site is drawn on parchment, so `hex` is Mzizi's paper-readable value —
+ * the one that holds contrast against a light ground. `vivid` keeps the
+ * saturated dark-surface value, which is what the mineral rail is drawn in:
+ * a 6px band of pure colour needs no contrast ratio, body text does.
  */
 
 export interface Mineral {
   /** Token name, used to build the CSS custom property `--mineral-<name>`. */
   readonly name: string;
-  /** Value tuned for dark surfaces. This site never renders light. */
+  /** Paper-readable value. Safe for text and rules on parchment. */
   readonly hex: string;
-  /** Deep companion tone for containers and washes. */
+  /** Saturated value. For the mineral rail and other non-text fills only. */
+  readonly vivid: string;
+  /** Pale companion tone for container fills. */
   readonly container: string;
   /** Where the stone is mined. */
   readonly origin: string;
@@ -27,56 +32,63 @@ export interface Mineral {
 export const MINERALS = [
   {
     name: 'cobalt',
-    hex: '#00B0FF',
-    container: '#001F3F',
+    hex: '#0047AB',
+    vivid: '#00B0FF',
+    container: '#E3F2FD',
     origin: 'Katanga (DRC) and the Zambian Copperbelt',
     symbolism: 'Digital future, trust, knowledge',
     usage: 'Links, focus rings, informational states',
   },
   {
     name: 'tanzanite',
-    hex: '#B388FF',
-    container: '#1A0033',
+    hex: '#4B0082',
+    vivid: '#B388FF',
+    container: '#F3E5F5',
     origin: 'Merelani Hills, Tanzania',
     symbolism: 'Premium, creativity, connection',
     usage: 'Primary brand accent',
   },
   {
     name: 'malachite',
-    hex: '#64FFDA',
-    container: '#00251A',
+    hex: '#004D40',
+    vivid: '#64FFDA',
+    container: '#E0F2F1',
     origin: 'Congo Copper Belt',
     symbolism: 'Growth, nature, success',
     usage: 'Success states, positive actions',
   },
   {
     name: 'gold',
-    hex: '#FFD740',
-    container: '#332200',
+    hex: '#9A6F00',
+    vivid: '#FFD740',
+    container: '#FFF8E1',
     origin: 'Ghana, South Africa, Mali',
     symbolism: 'Honey, rewards, warmth',
     usage: 'Achievements and highlights',
   },
   {
     name: 'terracotta',
-    hex: '#E1B07E',
-    container: '#3E2817',
+    hex: '#A0522D',
+    vivid: '#E1B07E',
+    container: '#F5E6D3',
     origin: 'the Pan-African Sahel',
     symbolism: 'Earth, community, grounding',
     usage: 'Community surfaces, warmth',
   },
   {
     name: 'sodalite',
-    hex: '#3D5AFE',
-    container: '#0D1442',
+    hex: '#283593',
+    vivid: '#3D5AFE',
+    container: '#E8EAF6',
     origin: 'the Kunene River, Namibia and South Africa',
     symbolism: 'Intelligence, depth, reasoning',
     usage: 'AI surfaces, deep-reasoning states',
   },
   {
     name: 'copper',
-    hex: '#FF8A65',
-    container: '#3A1A0E',
+    hex: '#BF5A36',
+    vivid: '#FF8A65',
+    container: '#FBE4DA',
     origin: 'the Central African Copperbelt, Zambia and DRC',
     symbolism: 'Connection, foundation, stewardship',
     usage: 'Ecosystem identity, the commons',

@@ -18,10 +18,9 @@ import sys
 import urllib.parse
 
 FAMILIES = [
-    "Dancing Script:wght@500;700",
-    "JetBrains Mono:wght@400;500",
-    "Noto Serif:wght@300;400;500",
-    "Poppins:wght@200;300;400;500",
+    "Cormorant Garamond:ital,wght@0,500;0,600;0,700;1,500",
+    "IBM Plex Mono:wght@400;500;600",
+    "Caveat:wght@500;600",
 ]
 
 # Google serves modern woff2 only to a browser-shaped User-Agent.
@@ -85,6 +84,11 @@ def main() -> int:
         if not (family and weight and source):
             continue
 
+        # Italic is a separate file at the same family and weight, so the
+        # filename has to carry the style too — otherwise the roman and the
+        # italic collide and one of them silently never downloads.
+        style = "italic" if re.search(r"font-style:\s*italic", block) else "normal"
+
         # Several of these families are variable fonts: Google serves one file
         # per subset covering every weight. Key the filename off the URL so
         # each shared file is named and downloaded exactly once, and so every
@@ -92,7 +96,8 @@ def main() -> int:
         url_key = source.group(1)
         if url_key not in files:
             slug = family.group(1).lower().replace(" ", "-")
-            files[url_key] = f"{slug}-{weight.group(1)}-{subset}.woff2"
+            suffix = "-italic" if style == "italic" else ""
+            files[url_key] = f"{slug}-{weight.group(1)}{suffix}-{subset}.woff2"
 
         kept.append(block.replace(url_key, f"/fonts/{files[url_key]}"))
 

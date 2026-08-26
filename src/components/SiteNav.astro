@@ -3,11 +3,9 @@ import { NAV, PROFILE } from '../data/profile.js';
 
 interface Props {
   path: string;
-  /** The home page floats the nav over its hero rather than pinning it. */
-  floating?: boolean;
 }
 
-const { path, floating = false } = Astro.props;
+const { path } = Astro.props;
 
 /** `/` matches only itself; every other route also matches its children. */
 function isCurrent(href: string): boolean {
@@ -15,9 +13,12 @@ function isCurrent(href: string): boolean {
 }
 ---
 
-<header class:list={['nav', { 'is-floating': floating }]}>
-  <nav class="nav__inner shell" aria-label="Main">
-    <a class="nav__wordmark" href="/">{PROFILE.name}</a>
+<header class="nav shell">
+  <nav class="nav__inner" aria-label="Main">
+    <a class="nav__wordmark" href="/">
+      <span class="nav__name">{PROFILE.name}</span>
+      <span class="nav__role">{PROFILE.title}</span>
+    </a>
 
     <ul class="nav__list">
       {
@@ -39,47 +40,43 @@ function isCurrent(href: string): boolean {
 
 <style>
   .nav {
-    position: sticky;
-    /* Clears the fixed mineral bar. */
-    inset-block-start: 3px;
-    z-index: 50;
-    background: color-mix(in oklab, var(--base) 82%, transparent);
-    backdrop-filter: blur(12px);
-    border-block-end: 1px solid var(--border);
-  }
-
-  .nav.is-floating {
-    border-block-end-color: transparent;
+    padding-block-start: 2.25rem;
   }
 
   .nav__inner {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
-    padding-block: 0.75rem;
+    padding-block-end: 0.75rem;
+    border-block-end: 1.5px solid var(--ink-soft);
   }
 
   .nav__wordmark {
-    font-family: var(--display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1;
-    /* Optical centring for the script face. */
-    padding-block-start: 0.15em;
-    white-space: nowrap;
-    transition: color 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
-  .nav__wordmark:hover {
-    color: var(--mineral-tanzanite);
+  .nav__name {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .nav__role {
+    font-family: var(--mono);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
 
   .nav__list {
     display: flex;
-    /* Four items plus a wordmark do not fit a phone; let them wrap. */
     flex-wrap: wrap;
-    justify-content: flex-end;
     gap: 0.25rem;
     list-style: none;
     padding: 0;
@@ -89,36 +86,38 @@ function isCurrent(href: string): boolean {
     display: flex;
     align-items: center;
     min-height: 44px;
-    padding-inline: 0.75rem;
-    border-radius: var(--full);
-    font-size: 0.875rem;
-    color: var(--muted);
-    white-space: nowrap;
+    padding-inline: 0.875rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid transparent;
     transition:
-      color 0.25s ease,
-      background-color 0.25s ease;
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease;
   }
 
   .nav__link:hover {
-    color: var(--foreground);
-    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--ink-faint);
   }
 
   .nav__link.is-current {
-    color: var(--foreground);
-    background: var(--container);
+    color: var(--ink);
+    background: var(--parch-wash-light);
+    border-color: var(--ink);
   }
 
-  @media (max-width: 26rem) {
+  @media (max-width: 40rem) {
     .nav__inner {
-      flex-direction: column;
       align-items: flex-start;
-      gap: 0.25rem;
     }
 
     .nav__list {
-      justify-content: flex-start;
-      margin-inline-start: -0.75rem;
+      margin-inline-start: -0.875rem;
     }
   }
 </style>

@@ -1,141 +1,155 @@
 ---
+/**
+ * The sheet's headline: the title stacked, with the second word drafted in
+ * outline as though it has been ruled but not yet inked in.
+ */
 import { PROFILE } from '../data/profile.js';
 
-const year = new Date().getFullYear();
+interface Props {
+  /** Two words: the first solid, the second in outline. */
+  solid: string;
+  drafted: string;
+  eyebrow: string;
+  sub?: string;
+  /** Pencil note pinned in the right margin. */
+  note?: string;
+  /** Label on the dimension line beneath. */
+  dimension?: string;
+  /** Show the name and role strip under the title. */
+  showByline?: boolean;
+}
+
+const {
+  solid,
+  drafted,
+  eyebrow,
+  sub,
+  note,
+  dimension = 'Drawn to scale',
+  showByline = false,
+} = Astro.props;
 ---
 
-<section class="hero" aria-labelledby="hero-name">
-  <img
-    class="hero__portrait"
-    src="/profile.png"
-    alt=""
-    width="835"
-    height="1052"
-    fetchpriority="high"
-    decoding="async"
-  />
-  <div class="hero__scrim"></div>
+<header class="hero">
+  <p class="eyebrow hero__eyebrow">{eyebrow}</p>
 
-  <div class="hero__content shell">
-    <h1 class="hero__name" id="hero-name">{PROFILE.name}</h1>
+  <h1 class="stack">
+    <span class="stack__solid">{solid}</span>
+    <span class="stack__drafted">{drafted}</span>
+  </h1>
 
-    <p class="hero__badge">{PROFILE.title} / {year}</p>
+  {
+    showByline && (
+      <p class="hero__byline">
+        {PROFILE.roles.map((role, i) => (
+          <>
+            {i > 0 && <span class="hero__sep"> · </span>}
+            <span>
+              {role.title}, {role.org}
+            </span>
+          </>
+        ))}
+      </p>
+    )
+  }
 
-    <p class="hero__tagline">{PROFILE.tagline}</p>
+  {sub && <p class="hero__sub">{sub}</p>}
 
-    <ul class="hero__socials">
-      {
-        PROFILE.socials.map((social) => (
-          <li>
-            <a
-              href={social.href}
-              target={social.href.startsWith('http') ? '_blank' : undefined}
-              rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {social.name}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+  <div class="dimension hero__dimension">
+    <span class="dimension__line"></span>
+    <span class="dimension__label">{dimension}</span>
+    <span class="dimension__line"></span>
   </div>
-</section>
+
+  {
+    note && (
+      <p class="margin-note hero__note">
+        <Fragment set:html={note.replace(/\n/g, '<br>')} />
+        <span class="hero__arrow">↴</span>
+      </p>
+    )
+  }
+</header>
 
 <style>
   .hero {
     position: relative;
-    display: grid;
-    place-items: end center;
-    min-height: min(88dvh, 52rem);
-    background: var(--pitch);
-    isolation: isolate;
-  }
-
-  .hero__portrait,
-  .hero__scrim {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
-
-  .hero__portrait {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Portrait source in a landscape frame: cover crops hard, so bias the
-       visible band down to keep the whole face rather than the forehead. */
-    object-position: center 34%;
-  }
-
-  /* Keeps the wordmark legible over any part of the photograph. */
-  .hero__scrim {
-    background:
-      linear-gradient(to bottom, rgb(5 5 5 / 0.35) 0%, rgb(5 5 5 / 0.1) 35%, rgb(5 5 5 / 0.85) 88%, var(--base) 100%);
-  }
-
-  .hero__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding-block-end: 3.5rem;
+    padding-block: 2.125rem 3.5rem;
     text-align: center;
   }
 
-  .hero__name {
-    font-family: var(--serif);
-    font-size: clamp(2.75rem, 1.5rem + 5.5vw, 5rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1;
+  .hero__eyebrow {
+    justify-content: center;
+    margin-block-end: 1.875rem;
   }
 
-  .hero__badge {
-    display: inline-block;
-    padding: 0.3rem 0.85rem;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--full);
-    background: color-mix(in oklab, var(--pitch) 55%, transparent);
-    backdrop-filter: blur(6px);
+  .stack {
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    font-size: clamp(3rem, 11.5vw, 7.75rem);
+  }
+
+  .stack__solid {
+    display: block;
+    color: var(--ink);
+  }
+
+  /* Ruled but not inked in. */
+  .stack__drafted {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke;
+  }
+
+  .hero__byline {
+    margin-block-start: 1rem;
     font-family: var(--mono);
     font-size: 0.6875rem;
-    letter-spacing: 0.16em;
+    font-weight: 600;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--foreground);
+    color: var(--ink);
   }
 
-  .hero__tagline {
-    max-width: 26rem;
-    font-family: var(--serif);
-    font-size: 1.125rem;
-    font-weight: 300;
-    color: color-mix(in oklab, var(--foreground) 88%, transparent);
+  .hero__sep {
+    color: var(--ink-soft);
   }
 
-  .hero__socials {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem;
-    list-style: none;
-    padding: 0;
-    margin-block-start: 0.5rem;
+  .hero__sub {
+    max-width: 35rem;
+    margin: 1.625rem auto 0;
+    font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink-soft);
   }
 
-  .hero__socials a {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 0.75rem;
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: color-mix(in oklab, var(--foreground) 70%, transparent);
-    transition: color 0.25s ease;
+  .hero__dimension {
+    margin-block-start: 2rem;
   }
 
-  .hero__socials a:hover {
-    color: var(--mineral-gold);
+  .hero__note {
+    position: absolute;
+    inset-inline-end: 2%;
+    inset-block-start: 26%;
+    max-width: 9.375rem;
+    text-align: start;
+    font-size: 1.375rem;
+    transform: rotate(-4deg);
+  }
+
+  .hero__arrow {
+    display: block;
+    font-size: 1.625rem;
+    transform: rotate(20deg);
+  }
+
+  @media (max-width: 56rem) {
+    .hero__note {
+      display: none;
+    }
   }
 </style>
