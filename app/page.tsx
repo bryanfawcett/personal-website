@@ -428,6 +428,46 @@ export default function Home() {
                         ))}
                       </div>
                     </div>
+
+                    <div className="pt-8 space-y-4 border-t border-border/50">
+                      <h3 className="text-lg font-medium text-muted-foreground font-mono">TALKS & PERSPECTIVES</h3>
+                      <p className="text-sm text-muted-foreground max-w-2xl mb-6">
+                        Where the Zimbabwe lens meets the work—talks and writing on equity, capability,
+                        and what we choose to measure.
+                      </p>
+                      <div className="grid gap-3">
+                        <Link
+                          href="/origins-with-perspective"
+                          className="group flex flex-col min-h-[44px] p-4 sm:p-5 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-md"
+                          aria-label="Read Origins with a Perspective on Human Potential: a talk on equity and the assumptions we make in learning"
+                        >
+                          <h4 className="text-base font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                            Origins with a Perspective on Human Potential
+                          </h4>
+                          <p className="mt-1 text-sm text-muted-foreground flex-1">
+                            Equity and the assumptions we make in learning—a Zimbabwe perspective on
+                            capability, credentials, and what we might be measuring wrong.
+                          </p>
+                          <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                            <span>Read the talk</span>
+                            <svg
+                              className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                              />
+                            </svg>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -518,9 +558,12 @@ export default function Home() {
 
               {/* Navigation and theme toggle */}
               <div className="flex items-center gap-6">
-                <nav className="flex gap-4" aria-label="Footer navigation">
+                <nav className="flex flex-wrap gap-4" aria-label="Footer navigation">
                   <Link href="/experience" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
                     Experience
+                  </Link>
+                  <Link href="/origins-with-perspective" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
+                    Origins
                   </Link>
                   <Link href="/book" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
                     Book a Call

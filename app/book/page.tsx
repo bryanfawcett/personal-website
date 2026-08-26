@@ -160,12 +160,15 @@ export default function BookPage() {
           <p className="text-sm text-muted-foreground">
             © 2025 Bryan Fawcett. All rights reserved.
           </p>
-          <nav className="flex gap-4" aria-label="Footer navigation">
+          <nav className="flex flex-wrap gap-4 justify-center" aria-label="Footer navigation">
             <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
               Profile
             </Link>
             <Link href="/experience" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
               Experience
+            </Link>
+            <Link href="/origins-with-perspective" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
+              Origins
             </Link>
             <Link href="/book" className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] flex items-center">
               Book a Call
