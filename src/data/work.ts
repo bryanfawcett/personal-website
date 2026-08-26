@@ -71,6 +71,13 @@ export interface Project {
 
 export const NYUCHI_PROJECTS: readonly Project[] = [
   {
+    title: 'The Bundu Foundation',
+    description:
+      'The nonprofit that governs it all — research, open standards, and the agricultural data commons behind Nyuchi, Mukoko and Shamwari AI',
+    href: 'https://bundu.org',
+    mineral: 'copper',
+  },
+  {
     title: 'Mzizi',
     description:
       'The design system the whole ecosystem is built on — seven minerals, Ubuntu doctrine, and an accessibility toolkit, served over an API and an MCP',
@@ -82,6 +89,13 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
     description: 'Community-focused business platform for African entrepreneurship',
     href: 'https://www.nyuchi.com',
     mineral: 'gold',
+  },
+  {
+    title: 'Nyuchi StationKit',
+    description:
+      'Open-source solar-powered weather and soil station for smallholder farmers — from $25, feeding readings into the open commons',
+    href: 'https://www.nyuchi.com/stationkit',
+    mineral: 'terracotta',
   },
   {
     title: 'Nyuchi Learning',
@@ -102,6 +116,13 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
     mineral: 'tanzanite',
   },
   {
+    title: 'Mukoko Weather',
+    description:
+      'AI-powered hyperlocal forecasts and advisory for farming, mining and travel, grounded by StationKit sensor data',
+    href: 'https://weather.mukoko.com',
+    mineral: 'cobalt',
+  },
+  {
     title: 'Mukoko News',
     description: 'Pan-African news aggregation from trusted regional sources',
     href: 'https://news.mukoko.com',
@@ -112,6 +133,13 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
     description: 'Community events and gatherings platform',
     href: 'https://nhimbe.com',
     mineral: 'copper',
+  },
+  {
+    title: 'Shamwari AI',
+    description:
+      "Nyuchi Africa's open-source initiative for a small, culturally-grounded AI model built to run on affordable, low-bandwidth hardware",
+    href: 'https://shamwari.ai',
+    mineral: 'sodalite',
   },
   {
     title: 'Zimbabwe Travel Info',
