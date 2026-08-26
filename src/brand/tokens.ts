@@ -45,6 +45,35 @@ export const LINES = {
   borderStrong: '#413F3B',
 } as const;
 
+/**
+ * The blueprint ground.
+ *
+ * The whole site sits on drafting paper: a fine grid with a heavier rule every
+ * fifth line, drawn in cobalt — the mineral for knowledge and precision. Panels
+ * do not float above it on shadows; they are drawn onto it, with the grid
+ * showing faintly through and corner ticks where a draughtsman would mark a
+ * cut. That is what makes a container read as part of the drawing rather than
+ * a card dropped on top of it.
+ *
+ * Kept deliberately low-contrast: the grid must never compete with body text.
+ */
+export const BLUEPRINT = {
+  /** Fine grid line. */
+  gridLine: 'rgb(0 176 255 / 0.045)',
+  /** Every fifth line, heavier. */
+  gridLineMajor: 'rgb(0 176 255 / 0.075)',
+  /** Spacing of the fine grid. */
+  gridSize: '28px',
+  /** Spacing of the heavy rule. */
+  gridSizeMajor: '140px',
+  /** Panel fill — translucent, so the grid reads through it. */
+  panelFill: 'rgb(19 18 17 / 0.72)',
+  /** Panel fill on hover. */
+  panelFillActive: 'rgb(30 29 26 / 0.85)',
+  /** Corner tick and annotation rule colour. */
+  tick: 'rgb(0 176 255 / 0.4)',
+} as const;
+
 export const SEMANTIC = {
   /** Primary brand action — tanzanite. */
   primary: '#B388FF',
@@ -96,6 +125,7 @@ export function tokensToCss(): string {
     ['Surfaces', SURFACES],
     ['Ink', INK],
     ['Lines', LINES],
+    ['Blueprint', BLUEPRINT],
     ['Semantic', SEMANTIC],
     ['Type', TYPE],
     ['Radii', RADII],

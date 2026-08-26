@@ -38,6 +38,26 @@ body {
   min-height: 100dvh;
   background: var(--base);
   color: var(--foreground);
+  /*
+   * The blueprint ground. Four repeating gradients: a fine grid, and a heavier
+   * rule every fifth line, drawn in cobalt at very low alpha. `fixed`
+   * attachment keeps the drawing still while content scrolls over it, which is
+   * what makes the page feel like one sheet rather than a stack of screens.
+   */
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--grid-line-major) 0 1px,
+      transparent 1px var(--grid-size-major)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--grid-line-major) 0 1px,
+      transparent 1px var(--grid-size-major)
+    ),
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid-size)),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
+  background-attachment: fixed;
   font-family: var(--sans);
   font-size: 1rem;
   line-height: 1.6;
@@ -170,6 +190,75 @@ button {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ------------------------------------------------------------- blueprint */
+
+/*
+ * A panel drawn onto the blueprint rather than floating above it.
+ *
+ * Translucent fill so the grid reads through, a hairline rule instead of a
+ * shadow, and corner ticks where a draughtsman would mark a cut. Apply
+ * `.panel` to any container that should belong to the drawing.
+ */
+.panel {
+  position: relative;
+  background: var(--panel-fill);
+  border: 1px solid var(--border);
+  border-radius: var(--md);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.panel:hover {
+  background: var(--panel-fill-active);
+  border-color: var(--border-strong);
+}
+
+/*
+ * Corner ticks. Two pseudo-elements carry all four: each draws an L, one
+ * pinned top-left and one bottom-right, using only borders so there is no
+ * extra markup and nothing to hide from assistive technology.
+ */
+.panel::before,
+.panel::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--tick);
+  border-style: solid;
+  /* Visible at rest: the ticks are what make a container read as drawn onto
+     the sheet rather than dropped on top of it. They brighten on hover. */
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.panel::before {
+  inset-block-start: -1px;
+  inset-inline-start: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.panel::after {
+  inset-block-end: -1px;
+  inset-inline-end: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+.panel:hover::before,
+.panel:hover::after,
+.panel:focus-visible::before,
+.panel:focus-visible::after {
+  opacity: 1;
+}
+
+/* A section heading sits under a drawn rule, like a titled drawing block. */
+.ruled {
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--border);
 }
 
 /* --------------------------------------------------------------- a11y */

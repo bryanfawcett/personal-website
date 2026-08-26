@@ -39,7 +39,7 @@ jobs:
 
             1. **Security vulnerabilities** - XSS, injection, sensitive data exposure
             2. **Performance issues** - inefficient code, memory leaks, unnecessary re-renders
-            3. **Best practices** - React/Next.js patterns, TypeScript usage, code organization
+            3. **Best practices** - Astro patterns, TypeScript usage, code organization
             4. **Accessibility** - ARIA attributes, keyboard navigation, screen reader support
             5. **Type safety** - proper TypeScript types, any types to avoid
 

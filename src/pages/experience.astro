@@ -64,7 +64,7 @@ import { MINERALS } from '../brand/minerals.js';
     <ul class="credentials">
       {
         CREDENTIALS.map((credential) => (
-          <li class="credential">
+          <li class="credential panel">
             <h3 class="credential__title">{credential.title}</h3>
             <p class="credential__issuer">{credential.issuer}</p>
             <p class="credential__period">{credential.period}</p>
@@ -202,8 +202,6 @@ import { MINERALS } from '../brand/minerals.js';
 
   .credential {
     padding: 1.25rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
     border-radius: var(--lg);
   }
 

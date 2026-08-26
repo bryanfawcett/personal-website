@@ -136,7 +136,7 @@ import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data
           PROFILE.socials.map((social) => (
             <li>
               <a
-                class="connect__link"
+                class="connect__link panel"
                 href={social.href}
                 target={social.href.startsWith('http') ? '_blank' : undefined}
                 rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -298,17 +298,6 @@ import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data
     justify-content: center;
     min-height: 44px;
     padding: 0.85rem 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--md);
-    transition:
-      border-color 0.25s ease,
-      background-color 0.25s ease;
-  }
-
-  .connect__link:hover {
-    background: var(--container);
-    border-color: var(--border-strong);
   }
 
   .connect__name {

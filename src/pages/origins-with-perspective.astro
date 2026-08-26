@@ -122,7 +122,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
         <ul class="work-list">
           {
             SCHOOL_WORK.map((item) => (
-              <li style={`--item-mineral: var(--mineral-${item.mineral})`}>
+              <li class="panel" style={`--item-mineral: var(--mineral-${item.mineral})`}>
                 <h3>{item.title}</h3>
                 <p>{item.detail}</p>
               </li>
@@ -136,7 +136,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
         <ul class="work-list">
           {
             NYUCHI_WORK.map((item) => (
-              <li style={`--item-mineral: var(--mineral-${item.mineral})`}>
+              <li class="panel" style={`--item-mineral: var(--mineral-${item.mineral})`}>
                 <h3>
                   {item.href ? (
                     <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -154,7 +154,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
       </div>
     </div>
 
-    <p class="aside">
+    <p class="aside panel">
       The Nyuchi work was built for places where credentials were never the thing that got you
       through. That is the same instinct I bring to the work at school.
     </p>
@@ -185,7 +185,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     <ul class="aptitudes">
       {
         PINK_APTITUDES.map((aptitude) => (
-          <li style={`--aptitude-mineral: var(--mineral-${aptitude.mineral})`}>
+          <li class="panel" style={`--aptitude-mineral: var(--mineral-${aptitude.mineral})`}>
             <h3>{aptitude.name}</h3>
             <p>{aptitude.detail}</p>
           </li>
@@ -206,7 +206,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     <ul class="questions">
       {
         OPEN_QUESTIONS.map((question) => (
-          <li style={`--question-mineral: var(--mineral-${question.mineral})`}>
+          <li class="panel" style={`--question-mineral: var(--mineral-${question.mineral})`}>
             <h3>{question.title}</h3>
             <p>{question.body}</p>
           </li>
@@ -225,7 +225,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     <h2 class="section-title" id="deck-heading">The presentation</h2>
     <p class="lede">The original scrolling deck, as it was delivered. It reads best full screen.</p>
 
-    <div class="deck">
+    <div class="deck panel">
       <iframe
         src={PRESENTATION_URL}
         title="Origins with a Perspective on Human Potential — presentation"
@@ -396,10 +396,7 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
 
   .work-list li {
     padding: 1rem 1.25rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
     border-inline-start: 3px solid var(--item-mineral);
-    border-radius: var(--md);
   }
 
   .work-list h3 {
@@ -422,7 +419,6 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
     max-width: 44rem;
     margin-block-start: 2rem;
     padding: 1.25rem 1.5rem;
-    background: var(--container);
     border-radius: var(--lg);
     font-size: 0.9375rem;
     color: var(--muted);
@@ -443,8 +439,6 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
   .aptitudes li,
   .questions li {
     padding: 1.25rem 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
     border-radius: var(--lg);
   }
 
@@ -474,10 +468,8 @@ const PRESENTATION_URL = 'https://origins-with-perspective.nyuchi.workers.dev';
 
   .deck {
     margin-block-start: 2rem;
-    border: 1px solid var(--border);
     border-radius: var(--lg);
     overflow: hidden;
-    background: var(--pitch);
   }
 
   .deck iframe {

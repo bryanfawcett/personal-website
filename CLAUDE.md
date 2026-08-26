@@ -195,7 +195,7 @@ update `src/data/profile.ts` and `src/data/experience.ts` together.
 
 For context, the broader ecosystem uses:
 
-- **Frontend:** Astro, Next.js, React, Tailwind CSS
+- **Frontend:** Astro, TypeScript
 - **Backend:** Hono on Cloudflare Workers
 - **Database:** Supabase PostgreSQL
 - **Storage:** Cloudflare R2

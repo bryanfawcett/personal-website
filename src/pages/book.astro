@@ -48,7 +48,7 @@ const TOPICS = [
     <ul class="topics">
       {
         TOPICS.map((topic) => (
-          <li style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
+          <li class="panel" style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
             <h3>{topic.title}</h3>
             <p>{topic.detail}</p>
           </li>
@@ -119,8 +119,6 @@ const TOPICS = [
 
   .topics li {
     padding: 1.25rem 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
     border-inline-start: 3px solid var(--topic-mineral);
     border-radius: var(--lg);
   }

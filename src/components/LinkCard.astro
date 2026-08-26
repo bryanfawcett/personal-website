@@ -16,12 +16,13 @@ const external = href.startsWith('http');
 ---
 
 <a
-  class="card"
+  class="card panel"
   href={href}
   style={`--card-mineral: var(--mineral-${mineral})`}
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener noreferrer' : undefined}
 >
+  <span class="card__rule" aria-hidden="true"></span>
   <h3 class="card__title">{title}</h3>
   <p class="card__description">{description}</p>
   <span class="card__cta">
@@ -33,25 +34,18 @@ const external = href.startsWith('http');
 </a>
 
 <style>
+  /* Surface, border and corner ticks come from `.panel` in global.css. */
   .card {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
     padding: 1.25rem 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
     border-radius: var(--lg);
-    overflow: hidden;
-    transition:
-      border-color 0.3s ease,
-      background-color 0.3s ease,
-      transform 0.3s ease;
+    transition: transform 0.3s ease;
   }
 
   /* The mineral reveals as a left edge on hover — colour as a reward, not a default. */
-  .card::before {
-    content: '';
+  .card .card__rule {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
@@ -60,17 +54,18 @@ const external = href.startsWith('http');
     transform: scaleY(0);
     transform-origin: center top;
     transition: transform 0.3s ease;
+    border-start-start-radius: var(--lg);
+    border-end-start-radius: var(--lg);
+    pointer-events: none;
   }
 
   .card:hover,
   .card:focus-visible {
-    background: var(--container);
-    border-color: var(--border-strong);
     transform: translateY(-2px);
   }
 
-  .card:hover::before,
-  .card:focus-visible::before {
+  .card:hover .card__rule,
+  .card:focus-visible .card__rule {
     transform: scaleY(1);
   }
 
