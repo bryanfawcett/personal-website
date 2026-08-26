@@ -325,6 +325,19 @@ button {
   text-transform: uppercase;
 }
 
+/*
+ * Type that has been ruled but not yet inked in.
+ *
+ * Global rather than component-scoped because more than one component draws
+ * it — Astro scopes styles to the template they are declared in, so a scoped
+ * version silently fails to match anywhere else.
+ */
+.drafted {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink);
+  paint-order: stroke;
+}
+
 /* ==================== panels — drafted on the sheet ==================== */
 
 .panel {

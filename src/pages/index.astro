@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Panel from '../components/Panel.astro';
+import WorkshopStrip from '../components/WorkshopStrip.astro';
 import { PROFILE } from '../data/profile.js';
 import { COMPETENCIES, NYUCHI_PROJECTS, PRINCIPLES, SAS_PROJECTS } from '../data/work.js';
 
@@ -23,6 +24,11 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
     note={'measure twice,\nship once'}
     showByline
   />
+
+  <!-- Workshop views -->
+  <div class="section reveal">
+    <WorkshopStrip />
+  </div>
 
   <!-- Message from the bench -->
   <section class="section reveal" aria-labelledby="quote-heading">
@@ -146,7 +152,7 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
     <div class="split">
       <Panel as="a" href="/experience" class="split__card">
         <span class="split__big">
-          <span>At the</span><br /><span class="stack__drafted">Bench</span>
+          <span>At the</span><br /><span class="drafted">Bench</span>
         </span>
         <p>
           Current builds, career work, and the systems taking shape — from Nyuchi Africa to EdTech at
@@ -155,15 +161,15 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
         <span class="split__path">/experience →</span>
       </Panel>
 
-      <Panel as="a" href="/origins-with-perspective" class="split__card">
+      <Panel as="a" href="/book" class="split__card">
         <span class="split__big">
-          <span>Off the</span><br /><span class="stack__drafted">Bench</span>
+          <span>Off the</span><br /><span class="drafted">Bench</span>
         </span>
         <p>
-          A talk on equity and the assumptions we make in learning — capability, credentials, and
-          what we might be measuring wrong.
+          Collaboration, strategy sessions, and conversations about African tech, education, and
+          community.
         </p>
-        <span class="split__path">/origins-with-perspective →</span>
+        <span class="split__path">/book →</span>
       </Panel>
     </div>
   </section>
@@ -171,7 +177,7 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
   <!-- Toolmarks -->
   <div class="toolmarks reveal" aria-label="Tools of the trade">
     {
-      ['Astro', 'TypeScript', 'Cloudflare', 'Hono', 'Supabase', 'Sanity', 'Nyuchi Africa', 'Mukoko', 'Bundu'].map(
+      ['Node.js', 'React', 'Astro', 'Rust', 'Cloudflare', 'Sanity', 'Supabase', 'Nyuchi Africa', 'Mukoko'].map(
         (tool, i) => (
           <>
             {i > 0 && <span aria-hidden="true">·</span>}
@@ -372,6 +378,11 @@ const FIGURES = ['Fig. 01 — Structure', 'Fig. 02 — Framing', 'Fig. 03 — Fi
     font-weight: 700;
     text-transform: uppercase;
     line-height: 0.95;
+  }
+
+  /* Slightly finer stroke than the hero — the type is smaller here. */
+  .split__big :global(.drafted) {
+    -webkit-text-stroke-width: 1.3px;
   }
 
   .split__card p {

@@ -35,7 +35,7 @@ const {
 
   <h1 class="stack">
     <span class="stack__solid">{solid}</span>
-    <span class="stack__drafted">{drafted}</span>
+    <span class="drafted">{drafted}</span>
   </h1>
 
   {
@@ -96,12 +96,9 @@ const {
     color: var(--ink);
   }
 
-  /* Ruled but not inked in. */
-  .stack__drafted {
+  /* Layout only; the outline itself is the global `.drafted` utility. */
+  .stack :global(.drafted) {
     display: block;
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--ink);
-    paint-order: stroke;
   }
 
   .hero__byline {

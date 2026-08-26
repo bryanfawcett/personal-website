@@ -39,26 +39,26 @@ export const COMPETENCIES: readonly Competency[] = [
   {
     title: 'Full Stack Development',
     description:
-      'End-to-end web applications from architecture to deployment. Expertise in React, Node.js, and modern web technologies. Building educational platforms, travel systems, and community tools.',
+      'End-to-end web applications from architecture to deployment. Educational platforms, travel systems, and community tools — joinery-tight from database to interface.',
     highlights: ['Node.js', 'React', 'Database Design', 'API Architecture'],
   },
   {
     title: 'Systems Architecture',
     description:
-      'Designing scalable, resilient systems that serve real needs. From learning management platforms to information systems and organisational dashboards — built for reliability and growth.',
+      'Scalable, resilient systems that serve real needs — learning platforms, information systems, and organisational dashboards built for reliability and growth.',
     highlights: ['Infrastructure Design', 'System Scalability', 'Data Architecture'],
   },
   {
     title: 'Education Technology',
     description:
-      'Deep expertise in EdTech solutions that enhance learning at scale. Building platforms that empower educators and students with accessible, intuitive tools and resources.',
+      'Deep EdTech expertise that enhances learning at scale. Platforms that hand educators and students accessible, intuitive tools and resources.',
     highlights: ['Learning Platforms', 'Educational Tools', 'EdTech Strategy'],
   },
   {
     title: 'Digital Product Strategy',
     description:
-      'Taking products from concept to launch with a clear view of who they serve. Shaping roadmaps, governance and delivery so the thing that ships is the thing that was needed.',
-    highlights: ['Product Roadmapping', 'IT Governance', 'Process Optimisation'],
+      'Concept to market, end to end. Digital experiences that serve communities — from travel platforms to learning ecosystems to tech director networks.',
+    highlights: ['Product Vision', 'Technical Leadership', 'Community Impact'],
   },
 ];
 
