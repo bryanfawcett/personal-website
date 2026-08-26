@@ -73,7 +73,7 @@ export const NYUCHI_PROJECTS: readonly Project[] = [
   {
     title: 'The Bundu Foundation',
     description:
-      'The nonprofit that governs it all — research, open standards, and the agricultural data commons behind Nyuchi, Mukoko and Shamwari AI',
+      "The nonprofit researching the standards and open agricultural data commons that Nyuchi, Mukoko and Shamwari AI are building toward — governance in progress, research first",
     href: 'https://bundu.org',
     mineral: 'copper',
   },

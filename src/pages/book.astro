@@ -80,6 +80,49 @@ const TOPICS = [
 </BaseLayout>
 
 <script>
+  /**
+   * Cal.com's embed queue pattern, reproduced by hand.
+   *
+   * A plain `<script src="…/embed.js">` — what this used to be — loads the
+   * library and stops there; nothing tells it to render anything. embed.js
+   * has to be *told* to draw an inline calendar via `Cal('inline', …)`, and
+   * that call has to be queued before the library exists so it runs the
+   * moment it's ready. `window.Cal` starts as this stub — a function that
+   * only pushes its arguments onto a queue and, on its first call, injects
+   * the real script — and embed.js replays that queue once it loads.
+   *
+   * The full snippet Cal.com's own generator hands out also supports naming
+   * multiple embed instances; this page only ever creates one, so that part
+   * is dropped.
+   */
+  interface CalApi {
+    (...args: unknown[]): void;
+    q: unknown[][];
+  }
+
+  function loadCal(embedJsUrl: string): CalApi {
+    const api = ((...args: unknown[]) => {
+      api.q.push(args);
+    }) as CalApi;
+    api.q = [];
+
+    /*
+     * embed.js looks for its queue on `window.Cal`, not on whatever variable
+     * happens to hold the return value here — it is a global contract, not a
+     * function argument. Skipping this line leaves `window.Cal` undefined,
+     * and the real script throws "Cal is not defined. This shouldn't
+     * happen" the moment it loads and goes looking for it.
+     */
+    (window as Window & { Cal?: CalApi }).Cal = api;
+
+    const script = document.createElement('script');
+    script.src = embedJsUrl;
+    script.async = true;
+    document.head.appendChild(script);
+
+    return api;
+  }
+
   const button = document.getElementById('cal-load');
   const embed = document.getElementById('cal-embed');
 
@@ -91,17 +134,30 @@ const TOPICS = [
       button.remove();
       embed.dataset['state'] = 'loading';
 
-      const script = document.createElement('script');
-      script.src = 'https://app.cal.com/embed/embed.js';
-      script.async = true;
-      script.addEventListener('load', () => {
-        embed.dataset['state'] = 'ready';
+      const Cal = loadCal('https://app.cal.com/embed/embed.js');
+
+      Cal('init', { origin: 'https://cal.com' });
+      Cal('inline', {
+        elementOrSelector: '#cal-embed',
+        calLink: 'bryanfawcett',
+        config: { layout: 'month_view' },
       });
-      script.addEventListener('error', () => {
-        embed.dataset['state'] = 'error';
-        embed.textContent = 'The scheduler could not load. Email bryan@nyuchi.com instead.';
+      // linkReady / linkFailed fire once the calendar iframe itself has
+      // loaded (or failed to) — the embed.js script's own load event only
+      // means the library arrived, not that a calendar is showing yet.
+      Cal('on', {
+        action: 'linkReady',
+        callback: () => {
+          embed.dataset['state'] = 'ready';
+        },
       });
-      document.body.appendChild(script);
+      Cal('on', {
+        action: 'linkFailed',
+        callback: () => {
+          embed.dataset['state'] = 'error';
+          embed.textContent = 'The scheduler could not load. Email bryan@nyuchi.com instead.';
+        },
+      });
     },
     { once: true },
   );
@@ -137,12 +193,43 @@ const TOPICS = [
   .scheduler {
     display: flex;
     flex-direction: column;
+    /*
+     * flex-start keeps the button and fallback link sized to their own
+     * content rather than stretched full width. `.scheduler__embed` still
+     * gets the full width it needs below — align-items only decides sizing
+     * for a flex item left at `width: auto`, and that one sets its own
+     * width explicitly.
+     */
     align-items: flex-start;
     gap: 1.25rem;
   }
 
-  .scheduler__embed:empty {
+  /*
+   * `width: 100%` matters here: `.scheduler` used to set `align-items:
+   * flex-start`, which sizes a flex child to its content instead of the
+   * available width. The Cal.com iframe asks for `width: 100%` of *this*
+   * element, so a shrink-to-fit container and a fill-the-container iframe
+   * fought each other down to whatever the iframe's own default (a few
+   * hundred pixels) happened to be — the embed rendered, just squeezed into
+   * a fraction of the page rather than "not rendering" outright.
+   */
+  .scheduler__embed {
+    width: 100%;
+  }
+
+  /*
+   * Gated on `data-state` rather than `:empty`: the target div has no child
+   * nodes for the whole loading phase (Cal.com only inserts the iframe once
+   * the calendar is ready), so an `:empty` rule stays matched and its
+   * `display: none` hides the `::before` loading text right along with it —
+   * the indicator existed in markup but could never actually be seen.
+   */
+  .scheduler__embed:not([data-state]) {
     display: none;
+  }
+
+  .scheduler__embed[data-state='loading'] {
+    min-height: 32rem;
   }
 
   .scheduler__embed[data-state='loading']::before {
