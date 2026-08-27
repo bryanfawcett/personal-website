@@ -355,13 +355,26 @@ Studio that edits it is in `bryans-adventures/`.
   and neither is cacheable.
 - **`groq()` never throws.** On an on-demand route an uncaught throw is a 500
   for the whole document, masthead and all. It returns a `Result` instead.
-- **Translations are document-level.** A Chinese adventure is its own document
-  with `translationOf` pointing at the English one. The Chinese list is built
-  from the *English* records so every adventure appears to a Chinese reader —
-  translated where a translation exists, marked `仅有英文` where it does not,
-  linking to the English page. An untranslated post lists no `hreflang="zh-Hans"`
-  alternate, because pointing one at a page that is not a translation is a lie
-  told to a search engine; its switcher falls back to the Chinese list.
+- **Translations are document-level, via `@sanity/document-internationalization`.**
+  A Chinese adventure is its own document. Neither side points at the other:
+  the pairing lives in a `translation.metadata` document the plugin maintains,
+  which is what gives the Studio its Translations menu and keeps an
+  English-only adventure an ordinary document rather than one with an empty
+  field. Queries join through it with `references(^._id)` — an indexed filter.
+- **The language is on `translations[].language`, not `_key`.** Plugin v6 moved
+  it, because `_key` is what Sanity uses for array identity and diffing.
+  Filtering `translations[_key == "zh"]` matches nothing, silently.
+- **`language` is written by the plugin, not by hand** — `readOnly` and
+  `hidden` on the schema, as the plugin asks. `sanity.config.ts` also replaces
+  the auto-generated "New document" entry with a base-language template: a new
+  adventure created without `language` would match neither list and read as
+  lost.
+- **The Chinese list is built from the *English* records** so every adventure
+  appears to a Chinese reader — translated where a translation exists, marked
+  `仅有英文` where it does not, linking to the English page. An untranslated
+  post lists no `hreflang="zh-Hans"` alternate, because pointing one at a page
+  that is not a translation is a lie told to a search engine; its switcher
+  falls back to the Chinese list.
 - **Pages with a language-specific slug pass `alternates` to `BaseLayout`.** The
   derived-from-path default cannot know that a translation has its own slug.
 - **The image URL builder is hand-rolled** and therefore pinned by
@@ -371,9 +384,11 @@ Studio that edits it is in `bryans-adventures/`.
   so the editor's "Heading" renders `h2` and "Subheading" `h3`. Jumping straight
   to `h3` is a heading-order violation, and axe catches it.
 - **`bryans-adventures/` is not part of the build.** It is a Sanity Studio, which means
-  React. It has its own `package.json` and lockfile, the root `tsconfig.json`
-  excludes it, and there is no pnpm workspace file — so `pnpm install` and
-  `pnpm build` at the root never see it, and neither does Cloudflare.
+  React. It has its own `package.json` and `package-lock.json`, the root
+  `tsconfig.json` excludes it, and there is no pnpm workspace file — so
+  `pnpm install` and `pnpm build` at the root never see it, and neither does
+  Cloudflare. It runs npm and Sanity 6; the site runs pnpm and Astro 7, and the
+  two never meet.
 
 ### Type identity
 
