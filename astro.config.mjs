@@ -16,6 +16,23 @@ export default defineConfig({
   output: 'static',
 
   /*
+   * Two languages: English unprefixed at the root, Chinese under /zh.
+   *
+   * `prefixDefaultLocale: false` keeps every existing English URL exactly where
+   * it is — no redirect, no change to a link anyone has already shared.
+   * `redirectToDefaultLocale` is off for the same reason: /zh is a real page
+   * authored in this repo, not a fallback that should bounce.
+   */
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh'],
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
+
+  /*
    * Every link on the site is written without a trailing slash.
    *
    * The default `format: 'directory'` emits minerals/index.html, and an

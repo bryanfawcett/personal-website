@@ -6,41 +6,49 @@
  * site navigation carried in the bottom strip where a real sheet carries
  * its references.
  */
-import { NAV, PROFILE } from '../data/profile.js';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { NAV, PROFILE, profileInLang, socialsInLang } from '../data/profile.js';
+import { localizePath } from '../i18n/routing.js';
+import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
   sheet?: string;
+  lang?: Lang;
+  /** Language-neutral path, so the switcher can find this page's counterpart. */
+  path?: string;
 }
 
-const { sheet = '01 / 04' } = Astro.props;
+const { sheet = '01 / 04', lang = defaultLang, path = '/' } = Astro.props;
+const t = useTranslations(lang);
+const profile = profileInLang(lang);
 const year = new Date().getFullYear();
 ---
 
-<footer class="title-block" aria-label="Title block">
+<footer class="title-block" aria-label={t('tb.label')}>
   <div class="tb-cell tb-name">
-    <span class="k">Project</span>
-    <span class="v">{PROFILE.name} — {PROFILE.title}</span>
+    <span class="k">{t('tb.project')}</span>
+    <span class="v">{PROFILE.name} — {profile.title}</span>
   </div>
   <div class="tb-cell">
-    <span class="k">Drawn by</span>
+    <span class="k">{t('tb.drawn_by')}</span>
     <span class="v">B.D.F.</span>
   </div>
   <div class="tb-cell">
-    <span class="k">Sheet</span>
+    <span class="k">{t('tb.sheet')}</span>
     <span class="v">{sheet}</span>
   </div>
   <div class="tb-cell">
-    <span class="k">Rev</span>
+    <span class="k">{t('tb.rev')}</span>
     <span class="v">A — {year}</span>
   </div>
 
   <div class="tb-foot">
-    <nav aria-label="Footer">
+    <nav aria-label={t('nav.footer')}>
       <ul>
         {
           NAV.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a href={localizePath(item.href, lang)}>{t(item.labelKey)}</a>
             </li>
           ))
         }
@@ -49,7 +57,7 @@ const year = new Date().getFullYear();
 
     <ul class="tb-social">
       {
-        PROFILE.socials.map((social) => (
+        socialsInLang(lang).map((social) => (
           <li>
             <a
               href={social.href}
@@ -62,6 +70,8 @@ const year = new Date().getFullYear();
         ))
       }
     </ul>
+
+    <span class="tb-lang"><LanguageSwitcher lang={lang} path={path} /></span>
 
     <span class="tb-copy">© {year} {PROFILE.name}</span>
   </div>

@@ -100,9 +100,11 @@ src/
     minerals.ts   The seven Mzizi minerals, with origin and meaning
     tokens.ts     Sheet, ground, ink, measure, marks, grid, type → CSS props
   components/     Astro components
-  data/           Content as typed TypeScript
+  data/           Content as typed TypeScript, English with its Chinese beside it
+  i18n/           ui.ts (chrome strings), routing.ts (paths), localize.ts
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
-  pages/          One file per route
+  pages/          Thin wrappers: one per route per language, `zh/` for Chinese
+  views/          The sheets themselves — one per route, both languages
   styles/         fonts.css (generated), global.css
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
@@ -247,6 +249,60 @@ or the styling, re-verify by decoding a real screen capture, not by eye.
 
 Typed, so pages stay markup. A copy edit should never mean touching layout.
 
+### The site is bilingual: English at the root, Chinese under `/zh`
+
+Astro's own i18n routing with `prefixDefaultLocale: false`, so every English
+URL is exactly where it always was and nothing redirects. Every route exists in
+both languages — five sheets each, plus one 404 — which is what lets the
+language switcher point at the *current page's* counterpart instead of dumping
+the reader back on the home page.
+
+- **A page is never written twice.** `src/pages/experience.astro` and
+  `src/pages/zh/experience.astro` are four-line wrappers around
+  `src/views/ExperienceView.astro`, which takes `lang` and renders both. Copying
+  the markup into `pages/zh/` would mean every future change had to be made
+  twice, and it would drift the first time somebody forgot.
+- **Chrome strings live in `src/i18n/ui.ts`** — nav, section labels, figure
+  tags, buttons, page metadata. Both dictionaries are checked against each other
+  at compile time: a key present in `ui.en` and missing from `ui.zh` fails
+  `astro check`.
+- **Subject prose stays in `src/data/`,** next to the record it belongs to, in a
+  `zh` block holding only the translated fields (`Bilingual<T, K>` in
+  `src/i18n/localize.ts`). `work.ts` stays the single source of truth for the
+  ecosystem grid; splitting project copy into the chrome dictionary would give
+  it two.
+- **Proper nouns are never translated.** Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,
+  Nhimbe, the school names — Latin script in both, with a short Chinese gloss in
+  parentheses where a reader needs the handhold. The vCard and its QR stay
+  English in both languages: it is one canonical contact record, and a card that
+  differs by which page it was scanned from is a duplicate contact waiting to
+  happen.
+- **`path` props are language-neutral.** Pass `/experience`; `localizePath` adds
+  the prefix. Hard-coding `/zh/…` anywhere is a bug waiting for the next locale.
+
+### Chinese typography
+
+None of the three vendored families carry Han, and a subset that did would cost
+several megabytes against the sub-megabyte total the site ships — a bad trade on
+the connections much of this ecosystem is built for. So Han falls to the
+reader's own system face. `--cjk` and `--cjk-mono` list the Latin face *first*,
+so a proper noun inside a Chinese sentence still sets in Cormorant or Plex.
+
+Two things that follow, and that new work has to keep:
+
+- **Display leading is set for Latin caps.** `.stack`, `.page-header__title` and
+  `.split__big` run at 0.92–0.95, which works because Latin caps sit well inside
+  the em box. A Han glyph fills that box and the same figure runs the lines into
+  each other. Each has a `:lang(zh)` twin; a new display lockup needs one too.
+  The global `:lang(zh) h1` rule will not do it — a scoped class outranks it.
+- **The label floor is higher for Han.** The mono labels run 10–11px, fine for
+  uppercase Latin and not for Han, where the strokes stop separating at 1x.
+  Rather than a `:lang(zh)` twin for each of ~35 label classes, `global.css`
+  declares a `Mzizi CJK Label` `@font-face` with `size-adjust: 120%`, sourced
+  `local()` only and sitting in `--cjk-mono` *after* IBM Plex Mono — so Han in a
+  label scales and the Latin beside it does not. Add labels normally; they
+  inherit the floor.
+
 ### Type identity
 
 Cormorant Garamond for display and body, IBM Plex Mono for figure tags, dimension
@@ -300,6 +356,14 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 10. **`.shell` with `max-width`.** Use `width: min(…, 100% - 4rem)`. With
     `max-width` the shell goes full-bleed on a phone and its column rules land
     underneath the sheet frame.
+11. **Editing a page under `src/pages/`.** Those are wrappers. The markup is in
+    `src/views/`, and editing one language's wrapper only changes that language.
+12. **A newline inside Chinese markup.** Astro collapses it to a space, and a
+    space in front of a full-width comma is a typographic error. Keep
+    `{a}{comma}{b}` on one line.
+13. **Probing rendered colour with a screenshot.** The nav links transition
+    colour over 0.2s, so a probe that screenshots immediately reads the ink
+    mid-fade as the ground. Disable transitions first.
 
 ## Git Workflow
 
@@ -339,12 +403,16 @@ All three must stay clean.
 
 ### Projects Listed
 
-`src/data/work.ts` (`NYUCHI_PROJECTS`) is the single source of truth for the ecosystem
+`src/data/work.ts` (`nyuchiProjects`) is the single source of truth for the ecosystem
 grid on `/` — The Bundu Foundation, Mzizi, Nyuchi Africa, Nyuchi StationKit, Nyuchi
 Learning, Nyuchi Lingo, Mukoko, Mukoko Weather, Mukoko News, Nhimbe, Shamwari AI,
 Zimbabwe Travel Info and Iconic Expeditions. Add new ecosystem projects there — the
 homepage section-head text describes the Foundation/pillar relationship in general
 terms rather than naming each project, so it should not need to change alongside it.
+
+The grid is grouped rather than one flat run of thirteen tiles: `foundation`,
+`pillars`, `commons`, `community`, `travel`, in that order, from the `group` field
+on each project. A new project needs a group, and its Chinese in the same record.
 
 ### Internal Tools (Not Listed on the Website)
 

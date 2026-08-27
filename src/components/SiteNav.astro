@@ -1,23 +1,39 @@
 ---
 import { Image } from 'astro:assets';
 import portrait from '../assets/bryan-fawcett.png';
-import { NAV, PROFILE } from '../data/profile.js';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { NAV, PROFILE, profileInLang } from '../data/profile.js';
+import { localizePath, stripLang } from '../i18n/routing.js';
+import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
+  /** Language-neutral path, e.g. `/experience`. */
   path: string;
+  lang: Lang;
 }
 
-const { path } = Astro.props;
+const { path, lang } = Astro.props;
+const t = useTranslations(lang);
+const profile = profileInLang(lang);
+const here = stripLang(path);
 
 /** `/` matches only itself; every other route also matches its children. */
 function isCurrent(href: string): boolean {
-  return href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+  return href === '/' ? here === '/' : here === href || here.startsWith(`${href}/`);
 }
+
+/*
+ * The commission link is pulled out of the list and given the stamped
+ * treatment, so the one action on the site is present on every page rather
+ * than reading as the fifth of five equal-weight labels.
+ */
+const links = NAV.filter((item) => item.href !== '/book');
+const book = NAV.find((item) => item.href === '/book');
 ---
 
 <header class="nav shell">
-  <nav class="nav__inner" aria-label="Main">
-    <a class="nav__wordmark" href="/">
+  <nav class="nav__inner" aria-label={t('nav.label')}>
+    <a class="nav__wordmark" href={localizePath('/', lang)}>
       <Image
         class="nav__portrait"
         src={portrait}
@@ -30,23 +46,39 @@ function isCurrent(href: string): boolean {
       />
       <span class="nav__id">
         <span class="nav__name">{PROFILE.name}</span>
-        <span class="nav__role">{PROFILE.title}</span>
+        <span class="nav__role">{profile.title}</span>
       </span>
     </a>
 
     <ul class="nav__list">
       {
-        NAV.map((item) => (
+        links.map((item) => (
           <li>
             <a
               class:list={['nav__link', { 'is-current': isCurrent(item.href) }]}
-              href={item.href}
+              href={localizePath(item.href, lang)}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.label}
+              {t(item.labelKey)}
             </a>
           </li>
         ))
+      }
+
+      <li><LanguageSwitcher lang={lang} path={path} /></li>
+
+      {
+        book && (
+          <li>
+            <a
+              class:list={['nav__link', 'nav__cta', { 'is-current': isCurrent(book.href) }]}
+              href={localizePath(book.href, lang)}
+              aria-current={isCurrent(book.href) ? 'page' : undefined}
+            >
+              {t(book.labelKey)}
+            </a>
+          </li>
+        )
       }
     </ul>
   </nav>
@@ -145,6 +177,35 @@ function isCurrent(href: string): boolean {
     color: var(--ink);
     background: var(--sheet-wash-light);
     border-color: var(--ink);
+  }
+
+  /*
+   * The commission stamp.
+   *
+   * A full-strength rule and ink rather than a fill: this is the site's one
+   * standing call to action, and it has to read as the loudest thing in the
+   * nav without becoming a button floating over the sheet. On hover the ink
+   * and the ground swap, which is the same move the social links already
+   * make — no lift, no shadow.
+   */
+  .nav__cta {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .nav__cta:hover,
+  .nav__cta.is-current {
+    color: var(--sheet-raised);
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  /* Mono tracking meant for Latin caps opens Han glyphs up too far. */
+  .nav__link:lang(zh),
+  .nav__role:lang(zh) {
+    font-family: var(--cjk-mono);
+    letter-spacing: 0.1em;
+    text-transform: none;
   }
 
   @media (max-width: 40rem) {

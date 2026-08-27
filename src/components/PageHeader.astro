@@ -46,4 +46,10 @@ const { eyebrow, title, lede, note } = Astro.props;
     line-height: 0.95;
     letter-spacing: 0.01em;
   }
+
+  /* See Hero: Han fills the em box that Latin caps leave room in. */
+  .page-header__title:lang(zh) {
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
 </style>

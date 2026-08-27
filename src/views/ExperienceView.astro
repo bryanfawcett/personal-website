@@ -1,0 +1,223 @@
+---
+/** The experience sheet, in whichever language it is asked for. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Panel from '../components/Panel.astro';
+import { coreSkills, credentials, roles } from '../data/experience.js';
+import { MINERALS } from '../brand/minerals.js';
+import { useTranslations, type Lang } from '../i18n/ui.js';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t('exp.title')}
+  description={t('exp.lede')}
+  path="/experience"
+  lang={lang}
+  sheet="02 / 04"
+>
+  <PageHeader
+    eyebrow={t('exp.eyebrow')}
+    title={t('exp.title')}
+    lede={t('exp.lede')}
+    note={t('exp.note')}
+  />
+
+  <section class="section reveal" aria-labelledby="roles-heading">
+    <h2 class="visually-hidden" id="roles-heading">{t('exp.roles_heading')}</h2>
+
+    <ol class="schedule">
+      {
+        roles(lang).map((role, index) => (
+          <li
+            class="schedule__row"
+            style={`--row-mineral: var(--mineral-${MINERALS[index % MINERALS.length]!.name})`}
+          >
+            <div class="schedule__meta">
+              <span class="schedule__ref">{String(index + 1).padStart(2, '0')}</span>
+              <span class="schedule__period">{role.period}</span>
+              <span class="schedule__place">{role.location}</span>
+              {role.duration && <span class="chip">{role.duration}</span>}
+            </div>
+
+            <div class="schedule__body">
+              <h3 class="schedule__title">{role.title}</h3>
+              <p class="schedule__company">{role.company}</p>
+
+              <ul class="schedule__points">
+                {role.description.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+
+              {role.skills && (
+                <ul class="chips">
+                  {role.skills.map((skill) => (
+                    <li class="chip">{skill}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section reveal" aria-labelledby="credentials-heading">
+    <p class="eyebrow is-open">{t('exp.credentials_eyebrow')}</p>
+    <h2 class="visually-hidden" id="credentials-heading">{t('exp.credentials_heading')}</h2>
+
+    <div class="credentials">
+      {
+        credentials(lang).map((credential) => (
+          <Panel class="credential">
+            <h3>{credential.title}</h3>
+            <p class="credential__issuer">{credential.issuer}</p>
+            <p class="credential__period">{credential.period}</p>
+          </Panel>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section reveal" aria-labelledby="skills-heading">
+    <p class="eyebrow is-open">{t('exp.skills_eyebrow')}</p>
+    <h2 class="visually-hidden" id="skills-heading">{t('exp.skills_heading')}</h2>
+
+    <ul class="chips chips--large">
+      {coreSkills(lang).map((skill) => <li class="chip">{skill}</li>)}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow {
+    margin-block-end: 1.5rem;
+  }
+
+  /* A schedule of works: reference, dates, then the entry. */
+  .schedule {
+    list-style: none;
+    padding: 0;
+    border-block-start: 1.5px solid var(--ink);
+  }
+
+  .schedule__row {
+    display: grid;
+    grid-template-columns: 13rem 1fr;
+    gap: 1.5rem;
+    padding-block: 1.75rem;
+    border-block-end: 1px solid var(--ink-faint);
+  }
+
+  .schedule__row:last-child {
+    border-block-end: 1.5px solid var(--ink);
+  }
+
+  @media (max-width: 51rem) {
+    .schedule__row {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
+  .schedule__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .schedule__ref {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--row-mineral);
+    line-height: 1;
+  }
+
+  .schedule__title {
+    font-size: 1.4375rem;
+    font-weight: 600;
+  }
+
+  .schedule__company {
+    margin-block-start: 0.125rem;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .schedule__points {
+    margin-block-start: 0.875rem;
+    padding-inline-start: 1.1rem;
+    font-size: 1rem;
+    color: var(--ink-body);
+  }
+
+  .schedule__points li {
+    margin-block-end: 0.25rem;
+  }
+
+  .schedule__points li::marker {
+    color: var(--row-mineral);
+  }
+
+  .credentials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: 1.25rem;
+  }
+
+  .credential {
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+
+  .credential h3 {
+    font-size: 1.0625rem;
+  }
+
+  .credential__issuer {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .credential__period {
+    margin-block-start: 0.375rem;
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .chips--large .chip {
+    font-size: 0.6875rem;
+    padding: 7px 12px;
+  }
+
+  /*
+   * Han text in the mono-set metadata: the Latin caps tracking opens the
+   * glyphs too far, and there is no case to raise.
+   */
+  .schedule__period:lang(zh),
+  .schedule__place:lang(zh),
+  .credential__issuer:lang(zh),
+  .credential__period:lang(zh) {
+    font-family: var(--cjk-mono);
+    letter-spacing: 0.1em;
+    text-transform: none;
+  }
+</style>

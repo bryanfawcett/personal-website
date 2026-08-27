@@ -1,0 +1,588 @@
+---
+/**
+ * The home sheet, in whichever language it is asked for.
+ *
+ * The page files under `src/pages` are thin wrappers around this — one per
+ * language — so a copy edit or a layout change happens once. Duplicating the
+ * markup into `pages/zh/` would mean every future change had to be made twice
+ * and would drift the first time someone forgot.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Panel from '../components/Panel.astro';
+import ContactCard from '../components/ContactCard.astro';
+import Portrait from '../components/Portrait.astro';
+import WorkshopStrip from '../components/WorkshopStrip.astro';
+import { PROFILE, profileInLang, socialsInLang } from '../data/profile.js';
+import { competencies, nyuchiProjectsByGroup, principles, sasProjects } from '../data/work.js';
+import { localizePath } from '../i18n/routing.js';
+import { useTranslations, type Lang, type UiKey } from '../i18n/ui.js';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const profile = profileInLang(lang);
+
+const FIGURE_KEYS: readonly UiKey[] = ['home.fig_1', 'home.fig_2', 'home.fig_3', 'home.fig_4'];
+
+const ecosystem = nyuchiProjectsByGroup(lang);
+const sas = sasProjects(lang);
+---
+
+<BaseLayout
+  title={`${PROFILE.name} — ${profile.title}`}
+  description={profile.summary}
+  path="/"
+  lang={lang}
+  sheet="01 / 04"
+  ogType="profile"
+>
+  <Hero
+    eyebrow={t('home.eyebrow')}
+    solid={t('home.solid')}
+    drafted={t('home.drafted')}
+    sub={profile.tagline}
+    note={t('home.note')}
+    dimension={t('home.dimension')}
+    lang={lang}
+    showByline
+  />
+
+  <!-- Workshop views -->
+  <div class="section reveal">
+    <WorkshopStrip lang={lang} />
+  </div>
+
+  <!-- Message from the bench -->
+  <section class="section reveal" aria-labelledby="quote-heading">
+    <h2 class="visually-hidden" id="quote-heading">{t('home.quote_heading')}</h2>
+    <Panel fig={t('home.quote_fig')} class="quote">
+      <Portrait width={176} caption={t('card.fig')} class="quote__portrait" lang={lang} eager />
+
+      <div class="quote__body">
+        <blockquote>
+          {t('home.quote_before')}<strong>{t('home.quote_build')}</strong>{t('home.quote_middle')}<strong
+            >{t('home.quote_who')}</strong
+          >{t('home.quote_after')}
+        </blockquote>
+        <span class="quote__sig hand">{t('home.quote_sig')}</span>
+      </div>
+    </Panel>
+  </section>
+
+  <!-- Philosophy -->
+  <section class="section reveal" id="philosophy" aria-labelledby="philosophy-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.philosophy_eyebrow')}</p>
+      <span class="margin-note">{t('home.philosophy_note')}</span>
+    </div>
+    <h2 class="visually-hidden" id="philosophy-heading">{t('home.philosophy_heading')}</h2>
+
+    <div class="board">
+      {
+        principles(lang).map((principle) => (
+          <Panel class="w6" style={`--panel-mineral: var(--mineral-${principle.mineral})`}>
+            <h3>{principle.title}</h3>
+            <p>{principle.body}</p>
+          </Panel>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Competencies -->
+  <section class="section reveal" id="expertise" aria-labelledby="expertise-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.competencies_eyebrow')}</p>
+      <span class="margin-note">{t('home.competencies_note')}</span>
+    </div>
+    <h2 class="visually-hidden" id="expertise-heading">{t('home.competencies_heading')}</h2>
+
+    <div class="board">
+      {
+        competencies(lang).map((competency, i) => {
+          const figKey = FIGURE_KEYS[i];
+          return (
+            <Panel class="w6" fig={figKey ? t(figKey) : undefined}>
+              <h2>{competency.title}</h2>
+              <p>{competency.description}</p>
+              <ul class="chips">
+                {competency.highlights.map((highlight) => (
+                  <li class="chip">{highlight}</li>
+                ))}
+              </ul>
+            </Panel>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section reveal" id="projects" aria-labelledby="projects-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.projects_eyebrow')}</p>
+    </div>
+    <h2 class="visually-hidden" id="projects-heading">{t('home.projects_heading')}</h2>
+
+    <p class="group-label">{t('home.projects_group')}</p>
+    <p class="lede">{t('home.projects_lede')}</p>
+
+    {
+      /*
+       * Grouped rather than one flat run of thirteen tiles. The Foundation
+       * used to sit next to a safari company with nothing to say how the two
+       * relate; the subheads carry that relationship without any extra prose.
+       */
+    }
+    {
+      ecosystem.map((section) => (
+        <div class="cluster">
+          <p class="cluster__label">{section.label}</p>
+          <div class="board board--tight">
+            {section.projects.map((project) => (
+              <Panel
+                as="a"
+                href={project.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w4 link-panel"
+                style={`--panel-mineral: var(--mineral-${project.mineral})`}
+              >
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+                <span class="link-panel__path">{t('home.projects_visit')}</span>
+              </Panel>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="group-label">{t('home.projects_sas')}</p>
+    <div class="board board--tight">
+      {
+        sas.map((project) => (
+          <Panel
+            as="a"
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w6 link-panel"
+            style={`--panel-mineral: var(--mineral-${project.mineral})`}
+          >
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <span class="link-panel__path">{t('home.projects_repo')}</span>
+          </Panel>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Split navigation -->
+  <section class="section reveal" aria-labelledby="nav-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.nav_eyebrow')}</p>
+    </div>
+    <h2 class="visually-hidden" id="nav-heading">{t('home.nav_heading')}</h2>
+
+    <div class="split">
+      <Panel as="a" href={localizePath('/experience', lang)} class="split__card">
+        <span class="split__big">
+          <span>{t('home.split_at')}</span><br /><span class="drafted">{t('home.split_bench')}</span>
+        </span>
+        <p>{t('home.split_at_body')}</p>
+        <span class="split__path">{localizePath('/experience', lang)} →</span>
+      </Panel>
+
+      <Panel as="a" href={localizePath('/book', lang)} class="split__card">
+        <span class="split__big">
+          <span>{t('home.split_off')}</span><br /><span class="drafted">{t('home.split_bench')}</span
+          >
+        </span>
+        <p>{t('home.split_off_body')}</p>
+        <span class="split__path">{localizePath('/book', lang)} →</span>
+      </Panel>
+    </div>
+  </section>
+
+  <!-- Toolmarks -->
+  <div class="toolmarks reveal" aria-label={t('home.toolmarks_label')}>
+    {
+      [
+        'Node.js',
+        'React',
+        'Astro',
+        'Rust',
+        'Cloudflare',
+        'Sanity',
+        'Supabase',
+        'Nyuchi Africa',
+        'Mukoko',
+      ].map((tool, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">·</span>}
+          <span>{tool}</span>
+        </>
+      ))
+    }
+  </div>
+
+  <!-- Connect -->
+  <section class="section reveal" id="connect" aria-labelledby="connect-heading">
+    <Panel fig={t('home.connect_fig')} class="connect">
+      <span class="stamp">{t('home.connect_stamp')}</span>
+      <h2 id="connect-heading">{t('home.connect_heading')}</h2>
+      <p class="connect__lede">{t('home.connect_lede')}</p>
+      <ContactCard class="connect__card" lang={lang} />
+
+      <ul class="socials">
+        {
+          socialsInLang(lang)
+            .filter((s) => s.href.startsWith('http'))
+            .map((social) => (
+              <li>
+                <a href={social.href} target="_blank" rel="noopener noreferrer">
+                  {social.name}
+                </a>
+              </li>
+            ))
+        }
+      </ul>
+
+      <a class="btn" href={localizePath('/book', lang)}>{t('home.connect_cta')}</a>
+    </Panel>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-block-end: 2.125rem;
+  }
+
+  .section-head .margin-note {
+    font-size: 1.3125rem;
+    transform: rotate(-2deg);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.75rem;
+  }
+
+  .board--tight {
+    gap: 1.25rem;
+    margin-block: 1.25rem 3rem;
+  }
+
+  .w6 {
+    grid-column: span 6;
+  }
+
+  .w4 {
+    grid-column: span 4;
+  }
+
+  @media (max-width: 51rem) {
+    .w6,
+    .w4 {
+      grid-column: span 12;
+    }
+  }
+
+  .group-label {
+    margin-block-start: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .group-label + .lede {
+    margin-block-start: 0.5rem;
+  }
+
+  /* --- pull quote --- */
+
+  .quote {
+    display: flex;
+    align-items: center;
+    gap: 2.75rem;
+    padding: 3rem 2.5rem;
+  }
+
+  .quote__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .quote blockquote {
+    font-size: clamp(1.375rem, 3.6vw, 2.0625rem);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.22;
+  }
+
+  .quote blockquote strong {
+    font-style: normal;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 6px;
+    text-decoration-color: var(--ink-soft);
+  }
+
+  .quote__sig {
+    display: inline-block;
+    margin-block-start: 1.25rem;
+    font-size: 2.125rem;
+    transform: rotate(-3deg);
+  }
+
+  /* Below the fold of a phone the plate stacks and centres over the quote. */
+  @media (max-width: 51rem) {
+    .quote {
+      flex-direction: column;
+      gap: 1.75rem;
+      text-align: center;
+    }
+
+    .quote :global(.quote__portrait) {
+      margin-inline: auto;
+      align-items: center;
+    }
+  }
+
+  /* --- link panels --- */
+
+  .link-panel {
+    display: block;
+    padding: 1.75rem 1.5rem 1.375rem;
+    transition: background-color 0.25s ease;
+  }
+
+  /* The corner brackets carry the hover; the wash only deepens under it. */
+  .link-panel:hover {
+    background: var(--sheet-raised);
+  }
+
+  /* The mineral shows as a bar under the heading — the one hit of colour. */
+  .link-panel h3::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-block-start: 0.5rem;
+    background: var(--panel-mineral);
+    transition: width 0.25s ease;
+  }
+
+  /*
+   * The panel's own micro-interaction: the bar rules itself further out as
+   * the corner brackets close, so the hover finishes the drawing. Deliberately
+   * not a lift or a shadow — those read as a card floating over the sheet.
+   */
+  .link-panel:hover h3::after,
+  .link-panel:focus-visible h3::after {
+    width: 3.5rem;
+  }
+
+  .link-panel__path,
+  .split__path {
+    display: block;
+    margin-block-start: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* --- split nav --- */
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+  }
+
+  @media (max-width: 51rem) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .split__card {
+    display: block;
+    padding: 2.5rem 2rem;
+    transition: background-color 0.25s ease;
+  }
+
+  .split__card:hover {
+    background: var(--sheet-raised);
+  }
+
+  .split__big {
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+
+  /* See Hero: Han fills the em box that Latin caps leave room in. */
+  .split__big:lang(zh) {
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+  }
+
+  /* Slightly finer stroke than the hero — the type is smaller here. */
+  .split__big :global(.drafted) {
+    -webkit-text-stroke-width: 1.3px;
+  }
+
+  .split__card p {
+    max-width: 21.25rem;
+    margin-block-start: 0.875rem;
+  }
+
+  /* --- toolmarks --- */
+
+  .toolmarks {
+    margin-block-start: 3rem;
+    padding-block: 1rem;
+    border-block: 1.5px solid var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.375rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* --- connect --- */
+
+  .connect {
+    text-align: center;
+    padding: 3.25rem 2rem;
+  }
+
+  .connect h2 {
+    font-size: 2.125rem;
+  }
+
+  .connect__lede {
+    max-width: 32.5rem;
+    margin: 0.625rem auto 0;
+  }
+
+  .connect :global(.connect__card) {
+    justify-content: center;
+    margin-block-start: 2rem;
+    text-align: start;
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin-block-start: 1.5rem;
+  }
+
+  .socials a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 1rem;
+    background: var(--sheet-wash-light);
+    border: 1px solid var(--ink);
+    font-family: var(--mono);
+    font-size: 0.65625rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .socials a:hover {
+    background: var(--ink);
+    color: var(--sheet-raised);
+  }
+
+  .connect .btn {
+    margin-block-start: 1.625rem;
+  }
+
+  /* --- ecosystem clusters --- */
+
+  /*
+   * A subhead per group, hung off the same dashed rule the bands use, so the
+   * grouping reads as part of the drawing rather than as five stacked cards.
+   */
+  .cluster + .cluster {
+    margin-block-start: 0.5rem;
+  }
+
+  .cluster__label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+    margin-block-start: 1.75rem;
+    font-family: var(--mono);
+    font-size: 0.65625rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .cluster__label::after {
+    content: '';
+    flex: 1;
+    height: 0;
+    border-block-start: 1px dashed var(--ink-hair);
+  }
+
+  .cluster .board--tight {
+    margin-block: 0.875rem 1.5rem;
+  }
+
+  .cluster:last-of-type .board--tight {
+    margin-block-end: 3rem;
+  }
+
+  /*
+   * Han text does not want Latin caps tracking, and the label is a phrase
+   * rather than a code, so it stays in its own case.
+   */
+  .cluster__label:lang(zh),
+  .group-label:lang(zh),
+  .link-panel__path:lang(zh),
+  .split__path:lang(zh),
+  .toolmarks:lang(zh) {
+    font-family: var(--cjk-mono);
+    letter-spacing: 0.1em;
+    text-transform: none;
+  }
+</style>
