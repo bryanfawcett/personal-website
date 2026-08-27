@@ -40,37 +40,20 @@ export const adventure = defineType({
       validation: (rule) => rule.required(),
     }),
 
+    /*
+     * Set by @sanity/document-internationalization, not by hand.
+     *
+     * The plugin writes it when a document is created from a base-language
+     * template or through the Translations menu, and reads it to decide what
+     * that menu offers. `readOnly` and `hidden` are what the plugin's own
+     * documentation asks for: an editor changing this by hand would orphan
+     * the document from its translation group.
+     */
     defineField({
       name: 'language',
-      title: 'Language',
       type: 'string',
-      options: {
-        list: [
-          { title: 'English', value: 'en' },
-          { title: '中文', value: 'zh' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'en',
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'translationOf',
-      title: 'Translation of',
-      type: 'reference',
-      to: [{ type: 'adventure' }],
-      description:
-        'The English adventure this is a translation of. Required on a Chinese adventure — it is what pairs the two, and without it the English one still shows to Chinese readers marked ENGLISH ONLY.',
-      options: { filter: 'language == "en"' },
-      hidden: ({ document }) => document?.['language'] !== 'zh',
-      validation: (rule) =>
-        rule.custom((value, context) => {
-          const language = context.document?.['language'];
-          if (language === 'zh' && !value) return 'A Chinese adventure needs the English one it translates.';
-          if (language === 'en' && value) return 'Only a Chinese adventure sets this.';
-          return true;
-        }),
+      readOnly: true,
+      hidden: true,
     }),
 
     defineField({

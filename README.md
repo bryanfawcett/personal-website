@@ -189,10 +189,13 @@ id and dataset are constants, not environment variables, and there is nothing
 about the blog to configure in Cloudflare. Everything else on the site is still
 prerendered and served straight from static assets.
 
-Translations are document-level. A Chinese adventure is its own document
-pointing back at the English one, so a post can exist in English alone — which
-is the normal case. The Chinese list shows every adventure either way,
-translated where a translation exists and marked `仅有英文` where it does not.
+Translations are document-level, handled by
+`@sanity/document-internationalization`. A Chinese adventure is its own
+document, and the pairing lives in a `translation.metadata` document rather
+than a field on either side — so a post can exist in English alone, which is
+the normal case, and the Studio gets a Translations menu for making the other.
+The Chinese list shows every adventure either way, translated where a
+translation exists and marked `仅有英文` where it does not.
 
 The Studio lives in `bryans-adventures/` — the folder is the Studio, not a
 wrapper around one. It keeps its own dependencies and is not part of this build.

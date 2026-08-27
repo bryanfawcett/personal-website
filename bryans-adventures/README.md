@@ -34,12 +34,22 @@ to re-run it when the schema changes, not when you write a post.
 
 One document type, `adventure`. Everything else is a field on it.
 
-Translations are **document-level**: a Chinese adventure is its own document
-with `language: 'zh'` and a `translationOf` reference pointing at the English
-one. That is what lets a post exist in English only — which is the normal case,
-since the site lists an untranslated post to Chinese readers with an
-`ENGLISH ONLY` label rather than hiding it. Never translate in place by editing
-the English document; make a second document and point it back.
+Translations are **document-level**, run by
+[`@sanity/document-internationalization`](https://github.com/sanity-io/plugins/tree/main/plugins/%40sanity/document-internationalization).
+A Chinese adventure is its own document; the pairing lives in a
+`translation.metadata` document the plugin maintains, not in a field on either
+side.
+
+In practice: write the adventure in English, **publish it**, then use the
+**Translations** menu on the document to create the Chinese version. Publish
+that too — the site reads the published perspective, so an unpublished
+translation simply does not appear.
+
+That model is what lets a post exist in English only, which is the normal case:
+the site lists an untranslated post to Chinese readers with an `仅有英文` label
+rather than hiding it. Don't translate in place by editing the English
+document, and don't hand-edit the `language` field — the plugin owns it, and
+changing it by hand orphans the document from its translation group.
 
 `mineral` picks one of the seven Mzizi minerals from the rail down the edge of
 every page. It is the one hit of colour an adventure gets — the bar under its

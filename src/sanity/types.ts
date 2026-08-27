@@ -20,9 +20,10 @@ export interface AdventureCard {
   /**
    * The Chinese translation, when one exists.
    *
-   * Present on the English record rather than the other way round, because the
-   * Chinese list is built from the English one: every adventure appears there,
-   * and this is what decides whether it shows translated or carries the
+   * Resolved through the `translation.metadata` document rather than stored on
+   * either adventure. Attached to the English record here because the Chinese
+   * list is built from the English one: every adventure appears there, and
+   * this is what decides whether it shows translated or carries the
    * ENGLISH ONLY mark.
    */
   readonly zh?: {
