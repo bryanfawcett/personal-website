@@ -1,0 +1,10 @@
+---
+/** One adventure — English. The sheet itself is `src/views/AdventureView.astro`. */
+export const prerender = false;
+
+import View from '../../views/AdventureView.astro';
+
+const { slug } = Astro.params;
+---
+
+<View lang="en" slug={slug ?? ''} />

@@ -8,7 +8,8 @@
  */
 import Portrait from './Portrait.astro';
 import { vcardQr } from '../brand/vcard.js';
-import { PROFILE } from '../data/profile.js';
+import { PROFILE, profileInLang } from '../data/profile.js';
+import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
   /** Rendered portrait width. */
@@ -16,22 +17,32 @@ interface Props {
   /** Above the fold — skip lazy loading on the portrait. */
   eager?: boolean;
   class?: string | undefined;
+  lang?: Lang;
 }
 
-const { width = 152, eager = false, class: className } = Astro.props;
+const { width = 152, eager = false, class: className, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const profile = profileInLang(lang);
+
+/*
+ * The vCard itself stays English in both languages: it is one canonical
+ * contact record that ends up in a stranger's address book, and a card that
+ * says something different depending on which page it was scanned from is a
+ * duplicate contact waiting to happen.
+ */
 const qr = await vcardQr();
 ---
 
 <div class:list={['card', className]}>
-  <Portrait width={width} caption="Fig. 00 — The draughtsman" eager={eager} />
+  <Portrait width={width} caption={t('card.fig')} eager={eager} lang={lang} />
 
   <div class="card__body">
     <p class="card__name">{PROFILE.name}</p>
-    <p class="card__title">{PROFILE.title}</p>
+    <p class="card__title">{profile.title}</p>
 
     <ul class="card__roles">
       {
-        PROFILE.roles.map((role) => (
+        profile.roles.map((role) => (
           <li>
             <span class="card__role">{role.title}</span>
             <span class="card__org">{role.org}</span>
@@ -46,8 +57,8 @@ const qr = await vcardQr();
   <div class="card__scan">
     {/* Decorative: the same details are in text above, and in the link below. */}
     <div class="card__qr" aria-hidden="true" set:html={qr} />
-    <p class="card__hint">Scan to save</p>
-    <a class="card__download" href="/bryan-fawcett.vcf" download>Download .vcf</a>
+    <p class="card__hint">{t('card.scan')}</p>
+    <a class="card__download" href="/bryan-fawcett.vcf" download>{t('card.download')}</a>
   </div>
 </div>
 

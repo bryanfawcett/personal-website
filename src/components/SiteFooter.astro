@@ -1,7 +1,15 @@
 ---
-import { NAV, PROFILE } from '../data/profile.js';
+import { NAV, PROFILE, socialsInLang } from '../data/profile.js';
 import MineralBar from './MineralBar.astro';
+import { localizePath } from '../i18n/routing.js';
+import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
 
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
 
@@ -16,13 +24,13 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__columns">
-      <nav class="footer__nav" aria-label="Footer">
+      <nav class="footer__nav" aria-label={t('nav.footer')}>
         <p class="eyebrow">Site</p>
         <ul>
           {
             NAV.map((item) => (
               <li>
-                <a href={item.href}>{item.label}</a>
+                <a href={localizePath(item.href, lang)}>{t(item.labelKey)}</a>
               </li>
             ))
           }
@@ -33,7 +41,7 @@ const year = new Date().getFullYear();
         <p class="eyebrow">Elsewhere</p>
         <ul>
           {
-            PROFILE.socials.map((social) => (
+            socialsInLang(lang).map((social) => (
               <li>
                 <a
                   href={social.href}

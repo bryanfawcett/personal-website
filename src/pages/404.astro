@@ -1,25 +1,52 @@
 ---
+/**
+ * The missing sheet.
+ *
+ * Cloudflare serves one `404.html` for the whole zone, so this page cannot
+ * know which language the reader wanted — it carries both, English first, with
+ * the Chinese route offered underneath rather than behind a switcher that
+ * would only ever point back at itself.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import { NAV } from '../data/profile.js';
+import { localizePath } from '../i18n/routing.js';
+import { useTranslations } from '../i18n/ui.js';
+
+const t = useTranslations('en');
+const zh = useTranslations('zh');
 ---
 
 <BaseLayout
-  title="Sheet not found"
-  description="That page does not exist on bryanfawcett.com."
+  title={t('nf.title')}
+  description={t('nf.description')}
   path="/404"
-  sheet="— / 04"
+  lang="en"
+  sheet="— / 06"
 >
   <PageHeader
-    eyebrow="404 · Sheet missing"
-    title="Not on this drawing"
-    lede="The link may be old, or the reference slightly off."
-    note="check the index"
+    eyebrow={t('nf.eyebrow')}
+    title={t('nf.heading')}
+    lede={t('nf.lede')}
+    note={t('nf.note')}
   />
 
   <ul class="options">
-    {NAV.map((item) => <li><a class="btn is-ghost" href={item.href}>{item.label}</a></li>)}
+    {
+      NAV.map((item) => (
+        <li>
+          <a class="btn is-ghost" href={item.href}>
+            {t(item.labelKey)}
+          </a>
+        </li>
+      ))
+    }
   </ul>
+
+  <p class="options__zh" lang="zh-Hans">
+    {zh('nf.lede')}
+    <a href={localizePath('/', 'zh')}>{zh('nav.profile')} →</a>
+  </p>
 </BaseLayout>
 
 <style>
@@ -30,5 +57,35 @@ import { NAV } from '../data/profile.js';
     list-style: none;
     padding: 0;
     margin-block: 2rem 4rem;
+  }
+
+  .options__zh {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-start: 2rem;
+    padding-block-start: 1.25rem;
+    border-block-start: 1px dashed var(--ink-hair);
+    font-family: var(--cjk);
+    /*
+     * `--ink-soft` elsewhere on the sheet, but this block sits where the
+     * lighting radial is brightest and the composited pass measured it at
+     * 3.85:1 there — under the 4.5 that WCAG 2.2 asks of body text.
+     */
+    color: var(--ink-body);
+  }
+
+  .options__zh a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--ink-hair);
+    color: var(--ink);
+  }
+
+  .options__zh a:hover {
+    border-color: var(--ink-faint);
   }
 </style>

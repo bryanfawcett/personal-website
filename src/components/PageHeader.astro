@@ -2,9 +2,15 @@
 interface Props {
   eyebrow: string;
   title: string;
-  lede?: string;
+  /**
+   * Explicitly `| undefined` on the optional props, as `Panel` does: under
+   * `strictest` these carry `exactOptionalPropertyTypes`, so a caller passing
+   * a value that may be undefined — an adventure with no excerpt, say — is a
+   * type error without it.
+   */
+  lede?: string | undefined;
   /** Pencil note in the margin. */
-  note?: string;
+  note?: string | undefined;
 }
 
 const { eyebrow, title, lede, note } = Astro.props;
@@ -45,5 +51,11 @@ const { eyebrow, title, lede, note } = Astro.props;
     text-transform: uppercase;
     line-height: 0.95;
     letter-spacing: 0.01em;
+  }
+
+  /* See Hero: Han fills the em box that Latin caps leave room in. */
+  .page-header__title:lang(zh) {
+    line-height: 1.2;
+    letter-spacing: 0.02em;
   }
 </style>

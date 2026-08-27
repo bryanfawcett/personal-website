@@ -13,7 +13,7 @@
  */
 import { Image } from 'astro:assets';
 import source from '../assets/bryan-fawcett.png';
-import { PROFILE } from '../data/profile.js';
+import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
   /** Rendered width in px. Height follows the source's 835×1052. */
@@ -23,9 +23,11 @@ interface Props {
   /** Above the fold — skip lazy loading. */
   eager?: boolean;
   class?: string | undefined;
+  lang?: Lang;
 }
 
-const { width = 200, caption, eager = false, class: className } = Astro.props;
+const { width = 200, caption, eager = false, class: className, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
 const height = Math.round((width * source.height) / source.width);
 ---
 
@@ -34,7 +36,7 @@ const height = Math.round((width * source.height) / source.width);
     <span class="panel__rule" aria-hidden="true"></span>
     <Image
       src={source}
-      alt={`${PROFILE.name}, photographed`}
+      alt={t('nav.portrait_alt')}
       width={width}
       height={height}
       densities={[1, 2]}

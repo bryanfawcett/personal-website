@@ -3,7 +3,8 @@
  * The sheet's headline: the title stacked, with the second word drafted in
  * outline as though it has been ruled but not yet inked in.
  */
-import { PROFILE } from '../data/profile.js';
+import { profileInLang } from '../data/profile.js';
+import { defaultLang, type Lang } from '../i18n/ui.js';
 
 interface Props {
   /** Two words: the first solid, the second in outline. */
@@ -17,6 +18,7 @@ interface Props {
   dimension?: string;
   /** Show the name and role strip under the title. */
   showByline?: boolean;
+  lang?: Lang;
 }
 
 const {
@@ -27,7 +29,13 @@ const {
   note,
   dimension = 'Drawn to scale',
   showByline = false,
+  lang = defaultLang,
 } = Astro.props;
+
+const profile = profileInLang(lang);
+
+/* Chinese sets its own comma, full-width and with its own spacing. */
+const comma = lang === 'zh' ? '，' : ', ';
 ---
 
 <header class="hero">
@@ -41,12 +49,13 @@ const {
   {
     showByline && (
       <p class="hero__byline">
-        {PROFILE.roles.map((role, i) => (
+        {profile.roles.map((role, i) => (
           <>
             {i > 0 && <span class="hero__sep"> · </span>}
-            <span>
-              {role.title}, {role.org}
-            </span>
+            {/* No newlines inside: Astro collapses them to spaces, and a
+                space in front of a full-width comma is a typographic error
+                in Chinese. */}
+            <span>{role.title}{comma}{role.org}</span>
           </>
         ))}
       </p>
@@ -111,8 +120,25 @@ const {
     color: var(--ink);
   }
 
+  /*
+   * Latin caps sit well inside the em box, so 0.92 leading stacks the two
+   * words without touching. A Han glyph fills that box, and the same figure
+   * runs the two lines into each other — the display lockup needs its own
+   * leading, not the global heading rule (which a scoped class outranks).
+   */
+  .stack:lang(zh) {
+    line-height: 1.06;
+    letter-spacing: 0.04em;
+  }
+
   .hero__sep {
     color: var(--ink-soft);
+  }
+
+  .hero__byline:lang(zh) {
+    font-family: var(--cjk-mono);
+    letter-spacing: 0.08em;
+    text-transform: none;
   }
 
   .hero__sub {

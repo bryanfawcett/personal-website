@@ -113,6 +113,28 @@ export const TYPE = {
   mono: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
   /** Margin notes and the signature — written, not set. */
   hand: "'Caveat', ui-rounded, cursive",
+  /*
+   * Chinese.
+   *
+   * Nothing here is self-hosted. The three vendored families are Latin +
+   * Latin Extended only, and a Han subset large enough to set this site
+   * would be several megabytes against three woff2 files that currently
+   * total well under one — a bad trade on the connections a lot of this
+   * ecosystem is built for. So Chinese falls to the reader's own system
+   * face, which every platform ships, and Latin runs first in the stack so
+   * that a proper noun inside a Chinese sentence still sets in Cormorant.
+   */
+  cjk: "'Cormorant Garamond', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
+  /**
+   * The mono equivalent: Latin from IBM Plex, Han from the system.
+   *
+   * `Mzizi CJK Label` is not a font — it is the size-adjusted alias declared in
+   * global.css, and it has to sit ahead of the real family names so the Han in
+   * a label is scaled up before the unadjusted faces are reached. Latin still
+   * comes from Plex, which is listed first and is untouched by the adjust.
+   */
+  cjkMono:
+    "'IBM Plex Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
 } as const;
 
 /**

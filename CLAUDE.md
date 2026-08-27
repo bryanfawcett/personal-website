@@ -70,6 +70,8 @@ pnpm build      # production build to dist/
 pnpm preview    # run the built site in workerd via wrangler
 pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
+pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
+pnpm verify:images  # pin the hand-rolled Sanity image URL format
 ```
 
 **Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
@@ -100,20 +102,41 @@ src/
     minerals.ts   The seven Mzizi minerals, with origin and meaning
     tokens.ts     Sheet, ground, ink, measure, marks, grid, type → CSS props
   components/     Astro components
-  data/           Content as typed TypeScript
+  data/           Content as typed TypeScript, English with its Chinese beside it
+  i18n/           ui.ts (chrome strings), routing.ts (paths), localize.ts
+  sanity/         The blog's read side — client, queries, image URLs, body
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
-  pages/          One file per route
+  pages/          Thin wrappers: one per route per language, `zh/` for Chinese
+  views/          The sheets themselves — one per route, both languages
   styles/         fonts.css (generated), global.css
+bryans-adventures/  The blog's Sanity Studio. React, and NOT part of the build
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
 ```
 
 ## Architecture
 
-The site is fully prerendered and served from an **assets-only Worker** — there is no
-`main` in `wrangler.jsonc` because no route needs a server. `@astrojs/cloudflare` emits
-to `dist/client`; `dist/server` stays empty while every route is static. Adding one
-non-prerendered route changes that and `wrangler.jsonc` will need a `main`.
+Almost every route is prerendered and served straight from static assets. The four
+blog routes under `/adventures` are not: they read Sanity per request, so publishing
+a post is live without a rebuild. That one exception is why `wrangler.jsonc` has a
+`main` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
+a file in this repo. `@astrojs/cloudflare` emits the static tree to `dist/client` and
+the server bundle to `dist/server`.
+
+Three things about that split bite, and all three cost real debugging time:
+
+- **`run_worker_first` is load-bearing.** Assets are matched before the Worker runs,
+  and a browser *navigation* — `Sec-Fetch-Mode: navigate`, which only a browser
+  sends — gets answered from the asset tree or from 404.html. Without the blog
+  routes listed in `assets.run_worker_first`, `/adventures` 404s for every real
+  visitor while `curl` returns a clean 200 from the same URL. Always test navigation
+  with the header set.
+- **The adapter bakes the assets config into `dist/server/wrangler.json` at build
+  time,** and that is what takes effect. Editing `wrangler.jsonc` alone changes
+  nothing until `pnpm build` runs again — including under `wrangler dev`.
+- **`session: false`** in `astro.config.mjs`. With a server entrypoint the adapter
+  otherwise declares a KV binding for Astro's session store, which then has to exist
+  in Cloudflare before a deploy goes through. Nothing here has a session.
 
 This repo is the main site. Satellite properties are their own Workers in their own
 repos, sharing the branding layer rather than this codebase.
@@ -219,6 +242,14 @@ in `src/assets/`, not `public/`: a file in `public/` is copied verbatim.
 brackets, ruled caption — and desaturates it halfway, enough to belong to the
 drawing without the face going muddy.
 
+**The masthead portrait is not astro:assets.** `SiteNav` uses a plain `<img>` at
+`/nav-portrait.webp`, rendered by `pnpm nav-portrait`. Under `imageService:
+'compile'` the adapter emits a `/_image?…` URL for on-demand routes with no service
+behind it, so an `<Image>` in the nav renders perfectly on every prerendered page
+and 404s on all four blog pages. The alternatives were provisioning Cloudflare
+Images to resize one 46px avatar, or `passthrough` shipping the 1.5 MB source.
+Anything shared by the nav or the footer has the same constraint.
+
 The social card is separate: `pnpm og` renders `public/og-bryan-fawcett.jpg`
 from the same source with the site's own faces. It is not a build step, because
 `og:image` needs a stable unhashed URL that scrapers can cache. Rerun it when
@@ -246,6 +277,103 @@ or the styling, re-verify by decoding a real screen capture, not by eye.
 ### Content lives in `src/data/`
 
 Typed, so pages stay markup. A copy edit should never mean touching layout.
+
+### The site is bilingual: English at the root, Chinese under `/zh`
+
+Astro's own i18n routing with `prefixDefaultLocale: false`, so every English
+URL is exactly where it always was and nothing redirects. Every route exists in
+both languages — five sheets each, plus one 404 — which is what lets the
+language switcher point at the *current page's* counterpart instead of dumping
+the reader back on the home page.
+
+- **A page is never written twice.** `src/pages/experience.astro` and
+  `src/pages/zh/experience.astro` are four-line wrappers around
+  `src/views/ExperienceView.astro`, which takes `lang` and renders both. Copying
+  the markup into `pages/zh/` would mean every future change had to be made
+  twice, and it would drift the first time somebody forgot.
+- **Chrome strings live in `src/i18n/ui.ts`** — nav, section labels, figure
+  tags, buttons, page metadata. Both dictionaries are checked against each other
+  at compile time: a key present in `ui.en` and missing from `ui.zh` fails
+  `astro check`.
+- **Subject prose stays in `src/data/`,** next to the record it belongs to, in a
+  `zh` block holding only the translated fields (`Bilingual<T, K>` in
+  `src/i18n/localize.ts`). `work.ts` stays the single source of truth for the
+  ecosystem grid; splitting project copy into the chrome dictionary would give
+  it two.
+- **Proper nouns are never translated.** Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,
+  Nhimbe, the school names — Latin script in both, with a short Chinese gloss in
+  parentheses where a reader needs the handhold. The vCard and its QR stay
+  English in both languages: it is one canonical contact record, and a card that
+  differs by which page it was scanned from is a duplicate contact waiting to
+  happen.
+- **`path` props are language-neutral.** Pass `/experience`; `localizePath` adds
+  the prefix. Hard-coding `/zh/…` anywhere is a bug waiting for the next locale.
+
+### Chinese typography
+
+None of the three vendored families carry Han, and a subset that did would cost
+several megabytes against the sub-megabyte total the site ships — a bad trade on
+the connections much of this ecosystem is built for. So Han falls to the
+reader's own system face. `--cjk` and `--cjk-mono` list the Latin face *first*,
+so a proper noun inside a Chinese sentence still sets in Cormorant or Plex.
+
+Two things that follow, and that new work has to keep:
+
+- **Display leading is set for Latin caps.** `.stack`, `.page-header__title` and
+  `.split__big` run at 0.92–0.95, which works because Latin caps sit well inside
+  the em box. A Han glyph fills that box and the same figure runs the lines into
+  each other. Each has a `:lang(zh)` twin; a new display lockup needs one too.
+  The global `:lang(zh) h1` rule will not do it — a scoped class outranks it.
+- **The label floor is higher for Han.** The mono labels run 10–11px, fine for
+  uppercase Latin and not for Han, where the strokes stop separating at 1x.
+  Rather than a `:lang(zh)` twin for each of ~35 label classes, `global.css`
+  declares a `Mzizi CJK Label` `@font-face` with `size-adjust: 120%`, sourced
+  `local()` only and sitting in `--cjk-mono` *after* IBM Plex Mono — so Han in a
+  label scales and the Latin beside it does not. Add labels normally; they
+  inherit the floor.
+
+### The blog: Bryan's Adventures, out of Sanity
+
+`/adventures` and `/zh/adventures`, plus a page per post in each language. The
+content lives in the Sanity project `zsx9erk1`, dataset `production`, and the
+Studio that edits it is in `bryans-adventures/`.
+
+- **Server-rendered, not prerendered.** Publishing in Sanity is live without a
+  build, because Workers Builds only triggers on a git push and has no deploy
+  hook a CMS webhook could pull. The trade is documented in `BLOG_CACHE_CONTROL`:
+  the edge holds a render for 60s and will serve it stale for ten minutes if
+  Sanity is unreachable.
+- **No token, anywhere.** The dataset is public-read, so `src/sanity/client.ts`
+  fetches `apicdn.sanity.io` unauthenticated and the project id and dataset are
+  constants rather than environment variables. There is nothing to configure in
+  Cloudflare and nothing that can differ between preview and production. Keep it
+  that way: the moment a query needs a token, the deploy needs a secret.
+- **Three states, not two.** An empty blog and an unreachable Sanity are
+  different things and the pages say different things about each — collapsing
+  them tells a reader the writing is gone when the service is merely down. A
+  missing post is a real 404; an unreachable Sanity is a 503 with `Retry-After`,
+  and neither is cacheable.
+- **`groq()` never throws.** On an on-demand route an uncaught throw is a 500
+  for the whole document, masthead and all. It returns a `Result` instead.
+- **Translations are document-level.** A Chinese adventure is its own document
+  with `translationOf` pointing at the English one. The Chinese list is built
+  from the *English* records so every adventure appears to a Chinese reader —
+  translated where a translation exists, marked `仅有英文` where it does not,
+  linking to the English page. An untranslated post lists no `hreflang="zh-Hans"`
+  alternate, because pointing one at a page that is not a translation is a lie
+  told to a search engine; its switcher falls back to the Chinese list.
+- **Pages with a language-specific slug pass `alternates` to `BaseLayout`.** The
+  derived-from-path default cannot know that a translation has its own slug.
+- **The image URL builder is hand-rolled** and therefore pinned by
+  `pnpm verify:images`. A wrong URL fails as a broken image on a live page, not
+  as a build error — same reason `verify-fonts.py` exists.
+- **Body headings start at `h2`.** The adventure title is the page's only `h1`,
+  so the editor's "Heading" renders `h2` and "Subheading" `h3`. Jumping straight
+  to `h3` is a heading-order violation, and axe catches it.
+- **`bryans-adventures/` is not part of the build.** It is a Sanity Studio, which means
+  React. It has its own `package.json` and lockfile, the root `tsconfig.json`
+  excludes it, and there is no pnpm workspace file — so `pnpm install` and
+  `pnpm build` at the root never see it, and neither does Cloudflare.
 
 ### Type identity
 
@@ -300,6 +428,21 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 10. **`.shell` with `max-width`.** Use `width: min(…, 100% - 4rem)`. With
     `max-width` the shell goes full-bleed on a phone and its column rules land
     underneath the sheet frame.
+11. **Editing a page under `src/pages/`.** Those are wrappers. The markup is in
+    `src/views/`, and editing one language's wrapper only changes that language.
+12. **A newline inside Chinese markup.** Astro collapses it to a space, and a
+    space in front of a full-width comma is a typographic error. Keep
+    `{a}{comma}{b}` on one line.
+13. **Probing rendered colour with a screenshot.** The nav links transition
+    colour over 0.2s, so a probe that screenshots immediately reads the ink
+    mid-fade as the ground. Disable transitions first.
+14. **Testing an on-demand route with `curl`.** Without `Sec-Fetch-Mode:
+    navigate` you are not testing what a browser does, and the asset layer
+    answers differently. This hid a blog that 404'd for every real visitor.
+15. **`<Image>` in anything the blog pages render.** See *The portrait* — it
+    resolves to a `/_image` endpoint that does not exist on on-demand routes.
+16. **Editing `wrangler.jsonc` and re-running `wrangler dev`.** The adapter
+    baked the old assets config into `dist/server/wrangler.json`. Rebuild.
 
 ## Git Workflow
 
@@ -319,7 +462,8 @@ the environment.
 1. `pnpm check` — TypeScript under `strictest`
 2. `pnpm build` — production build
 3. `scripts/verify-fonts.py` — every font reference resolves
-4. `pnpm audit --audit-level high`
+4. `pnpm verify:images` — the hand-rolled Sanity image URL format still holds
+5. `pnpm audit --audit-level high`
 
 Accessibility is checked with axe-core (WCAG 2.2 AA + best-practice), plus two
 passes axe cannot do:
@@ -339,12 +483,16 @@ All three must stay clean.
 
 ### Projects Listed
 
-`src/data/work.ts` (`NYUCHI_PROJECTS`) is the single source of truth for the ecosystem
+`src/data/work.ts` (`nyuchiProjects`) is the single source of truth for the ecosystem
 grid on `/` — The Bundu Foundation, Mzizi, Nyuchi Africa, Nyuchi StationKit, Nyuchi
 Learning, Nyuchi Lingo, Mukoko, Mukoko Weather, Mukoko News, Nhimbe, Shamwari AI,
 Zimbabwe Travel Info and Iconic Expeditions. Add new ecosystem projects there — the
 homepage section-head text describes the Foundation/pillar relationship in general
 terms rather than naming each project, so it should not need to change alongside it.
+
+The grid is grouped rather than one flat run of thirteen tiles: `foundation`,
+`pillars`, `commons`, `community`, `travel`, in that order, from the `group` field
+on each project. A new project needs a group, and its Chinese in the same record.
 
 ### Internal Tools (Not Listed on the Website)
 

@@ -1,0 +1,23 @@
+{
+  "name": "bryans-adventures-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-schema": "sanity schema deploy",
+    "start": "sanity start"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sanity": "^4.10.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@sanity/vision": "^4.10.0",
+    "typescript": "^5.9.3"
+  }
+}

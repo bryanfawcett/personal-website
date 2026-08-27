@@ -735,3 +735,106 @@ main {
 .skip-link:focus-visible {
   transform: none;
 }
+
+/* ============================== Chinese ============================== */
+
+/*
+ * The Chinese sheet.
+ *
+ * None of the three vendored families carry Han, and a subset that did would
+ * cost several megabytes against the sub-megabyte total the site ships today —
+ * a bad trade on the connections much of this ecosystem is built for. So the
+ * Han falls to the reader's own system face (`--cjk`, which lists Cormorant
+ * first so a proper noun inside a Chinese sentence still sets in the site's
+ * own serif), and the rules below fix what changes when it does.
+ *
+ * `:lang()` matches on the language subtag, so `zh-Hans` on <html> is enough
+ * — nothing needs a class.
+ */
+:lang(zh) body,
+body:lang(zh) {
+  font-family: var(--cjk);
+  /* Han needs more air between lines than Latin at the same size. */
+  line-height: 1.8;
+}
+
+/*
+ * The label floor, for Han only.
+ *
+ * The site's mono labels run 10–11px, which the readability pass accepts for
+ * uppercase Latin. Han at the same size is a different proposition: the
+ * strokes inside a dense character stop separating at 1x, and measuring the
+ * Chinese pages turned up 32 label blocks under 12px on the home sheet alone.
+ *
+ * Raising each one by hand would mean a `:lang(zh)` twin for every label class
+ * in the codebase — about thirty-five of them across ten files, and a trap for
+ * the next label somebody adds. `size-adjust` on the fallback face does it in
+ * one place instead: the descriptor scales only the glyphs rendered *from this
+ * face*, and IBM Plex Mono sits ahead of it in `--cjk-mono`, so Latin in the
+ * same label is untouched. 120% takes the 10px floor to 12px.
+ *
+ * `local()` only — nothing is downloaded, and a reader with none of these
+ * installed simply falls through to the unadjusted names further down the
+ * stack, which is where they were before. Safari below 17 ignores
+ * `size-adjust` and degrades the same way.
+ */
+@font-face {
+  font-family: 'Mzizi CJK Label';
+  src:
+    local('PingFang SC'),
+    local('苹方-简'),
+    local('Hiragino Sans GB'),
+    local('Microsoft YaHei'),
+    local('微软雅黑'),
+    local('Noto Sans CJK SC'),
+    local('Noto Sans SC'),
+    local('Source Han Sans SC'),
+    local('WenQuanYi Zen Hei');
+  size-adjust: 120%;
+}
+
+/*
+ * Han is a dense, full-width glyph: the tracking that opens up Latin small
+ * caps only pushes the characters apart, and there is no case to raise.
+ */
+.eyebrow:lang(zh),
+.chip:lang(zh),
+.btn:lang(zh),
+.stamp:lang(zh),
+.dimension__label:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+.panel p:lang(zh),
+.lede:lang(zh),
+.prose p:lang(zh) {
+  line-height: 1.8;
+}
+
+/*
+ * Caveat carries no Han, so the margin notes and the signature fall back to
+ * the CJK stack. That loses the written-by-hand quality on those two marks —
+ * there is no widely-installed Chinese hand face to fall back to, and
+ * vendoring one costs more than the mark is worth.
+ */
+.hand:lang(zh),
+.margin-note:lang(zh) {
+  font-family: var(--cjk);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+/*
+ * Han sets a real line at any width, so `text-wrap: balance` on a heading has
+ * far more places to break and will happily leave a one-character last line.
+ */
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3,
+:lang(zh) h4 {
+  font-family: var(--cjk);
+  text-wrap: normal;
+  line-height: 1.35;
+}

@@ -14,9 +14,12 @@
     "lint": "astro check",
     "deploy": "astro build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs"
+    "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
+    "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
+    "nav-portrait": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-nav-portrait.mjs"
   },
   "dependencies": {
+    "@portabletext/to-html": "^6.0.0",
     "astro": "^7.2.7"
   },
   "devDependencies": {

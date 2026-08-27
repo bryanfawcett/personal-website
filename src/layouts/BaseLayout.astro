@@ -8,14 +8,30 @@ import MineralBar from '../components/MineralBar.astro';
 import Schematics from '../components/Schematics.astro';
 import SiteNav from '../components/SiteNav.astro';
 import TitleBlock from '../components/TitleBlock.astro';
-import { PROFILE } from '../data/profile.js';
+import { PROFILE, profileInLang } from '../data/profile.js';
+import { allPaths, alternatePath, localizePath } from '../i18n/routing.js';
+import { bcp47, defaultLang, direction, ogLocale, useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
   title: string;
   description: string;
-  /** Path only, e.g. "/experience". Used for canonical and nav state. */
+  /**
+   * Language-neutral path, e.g. "/experience". The locale prefix is added
+   * from `lang`, so a page never has to spell its own Chinese URL.
+   */
   path?: string;
-  /** Sheet number shown in the title block, e.g. "02 / 04". */
+  lang?: Lang;
+  /**
+   * The same page's URL in each language, when it cannot be derived from
+   * `path`.
+   *
+   * Every hand-authored route is the same path with a locale prefix, so the
+   * default is computed. An adventure is not: its Chinese translation is a
+   * separate document with its own slug, and an untranslated one has no
+   * Chinese URL at all. Those pages pass this instead.
+   */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Sheet number shown in the title block, e.g. "02 / 06". */
   sheet?: string;
   ogType?: 'website' | 'profile' | 'article';
 }
@@ -24,12 +40,45 @@ const {
   title,
   description,
   path = Astro.url.pathname,
-  sheet = '01 / 04',
+  lang = defaultLang,
+  alternates,
+  sheet = '01 / 06',
   ogType = 'website',
 } = Astro.props;
 
-const canonical = new URL(path, Astro.site ?? 'https://bryanfawcett.com').href;
-const fullTitle = path === '/' ? title : `${title} | ${PROFILE.name}`;
+const site = Astro.site ?? new URL('https://bryanfawcett.com');
+
+/*
+ * Which languages this page genuinely exists in.
+ *
+ * For a hand-authored route that is both of them, derived from the path. For
+ * an adventure it is whatever `alternates` says — and an untranslated one
+ * lists only English, because pointing `hreflang="zh-Hans"` at a page that is
+ * not a Chinese version of this one is a lie told to a search engine.
+ */
+const localized = alternates
+  ? (Object.entries(alternates) as [Lang, string][]).map(([entryLang, entryPath]) => ({
+      lang: entryLang,
+      path: entryPath,
+    }))
+  : allPaths(path);
+
+const here = localized.find((entry) => entry.lang === lang)?.path ?? localizePath(path, lang);
+const canonical = new URL(here, site).href;
+const fullTitle = here === '/' || here === '/zh' ? title : `${title} | ${PROFILE.name}`;
+
+/*
+ * Where the language switcher goes.
+ *
+ * The real counterpart when there is one; otherwise the other language's
+ * version of this *section*. On an untranslated adventure that lands the
+ * reader on the Chinese list rather than on a dead end or, worse, silently
+ * back at the home page.
+ */
+const switchHref = alternates?.[lang === 'en' ? 'zh' : 'en'] ?? alternatePath(path, lang);
+
+const profile = profileInLang(lang);
+const t = useTranslations(lang);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -40,13 +89,13 @@ const jsonLd = {
       name: PROFILE.name,
       givenName: 'Bryan',
       familyName: 'Fawcett',
-      jobTitle: PROFILE.roles.map((r) => r.title),
-      description: PROFILE.summary,
+      jobTitle: profile.roles.map((r) => r.title),
+      description: profile.summary,
       url: 'https://bryanfawcett.com',
       email: `mailto:${PROFILE.email}`,
       image: 'https://bryanfawcett.com/og-bryan-fawcett.jpg',
       sameAs: PROFILE.socials.map((s) => s.href),
-      worksFor: PROFILE.roles.map((r) => ({ '@type': 'Organization', name: r.org })),
+      worksFor: profile.roles.map((r) => ({ '@type': 'Organization', name: r.org })),
       founder: [
         { '@type': 'Organization', name: 'Nyuchi Africa', url: 'https://nyuchi.com' },
         { '@type': 'Organization', name: 'The Bundu Foundation', url: 'https://www.bundu.org' },
@@ -57,16 +106,16 @@ const jsonLd = {
       '@type': 'WebSite',
       '@id': 'https://bryanfawcett.com/#website',
       url: 'https://bryanfawcett.com',
-      name: `${PROFILE.name} — ${PROFILE.title}`,
+      name: `${PROFILE.name} — ${profile.title}`,
       publisher: { '@id': 'https://bryanfawcett.com/#person' },
-      inLanguage: 'en',
+      inLanguage: bcp47[lang],
     },
   ],
 };
 ---
 
 <!doctype html>
-<html lang="en" dir="ltr" class="no-js">
+<html lang={bcp47[lang]} dir={direction[lang]} class="no-js">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -77,6 +126,21 @@ const jsonLd = {
     <meta name="color-scheme" content="dark" />
     <meta name="generator" content={Astro.generator} />
 
+    {/*
+      Both languages of this page, plus x-default pointing at English.
+      Every route exists in both, so these are always real URLs.
+    */}
+    {
+      localized.map((entry) => (
+        <link rel="alternate" hreflang={bcp47[entry.lang]} href={new URL(entry.path, site).href} />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localized.find((e) => e.lang === defaultLang)?.path ?? here, site).href}
+    />
+
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -86,6 +150,12 @@ const jsonLd = {
     <meta property="og:site_name" content={PROFILE.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {
+      localized
+        .filter((entry) => entry.lang !== lang)
+        .map((entry) => <meta property="og:locale:alternate" content={ogLocale[entry.lang]} />)
+    }
     <meta property="og:image" content="https://bryanfawcett.com/og-bryan-fawcett.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -130,17 +200,17 @@ const jsonLd = {
     <Schematics />
     <MineralBar placement="edge" transition:persist />
 
-    <a class="skip-link" href="#main">Skip to main content</a>
+    <a class="skip-link" href="#main">{t('nav.skip')}</a>
 
     <div class="page">
-      <SiteNav path={path} />
+      <SiteNav path={path} lang={lang} switchHref={switchHref} />
 
       <main id="main" class="shell" transition:animate={unroll}>
         <slot />
       </main>
 
       <div class="shell">
-        <TitleBlock sheet={sheet} />
+        <TitleBlock sheet={sheet} lang={lang} path={path} switchHref={switchHref} />
       </div>
     </div>
 
