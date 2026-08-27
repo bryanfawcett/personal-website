@@ -109,7 +109,7 @@ src/
   pages/          Thin wrappers: one per route per language, `zh/` for Chinese
   views/          The sheets themselves — one per route, both languages
   styles/         fonts.css (generated), global.css
-studio/           Sanity Studio for the blog. React, and NOT part of the build
+bryans-adventures/  The blog's Sanity Studio. React, and NOT part of the build
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
 ```
@@ -336,7 +336,7 @@ Two things that follow, and that new work has to keep:
 
 `/adventures` and `/zh/adventures`, plus a page per post in each language. The
 content lives in the Sanity project `zsx9erk1`, dataset `production`, and the
-Studio that edits it is in `studio/`.
+Studio that edits it is in `bryans-adventures/`.
 
 - **Server-rendered, not prerendered.** Publishing in Sanity is live without a
   build, because Workers Builds only triggers on a git push and has no deploy
@@ -370,7 +370,7 @@ Studio that edits it is in `studio/`.
 - **Body headings start at `h2`.** The adventure title is the page's only `h1`,
   so the editor's "Heading" renders `h2` and "Subheading" `h3`. Jumping straight
   to `h3` is a heading-order violation, and axe catches it.
-- **`studio/` is not part of the build.** It is a Sanity Studio, which means
+- **`bryans-adventures/` is not part of the build.** It is a Sanity Studio, which means
   React. It has its own `package.json` and lockfile, the root `tsconfig.json`
   excludes it, and there is no pnpm workspace file — so `pnpm install` and
   `pnpm build` at the root never see it, and neither does Cloudflare.

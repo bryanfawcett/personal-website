@@ -2,6 +2,11 @@
 
 The editing surface for the blog at [bryanfawcett.com/adventures](https://bryanfawcett.com/adventures).
 
+The folder is the Studio itself — `sanity.config.ts` is right here, not one
+level down. It is named for the Sanity project it edits rather than `studio/`,
+without the apostrophe and space: a path containing either is a reliable way to
+break a shell script, a CI runner or a Windows checkout.
+
 This directory is **not part of the site build**. It is a Sanity Studio, which
 means React, which the site itself does not have and should not get. It keeps
 its own `package.json` and its own lockfile, the root `tsconfig.json` excludes
@@ -15,7 +20,7 @@ is one directory away, in the same commit and the same review.
 ## Working on it
 
 ```bash
-cd studio
+cd bryans-adventures
 npm install
 npm run dev            # Studio at localhost:3333
 npm run deploy         # publishes to bryans-adventures.sanity.studio

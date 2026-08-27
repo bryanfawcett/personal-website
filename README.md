@@ -61,7 +61,7 @@ src/
   pages/            Wrappers: one per route per language. zh/ holds the Chinese.
                     Plus bryan-fawcett.vcf.ts.
   views/            The sheets themselves. One per route, rendering either language.
-studio/             Sanity Studio for the blog. React — and not part of this build.
+bryans-adventures/  The blog's Sanity Studio. React — and not part of this build.
   styles/
     fonts.css       Generated. Self-hosted @font-face rules.
     global.css      Reset, layout primitives, shared utilities.
@@ -194,8 +194,8 @@ pointing back at the English one, so a post can exist in English alone — which
 is the normal case. The Chinese list shows every adventure either way,
 translated where a translation exists and marked `仅有英文` where it does not.
 
-The Studio lives in `studio/`, keeps its own dependencies, and is not part of
-this build.
+The Studio lives in `bryans-adventures/` — the folder is the Studio, not a
+wrapper around one. It keeps its own dependencies and is not part of this build.
 
 ## Accessibility
 

@@ -24,16 +24,39 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
+    env:
+      # `secrets` is not available in a step-level `if`, but it is available
+      # here — so the presence check has to be hoisted to a job env var.
+      HAS_ANTHROPIC_CREDENTIAL: >-
+        ${{ secrets.ANTHROPIC_API_KEY != ''
+            || secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # This job has failed on every run since it was added, on every branch,
+      # regardless of the diff:
+      #
+      #   Error: Environment variable validation failed:
+      #     - Either ANTHROPIC_API_KEY or CLAUDE_CODE_OAUTH_TOKEN is required
+      #
+      # Neither secret is set on the repository, and the workflow never passed
+      # either one through even if they were. Both are wired up below. The
+      # credential itself has to be added in repository settings — nothing in
+      # this file can supply it — so until it is, the step skips rather than
+      # painting a red X on every pull request. A check that always fails is a
+      # check everybody learns to ignore.
       - name: Run Claude Code Review
+        if: env.HAS_ANTHROPIC_CREDENTIAL == 'true'
         uses: anthropics/claude-code-action@beta
         with:
-          model: claude-sonnet-4-20250514
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Was claude-sonnet-4-20250514, retired. Even with a credential in
+          # place that would have failed on an unknown model.
+          model: claude-sonnet-5
           direct_prompt: |
             Review this code change and post a review comment. Analyze the changes for:
 
