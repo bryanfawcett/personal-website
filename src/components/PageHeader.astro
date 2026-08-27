@@ -2,9 +2,15 @@
 interface Props {
   eyebrow: string;
   title: string;
-  lede?: string;
+  /**
+   * Explicitly `| undefined` on the optional props, as `Panel` does: under
+   * `strictest` these carry `exactOptionalPropertyTypes`, so a caller passing
+   * a value that may be undefined — an adventure with no excerpt, say — is a
+   * type error without it.
+   */
+  lede?: string | undefined;
   /** Pencil note in the margin. */
-  note?: string;
+  note?: string | undefined;
 }
 
 const { eyebrow, title, lede, note } = Astro.props;

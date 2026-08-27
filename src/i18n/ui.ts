@@ -47,6 +47,7 @@ export const ui = {
     'nav.footer': 'Footer',
     'nav.profile': 'Profile',
     'nav.experience': 'Experience',
+    'nav.adventures': 'Adventures',
     'nav.origins': 'Origins',
     'nav.minerals': 'Minerals',
     'nav.book': 'Book a Call',
@@ -141,7 +142,7 @@ export const ui = {
     'exp.skills_heading': 'Core skills',
 
     // --- origins ---
-    'origins.eyebrow': 'Sheet 03 · Off the bench',
+    'origins.eyebrow': 'Sheet 04 · Off the bench',
     'origins.title': 'Origins with a Perspective on Human Potential',
     'origins.lede':
       'Equity: the assumptions we make in learning. Where I came from, where education itself began, and the gap between what we say we value and what we actually measure.',
@@ -216,7 +217,7 @@ export const ui = {
     'origins.cta_book': 'Book a call',
 
     // --- minerals ---
-    'minerals.eyebrow': 'Sheet 04 · Legend',
+    'minerals.eyebrow': 'Sheet 05 · Legend',
     'minerals.title': 'The mineral rail',
     'minerals.description':
       'Seven minerals from across Africa, one per segment of the rail down the edge of every page — what each stands for, where it is mined, and how it is used. Drawn from the Mzizi design system.',
@@ -246,7 +247,7 @@ export const ui = {
     'minerals.why_p3_after': '. The system, its tokens and its accessibility toolkit are at ',
     'minerals.why_p3_end': '.',
 
-    'minerals.key_eyebrow': 'Sheet 04 · The seven',
+    'minerals.key_eyebrow': 'Sheet 05 · The seven',
     'minerals.key_note': 'top to bottom',
     'minerals.key_heading': 'The seven minerals',
     'minerals.key_means': 'Means',
@@ -271,7 +272,7 @@ export const ui = {
       ', every segment names itself on hover, and this page is the text alternative.',
 
     // --- book ---
-    'book.eyebrow': 'Sheet 04 · Commission',
+    'book.eyebrow': 'Sheet 06 · Commission',
     'book.title': 'Book a call',
     'book.description':
       'Book a conversation with Bryan Fawcett about EdTech, digital transformation, systems architecture, or building for African communities.',
@@ -285,6 +286,28 @@ export const ui = {
     'book.load': 'Load the scheduler',
     'book.fallback': 'Prefer email?',
     'book.error': 'The scheduler could not load. Email bryan@nyuchi.com instead.',
+
+    // --- adventures ---
+    'adv.title': 'Bryan’s Adventures',
+    'adv.eyebrow': 'Sheet 03 · Field notes',
+    'adv.note': 'written in the field',
+    'adv.lede':
+      'Long drives, bad maps and the places at the end of them. Mostly southern Africa, occasionally further.',
+    'adv.description':
+      'Travel writing by Bryan Fawcett — long drives, bad maps and the places at the end of them, mostly across southern Africa.',
+    'adv.heading': 'Every adventure',
+    'adv.read': 'Read →',
+    'adv.back': '← All adventures',
+    'adv.english_only': 'English only',
+    'adv.english_only_title': 'Not translated yet — this one opens in English',
+    'adv.empty_title': 'Nothing written up yet',
+    'adv.empty_body':
+      'The first adventure is still in a notebook somewhere. Check back, or come and talk to me in the meantime.',
+    'adv.unavailable_title': 'The adventures are not loading',
+    'adv.unavailable_body':
+      'The writing lives in a content service that is not answering right now. It is not gone — try again in a few minutes.',
+    'adv.missing_title': 'No such adventure',
+    'adv.missing_body': 'This one may have been renamed, or the link may be old.',
 
     // --- 404 ---
     'nf.title': 'Sheet not found',
@@ -301,6 +324,7 @@ export const ui = {
     'nav.footer': '页脚导航',
     'nav.profile': '简介',
     'nav.experience': '项目经验',
+    'nav.adventures': '游记',
     'nav.origins': '本源',
     'nav.minerals': '矿物',
     'nav.book': '预约通话',
@@ -393,7 +417,7 @@ export const ui = {
     'exp.skills_heading': '核心技能',
 
     // --- origins ---
-    'origins.eyebrow': '图 03 · 离开工作台',
+    'origins.eyebrow': '图 04 · 离开工作台',
     'origins.title': '本源：一种关于人的潜能的视角',
     'origins.lede':
       '公平：我们在学习中所作的种种假设。我从哪里来，教育本身从哪里开始，以及我们口中所看重的与实际所衡量的之间的落差。',
@@ -464,7 +488,7 @@ export const ui = {
     'origins.cta_book': '预约通话',
 
     // --- minerals ---
-    'minerals.eyebrow': '图 04 · 图例',
+    'minerals.eyebrow': '图 05 · 图例',
     'minerals.title': '矿物色带',
     'minerals.description':
       '来自非洲各地的七种矿物，对应每一页边缘色带上的一段——各自代表什么、产自何处、如何使用。取自 Mzizi 设计系统。',
@@ -492,7 +516,7 @@ export const ui = {
     'minerals.why_p3_after': '。该系统、它的设计令牌及其无障碍工具包，都在 ',
     'minerals.why_p3_end': '。',
 
-    'minerals.key_eyebrow': '图 04 · 七种矿物',
+    'minerals.key_eyebrow': '图 05 · 七种矿物',
     'minerals.key_note': '自上而下',
     'minerals.key_heading': '七种矿物',
     'minerals.key_means': '寓意',
@@ -515,7 +539,7 @@ export const ui = {
     'minerals.a11y_p3_after': '，悬停时每一段都会说出自己的名字，而本页就是它的文字替代。',
 
     // --- book ---
-    'book.eyebrow': '图 04 · 委托',
+    'book.eyebrow': '图 06 · 委托',
     'book.title': '预约通话',
     'book.description':
       '与 Bryan Fawcett 预约一次对话，聊聊教育科技、数字化转型、系统架构，或为非洲社区而建的产品。',
@@ -529,6 +553,25 @@ export const ui = {
     'book.load': '加载预约日历',
     'book.fallback': '更习惯用邮件？',
     'book.error': '预约日历加载失败，请改发邮件至 bryan@nyuchi.com。',
+
+    // --- adventures ---
+    'adv.title': 'Bryan’s Adventures',
+    'adv.eyebrow': '图 03 · 野外手记',
+    'adv.note': '写于路上',
+    'adv.lede': '长途驾驶、不靠谱的地图，以及路的尽头那些地方。多在非洲南部，偶尔更远。',
+    'adv.description':
+      'Bryan Fawcett 的旅行随笔——长途驾驶、不靠谱的地图，以及路的尽头那些地方，多在非洲南部。',
+    'adv.heading': '全部游记',
+    'adv.read': '阅读 →',
+    'adv.back': '← 返回全部游记',
+    'adv.english_only': '仅有英文',
+    'adv.english_only_title': '尚未翻译——这篇将以英文打开',
+    'adv.empty_title': '还没有写下的游记',
+    'adv.empty_body': '第一篇还躺在某个笔记本里。过些日子再来，或者先来聊聊。',
+    'adv.unavailable_title': '游记暂时加载不出来',
+    'adv.unavailable_body': '文章存放在一个此刻没有响应的内容服务里。它们没有丢失，请过几分钟再试。',
+    'adv.missing_title': '没有这篇游记',
+    'adv.missing_body': '它可能已经改名，或者你手上的链接过时了。',
 
     // --- 404 ---
     'nf.title': '找不到这张图纸',

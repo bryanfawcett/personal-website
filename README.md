@@ -52,10 +52,16 @@ src/
     ui.ts           Chrome strings, en and zh, checked against each other.
     routing.ts      /experience ⇄ /zh/experience, and the hreflang set.
     localize.ts     Bilingual<T, K> — a record plus its translated fields.
+  sanity/           The blog's read side.
+    client.ts       Unauthenticated GROQ against the public dataset.
+    queries.ts      Every query the blog runs, in one place.
+    image.ts        Sanity CDN URLs, hand-rolled and pinned by a check.
+    portable-text.ts  Body → the site's own markup.
   layouts/          BaseLayout — head, JSON-LD, nav, title block, scroll reveal.
   pages/            Wrappers: one per route per language. zh/ holds the Chinese.
                     Plus bryan-fawcett.vcf.ts.
   views/            The sheets themselves. One per route, rendering either language.
+studio/             Sanity Studio for the blog. React — and not part of this build.
   styles/
     fonts.css       Generated. Self-hosted @font-face rules.
     global.css      Reset, layout primitives, shared utilities.
@@ -171,10 +177,30 @@ first in the stack so a proper noun inside a Chinese sentence still sets in
 Cormorant. A `size-adjust: 120%` fallback face raises the small mono labels,
 where 10px Han stops separating its strokes and 10px Latin caps do not.
 
+## The blog
+
+`/adventures` is *Bryan's Adventures*, written in Sanity and rendered on demand
+rather than at build time. Publishing a post puts it live without a rebuild,
+which matters because Cloudflare's Workers Builds only triggers on a git push —
+there is no deploy hook a CMS webhook could pull.
+
+The dataset is public-read, so the Worker queries it with no token: the project
+id and dataset are constants, not environment variables, and there is nothing
+about the blog to configure in Cloudflare. Everything else on the site is still
+prerendered and served straight from static assets.
+
+Translations are document-level. A Chinese adventure is its own document
+pointing back at the English one, so a post can exist in English alone — which
+is the normal case. The Chinese list shows every adventure either way,
+translated where a translation exists and marked `仅有英文` where it does not.
+
+The Studio lives in `studio/`, keeps its own dependencies, and is not part of
+this build.
+
 ## Accessibility
 
 Audited with axe-core (WCAG 2.0/2.1/2.2 A + AA, plus best-practice) across all
-eleven routes — six English, five Chinese — at 1440x900 and 390x780:
+sixteen routes — nine English, seven Chinese — at 1280x900 and 390x844:
 **0 violations**.
 
 axe cannot resolve contrast against the gradient ground, so two further passes
@@ -267,6 +293,8 @@ the repo can control.
   Set it by running the readability pass and reading the number.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet
   frame with ruler graduations. It went, and it should not come back.
+- **Test on-demand routes the way a browser asks for them** — with
+  `Sec-Fetch-Mode: navigate`. The asset layer answers differently without it.
 - **A page is never written twice.** The files under `src/pages/` are wrappers;
   the markup lives once in `src/views/` and renders in either language.
 - **Proper nouns are never translated.** Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,

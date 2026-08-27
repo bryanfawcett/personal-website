@@ -1,6 +1,4 @@
 ---
-import { Image } from 'astro:assets';
-import portrait from '../assets/bryan-fawcett.png';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { NAV, PROFILE, profileInLang } from '../data/profile.js';
 import { localizePath, stripLang } from '../i18n/routing.js';
@@ -10,9 +8,11 @@ interface Props {
   /** Language-neutral path, e.g. `/experience`. */
   path: string;
   lang: Lang;
+  /** Overrides the switcher target where the counterpart is not this path. */
+  switchHref?: string | undefined;
 }
 
-const { path, lang } = Astro.props;
+const { path, lang, switchHref } = Astro.props;
 const t = useTranslations(lang);
 const profile = profileInLang(lang);
 const here = stripLang(path);
@@ -34,15 +34,23 @@ const book = NAV.find((item) => item.href === '/book');
 <header class="nav shell">
   <nav class="nav__inner" aria-label={t('nav.label')}>
     <a class="nav__wordmark" href={localizePath('/', lang)}>
-      <Image
+      {/*
+        A plain <img> at a fixed path, not astro:assets.
+        The nav renders on on-demand routes too (/adventures), where
+        `imageService: 'compile'` emits a `/_image?…` URL with no service
+        behind it — a broken portrait in the masthead on every blog page.
+        `pnpm nav-portrait` renders public/nav-portrait.webp from the same
+        source; see scripts/build-nav-portrait.mjs.
+      */}
+      <img
         class="nav__portrait"
-        src={portrait}
+        src="/nav-portrait.webp"
         alt=""
-        width={46}
-        height={46}
-        densities={[1, 2]}
+        width="46"
+        height="46"
         loading="eager"
         fetchpriority="high"
+        decoding="async"
       />
       <span class="nav__id">
         <span class="nav__name">{PROFILE.name}</span>
@@ -65,7 +73,7 @@ const book = NAV.find((item) => item.href === '/book');
         ))
       }
 
-      <li><LanguageSwitcher lang={lang} path={path} /></li>
+      <li><LanguageSwitcher lang={lang} path={path} switchHref={switchHref} /></li>
 
       {
         book && (
@@ -106,15 +114,13 @@ const book = NAV.find((item) => item.href === '/book');
   }
 
   /*
-   * Square crop of a 835×1052 portrait: object-fit alone would centre on the
-   * chest, so the position pulls the frame up onto the face.
+   * The file is already square and already cropped onto the face — see
+   * scripts/build-nav-portrait.mjs — so no object-position reframing here.
    */
   .nav__portrait {
     flex: 0 0 auto;
     width: 46px;
     height: 46px;
-    object-fit: cover;
-    object-position: 50% 22%;
     border: 1px solid var(--ink-faint);
     filter: grayscale(0.5) contrast(1.05);
   }

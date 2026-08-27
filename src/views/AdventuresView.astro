@@ -1,0 +1,324 @@
+---
+/**
+ * Bryan's Adventures — the list, in whichever language it is asked for.
+ *
+ * Server-rendered rather than prerendered: publishing in Sanity puts a post
+ * live without a build, and Workers Builds has no deploy hook a CMS webhook
+ * could pull. See `BLOG_CACHE_CONTROL` for what the edge is allowed to reuse.
+ *
+ * The Chinese list is built from the *English* records, not from Chinese ones.
+ * That is what lets every adventure appear to a Chinese reader: translated
+ * where a translation exists, and marked ENGLISH ONLY where it does not,
+ * rather than a sparse list that hides most of the writing.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Panel from '../components/Panel.astro';
+import { BLOG_CACHE_CONTROL, groq } from '../sanity/client.js';
+import { ADVENTURE_LIST } from '../sanity/queries.js';
+import { resolveImage } from '../sanity/image.js';
+import { DEFAULT_MINERAL, type AdventureCard } from '../sanity/types.js';
+import { localizePath } from '../i18n/routing.js';
+import { useTranslations, type Lang } from '../i18n/ui.js';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
+
+const result = await groq<AdventureCard[]>(ADVENTURE_LIST);
+const adventures = result.ok ? result.data : [];
+
+/** Dates render in the reader's own convention, from the reader's own locale. */
+const dateFormat = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hans-CN' : 'en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+
+/**
+ * What one card shows, once the language is taken into account.
+ *
+ * English reads the record directly. Chinese prefers the translation and falls
+ * back to the English text plus the mark — and, crucially, falls back to the
+ * *English URL* too, because there is no Chinese page to send anybody to.
+ */
+function present(adventure: AdventureCard) {
+  const translated = lang === 'zh' ? adventure.zh : null;
+
+  return {
+    title: translated?.title ?? adventure.title,
+    excerpt: translated?.excerpt ?? adventure.excerpt,
+    // The place is written out in the translation too — "津巴布韦 马纳普尔斯",
+    // not "Mana Pools, Zimbabwe" — so it has to come from there when it can.
+    place: translated?.place ?? adventure.place,
+    href:
+      lang === 'zh' && translated
+        ? `/zh/adventures/${translated.slug}`
+        : `/adventures/${adventure.slug}`,
+    untranslated: lang === 'zh' && !translated,
+  };
+}
+---
+
+<BaseLayout
+  title={t('adv.title')}
+  description={t('adv.description')}
+  path="/adventures"
+  lang={lang}
+  sheet="03 / 06"
+>
+  <PageHeader
+    eyebrow={t('adv.eyebrow')}
+    title={t('adv.title')}
+    lede={t('adv.lede')}
+    note={t('adv.note')}
+  />
+
+  <section class="section reveal" aria-labelledby="adventures-heading">
+    <h2 class="visually-hidden" id="adventures-heading">{t('adv.heading')}</h2>
+
+    {
+      /*
+       * Three states, and they are not the same thing. An empty blog is a blog
+       * with nothing in it; an unreachable one still has everything in it.
+       * Collapsing them would tell a reader the writing is gone when the
+       * content service is merely down.
+       */
+    }
+    {
+      !result.ok && (
+        <Panel class="adventures__notice">
+          <h3>{t('adv.unavailable_title')}</h3>
+          <p>{t('adv.unavailable_body')}</p>
+        </Panel>
+      )
+    }
+
+    {
+      result.ok && adventures.length === 0 && (
+        <Panel class="adventures__notice">
+          <h3>{t('adv.empty_title')}</h3>
+          <p>{t('adv.empty_body')}</p>
+          <p class="adventures__notice-action">
+            <a class="btn" href={localizePath('/book', lang)}>
+              {t('nav.book')}
+            </a>
+          </p>
+        </Panel>
+      )
+    }
+
+    <ol class="adventures">
+      {
+        adventures.map((adventure) => {
+          const shown = present(adventure);
+          const cover = resolveImage(adventure.cover, { width: 420, aspect: 3 / 2 });
+
+          return (
+            <li>
+              <Panel
+                as="a"
+                href={shown.href}
+                class="adventure-card"
+                style={`--panel-mineral: var(--mineral-${adventure.mineral ?? DEFAULT_MINERAL})`}
+              >
+                {cover && (
+                  <img
+                    class="adventure-card__cover"
+                    src={cover.src}
+                    srcset={cover.srcset}
+                    width={cover.width}
+                    height={cover.height}
+                    alt={cover.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+
+                <div class="adventure-card__body">
+                  <p class="adventure-card__meta">
+                    <time datetime={adventure.publishedAt}>
+                      {dateFormat.format(new Date(adventure.publishedAt))}
+                    </time>
+                    {shown.place && (
+                      <>
+                        <span aria-hidden="true"> · </span>
+                        <span>{shown.place}</span>
+                      </>
+                    )}
+                  </p>
+
+                  <h3 class="adventure-card__title" lang={shown.untranslated ? 'en' : undefined}>
+                    {shown.title}
+                  </h3>
+
+                  {shown.excerpt && (
+                    <p class="adventure-card__excerpt" lang={shown.untranslated ? 'en' : undefined}>
+                      {shown.excerpt}
+                    </p>
+                  )}
+
+                  <p class="adventure-card__foot">
+                    <span class="adventure-card__read">{t('adv.read')}</span>
+                    {shown.untranslated && (
+                      <span class="adventure-card__badge" title={t('adv.english_only_title')}>
+                        {t('adv.english_only')}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </Panel>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .adventures {
+    display: grid;
+    gap: 1.25rem;
+    list-style: none;
+    padding: 0;
+    /* min() caps the track so a 390px screen never scrolls sideways. */
+    grid-template-columns: repeat(auto-fill, minmax(min(21rem, 100%), 1fr));
+  }
+
+  .adventure-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 0 1.375rem;
+    transition: background-color 0.25s ease;
+  }
+
+  .adventure-card:hover {
+    background: var(--sheet-raised);
+  }
+
+  /*
+   * The cover sits inside the panel's rule rather than bleeding past it: the
+   * corner brackets are the container, and an image over them would read as a
+   * card with a photo on top instead of a plate drawn on the sheet.
+   */
+  .adventure-card__cover {
+    width: 100%;
+    height: auto;
+    /* Same halved desaturation the portrait gets, so photographs belong to
+       the drawing without the colour going out of them entirely. */
+    filter: grayscale(0.45) contrast(1.04);
+    margin-block-end: 1.375rem;
+  }
+
+  .adventure-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-inline: 1.5rem;
+  }
+
+  /*
+   * `--ink-body`, not the `--ink-soft` the other mono labels use.
+   *
+   * The first card lands where the lighting radial is brightest, and the
+   * composited pass measured this line at 4.17:1 in English and 3.83:1 in
+   * Chinese against a 4.5 floor. The lower-contrast ink is fine further down
+   * the page and not fine here, so the line takes the darker one everywhere.
+   */
+  .adventure-card__meta {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-body);
+  }
+
+  .adventure-card__title {
+    margin-block-start: 0.5rem;
+    font-size: 1.375rem;
+  }
+
+  /* The mineral bar, drawn out on hover — the same move the project panels make. */
+  .adventure-card__title::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-block-start: 0.5rem;
+    background: var(--panel-mineral);
+    transition: width 0.25s ease;
+  }
+
+  .adventure-card:hover .adventure-card__title::after,
+  .adventure-card:focus-visible .adventure-card__title::after {
+    width: 3.5rem;
+  }
+
+  .adventure-card__excerpt {
+    margin-block-start: 0.625rem;
+    color: var(--ink-body);
+  }
+
+  .adventure-card__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    /* Pins the row to the bottom so cards of different heights line up. */
+    margin-block-start: auto;
+    padding-block-start: 1rem;
+  }
+
+  .adventure-card__read {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /*
+   * The ENGLISH ONLY mark.
+   *
+   * A dashed rule rather than a solid chip: it is a note about the entry, not
+   * a label on it, and the site already uses the dashed line for things the
+   * drawing has not finished.
+   */
+  .adventure-card__badge {
+    padding: 3px 8px;
+    border: 1px dashed var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .adventures__notice {
+    padding: 2.5rem 2rem;
+  }
+
+  .adventures__notice-action {
+    margin-block-start: 1.5rem;
+  }
+
+  /* Han sets its own case and wants far less tracking than Latin small caps. */
+  .adventure-card__meta:lang(zh),
+  .adventure-card__read:lang(zh),
+  .adventure-card__badge:lang(zh) {
+    font-family: var(--cjk-mono);
+    letter-spacing: 0.1em;
+    text-transform: none;
+  }
+</style>

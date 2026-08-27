@@ -167,6 +167,7 @@ export interface NavItem {
 export const NAV: readonly NavItem[] = [
   { labelKey: 'nav.profile', href: '/' },
   { labelKey: 'nav.experience', href: '/experience' },
+  { labelKey: 'nav.adventures', href: '/adventures' },
   { labelKey: 'nav.origins', href: '/origins-with-perspective' },
   { labelKey: 'nav.minerals', href: '/minerals' },
   { labelKey: 'nav.book', href: '/book' },

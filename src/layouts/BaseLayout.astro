@@ -9,7 +9,7 @@ import Schematics from '../components/Schematics.astro';
 import SiteNav from '../components/SiteNav.astro';
 import TitleBlock from '../components/TitleBlock.astro';
 import { PROFILE, profileInLang } from '../data/profile.js';
-import { allPaths } from '../i18n/routing.js';
+import { allPaths, alternatePath, localizePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, direction, ogLocale, useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -21,7 +21,17 @@ interface Props {
    */
   path?: string;
   lang?: Lang;
-  /** Sheet number shown in the title block, e.g. "02 / 04". */
+  /**
+   * The same page's URL in each language, when it cannot be derived from
+   * `path`.
+   *
+   * Every hand-authored route is the same path with a locale prefix, so the
+   * default is computed. An adventure is not: its Chinese translation is a
+   * separate document with its own slug, and an untranslated one has no
+   * Chinese URL at all. Those pages pass this instead.
+   */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Sheet number shown in the title block, e.g. "02 / 06". */
   sheet?: string;
   ogType?: 'website' | 'profile' | 'article';
 }
@@ -31,15 +41,41 @@ const {
   description,
   path = Astro.url.pathname,
   lang = defaultLang,
-  sheet = '01 / 04',
+  alternates,
+  sheet = '01 / 06',
   ogType = 'website',
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://bryanfawcett.com');
-const localized = allPaths(path);
-const here = localized.find((entry) => entry.lang === lang)?.path ?? path;
+
+/*
+ * Which languages this page genuinely exists in.
+ *
+ * For a hand-authored route that is both of them, derived from the path. For
+ * an adventure it is whatever `alternates` says — and an untranslated one
+ * lists only English, because pointing `hreflang="zh-Hans"` at a page that is
+ * not a Chinese version of this one is a lie told to a search engine.
+ */
+const localized = alternates
+  ? (Object.entries(alternates) as [Lang, string][]).map(([entryLang, entryPath]) => ({
+      lang: entryLang,
+      path: entryPath,
+    }))
+  : allPaths(path);
+
+const here = localized.find((entry) => entry.lang === lang)?.path ?? localizePath(path, lang);
 const canonical = new URL(here, site).href;
 const fullTitle = here === '/' || here === '/zh' ? title : `${title} | ${PROFILE.name}`;
+
+/*
+ * Where the language switcher goes.
+ *
+ * The real counterpart when there is one; otherwise the other language's
+ * version of this *section*. On an untranslated adventure that lands the
+ * reader on the Chinese list rather than on a dead end or, worse, silently
+ * back at the home page.
+ */
+const switchHref = alternates?.[lang === 'en' ? 'zh' : 'en'] ?? alternatePath(path, lang);
 
 const profile = profileInLang(lang);
 const t = useTranslations(lang);
@@ -102,7 +138,7 @@ const jsonLd = {
     <link
       rel="alternate"
       hreflang="x-default"
-      href={new URL(localized.find((e) => e.lang === defaultLang)?.path ?? '/', site).href}
+      href={new URL(localized.find((e) => e.lang === defaultLang)?.path ?? here, site).href}
     />
 
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -167,14 +203,14 @@ const jsonLd = {
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
 
     <div class="page">
-      <SiteNav path={path} lang={lang} />
+      <SiteNav path={path} lang={lang} switchHref={switchHref} />
 
       <main id="main" class="shell" transition:animate={unroll}>
         <slot />
       </main>
 
       <div class="shell">
-        <TitleBlock sheet={sheet} lang={lang} path={path} />
+        <TitleBlock sheet={sheet} lang={lang} path={path} switchHref={switchHref} />
       </div>
     </div>
 

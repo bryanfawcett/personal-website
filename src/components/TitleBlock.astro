@@ -16,9 +16,11 @@ interface Props {
   lang?: Lang;
   /** Language-neutral path, so the switcher can find this page's counterpart. */
   path?: string;
+  /** Overrides the switcher target where the counterpart is not this path. */
+  switchHref?: string | undefined;
 }
 
-const { sheet = '01 / 04', lang = defaultLang, path = '/' } = Astro.props;
+const { sheet = '01 / 06', lang = defaultLang, path = '/', switchHref } = Astro.props;
 const t = useTranslations(lang);
 const profile = profileInLang(lang);
 const year = new Date().getFullYear();
@@ -71,7 +73,7 @@ const year = new Date().getFullYear();
       }
     </ul>
 
-    <span class="tb-lang"><LanguageSwitcher lang={lang} path={path} /></span>
+    <span class="tb-lang"><LanguageSwitcher lang={lang} path={path} switchHref={switchHref} /></span>
 
     <span class="tb-copy">© {year} {PROFILE.name}</span>
   </div>

@@ -16,6 +16,15 @@ export default defineConfig({
   output: 'static',
 
   /*
+   * Sessions off.
+   *
+   * With a server entrypoint present the adapter otherwise declares a KV
+   * binding for Astro's session store, which then has to exist in Cloudflare
+   * before a deploy will go through. Nothing on this site has a session.
+   */
+  session: false,
+
+  /*
    * Two languages: English unprefixed at the root, Chinese under /zh.
    *
    * `prefixDefaultLocale: false` keeps every existing English URL exactly where

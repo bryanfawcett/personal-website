@@ -16,16 +16,22 @@ interface Props {
   lang: Lang;
   /** Language-neutral or localized path of the current page. */
   path: string;
+  /**
+   * Where to actually go, when it is not this path in the other language —
+   * an adventure's translation has its own slug, and an untranslated one
+   * sends the reader to the other language's list instead.
+   */
+  switchHref?: string | undefined;
 }
 
-const { lang, path } = Astro.props;
+const { lang, path, switchHref } = Astro.props;
 const t = useTranslations(lang);
 const other: Lang = lang === 'en' ? 'zh' : 'en';
 ---
 
 <a
   class="lang"
-  href={alternatePath(path, lang)}
+  href={switchHref ?? alternatePath(path, lang)}
   hreflang={bcp47[other]}
   lang={bcp47[other]}
   aria-label={t('nav.switch_lang_label')}
