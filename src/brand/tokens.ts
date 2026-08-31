@@ -307,7 +307,7 @@ export const TYPE = {
    * platform already ships a good version of. Latin runs first in the stack so
    * a proper noun inside a Chinese sentence still sets in Plex.
    */
-  cjk: "'IBM Plex Serif', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
+  cjk: "'IBM Plex Serif', 'Noto Serif SC', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
   /**
    * The mono equivalent: Latin from IBM Plex, Han from the system.
    *
@@ -315,9 +315,28 @@ export const TYPE = {
    * global.css, and it has to sit ahead of the real family names so the Han in
    * a label is scaled up before the unadjusted faces are reached. Latin still
    * comes from Plex, which is listed first and is untouched by the adjust.
+   *
+   * The vendored `Noto Serif SC` sits at the *end* rather than the front: a
+   * label wants the size-adjusted local face where the reader has one, and the
+   * vendored face only as the floor for a reader who has none. Ahead of the
+   * adjust it would win and give back the size problem the adjust exists for.
    */
+  /**
+   * Han in the chrome — the language switcher, and nothing else.
+   *
+   * Deliberately *without* the vendored `Noto Serif SC`, and that omission is
+   * the whole point. `unicode-range` gates a download on whether the page sets
+   * a character in the range, and the switcher puts 中文 on every English page
+   * on the site — so listing the vendored face here made an English reader
+   * download 690 kB of Chinese to draw two glyphs of chrome.
+   *
+   * Those two glyphs do not need to match the body face of a page written in
+   * another language. They take whatever Han the reader already has.
+   */
+  cjkChrome:
+    "'IBM Plex Mono', ui-monospace, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Songti SC', 'SimSun', sans-serif",
   cjkMono:
-    "'IBM Plex Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
+    "'IBM Plex Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Serif SC', sans-serif",
 } as const;
 
 /**
