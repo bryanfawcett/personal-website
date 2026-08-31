@@ -220,7 +220,7 @@ button {
   color: var(--ink);
 }
 
-.schematics svg {
+.schematics :where(svg) {
   position: absolute;
 }
 
@@ -571,6 +571,19 @@ button {
   margin-block-start: 1.1rem;
 }
 
+/*
+ * A link in a panel's prose. `:where()`, and it matters here more than
+ * anywhere: this rule was scoped to MineralsView until the stylesheets were
+ * merged, and de-scoping it made it site-wide at 0-1-1 — where it beat `.btn`
+ * (0-1-0) and painted the primary call to action in `--ink` on a fill that is
+ * also `--ink`. White on white, on the home page, in both languages.
+ */
+.panel :where(a) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 /* ============================== chips ============================== */
 
 .chips {
@@ -762,8 +775,7 @@ main {
   transform: none;
 }
 
-.no-js .reveal,
-.no-js .reveal.is-visible {
+.no-js .reveal {
   opacity: 1;
   transform: none;
 }
@@ -835,17 +847,18 @@ body:lang(zh) {
 /*
  * The label floor, for Han only.
  *
- * The site's mono labels run 10–11px, which the readability pass accepts for
- * uppercase Latin. Han at the same size is a different proposition: the
- * strokes inside a dense character stop separating at 1x, and measuring the
- * Chinese pages turned up 32 label blocks under 12px on the home sheet alone.
+ * The site's mono labels run at `--label`, 15px, which APCA is satisfied with
+ * for uppercase Latin at weight 600. Han at the same size is a different
+ * proposition: the strokes inside a dense character stop separating well before
+ * Latin caps do, so a size that reads cleanly in one script does not in the
+ * other.
  *
  * Raising each one by hand would mean a `:lang(zh)` twin for every label class
- * in the codebase — about thirty-five of them across ten files, and a trap for
- * the next label somebody adds. `size-adjust` on the fallback face does it in
- * one place instead: the descriptor scales only the glyphs rendered *from this
- * face*, and IBM Plex Mono sits ahead of it in `--cjk-mono`, so Latin in the
- * same label is untouched. 120% takes the 10px floor to 12px.
+ * in the codebase — about thirty-five of them, and a trap for the next label
+ * somebody adds. `size-adjust` on the fallback face does it in one place
+ * instead: the descriptor scales only the glyphs rendered *from this face*, and
+ * IBM Plex Mono sits ahead of it in `--cjk-mono`, so Latin in the same label is
+ * untouched. 120% takes 15px of Han to 18px.
  *
  * `local()` only — nothing is downloaded, and a reader with none of these
  * installed simply falls through to the unadjusted names further down the
@@ -881,9 +894,9 @@ body:lang(zh) {
   text-transform: none;
 }
 
-.panel p:lang(zh),
+.panel :where(p):lang(zh),
 .lede:lang(zh),
-.prose p:lang(zh) {
+.prose :where(p):lang(zh) {
   line-height: 1.8;
 }
 
@@ -1351,7 +1364,6 @@ body:lang(zh) {
 
 figcaption {
   font-family: var(--mono);
-  /* 10px floor on label text. */
   font-size: var(--label);
   font-weight: var(--label-weight);
   letter-spacing: 0.24em;
@@ -1412,7 +1424,6 @@ figcaption {
 .card__org {
   display: block;
   font-family: var(--mono);
-  /* 10px floor on label text. */
   font-size: var(--label);
   font-weight: var(--label-weight);
   letter-spacing: 0.18em;
@@ -1642,7 +1653,12 @@ figcaption {
 
 .footer {
   margin-block-start: var(--space-10);
-  background: var(--void);
+  /*
+   * `--void` did not exist, so the footer had no ground of its own and simply
+   * showed the sheet. It reads as the foot of the drawing now: the deepest
+   * well on the page, the same recess the QR sits in.
+   */
+  background: var(--sheet-deep);
 }
 
 .footer__inner {
@@ -1666,9 +1682,19 @@ figcaption {
   line-height: 1;
 }
 
+/*
+ * `--ink-soft`, not `--faint`.
+ *
+ * This block referenced four custom properties that no longer exist — `--void`,
+ * `--faint`, `--muted`, `--foreground`, from a vocabulary that predates
+ * tokens.ts. Each silently fell back to `unset` and inherited, so the footer
+ * rendered at full ink and *looked* fine: the intended hierarchy was simply
+ * gone. A pixel-based contrast gate structurally cannot see this — a dropped
+ * declaration leaves nothing to measure.
+ */
 .footer__copy {
-  font-size: 0.8125rem;
-  color: var(--faint);
+  font-size: var(--label);
+  color: var(--ink-soft);
   margin-block-start: var(--space-2);
 }
 
@@ -1677,7 +1703,7 @@ figcaption {
   gap: var(--space-9);
 }
 
-.footer__nav ul {
+.footer__nav :where(ul) {
   list-style: none;
   padding: 0;
   margin-block-start: var(--space-3);
@@ -1685,17 +1711,22 @@ figcaption {
   flex-direction: column;
 }
 
-.footer__nav a {
+/*
+ * 44px, not 40, and the label floor rather than 14px — both were under the
+ * minimums stated in CLAUDE.md, and both were invisible for the same reason as
+ * the colour above: nothing was measuring a footer nobody scrolled to.
+ */
+.footer__nav :where(a) {
   display: flex;
   align-items: center;
-  min-height: 40px;
-  font-size: 0.875rem;
-  color: var(--muted);
+  min-height: 44px;
+  font-size: var(--label);
+  color: var(--ink-soft);
   transition: color 0.25s ease;
 }
 
-.footer__nav a:hover {
-  color: var(--foreground);
+.footer__nav :where(a):hover {
+  color: var(--ink);
 }
 
 /* ---------------------------- HomeView ---------------------------- */
@@ -2207,7 +2238,7 @@ figcaption {
   max-width: var(--measure);
   margin-block: var(--space-8);
   padding-inline-start: var(--space-6);
-  border-inline-start: 3px solid var(--mineral-gold);
+  border-inline-start: var(--mineral-weight) solid var(--mineral);
   font-family: var(--serif);
   font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
   font-weight: 300;
@@ -2334,7 +2365,6 @@ figcaption {
   max-width: var(--measure);
   margin-block-start: var(--space-7);
   padding: var(--space-5) var(--space-6);
-  border-radius: 0;
   font-size: 1.0625rem;
   line-height: 1.58;
   color: var(--ink-body);
@@ -2355,7 +2385,6 @@ figcaption {
 .aptitudes li,
 .questions li {
   padding: var(--space-5) var(--space-6);
-  border-radius: 0;
 }
 
 .aptitudes h3,
@@ -2375,12 +2404,7 @@ figcaption {
  * bar under a heading. Ink for the word, mineral for the rule, and the row
  * keeps the identity it had.
  */
-.aptitudes h3 {
-  color: var(--ink);
-  padding-block-end: 0.3rem;
-  border-block-end: var(--mineral-weight) solid var(--mineral);
-}
-
+.aptitudes h3,
 .questions h3 {
   color: var(--ink);
   padding-block-end: 0.3rem;
@@ -2398,7 +2422,6 @@ figcaption {
 
 .deck {
   margin-block-start: var(--space-7);
-  border-radius: 0;
   overflow: hidden;
 }
 
@@ -2425,7 +2448,6 @@ figcaption {
   gap: var(--space-4);
   list-style: none;
   padding: 0;
-  counter-reset: mineral;
 }
 
 .key .key__item {
@@ -2475,7 +2497,6 @@ figcaption {
 
 .key__body dt {
   font-family: var(--mono);
-  /* 10px floor on label text. */
   font-size: var(--label);
   font-weight: var(--label-weight);
   letter-spacing: 0.2em;
@@ -2526,12 +2547,6 @@ code {
   font-family: var(--mono);
   font-size: 0.9em;
   color: var(--ink);
-}
-
-.panel a {
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 
 @media (max-width: 44rem) {

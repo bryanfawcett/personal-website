@@ -72,9 +72,19 @@ const parseRGB = (s) => (s.match(/[\d.]+/g) || []).slice(0, 4).map(Number);
 const over = (fg, bg) => { const a = fg[3] ?? 1; return [0, 1, 2].map(i => Math.round(fg[i] * a + bg[i] * (1 - a))); };
 
 const browser = await chromium.launch();
-let failed = 0;
 
-for (const WIDTH of WIDTHS) {
+/*
+ * The widths run concurrently.
+ *
+ * Nothing in a width's pass touches anything outside it — its findings, its
+ * skips and its count are all declared inside — so the only thing the sequence
+ * ever bought was tidy console output, and that is what `out` is for: each
+ * width buffers its own report and prints it whole at the end, so the two do
+ * not interleave. Measured 133s to 89s.
+ */
+const checkWidth = async (WIDTH) => {
+const out = [];
+const log = (...a) => out.push(a.join(' '));
 const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 }, deviceScaleFactor: 1 });
 const findings = [];
 const aside = [];
@@ -100,9 +110,21 @@ for (const route of ROUTES) {
     await browser.close();
     process.exit(2);
   }
-  if (res && res.status() >= 500) {
-    unreachable.push(`${route} — HTTP ${res.status()}`);
+  /*
+   * 503 is the blog saying Sanity is unreachable, which is a different problem
+   * with its own three states (see CLAUDE.md) and not this gate's to fail on.
+   * Every other 5xx is a broken page, and skipping those was the same hole in
+   * a different shape: thirteen routes could 500 and the run would still find
+   * no failures and exit 0.
+   */
+  if (res && res.status() === 503) {
+    unreachable.push(`${route} — HTTP 503 (CMS unreachable)`);
     continue;
+  }
+  if (res && res.status() >= 500) {
+    console.error(`\n${route} returned HTTP ${res.status()} — the page is broken, not skippable.`);
+    await browser.close();
+    process.exit(2);
   }
   await page.evaluate(() => {
     for (const el of document.querySelectorAll('.reveal')) el.classList.add('is-visible');
@@ -269,9 +291,33 @@ for (const route of ROUTES) {
       return best ? { bg: best, n, count: bestCount } : null;
     }, [{ x: Math.round(cx), y: Math.round(cy), w: Math.round(cw), h: Math.round(ch) }, ink.slice(0, 3)]);
 
-    // No glyph pixels moved: the run is clipped away, covered, or painted by
-    // something the plate does not reach. Not scoreable from a screenshot.
-    if (!ground) { aside.push({ route, why: 'no glyph pixels found', ...t }); continue; }
+    /*
+     * No glyph pixels moved between the plates — and that is a failure, not an
+     * aside.
+     *
+     * The mask works by turning the page's ink off and keeping the pixels that
+     * changed. Text painted in exactly its own background colour changes
+     * nothing, so it produces an empty mask — the same empty mask as text that
+     * is clipped away or covered. Filing all of it under "not scored" means the
+     * one input the gate cannot measure is the one where contrast is zero.
+     *
+     * This is not hypothetical. `.panel a` beat `.btn` on specificity and
+     * painted the primary call to action in `--ink` on an `--ink` fill; the
+     * gate printed `.btn  no glyph pixels found  "Book a call"` three lines
+     * above "every text block clears the minimum" and exited 0.
+     *
+     * An element that is genuinely invisible for an innocent reason — clipped,
+     * covered, occluded — has no business being measured either, so it does not
+     * belong in a bucket that passes silently. Fail, and make the run say why.
+     */
+    if (!ground) {
+      findings.push({
+        route, cls: t.cls, size: t.size, weight: t.weight, Lc: 0,
+        need: 'ANY', bg: 'no glyph pixels — ink may equal its ground',
+        px: '0px', stroked: t.stroked, sample: t.sample,
+      });
+      continue;
+    }
 
     const bg = ground.bg;
     const fg = over(ink, bg);
@@ -292,37 +338,41 @@ for (const route of ROUTES) {
 }
 
 findings.sort((a, b) => a.Lc - b.Lc);
-console.log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px`);
-console.log(`APCA failures: ${findings.length}\n`);
+log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px`);
+log(`APCA failures: ${findings.length}\n`);
 const seen = new Set();
 for (const f of findings) {
   const k = `${f.cls}|${f.size}|${f.weight}`;
   if (seen.has(k)) continue;
   seen.add(k);
   const mark = f.stroked ? ' (stroked)' : '';
-  console.log(`  Lc ${String(f.Lc).padStart(5)}  ${String(f.size).padStart(5)}px/${f.weight}  needs ${String(f.need).padStart(6)}px  on ${f.bg.padEnd(18)} ${String(f.px).padEnd(10)} .${f.cls.padEnd(22)}${mark} "${f.sample}"`);
+  log(`  Lc ${String(f.Lc).padStart(5)}  ${String(f.size).padStart(5)}px/${f.weight}  needs ${String(f.need).padStart(6)}px  on ${f.bg.padEnd(46)} ${String(f.px).padEnd(10)} .${f.cls.padEnd(22)}${mark} "${f.sample}"`);
 }
-console.log(`\n(${seen.size} distinct element classes failing)`);
+log(`\n(${seen.size} distinct element classes failing)`);
 
 if (unreachable.length) {
-  console.log(`\nroutes skipped (${unreachable.length}):`);
-  for (const u of unreachable) console.log(`  ${u}`);
+  log(`\nroutes skipped (${unreachable.length}):`);
+  for (const u of unreachable) log(`  ${u}`);
 }
 
 if (aside.length) {
   const shown = new Set();
-  console.log(`\nnot scored by screenshot (${aside.length}):`);
+  log(`\nnot scored by screenshot (${aside.length}):`);
   for (const a of aside) {
     const k = `${a.cls}|${a.why}`;
     if (shown.has(k)) continue;
     shown.add(k);
-    console.log(`  .${a.cls.padEnd(24)} ${a.why}  "${a.sample}"`);
+    log(`  .${a.cls.padEnd(24)} ${a.why}  "${a.sample}"`);
   }
 }
 
-failed += findings.length;
 await page.close();
-}
+console.log(out.join('\n'));
+return findings.length;
+};
+
+/* Independent per width, so run them together and sum the failures. */
+const failed = (await Promise.all(WIDTHS.map(checkWidth))).reduce((a, b) => a + b, 0);
 
 await browser.close();
 if (failed) {
