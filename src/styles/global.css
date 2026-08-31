@@ -110,6 +110,12 @@ button {
    * The lighting is sized in vh and pinned to the top rather than stretched
    * over the whole document: a radial sized as a percentage of a 6000px page
    * is not a fall of light, it is a flat tint.
+   *
+   * The base gradient underneath them is nearly flat now, and deliberately.
+   * It used to run mid -> base -> deep, which with the old ladder meant light
+   * at the top, lighter in the middle and near-black at the foot — a sweep
+   * across the whole page, which is a sheen however subtle the radials over it
+   * are. A matte board is one tone with a slight fall at the far edge.
    */
   background:
     radial-gradient(ellipse 90% 70% at 18% 10%, var(--ground-lit), transparent 60%) top / 100% 140vh
@@ -120,7 +126,7 @@ button {
       140vh no-repeat,
     radial-gradient(ellipse 70% 60% at 84% 90%, var(--ground-shade), transparent 65%) bottom / 100%
       140vh no-repeat,
-    linear-gradient(160deg, var(--sheet-mid) 0%, var(--sheet) 45%, var(--sheet-deep) 100%);
+    linear-gradient(160deg, var(--sheet) 0%, var(--sheet) 55%, var(--sheet-mid) 100%);
 }
 
 /*
@@ -129,13 +135,19 @@ button {
  * `soft-light` rather than `multiply`: on a dark ground multiply would only
  * crush the blacks, where soft-light lifts and dips the grain either side of
  * the base tone, which is what reads as paper.
+ *
+ * Turned up as the lighting radials came down. On a matte board the texture is
+ * the tooth, not the sheen — the grain is now most of what says this is a
+ * surface rather than a fill, so it carries proportionally more of the work.
+ * It is scattered light, so it costs text nothing: measured over the ink mask
+ * it moves the ground by under two values.
  */
 .sheet-ground::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity: 0.22;
+  opacity: 0.38;
   mix-blend-mode: soft-light;
 }
 
@@ -204,6 +216,8 @@ button {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Merged in from the component's own block, which declared it a second time. */
+  color: var(--ink);
 }
 
 .schematics svg {
@@ -320,6 +334,13 @@ button {
 .eyebrow {
   display: flex;
   align-items: center;
+  /*
+   * The trailing margin used to be added again, identically, inside two views'
+   * scoped blocks. It belongs to the eyebrow, not to the page that happens to
+   * use one, so it lives here now — the point of one definition is that the
+   * next page to want an eyebrow gets the spacing without asking.
+   */
+  margin-block-end: var(--space-6);
   gap: 0.875rem;
   font-family: var(--mono);
   font-size: var(--label-lg);
@@ -388,7 +409,7 @@ button {
 }
 
 .dimension__label {
-  padding-inline: 1rem;
+  padding-inline: var(--space-4);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -506,17 +527,31 @@ button {
   color: var(--ink);
 }
 
-.panel h2 {
+.panel :where(h2) {
   font-size: 1.625rem;
   margin-block-end: 0.625rem;
 }
 
-.panel h3 {
+.panel :where(h3) {
   font-size: 1.25rem;
   margin-block-end: 0.375rem;
 }
 
-.panel p {
+/*
+ * `:where()` so this is a default, not a decree.
+ *
+ * `.panel p` is specificity 0-1-1 and beats any single class, so it used to win
+ * against `.caption`, `.card__title`, `.credential__period` and a dozen more —
+ * except it didn't, because Astro's scoping quietly added an attribute selector
+ * to each of those and pushed them to 0-2-0. Take the scoping away and fifteen
+ * rules silently lost. `:where()` contributes nothing to specificity, so this
+ * lands at 0-1-0: a paragraph in a panel reads like this unless a class says
+ * otherwise, and the class only has to be a class to say so.
+ *
+ * The same applies to any base rule pairing a class with an element. Write them
+ * this way.
+ */
+.panel :where(p) {
   /* A measure, not a column width: prose stops before it gets hard to track. */
   max-width: var(--measure);
   font-size: 1.125rem;
@@ -532,7 +567,7 @@ button {
  * mark where one paragraph ended and the next began. `.prose` on /origins gets
  * 1.1rem from a flex gap; this is the same rhythm for the panels.
  */
-.panel p + p {
+.panel :where(p + p) {
   margin-block-start: 1.1rem;
 }
 
@@ -541,7 +576,7 @@ button {
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
   list-style: none;
   padding: 0;
   margin-block-start: 1.125rem;
@@ -761,7 +796,7 @@ main {
   display: flex;
   align-items: center;
   min-height: 44px;
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   background: var(--sheet-raised);
   border: 1.5px solid var(--ink);
   font-family: var(--mono);
@@ -881,4 +916,2081 @@ body:lang(zh) {
   font-family: var(--cjk);
   text-wrap: normal;
   line-height: 1.35;
+}
+
+
+/* ==================================================================== */
+/* ==================== components and views ========================== */
+/* ==================================================================== */
+
+/*
+ * Everything below used to live in a `<style>` block inside the component or
+ * view it belonged to, scoped by Astro to that template.
+ *
+ * It is here instead so that the whole of the site's styling is one file with
+ * one order, and changing how something looks is one edit in one place rather
+ * than a hunt through nineteen templates for the block that happens to own the
+ * rule. Two selectors were already written twice under scoping — `.eyebrow`
+ * and `.section-head`, identical in two views each — which is the failure mode
+ * this prevents.
+ *
+ * Order is load-bearing: these come after the base rules above, so at equal
+ * specificity they win. Scoping used to do that by adding an attribute
+ * selector; now it is position in the file. Add new component rules at the
+ * end of this section, not the top.
+ *
+ * `:global()` wrappers are gone with the scoping that made them necessary —
+ * they were only ever there to opt a selector out of it.
+ */
+
+/* ---------------------------- MineralBar ---------------------------- */
+
+.mineral-rail {
+  display: flex;
+  flex-direction: column;
+  width: var(--rail-thickness);
+}
+
+.mineral-rail.is-edge {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: 60;
+  height: 100dvh;
+}
+
+.mineral-rail.is-inline {
+  height: 100%;
+}
+
+.mineral-rail__segment {
+  flex: 1;
+  /* Segments draw down the edge on load rather than snapping in. */
+  transform: scaleY(0);
+  transform-origin: center top;
+  animation: mineral-rail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.mineral-rail__segment:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.mineral-rail__segment:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.mineral-rail__segment:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.mineral-rail__segment:nth-child(4) {
+  animation-delay: 0.14s;
+}
+.mineral-rail__segment:nth-child(5) {
+  animation-delay: 0.18s;
+}
+.mineral-rail__segment:nth-child(6) {
+  animation-delay: 0.22s;
+}
+.mineral-rail__segment:nth-child(7) {
+  animation-delay: 0.26s;
+}
+
+@keyframes mineral-rail-in {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mineral-rail__segment {
+    transform: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 51rem) {
+  .mineral-rail.is-edge {
+    width: 4px;
+  }
+}
+
+/* ---------------------------- Schematics ---------------------------- */
+
+
+/* Below the sheet frame these crowd the content rather than decorate it. */
+@media (max-width: 60rem) {
+  .schematics {
+    display: none;
+  }
+}
+
+/* ---------------------------- SiteNav ---------------------------- */
+
+.nav {
+  padding-block-start: 2.25rem;
+}
+
+.nav__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block-end: var(--space-3);
+  border-block-end: 1px solid var(--ink-faint);
+}
+
+.nav__wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+/*
+ * The file is already square and already cropped onto the face — see
+ * scripts/build-nav-portrait.mjs — so no object-position reframing here.
+ */
+.nav__portrait {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--ink-faint);
+  filter: grayscale(0.5) contrast(1.05);
+}
+
+.nav__id {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nav__name {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.nav__role {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.875rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.nav__link:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.nav__link.is-current {
+  color: var(--ink);
+  background: var(--sheet-wash-light);
+  border-color: var(--ink);
+}
+
+/*
+ * The commission stamp.
+ *
+ * A full-strength rule and ink rather than a fill: this is the site's one
+ * standing call to action, and it has to read as the loudest thing in the
+ * nav without becoming a button floating over the sheet. On hover the ink
+ * and the ground swap, which is the same move the social links already
+ * make — no lift, no shadow.
+ */
+.nav__cta {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.nav__cta:hover,
+.nav__cta.is-current {
+  color: var(--sheet-raised);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Mono tracking meant for Latin caps opens Han glyphs up too far. */
+.nav__link:lang(zh),
+.nav__role:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+@media (max-width: 40rem) {
+  .nav__inner {
+    align-items: flex-start;
+  }
+
+  .nav__list {
+    margin-inline-start: -0.875rem;
+  }
+}
+
+/* ---------------------------- LanguageSwitcher ---------------------------- */
+
+.lang {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.875rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-hair);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/*
+ * The Chinese label is set in the CJK stack, where the mono tracking meant
+ * for Latin caps opens the glyphs up too far.
+ */
+.lang:lang(zh) {
+  font-family: var(--cjk);
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.lang:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+/* ---------------------------- Hero ---------------------------- */
+
+.hero {
+  position: relative;
+  padding-block: 2.125rem 3.5rem;
+  text-align: center;
+}
+
+.hero__eyebrow {
+  justify-content: center;
+  margin-block-end: 1.875rem;
+}
+
+.stack {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  font-size: clamp(3rem, 11.5vw, 7.75rem);
+}
+
+.stack__solid {
+  display: block;
+  color: var(--ink);
+}
+
+/* Layout only; the outline itself is the global `.drafted` utility. */
+.stack .drafted {
+  display: block;
+}
+
+.hero__byline {
+  margin-block-start: var(--space-4);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/*
+ * Latin caps sit well inside the em box, so 0.92 leading stacks the two
+ * words without touching. A Han glyph fills that box, and the same figure
+ * runs the two lines into each other — the display lockup needs its own
+ * leading, not the global heading rule (which a scoped class outranks).
+ */
+.stack:lang(zh) {
+  line-height: 1.06;
+  letter-spacing: 0.04em;
+}
+
+.hero__sep {
+  color: var(--ink-soft);
+}
+
+.hero__byline:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.hero__sub {
+  max-width: 35rem;
+  margin: 1.625rem auto 0;
+  font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.hero__dimension {
+  margin-block-start: var(--space-7);
+}
+
+.hero__note {
+  position: absolute;
+  inset-inline-end: 2%;
+  inset-block-start: 26%;
+  max-width: 9.375rem;
+  text-align: start;
+  font-size: 1.375rem;
+  transform: rotate(-4deg);
+}
+
+.hero__arrow {
+  display: block;
+  font-size: 1.625rem;
+  transform: rotate(20deg);
+}
+
+@media (max-width: 56rem) {
+  .hero__note {
+    display: none;
+  }
+}
+
+/* ---------------------------- PageHeader ---------------------------- */
+
+.page-header {
+  padding-block: 2.75rem var(--space-4);
+}
+
+.page-header__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.page-header__top .margin-note {
+  font-size: 1.3125rem;
+  transform: rotate(-2deg);
+}
+
+.page-header__title {
+  font-family: var(--display);
+  margin-block: var(--space-4) var(--space-4);
+  font-size: clamp(2.5rem, 1.6rem + 5vw, 4.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+/* See Hero: Han fills the em box that Latin caps leave room in. */
+.page-header__title:lang(zh) {
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+/* ---------------------------- Portrait ---------------------------- */
+
+.portrait {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  width: max-content;
+  max-width: 100%;
+}
+
+.portrait__plate {
+  --corner: 0.875rem;
+  position: relative;
+  display: block;
+  padding: 6px;
+  background: var(--sheet-wash);
+  border: 1px solid var(--ink-hair);
+}
+
+.portrait__plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Part-way to the line work, still plainly a photograph. */
+  filter: grayscale(0.5) contrast(1.05) brightness(0.97);
+}
+
+figcaption {
+  font-family: var(--mono);
+  /* 10px floor on label text. */
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------- ContactCard ---------------------------- */
+
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-7) var(--space-8);
+}
+
+.card__body {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.card__name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.card__title {
+  margin-block-start: 2px;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.card__roles {
+  margin-block-start: 1.125rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.card__roles li {
+  padding-inline-start: var(--space-3);
+  border-inline-start: 1px solid var(--ink-faint);
+}
+
+.card__role {
+  display: block;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.card__org {
+  display: block;
+  font-family: var(--mono);
+  /* 10px floor on label text. */
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.card__email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-block-start: var(--space-3);
+  border-block-end: 1.5px dashed var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.card__scan {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+/*
+ * The QR is drawn in ink on nothing, so it needs its own quiet ground: a
+ * code over the blueprint ruling is a code a phone will not lock onto.
+ */
+.card__qr {
+  width: 11rem;
+  padding: 0.625rem;
+  background: var(--sheet-deep);
+  border: 1px solid var(--ink-faint);
+}
+
+.card__qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.card__hint,
+.card__download {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.card__download {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-block-end: 1px dashed var(--ink-soft);
+}
+
+.card__download:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 40rem) {
+  .card {
+    gap: var(--space-6);
+  }
+
+  .card__scan {
+    width: 100%;
+  }
+}
+
+/* ---------------------------- WorkshopStrip ---------------------------- */
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+@media (max-width: 51rem) {
+  .strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pinned by hand, so no two sit quite square to the sheet. */
+.strip .panel {
+  padding: 1.375rem 1.375rem 1.125rem;
+  color: var(--ink);
+  transform: rotate(-0.4deg);
+}
+
+.strip .panel:nth-child(2) {
+  transform: rotate(0.5deg);
+}
+
+.strip .panel:nth-child(3) {
+  transform: rotate(-0.25deg);
+}
+
+.strip svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-block-end: 0.875rem;
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------- TitleBlock ---------------------------- */
+
+.title-block {
+  margin-block: var(--space-10) var(--space-9);
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background: var(--sheet-wash);
+  border: 1px solid var(--ink-faint);
+}
+
+.tb-cell {
+  padding: var(--space-3) var(--space-4);
+  border-inline-end: 1px solid var(--ink-faint);
+  font-family: var(--mono);
+}
+
+.tb-cell:nth-child(4) {
+  border-inline-end: none;
+}
+
+.tb-cell .k {
+  display: block;
+  margin-block-end: 4px;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * The title-block values sit one notch under the labels above them, which is
+ * as small as anything on the site gets. At 13px they were under the APCA
+ * floor for their contrast at any weight the face offers; 14px at 700 clears
+ * it and still reads as the smaller half of the pair.
+ */
+.tb-cell .v {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.tb-name {
+  font-family: var(--serif);
+}
+
+.tb-name .v {
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tb-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-2) var(--space-4);
+  border-block-start: 1px solid var(--ink-faint);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tb-foot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+}
+
+.tb-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  transition: color 0.2s ease;
+}
+
+.tb-foot a:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 40rem) {
+  .title-block {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tb-name {
+    grid-column: 1 / -1;
+    border-inline-end: none;
+  }
+
+  .tb-cell:nth-child(3) {
+    border-inline-end: none;
+  }
+}
+
+/* ---------------------------- SiteFooter ---------------------------- */
+
+.footer {
+  margin-block-start: var(--space-10);
+  background: var(--void);
+}
+
+.footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-9);
+  padding-block: var(--space-9);
+}
+
+.footer__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer__wordmark {
+  font-family: var(--display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.footer__copy {
+  font-size: 0.8125rem;
+  color: var(--faint);
+  margin-block-start: var(--space-2);
+}
+
+.footer__columns {
+  display: flex;
+  gap: var(--space-9);
+}
+
+.footer__nav ul {
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__nav a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.footer__nav a:hover {
+  color: var(--foreground);
+}
+
+/* ---------------------------- HomeView ---------------------------- */
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-block-end: 2.125rem;
+}
+
+.section-head .margin-note {
+  font-size: 1.3125rem;
+  transform: rotate(-2deg);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.75rem;
+}
+
+.board--tight {
+  gap: var(--space-5);
+  margin-block: var(--space-5) var(--space-9);
+}
+
+.w6 {
+  grid-column: span 6;
+}
+
+.w4 {
+  grid-column: span 4;
+}
+
+@media (max-width: 51rem) {
+  .w6,
+  .w4 {
+    grid-column: span 12;
+  }
+}
+
+.group-label {
+  margin-block-start: var(--space-8);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.group-label + .lede {
+  margin-block-start: var(--space-2);
+}
+
+/* --- pull quote --- */
+
+.quote {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+  padding: var(--space-9) var(--space-8);
+}
+
+.quote__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.quote blockquote {
+  font-size: clamp(1.375rem, 3.6vw, 2.0625rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.22;
+}
+
+.quote blockquote strong {
+  font-style: normal;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--ink-soft);
+}
+
+.quote__sig {
+  display: inline-block;
+  margin-block-start: var(--space-5);
+  font-size: 2.125rem;
+  transform: rotate(-3deg);
+}
+
+/* Below the fold of a phone the plate stacks and centres over the quote. */
+@media (max-width: 51rem) {
+  .quote {
+    flex-direction: column;
+    gap: 1.75rem;
+    text-align: center;
+  }
+
+  .quote .quote__portrait {
+    margin-inline: auto;
+    align-items: center;
+  }
+}
+
+/* --- link panels --- */
+
+.link-panel {
+  display: block;
+  padding: 1.75rem var(--space-6) 1.375rem;
+  transition: background-color 0.25s ease;
+}
+
+/* The corner brackets carry the hover; the wash only deepens under it. */
+.link-panel:hover {
+  background: var(--sheet-raised);
+}
+
+/* The mineral shows as a bar under the heading — the one hit of colour. */
+.link-panel h3::after {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: var(--mineral-weight);
+  margin-block-start: var(--space-2);
+  background: var(--mineral);
+  transition: width 0.25s ease;
+}
+
+/*
+ * The panel's own micro-interaction: the bar rules itself further out as
+ * the corner brackets close, so the hover finishes the drawing. Deliberately
+ * not a lift or a shadow — those read as a card floating over the sheet.
+ */
+.link-panel:hover h3::after,
+.link-panel:focus-visible h3::after {
+  width: 3.5rem;
+}
+
+.link-panel__path,
+.split__path {
+  display: block;
+  margin-block-start: var(--space-4);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- split nav --- */
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+}
+
+@media (max-width: 51rem) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.split__card {
+  display: block;
+  padding: var(--space-8) var(--space-7);
+  transition: background-color 0.25s ease;
+}
+
+.split__card:hover {
+  background: var(--sheet-raised);
+}
+
+.split__big {
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 7vw, 4.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* See Hero: Han fills the em box that Latin caps leave room in. */
+.split__big:lang(zh) {
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+/* Slightly finer stroke than the hero — the type is smaller here. */
+.split__big .drafted {
+  -webkit-text-stroke-width: 1.3px;
+}
+
+.split__card p {
+  max-width: 21.25rem;
+  margin-block-start: 0.875rem;
+}
+
+/* --- toolmarks --- */
+
+.toolmarks {
+  margin-block-start: var(--space-9);
+  padding-block: var(--space-4);
+  border-block: 1.5px solid var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.375rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- connect --- */
+
+.connect {
+  text-align: center;
+  padding: 3.25rem var(--space-7);
+}
+
+.connect h2 {
+  font-size: 2.125rem;
+}
+
+.connect__lede {
+  max-width: 32.5rem;
+  margin: 0.625rem auto 0;
+}
+
+.connect .connect__card {
+  justify-content: center;
+  margin-block-start: var(--space-7);
+  text-align: start;
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-6);
+}
+
+.socials a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  background: var(--sheet-wash-light);
+  border: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.socials a:hover {
+  background: var(--ink);
+  color: var(--sheet-raised);
+}
+
+.connect .btn {
+  margin-block-start: 1.625rem;
+}
+
+/* --- ecosystem clusters --- */
+
+/*
+ * A subhead per group, hung off the same dashed rule the bands use, so the
+ * grouping reads as part of the drawing rather than as five stacked cards.
+ */
+.cluster + .cluster {
+  margin-block-start: var(--space-2);
+}
+
+.cluster__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.875rem;
+  margin-block-start: 1.75rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cluster__label::after {
+  content: '';
+  flex: 1;
+  height: 0;
+  border-block-start: 1px dashed var(--ink-hair);
+}
+
+.cluster .board--tight {
+  margin-block: 0.875rem var(--space-6);
+}
+
+.cluster:last-of-type .board--tight {
+  margin-block-end: var(--space-9);
+}
+
+/*
+ * Han text does not want Latin caps tracking, and the label is a phrase
+ * rather than a code, so it stays in its own case.
+ */
+.cluster__label:lang(zh),
+.group-label:lang(zh),
+.link-panel__path:lang(zh),
+.split__path:lang(zh),
+.toolmarks:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* ---------------------------- ExperienceView ---------------------------- */
+
+/* A schedule of works: reference, dates, then the entry. */
+.schedule {
+  list-style: none;
+  padding: 0;
+  border-block-start: 1.5px solid var(--ink);
+}
+
+.schedule__row {
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  gap: var(--space-6);
+  padding-block: 1.75rem;
+  border-block-end: 1px solid var(--ink-faint);
+}
+
+.schedule__row:last-child {
+  border-block-end: 1.5px solid var(--ink);
+}
+
+@media (max-width: 51rem) {
+  .schedule__row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+.schedule__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * The mineral under the reference, not in it. Set in the row's mineral this
+ * measured Lc 25.5 — the largest unreadable thing on the site. The rule
+ * carries the row's colour now, and the bullet markers below still do.
+ */
+.schedule__ref {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  line-height: 1;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--mineral-weight) solid var(--mineral);
+}
+
+.schedule__title {
+  font-size: 1.4375rem;
+  font-weight: 600;
+}
+
+.schedule__company {
+  margin-block-start: 0.125rem;
+  font-size: 1.0625rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/*
+ * Running prose, so it takes the body size rather than a reduced one: at
+ * 16px/400 the bullets sat just under the APCA floor their contrast asks
+ * for, and they are the densest text on the page.
+ */
+.schedule__points {
+  margin-block-start: 0.875rem;
+  padding-inline-start: 1.1rem;
+  font-size: 1.0625rem;
+  color: var(--ink-body);
+}
+
+.schedule__points li {
+  margin-block-end: var(--space-1);
+}
+
+/*
+ * The one place a mineral is a colour rather than a mark, and it is allowed
+ * because a bullet is a mark: `::marker` draws a glyph nobody reads, so it
+ * answers to the non-text floor (Lc 45) rather than the text one (Lc 75).
+ */
+.schedule__points li::marker {
+  color: var(--mineral);
+}
+
+.credentials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-5);
+}
+
+.credential {
+  padding: var(--space-6) var(--space-5) var(--space-5);
+}
+
+.credential h3 {
+  font-size: 1.0625rem;
+}
+
+.credential__issuer {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.credential__period {
+  margin-block-start: 0.375rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.chips--large .chip {
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  padding: 7px 12px;
+}
+
+/*
+ * Han text in the mono-set metadata: the Latin caps tracking opens the
+ * glyphs too far, and there is no case to raise.
+ */
+.schedule__period:lang(zh),
+.schedule__place:lang(zh),
+.credential__issuer:lang(zh),
+.credential__period:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* ---------------------------- OriginsView ---------------------------- */
+
+.sheet-h2 {
+  margin-block: var(--space-3) var(--space-6);
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+}
+
+
+.prose {
+  max-width: var(--measure);
+  font-size: 1.125rem;
+  line-height: 1.62;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  color: var(--ink-body);
+}
+
+.prose em {
+  color: var(--ink);
+  font-style: normal;
+}
+
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.pull {
+  max-width: var(--measure);
+  margin-block: var(--space-8);
+  padding-inline-start: var(--space-6);
+  border-inline-start: 3px solid var(--mineral-gold);
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+  font-weight: 300;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+/* --- journey --- */
+
+.journey {
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-8);
+}
+
+.journey__item {
+  position: relative;
+  padding: 0 0 2.25rem var(--space-7);
+  border-inline-start: 1px solid var(--ink-faint);
+}
+
+.journey__item:last-child {
+  padding-block-end: 0;
+  border-inline-start-color: transparent;
+}
+
+.journey__item::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -5px;
+  inset-block-start: 0.35rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: var(--mineral);
+}
+
+.journey__meta {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.journey__title {
+  margin-block: 0.35rem var(--space-2);
+  font-size: 1.3125rem;
+  font-weight: 300;
+}
+
+.journey__body {
+  max-width: var(--measure);
+  font-size: 1.0625rem;
+  line-height: 1.58;
+  color: var(--ink-body);
+}
+
+/* --- columns --- */
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-8);
+  margin-block-start: var(--space-8);
+}
+
+.work-list {
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.work-list li {
+  padding: var(--space-4) var(--space-5);
+  border-inline-start: var(--mineral-weight) solid var(--mineral);
+}
+
+.work-list h3 {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-block-end: var(--space-1);
+}
+
+/*
+ * These are standalone heading links, not links inside a sentence, so the
+ * WCAG 2.2 target-size inline exception does not apply — they carry the
+ * full 44px target.
+ */
+.work-list h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/*
+ * The mineral underlines the link on hover; it does not colour it.
+ *
+ * This was `color: var(--mineral)`, which is the one rule the rest of the
+ * site had already given up: on this ground the seven measure Lc 25-48 as
+ * lettering. A resting state that passes and a hover state that does not is
+ * still a link a reader cannot read — and the contrast gate walks the page
+ * without a pointer, so nothing would have caught it.
+ */
+.work-list h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: var(--mineral-weight);
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--mineral);
+}
+
+.work-list p {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink-body);
+}
+
+.aside {
+  max-width: var(--measure);
+  margin-block-start: var(--space-7);
+  padding: var(--space-5) var(--space-6);
+  border-radius: 0;
+  font-size: 1.0625rem;
+  line-height: 1.58;
+  color: var(--ink-body);
+}
+
+/* --- aptitudes & questions --- */
+
+.aptitudes,
+.questions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-7);
+}
+
+.aptitudes li,
+.questions li {
+  padding: var(--space-5) var(--space-6);
+  border-radius: 0;
+}
+
+.aptitudes h3,
+.questions h3 {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-block-end: 0.35rem;
+}
+
+/*
+ * The mineral under the heading, not in it.
+ *
+ * These headings used to be set in the row's mineral, which on a near-black
+ * ground measured Lc 47.8 at 18px — a heading a reader had to work at. The
+ * mineral is the reward, and CLAUDE.md already names the shape it takes: a
+ * bar under a heading. Ink for the word, mineral for the rule, and the row
+ * keeps the identity it had.
+ */
+.aptitudes h3 {
+  color: var(--ink);
+  padding-block-end: 0.3rem;
+  border-block-end: var(--mineral-weight) solid var(--mineral);
+}
+
+.questions h3 {
+  color: var(--ink);
+  padding-block-end: 0.3rem;
+  border-block-end: var(--mineral-weight) solid var(--mineral);
+}
+
+.aptitudes p,
+.questions p {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink-body);
+}
+
+/* --- deck --- */
+
+.deck {
+  margin-block-start: var(--space-7);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.deck iframe {
+  display: block;
+  width: 100%;
+  height: min(70dvh, 40rem);
+  min-height: 30rem;
+  border: 0;
+}
+
+/* Han text in the mono-set metadata takes the CJK stack and its own case. */
+.journey__meta:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* ---------------------------- MineralsView ---------------------------- */
+
+.key {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  counter-reset: mineral;
+}
+
+.key .key__item {
+  display: grid;
+  grid-template-columns: auto 4px 1fr auto;
+  align-items: start;
+  gap: 0 var(--space-5);
+  padding: var(--space-6) 1.625rem;
+}
+
+.key__index {
+  font-family: var(--mono);
+  font-size: var(--label-lg);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.16em;
+  color: var(--ink-soft);
+  padding-block-start: 0.35rem;
+}
+
+/* The segment itself, lifted off the rail and stood on end. */
+.key__swatch {
+  align-self: stretch;
+  min-height: 3.5rem;
+  background: var(--mineral);
+}
+
+/*
+ * Ink, not the mineral.
+ *
+ * The 4px swatch stood on end to the left of this heading is the mineral,
+ * full-strength and unmissable; setting the name in the same colour added
+ * nothing and cost a great deal — sodalite measured Lc 24.6, and a page
+ * whose subject is contrast cannot print its own key illegibly.
+ */
+.key__body h3 {
+  font-size: 1.375rem;
+  text-transform: capitalize;
+  color: var(--ink);
+}
+
+.key__body dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin-block-start: 0.625rem;
+}
+
+.key__body dt {
+  font-family: var(--mono);
+  /* 10px floor on label text. */
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-block-start: 0.3rem;
+}
+
+.key__body dd {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--ink-body);
+}
+
+.key__figures {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.375rem;
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.1em;
+  text-align: end;
+}
+
+/* Same reasoning as the heading: the swatch is the colour, this is its name. */
+.key__hex {
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.key__ratio {
+  color: var(--ink-soft);
+}
+
+.key__grade {
+  display: block;
+  margin-block-start: 2px;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+.panel a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 44rem) {
+  .key .key__item {
+    grid-template-columns: auto 4px 1fr;
+    row-gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  .key__figures {
+    grid-column: 3;
+    align-items: flex-start;
+    text-align: start;
+  }
+
+  .key__grade {
+    display: inline;
+    margin-inline-start: var(--space-2);
+  }
+}
+
+/*
+ * The token name, carried alongside the Chinese name of the stone: it is
+ * what the custom property is called, so it stays Latin and mono and is
+ * marked `lang="en"` so a screen reader does not read it as Chinese.
+ */
+.key__token {
+  margin-inline-start: var(--space-2);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------- BookView ---------------------------- */
+
+.topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-5);
+  list-style: none;
+  padding: 0;
+}
+
+.topics .panel {
+  padding: 1.75rem var(--space-6) 1.375rem;
+}
+
+.topics h3::after {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: var(--mineral-weight);
+  margin-block-start: var(--space-2);
+  background: var(--mineral);
+}
+
+
+.scheduler {
+  display: flex;
+  flex-direction: column;
+  /*
+   * flex-start keeps the button and fallback link sized to their own
+   * content rather than stretched full width. `.scheduler__embed` still
+   * gets the full width it needs below — align-items only decides sizing
+   * for a flex item left at `width: auto`, and that one sets its own
+   * width explicitly.
+   */
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+/*
+ * `width: 100%` matters here: `.scheduler` used to set `align-items:
+ * flex-start`, which sizes a flex child to its content instead of the
+ * available width. The Cal.com iframe asks for `width: 100%` of *this*
+ * element, so a shrink-to-fit container and a fill-the-container iframe
+ * fought each other down to whatever the iframe's own default (a few
+ * hundred pixels) happened to be — the embed rendered, just squeezed into
+ * a fraction of the page rather than "not rendering" outright.
+ */
+.scheduler__embed {
+  width: 100%;
+}
+
+/*
+ * Gated on `data-state` rather than `:empty`: the target div has no child
+ * nodes for the whole loading phase (Cal.com only inserts the iframe once
+ * the calendar is ready), so an `:empty` rule stays matched and its
+ * `display: none` hides the `::before` loading text right along with it —
+ * the indicator existed in markup but could never actually be seen.
+ */
+.scheduler__embed:not([data-state]) {
+  display: none;
+}
+
+.scheduler__embed[data-state='loading'] {
+  min-height: 32rem;
+}
+
+.scheduler__embed[data-state='loading']::before {
+  content: 'Loading the scheduler…';
+  font-family: var(--mono);
+  font-size: var(--label-lg);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.scheduler__fallback {
+  color: var(--ink-body);
+}
+
+/*
+ * A mono address set inline in a serif sentence. Mono runs optically larger
+ * than the serif beside it, so it is stepped down — but not below the label
+ * floor, and it carries the label weight with it: at 14px/400 this was the
+ * one link on the site under the APCA minimum.
+ */
+.scheduler__fallback a {
+  border-block-end: 1.5px dashed var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+}
+
+/* ---------------------------- AdventuresView ---------------------------- */
+
+.adventures {
+  display: grid;
+  gap: var(--space-5);
+  list-style: none;
+  padding: 0;
+  /* min() caps the track so a 390px screen never scrolls sideways. */
+  grid-template-columns: repeat(auto-fill, minmax(min(21rem, 100%), 1fr));
+}
+
+.adventure-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 0 1.375rem;
+  transition: background-color 0.25s ease;
+}
+
+.adventure-card:hover {
+  background: var(--sheet-raised);
+}
+
+/*
+ * The cover sits inside the panel's rule rather than bleeding past it: the
+ * corner brackets are the container, and an image over them would read as a
+ * card with a photo on top instead of a plate drawn on the sheet.
+ */
+.adventure-card__cover {
+  width: 100%;
+  height: auto;
+  /* Same halved desaturation the portrait gets, so photographs belong to
+     the drawing without the colour going out of them entirely. */
+  filter: grayscale(0.45) contrast(1.04);
+  margin-block-end: 1.375rem;
+}
+
+.adventure-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-inline: var(--space-6);
+}
+
+/*
+ * `--ink-body`, not the `--ink-soft` the other mono labels use.
+ *
+ * The first card lands where the lighting radial is brightest, and the
+ * composited pass measured this line at 4.17:1 in English and 3.83:1 in
+ * Chinese against a 4.5 floor. The lower-contrast ink is fine further down
+ * the page and not fine here, so the line takes the darker one everywhere.
+ */
+.adventure-card__meta {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-body);
+}
+
+.adventure-card__title {
+  margin-block-start: var(--space-2);
+  font-size: 1.375rem;
+}
+
+/* The mineral bar, drawn out on hover — the same move the project panels make. */
+.adventure-card__title::after {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: var(--mineral-weight);
+  margin-block-start: var(--space-2);
+  background: var(--mineral);
+  transition: width 0.25s ease;
+}
+
+.adventure-card:hover .adventure-card__title::after,
+.adventure-card:focus-visible .adventure-card__title::after {
+  width: 3.5rem;
+}
+
+.adventure-card__excerpt {
+  margin-block-start: 0.625rem;
+  color: var(--ink-body);
+}
+
+.adventure-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  /* Pins the row to the bottom so cards of different heights line up. */
+  margin-block-start: auto;
+  padding-block-start: var(--space-4);
+}
+
+.adventure-card__read {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * The ENGLISH ONLY mark.
+ *
+ * A dashed rule rather than a solid chip: it is a note about the entry, not
+ * a label on it, and the site already uses the dashed line for things the
+ * drawing has not finished.
+ */
+.adventure-card__badge {
+  padding: 3px 8px;
+  border: 1px dashed var(--ink-faint);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.adventures__notice {
+  padding: var(--space-8) var(--space-7);
+}
+
+.adventures__notice-action {
+  margin-block-start: var(--space-6);
+}
+
+/* Han sets its own case and wants far less tracking than Latin small caps. */
+.adventure-card__meta:lang(zh),
+.adventure-card__read:lang(zh),
+.adventure-card__badge:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* ---------------------------- AdventureView ---------------------------- */
+
+.adventure {
+  position: relative;
+}
+
+/* The adventure's mineral, as a rule under the header — the one hit of colour. */
+.adventure__bar {
+  display: block;
+  width: 3.5rem;
+  height: var(--mineral-weight);
+  margin-block-end: var(--space-7);
+  background: var(--mineral);
+}
+
+.adventure__cover {
+  position: relative;
+  margin-block-end: var(--space-8);
+}
+
+.adventure__cover img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(0.45) contrast(1.04);
+}
+
+/*
+ * The body column.
+ *
+ * `--measure` is the token, not a number picked here — Cormorant runs about
+ * 6.8px per character and a column that looks right by eye measures far past
+ * a comfortable line.
+ */
+.adventure__body {
+  max-width: var(--measure);
+}
+
+.adventure__body p,
+.adventure__body ul,
+.adventure__body ol {
+  margin-block-end: 1.125rem;
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+
+.adventure__body h2 {
+  margin-block: 2.25rem var(--space-3);
+  font-size: 1.5rem;
+}
+
+.adventure__body h3 {
+  margin-block: 1.75rem var(--space-2);
+  font-size: 1.1875rem;
+}
+
+.adventure__body ul,
+.adventure__body ol {
+  padding-inline-start: var(--space-5);
+}
+
+.adventure__body li {
+  margin-block-end: 0.375rem;
+}
+
+/*
+ * The pull quote, matching the treatment on the origins sheet: a mineral
+ * rule down the inside edge and a lighter, larger serif. Uses the
+ * adventure's own mineral rather than a fixed one, so a quote belongs to
+ * the piece it sits in.
+ */
+.adventure__body blockquote {
+  max-width: var(--measure);
+  margin-block: var(--space-8);
+  padding-inline-start: var(--space-6);
+  border-inline-start: var(--mineral-weight) solid var(--mineral);
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.adventure__body blockquote p {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin-block-end: 0;
+}
+
+.adventure__body:lang(zh) blockquote {
+  font-family: var(--cjk);
+  line-height: 1.6;
+  text-wrap: normal;
+}
+
+.adventure__body a {
+  color: var(--mineral-cobalt);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/*
+ * Images inside the body are framed like every other container — hairline,
+ * corner brackets, ruled caption. Styles are :global because the markup is
+ * built as a string by the Portable Text renderer, so Astro's scoping
+ * attribute never lands on it.
+ */
+.adventure__body .adventure__figure {
+  position: relative;
+  margin-block: var(--space-7);
+  padding: var(--space-2);
+}
+
+.adventure__body .adventure__figure img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(0.45) contrast(1.04);
+}
+
+.adventure__body figcaption {
+  margin-block-start: 0.625rem;
+  padding-block-start: var(--space-2);
+  border-block-start: 1px solid var(--ink-hair);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.adventure__notice {
+  padding: var(--space-7);
+}
+
+.adventure__back {
+  margin-block-start: var(--space-9);
+}
+
+.adventure__body:lang(zh) p,
+.adventure__body:lang(zh) li {
+  line-height: 1.8;
+}
+
+.adventure__body:lang(zh) figcaption {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* ---------------------------- 404 ---------------------------- */
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin-block: var(--space-7) var(--space-10);
+}
+
+.options__zh {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-7);
+  padding-block-start: var(--space-5);
+  border-block-start: 1px dashed var(--ink-hair);
+  font-family: var(--cjk);
+  /*
+   * `--ink-soft` elsewhere on the sheet, but this block sits where the
+   * lighting radial is brightest and the composited pass measured it at
+   * 3.85:1 there — under the 4.5 that WCAG 2.2 asks of body text.
+   */
+  color: var(--ink-body);
+}
+
+.options__zh a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.875rem;
+  border: 1px solid var(--ink-hair);
+  color: var(--ink);
+}
+
+.options__zh a:hover {
+  border-color: var(--ink-faint);
 }

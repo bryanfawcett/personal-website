@@ -16,6 +16,7 @@ import { renderBody } from '../sanity/portable-text.js';
 import { DEFAULT_MINERAL, type Adventure } from '../sanity/types.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
+import { keyedTo } from '../brand/minerals.js';
 
 interface Props {
   lang: Lang;
@@ -100,7 +101,7 @@ const body = adventure ? renderBody(adventure.body) : '';
 
         <article
           class="section reveal adventure"
-          style={`--panel-mineral: var(--mineral-${adventure.mineral ?? DEFAULT_MINERAL})`}
+          style={keyedTo(adventure.mineral ?? DEFAULT_MINERAL)}
         >
           <span class="adventure__bar" aria-hidden="true" />
 
@@ -156,154 +157,3 @@ const body = adventure ? renderBody(adventure.body) : '';
   }
 </BaseLayout>
 
-<style>
-  .adventure {
-    position: relative;
-  }
-
-  /* The adventure's mineral, as a rule under the header — the one hit of colour. */
-  .adventure__bar {
-    display: block;
-    width: 3.5rem;
-    height: 3px;
-    margin-block-end: 2rem;
-    background: var(--panel-mineral);
-  }
-
-  .adventure__cover {
-    position: relative;
-    margin-block-end: 2.5rem;
-  }
-
-  .adventure__cover img {
-    width: 100%;
-    height: auto;
-    filter: grayscale(0.45) contrast(1.04);
-  }
-
-  /*
-   * The body column.
-   *
-   * `--measure` is the token, not a number picked here — Cormorant runs about
-   * 6.8px per character and a column that looks right by eye measures far past
-   * a comfortable line.
-   */
-  .adventure__body {
-    max-width: var(--measure);
-  }
-
-  .adventure__body :global(p),
-  .adventure__body :global(ul),
-  .adventure__body :global(ol) {
-    margin-block-end: 1.125rem;
-    font-size: 1.125rem;
-    line-height: 1.62;
-    color: var(--ink-body);
-  }
-
-  .adventure__body :global(h2) {
-    margin-block: 2.25rem 0.75rem;
-    font-size: 1.5rem;
-  }
-
-  .adventure__body :global(h3) {
-    margin-block: 1.75rem 0.5rem;
-    font-size: 1.1875rem;
-  }
-
-  .adventure__body :global(ul),
-  .adventure__body :global(ol) {
-    padding-inline-start: 1.25rem;
-  }
-
-  .adventure__body :global(li) {
-    margin-block-end: 0.375rem;
-  }
-
-  /*
-   * The pull quote, matching the treatment on the origins sheet: a mineral
-   * rule down the inside edge and a lighter, larger serif. Uses the
-   * adventure's own mineral rather than a fixed one, so a quote belongs to
-   * the piece it sits in.
-   */
-  .adventure__body :global(blockquote) {
-    max-width: var(--measure);
-    margin-block: 2.5rem;
-    padding-inline-start: 1.5rem;
-    border-inline-start: 3px solid var(--panel-mineral);
-    font-family: var(--serif);
-    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
-    font-weight: 300;
-    line-height: 1.4;
-    color: var(--ink);
-    text-wrap: balance;
-  }
-
-  .adventure__body :global(blockquote p) {
-    font-size: inherit;
-    line-height: inherit;
-    color: inherit;
-    margin-block-end: 0;
-  }
-
-  .adventure__body:lang(zh) :global(blockquote) {
-    font-family: var(--cjk);
-    line-height: 1.6;
-    text-wrap: normal;
-  }
-
-  .adventure__body :global(a) {
-    color: var(--mineral-cobalt);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  /*
-   * Images inside the body are framed like every other container — hairline,
-   * corner brackets, ruled caption. Styles are :global because the markup is
-   * built as a string by the Portable Text renderer, so Astro's scoping
-   * attribute never lands on it.
-   */
-  .adventure__body :global(.adventure__figure) {
-    position: relative;
-    margin-block: 2rem;
-    padding: 0.5rem;
-  }
-
-  .adventure__body :global(.adventure__figure img) {
-    width: 100%;
-    height: auto;
-    filter: grayscale(0.45) contrast(1.04);
-  }
-
-  .adventure__body :global(figcaption) {
-    margin-block-start: 0.625rem;
-    padding-block-start: 0.5rem;
-    border-block-start: 1px solid var(--ink-hair);
-    font-family: var(--mono);
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .adventure__notice {
-    padding: 2rem;
-  }
-
-  .adventure__back {
-    margin-block-start: 3rem;
-  }
-
-  .adventure__body:lang(zh) :global(p),
-  .adventure__body:lang(zh) :global(li) {
-    line-height: 1.8;
-  }
-
-  .adventure__body:lang(zh) :global(figcaption) {
-    font-family: var(--cjk-mono);
-    letter-spacing: 0.1em;
-    text-transform: none;
-  }
-</style>

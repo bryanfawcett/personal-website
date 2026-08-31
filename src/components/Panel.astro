@@ -9,6 +9,7 @@
  * Any extra attribute (href, target, style, …) passes through to the element.
  */
 import type { HTMLAttributes } from 'astro/types';
+import type { MineralName } from '../brand/minerals.js';
 
 type Tag = 'section' | 'article' | 'div' | 'li' | 'a';
 
@@ -20,14 +21,29 @@ export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
    * `exactOptionalPropertyTypes`, and callers pass indexed lookups.
    */
   fig?: string | undefined;
+  /**
+   * The mineral this panel is keyed to.
+   *
+   * Sets `--mineral`, which every mineral mark on the site reads: the bar under
+   * a heading, the rule down an edge, the swatch, the list marker. Pass the
+   * name and let `.mineral-*` in global.css decide how it is drawn — the point
+   * of one property and one set of classes is that changing how a mineral is
+   * expressed is one edit, not eight.
+   *
+   * `MineralName` is a union off the mineral list, so a typo fails astro check.
+   */
+  mineral?: MineralName | undefined;
   /** Element to render as. Defaults to `article`. */
   as?: T | undefined;
 };
 
-const { fig, as: Element = 'article', class: className, ...rest } = Astro.props;
+const { fig, mineral, as: Element = 'article', class: className, style, ...rest } = Astro.props;
+
+const keyed = mineral ? `--mineral: var(--mineral-${mineral});` : '';
+const styles = [keyed, style].filter(Boolean).join(' ');
 ---
 
-<Element class:list={['panel', className]} {...rest}>
+<Element class:list={['panel', className]} style={styles || undefined} {...rest}>
   <span class="panel__rule" aria-hidden="true"></span>
   {fig && <span class="fig">{fig}</span>}
   <slot />

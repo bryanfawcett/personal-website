@@ -36,7 +36,7 @@ const t = useTranslations(lang);
     <ul class="topics">
       {
         bookingTopics(lang).map((topic) => (
-          <Panel as="li" style={`--topic-mineral: var(--mineral-${topic.mineral})`}>
+          <Panel as="li" mineral={topic.mineral}>
             <h3>{topic.title}</h3>
             <p>{topic.detail}</p>
           </Panel>
@@ -153,99 +153,3 @@ const t = useTranslations(lang);
   );
 </script>
 
-<style>
-  .eyebrow {
-    margin-block-end: 1.5rem;
-  }
-
-  .topics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-    gap: 1.25rem;
-    list-style: none;
-    padding: 0;
-  }
-
-  .topics :global(.panel) {
-    padding: 1.75rem 1.5rem 1.375rem;
-  }
-
-  .topics h3::after {
-    content: '';
-    display: block;
-    width: 2rem;
-    height: 3px;
-    margin-block-start: 0.5rem;
-    background: var(--topic-mineral);
-  }
-
-
-  .scheduler {
-    display: flex;
-    flex-direction: column;
-    /*
-     * flex-start keeps the button and fallback link sized to their own
-     * content rather than stretched full width. `.scheduler__embed` still
-     * gets the full width it needs below — align-items only decides sizing
-     * for a flex item left at `width: auto`, and that one sets its own
-     * width explicitly.
-     */
-    align-items: flex-start;
-    gap: 1.25rem;
-  }
-
-  /*
-   * `width: 100%` matters here: `.scheduler` used to set `align-items:
-   * flex-start`, which sizes a flex child to its content instead of the
-   * available width. The Cal.com iframe asks for `width: 100%` of *this*
-   * element, so a shrink-to-fit container and a fill-the-container iframe
-   * fought each other down to whatever the iframe's own default (a few
-   * hundred pixels) happened to be — the embed rendered, just squeezed into
-   * a fraction of the page rather than "not rendering" outright.
-   */
-  .scheduler__embed {
-    width: 100%;
-  }
-
-  /*
-   * Gated on `data-state` rather than `:empty`: the target div has no child
-   * nodes for the whole loading phase (Cal.com only inserts the iframe once
-   * the calendar is ready), so an `:empty` rule stays matched and its
-   * `display: none` hides the `::before` loading text right along with it —
-   * the indicator existed in markup but could never actually be seen.
-   */
-  .scheduler__embed:not([data-state]) {
-    display: none;
-  }
-
-  .scheduler__embed[data-state='loading'] {
-    min-height: 32rem;
-  }
-
-  .scheduler__embed[data-state='loading']::before {
-    content: 'Loading the scheduler…';
-    font-family: var(--mono);
-    font-size: var(--label-lg);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .scheduler__fallback {
-    color: var(--ink-body);
-  }
-
-  /*
-   * A mono address set inline in a serif sentence. Mono runs optically larger
-   * than the serif beside it, so it is stepped down — but not below the label
-   * floor, and it carries the label weight with it: at 14px/400 this was the
-   * one link on the site under the APCA minimum.
-   */
-  .scheduler__fallback a {
-    border-block-end: 1.5px dashed var(--ink-soft);
-    font-family: var(--mono);
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-  }
-</style>
