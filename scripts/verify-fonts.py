@@ -39,7 +39,22 @@ def main() -> int:
     if unused:
         print(f"warning: unreferenced font files: {unused}")
 
-    print(f"{len(referenced)} font references all resolve")
+    # Every family here is under the SIL Open Font License, which requires the
+    # copyright notice and the licence to travel with the Font Software. The
+    # repo shipped 22 font files and no licence at all until this was added;
+    # the vendored Han face is a *modified* version, which makes the obligation
+    # explicit rather than merely good manners.
+    licence = fonts / "OFL.txt"
+    if on_disk and not licence.exists():
+        print(
+            f"{len(on_disk)} vendored fonts but no {licence.name} beside them.\n"
+            "The SIL Open Font License requires the notice and licence to ship "
+            "with the fonts.",
+            file=sys.stderr,
+        )
+        return 1
+
+    print(f"{len(referenced)} font references all resolve, and OFL.txt ships with them")
     return 0
 
 
