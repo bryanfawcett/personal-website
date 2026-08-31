@@ -75,9 +75,13 @@ jobs:
       # `wrangler dev` does not survive a couple of minutes of browser-driven
       # load reliably, and a server that dies mid-run is the one failure mode a
       # gate must not have.
+      #
+      # `--host 127.0.0.1` is load-bearing. Left to itself Astro binds to
+      # `localhost`, which on a runner resolves to ::1 — the server comes up,
+      # says it is ready, and every IPv4 request to the same port is refused.
       - name: Serve the site
         run: |
-          pnpm dev --port 4321 &
+          pnpm dev --port 4321 --host 127.0.0.1 &
           npx --yes wait-on --timeout 120000 http://127.0.0.1:4321/
 
       # Every text block on every route, at desktop and phone width, scored

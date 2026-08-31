@@ -32,6 +32,7 @@ import { chromium } from 'playwright';
 import { APCAcontrast, sRGBtoY, fontLookupAPCA } from 'apca-w3';
 
 const PORT = process.env['CONTRAST_PORT'] || process.argv[2] || '4321';
+const HOST = process.env['CONTRAST_HOST'] || '127.0.0.1';
 /* Both the desktop column and a 390px phone: the shell reflows, panels narrow
  * and the display sizes clamp down, so a pairing that clears the floor on one
  * can miss it on the other. */
@@ -92,10 +93,10 @@ for (const route of ROUTES) {
    */
   let res;
   try {
-    res = await page.goto(`http://127.0.0.1:${PORT}${route}`, { waitUntil: 'networkidle' });
+    res = await page.goto(`http://${HOST}:${PORT}${route}`, { waitUntil: 'networkidle' });
   } catch (err) {
     console.error(`\ncannot reach ${route}: ${err.message}`);
-    console.error(`Is the site being served on port ${PORT}?`);
+    console.error(`Is the site being served at ${HOST}:${PORT}?`);
     await browser.close();
     process.exit(2);
   }
