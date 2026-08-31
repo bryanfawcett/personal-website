@@ -45,6 +45,48 @@ jobs:
       - name: Verify the Sanity image URL format
         run: pnpm verify:images
 
+  contrast:
+    name: APCA contrast
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Served by `astro dev`, not the built Worker. This check reads rendered
+      # pixels — the same components, the same CSS, the same per-request blog
+      # routes — and nothing it measures depends on the Workers asset layer.
+      # `wrangler dev` does not survive a couple of minutes of browser-driven
+      # load reliably, and a server that dies mid-run is the one failure mode a
+      # gate must not have.
+      - name: Serve the site
+        run: |
+          pnpm dev --port 4321 &
+          npx --yes wait-on --timeout 120000 http://127.0.0.1:4321/
+
+      # Every text block on every route, at desktop and phone width, scored
+      # against the ground it is actually painted on rather than a declared
+      # background-color, and held to APCA's minimum size for that contrast at
+      # that weight.
+      - name: Verify APCA contrast
+        run: pnpm verify:contrast
+
   audit:
     name: Security audit
     runs-on: ubuntu-latest

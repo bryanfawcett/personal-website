@@ -290,7 +290,8 @@ const PINK_URL = 'https://www.danpink.com/books/whole-new-mind/';
 
   .journey__meta {
     font-family: var(--mono);
-    font-size: 0.6875rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -396,12 +397,25 @@ const PINK_URL = 'https://www.danpink.com/books/whole-new-mind/';
     margin-block-end: 0.35rem;
   }
 
+  /*
+   * The mineral under the heading, not in it.
+   *
+   * These headings used to be set in the row's mineral, which on a near-black
+   * ground measured Lc 47.8 at 18px — a heading a reader had to work at. The
+   * mineral is the reward, and CLAUDE.md already names the shape it takes: a
+   * bar under a heading. Ink for the word, mineral for the rule, and the row
+   * keeps the identity it had.
+   */
   .aptitudes h3 {
-    color: var(--aptitude-mineral);
+    color: var(--ink);
+    padding-block-end: 0.3rem;
+    border-block-end: 3px solid var(--aptitude-mineral);
   }
 
   .questions h3 {
-    color: var(--question-mineral);
+    color: var(--ink);
+    padding-block-end: 0.3rem;
+    border-block-end: 3px solid var(--question-mineral);
   }
 
   .aptitudes p,

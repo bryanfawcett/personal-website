@@ -225,7 +225,8 @@ const t = useTranslations(lang);
   .scheduler__embed[data-state='loading']::before {
     content: 'Loading the scheduler…';
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: var(--label-lg);
+    font-weight: var(--label-weight);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -235,9 +236,16 @@ const t = useTranslations(lang);
     color: var(--ink-body);
   }
 
+  /*
+   * A mono address set inline in a serif sentence. Mono runs optically larger
+   * than the serif beside it, so it is stepped down — but not below the label
+   * floor, and it carries the label weight with it: at 14px/400 this was the
+   * one link on the site under the APCA minimum.
+   */
   .scheduler__fallback a {
     border-block-end: 1.5px dashed var(--ink-soft);
     font-family: var(--mono);
-    font-size: 0.875rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
   }
 </style>

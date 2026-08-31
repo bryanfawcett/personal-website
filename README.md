@@ -78,18 +78,24 @@ seven minerals named for where they are mined and what they stand for, plus a wa
 dark ramp. Mirrored into `src/brand/` rather than fetched at build time, so a build
 never depends on a network call and the two can only drift when someone edits the file.
 
-The typographic identity is a draughtsman's: Cormorant Garamond for display and body,
-IBM Plex Mono for figure tags, dimension labels and the title block, and Caveat for
-the margin notes and the signature — written marks rather than set ones.
+The typographic identity is a draughtsman's: Cormorant Garamond for the big drafted
+lockups, IBM Plex Serif for everything anyone actually reads, IBM Plex Mono for figure
+tags, dimension labels and the title block, and Caveat for the margin notes and the
+signature — written marks rather than set ones. Display and body are separate faces
+because Cormorant's x-height is 0.386 em against Plex Serif's 0.516: at a 17px body
+size Cormorant's lowercase renders about 6.6px tall, which reads as thin however much
+weight you add to it.
 
 The **mineral rail** is the brand signature: seven segments, one per mineral, running
 vertically down the binding edge of the sheet. It is the one place saturated colour
 appears on an otherwise monochrome cyanotype, which is what stops it reading as
 decoration.
 
-Everything else uses colour as a reward rather than a default — a card's edge on
-hover, a timeline node, a link. To change the whole palette, edit `src/brand/`;
-nothing downstream hard-codes a hex value.
+Everything else uses colour as a reward rather than a default — a rule under a
+heading, a swatch beside a name, a timeline node. Never the colour of the text
+itself: on a near-black ground the seven measure Lc 25–48 as lettering, so the
+mineral goes under the word and the word stays ink. To change the whole palette,
+edit `src/brand/`; nothing downstream hard-codes a hex value.
 
 ### The ground travels with the sheet
 
@@ -173,9 +179,9 @@ No CJK webfont is vendored. The three families the site ships are Latin and
 Latin Extended only, and a Han subset would cost several megabytes against a
 sub-megabyte total — a bad trade on the connections much of this ecosystem is
 built for. Han falls to the reader's own system face, with the Latin face listed
-first in the stack so a proper noun inside a Chinese sentence still sets in
-Cormorant. A `size-adjust: 120%` fallback face raises the small mono labels,
-where 10px Han stops separating its strokes and 10px Latin caps do not.
+first in the stack so a proper noun inside a Chinese sentence still sets in Plex.
+A `size-adjust: 120%` fallback face raises the mono labels, where Han stops
+separating its strokes a size before Latin caps do.
 
 ## The blog
 
@@ -203,21 +209,24 @@ wrapper around one. It keeps its own dependencies and is not part of this build.
 ## Accessibility
 
 Audited with axe-core (WCAG 2.0/2.1/2.2 A + AA, plus best-practice) across all
-sixteen routes — nine English, seven Chinese — at 1280x900 and 390x844:
-**0 violations**.
+thirteen routes at 1280x900 and 390x844: **0 violations**.
 
-axe cannot resolve contrast against the gradient ground, so two further passes
-run independently:
+axe cannot resolve contrast against the gradient ground — it reports a gradient
+parent as `incomplete` rather than testing it — so contrast is its own gate:
 
-- **Contrast** — composites every text-bearing element over the real painted
-  ground. Lowest is 9.7:1 against a 4.5:1 requirement.
-- **Readability** — per text block: composited contrast, rendered size, leading,
-  and characters per line from the real line boxes. Prose is ≥16px at ≥1.5
-  leading, labels ≥10px, measure 33–65 characters.
+- **`pnpm verify:contrast`** scores every text block on every route, at both
+  widths, with APCA (`apca-w3`, algorithm 0.0.98G-4g) rather than a flat ratio,
+  because 13px/400 and 24px/700 are not the same ask. Each block is held to the
+  minimum size `fontLookupAPCA` gives for its measured contrast at its weight.
+  349 blocks at 1280px and 347 at 390px, **0 under the minimum**; it runs in CI
+  and fails the build.
+- **Readability**, by hand: rendered size, leading and characters per line.
+  Prose is ≥16px at ≥1.5 leading, and the prose columns measure 58–61 characters
+  at desktop width.
 
-Line length is a token (`--measure`) rather than a guess, because Cormorant runs
-about 6.8px per character: a 44rem column that looked right was carrying 87
-characters a line.
+Line length is a token (`--measure`) rather than a guess, because the number
+moves with the face: the same 33rem holds 77 characters of Cormorant and 58 of
+IBM Plex Serif.
 
 Also verified: 2px focus rings on every stop, `prefers-reduced-motion` disabling
 the rail animation, the reveals and the page transition, and reflow at 320px with

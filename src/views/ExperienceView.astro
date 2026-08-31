@@ -134,18 +134,26 @@ const t = useTranslations(lang);
     align-items: flex-start;
     gap: 0.375rem;
     font-family: var(--mono);
-    font-size: 0.6875rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
 
+  /*
+   * The mineral under the reference, not in it. Set in the row's mineral this
+   * measured Lc 25.5 — the largest unreadable thing on the site. The rule
+   * carries the row's colour now, and the bullet markers below still do.
+   */
   .schedule__ref {
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: var(--row-mineral);
+    color: var(--ink);
     line-height: 1;
+    padding-block-end: 0.25rem;
+    border-block-end: 3px solid var(--row-mineral);
   }
 
   .schedule__title {
@@ -155,15 +163,20 @@ const t = useTranslations(lang);
 
   .schedule__company {
     margin-block-start: 0.125rem;
-    font-size: 1rem;
+    font-size: 1.0625rem;
     font-style: italic;
     color: var(--ink-soft);
   }
 
+  /*
+   * Running prose, so it takes the body size rather than a reduced one: at
+   * 16px/400 the bullets sat just under the APCA floor their contrast asks
+   * for, and they are the densest text on the page.
+   */
   .schedule__points {
     margin-block-start: 0.875rem;
     padding-inline-start: 1.1rem;
-    font-size: 1rem;
+    font-size: 1.0625rem;
     color: var(--ink-body);
   }
 
@@ -197,14 +210,16 @@ const t = useTranslations(lang);
   .credential__period {
     margin-block-start: 0.375rem;
     font-family: var(--mono);
-    font-size: 0.625rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
 
   .chips--large .chip {
-    font-size: 0.6875rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     padding: 7px 12px;
   }
 

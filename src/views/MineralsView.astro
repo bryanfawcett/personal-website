@@ -183,8 +183,8 @@ const rows = MINERALS.map((m) => {
 
   .key__index {
     font-family: var(--mono);
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: var(--label-lg);
+    font-weight: var(--label-weight);
     letter-spacing: 0.16em;
     color: var(--ink-soft);
     padding-block-start: 0.35rem;
@@ -197,10 +197,18 @@ const rows = MINERALS.map((m) => {
     background: var(--m);
   }
 
+  /*
+   * Ink, not the mineral.
+   *
+   * The 4px swatch stood on end to the left of this heading is the mineral,
+   * full-strength and unmissable; setting the name in the same colour added
+   * nothing and cost a great deal — sodalite measured Lc 24.6, and a page
+   * whose subject is contrast cannot print its own key illegibly.
+   */
   .key__body h3 {
     font-size: 1.375rem;
     text-transform: capitalize;
-    color: var(--m);
+    color: var(--ink);
   }
 
   .key__body dl {
@@ -213,8 +221,8 @@ const rows = MINERALS.map((m) => {
   .key__body dt {
     font-family: var(--mono);
     /* 10px floor on label text. */
-    font-size: 0.625rem;
-    font-weight: 600;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -233,13 +241,15 @@ const rows = MINERALS.map((m) => {
     align-items: flex-end;
     gap: 0.375rem;
     font-family: var(--mono);
-    font-size: 0.6875rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.1em;
     text-align: end;
   }
 
+  /* Same reasoning as the heading: the swatch is the colour, this is its name. */
   .key__hex {
-    color: var(--m);
+    color: var(--ink);
     text-transform: uppercase;
   }
 
@@ -250,7 +260,8 @@ const rows = MINERALS.map((m) => {
   .key__grade {
     display: block;
     margin-block-start: 2px;
-    font-size: 0.625rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
@@ -295,8 +306,8 @@ const rows = MINERALS.map((m) => {
   .key__token {
     margin-inline-start: 0.5rem;
     font-family: var(--mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-soft);

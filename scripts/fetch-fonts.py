@@ -17,8 +17,16 @@ import subprocess
 import sys
 import urllib.parse
 
+# Cormorant is display only. Its x-height is 0.386 em — measured off the
+# vendored file, against 0.46–0.53 for a face built for running text — so at a
+# 17px body size its lowercase renders about 6.6px tall and reads as thin and
+# small however much weight you add. It is still the right face for the big
+# drafted lockups, where that delicacy is the point. Everything a reader
+# actually reads is IBM Plex Serif, which sits at 0.52 and is the sibling of
+# the Plex Mono already carrying every label on the site.
 FAMILIES = [
     "Cormorant Garamond:ital,wght@0,500;0,600;0,700;1,500",
+    "IBM Plex Serif:ital,wght@0,400;0,600;0,700;1,400",
     "IBM Plex Mono:wght@400;500;600",
     "Caveat:wght@500;600",
 ]

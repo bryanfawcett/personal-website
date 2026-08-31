@@ -93,6 +93,7 @@ const comma = lang === 'zh' ? '，' : ', ';
   }
 
   .stack {
+    font-family: var(--display);
     font-weight: 700;
     text-transform: uppercase;
     line-height: 0.92;
@@ -113,8 +114,8 @@ const comma = lang === 'zh' ? '，' : ', ';
   .hero__byline {
     margin-block-start: 1rem;
     font-family: var(--mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
