@@ -73,6 +73,8 @@ pnpm og         # re-render the social card (only after the portrait changes)
 pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
 pnpm verify:images  # pin the hand-rolled Sanity image URL format
 pnpm verify:contrast # APCA: every text block, every route, desktop and phone
+pnpm verify:stylesheet # every var() resolves; no base rule outranks a class
+pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
 **Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
@@ -401,16 +403,28 @@ paragraph in a sans, beside Latin that was serif either way. `STSong` and
 `SimSun` are the Mac and Windows serifs and the generic is `serif`, so the
 pairing is the same everywhere now.
 
-Nothing is self-hosted, and the numbers are why. An exact subset of the 880 Han
-characters this site currently sets costs 149 kB per weight in Noto Serif SC —
-but it would have to be re-cut on every build, and the blog renders from Sanity
-per request, so a post published without a rebuild falls outside the subset
-mid-sentence. The content-independent alternative, GB2312 Level 1, is 699 kB per
-weight; Google's own unicode-range chunking delivers about 1.6 MB to a Chinese
-reader. Against three woff2 families totalling 480 kB, none of those is a trade
-worth making for a face every platform already ships a good version of. `--cjk`
-and `--cjk-mono` list the Latin face *first*, so a proper noun inside a Chinese
-sentence still sets in Plex.
+**Han is vendored: Noto Serif SC, GB2312 Level 1, two weights.** Build it with
+`pnpm cjk`, never by hand. Level 1 is the 3,755 most common characters and
+covers ~99.9% of running modern Chinese; the rare tail falls through to the
+system face, which is where all of it used to land. An exact subset of the text
+the site sets today would be 149 kB per weight instead of 690 — and wrong: the
+blog renders from Sanity per request, so a post published without a rebuild
+would reach characters the last build never saw and fall back mid-sentence.
+
+Two things about the `unicode-range` on those faces, and both cost real bytes
+to get wrong:
+
+- **It gates the download, so it names Han and nothing else.** The first version
+  also covered `U+2010-201F` for the dashes and quotes the subset does contain —
+  and every English page here uses an em dash, so every English reader
+  downloaded 690 kB of Chinese to draw one.
+- **The switcher is chrome, and takes `--cjk-chrome`.** `中文` appears on every
+  English page; pointing it at `--cjk` put the vendored face back on the English
+  routes for two glyphs. `--cjk-chrome` deliberately omits the vendored face.
+
+Verified: an English route fetches **0 kB** of Han, a `/zh` route fetches both
+weights. `--cjk` and `--cjk-mono` still list the Latin face *first*, so a proper
+noun inside a Chinese sentence sets in Plex.
 
 Two things that follow, and that new work has to keep:
 

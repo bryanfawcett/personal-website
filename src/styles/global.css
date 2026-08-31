@@ -845,6 +845,51 @@ body:lang(zh) {
 }
 
 /*
+ * Han, vendored — one face on every platform.
+ *
+ * `unicode-range` is what makes this affordable: it covers only CJK, so a
+ * browser fetches these files solely when the page actually sets a character
+ * in them. An English reader downloads zero bytes of the 1.37 MB; the weight
+ * lands on /zh alone.
+ *
+ * The range is deliberately the *blocks* rather than the exact contents of the
+ * subset — a superset. GB2312 Level 1 is the 3,755 most common characters and
+ * covers about 99.9% of running modern Chinese; a name or a classical
+ * quotation outside it has to fall through to the system face, and a range
+ * that matched the file exactly would render it as tofu instead.
+ *
+ * It is a superset of the *Han*, and of nothing else. The first version also
+ * carried U+2010-201F for dashes and quotes, which the subset does contain —
+ * and every English page on this site uses an em dash, so every English reader
+ * downloaded 690 kB of Chinese to draw one. A `unicode-range` is a download
+ * trigger, not a description of the file: name only what this face is here to
+ * set.
+ *
+ * Two weights, because the site sets Han at body (400) and at the label weight
+ * (600) and nowhere else. Noto Serif SC is not variable on Google Fonts, so a
+ * third weight is another 700 kB rather than another axis position.
+ *
+ * Regenerate with `pnpm cjk` — never by hand.
+ */
+@font-face {
+  font-family: 'Noto Serif SC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/noto-serif-sc-400-gb2312.woff2') format('woff2');
+  unicode-range: U+3000-303F, U+4E00-9FFF, U+F900-FAFF, U+FF00-FF65;
+}
+
+@font-face {
+  font-family: 'Noto Serif SC';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/noto-serif-sc-600-gb2312.woff2') format('woff2');
+  unicode-range: U+3000-303F, U+4E00-9FFF, U+F900-FAFF, U+FF00-FF65;
+}
+
+/*
  * The label floor, for Han only.
  *
  * The site's mono labels run at `--label`, 15px, which APCA is satisfied with
@@ -1192,7 +1237,12 @@ body:lang(zh) {
  * for Latin caps opens the glyphs up too far.
  */
 .lang:lang(zh) {
-  font-family: var(--cjk);
+  /*
+   * `--cjk-chrome`, not `--cjk`: the switcher shows 中文 on every English page,
+   * and `--cjk` now carries the vendored Han face. See TYPE.cjkChrome — two
+   * glyphs of chrome are not worth 690 kB to an English reader.
+   */
+  font-family: var(--cjk-chrome);
   letter-spacing: 0.08em;
   text-transform: none;
 }
