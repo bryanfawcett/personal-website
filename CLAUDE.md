@@ -72,6 +72,7 @@ pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
 pnpm verify:images  # pin the hand-rolled Sanity image URL format
+pnpm verify:contrast # APCA: every text block, every route, desktop and phone
 ```
 
 **Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
@@ -158,9 +159,26 @@ prop fails `astro check`.
 
 The **mineral rail** is the brand signature — seven segments, one per mineral, running
 vertically down the binding edge of the sheet. It is the one place saturated colour
-appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward (a
-mineral bar under a heading, a schedule reference number), not a default. That
-restraint is the design; adding colour to more surfaces breaks it.
+appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward — a
+mineral bar under a heading, a swatch beside a name, a rule under a reference
+number — not a default. That restraint is the design; adding colour to more surfaces
+breaks it.
+
+**A mineral is never the colour of text.** Set on a near-black ground the seven
+measure Lc 25–48 as lettering, which APCA puts at a 27px minimum or forbids
+outright. The aptitude headings, the mineral key's own names and hex values, and
+the schedule reference numbers were all set that way and all failed. The mineral
+goes *under* the word, as a 3px rule, or beside it, as a swatch; the word is ink.
+The result carries the same identity and can be read.
+
+**The ruling has its own ink.** `--rule-major` and `--rule-minor` paint the
+blueprint grid; `--ink-faint` and `--ink-hair` paint the column rules, the panel
+borders and the section rules. They used to be the same two tokens, and that
+coupling was the single worst contrast problem on the site: the ink alphas exist
+to make *line work* read, and under `plus-lighter` a major grid crossing was
+compositing to `rgb(106 112 120)` over a `rgb(5 9 15)` ground. Every text block
+that happened to cross one was scored against a ground twenty times brighter than
+the sheet. Painting the grid in `--ink-*` again re-couples them.
 
 ### The ground travels with the sheet
 
@@ -225,11 +243,18 @@ read as a card floating over the sheet instead of part of it.
 
 ### Measure is a token, not a guess
 
-Cormorant is an unusually narrow face — about 6.8px per character at 18px — so
-a column that *looks* right runs far past a comfortable line. A 37rem column
-measured 87 characters. Anything holding running prose takes `--measure`
-(33rem, ~77 characters); larger type takes `--measure-wide`. Set a new
-max-width by running the readability pass and reading the number, never by eye.
+A column that *looks* right is routinely wrong, and by a different amount for
+each face: Cormorant runs about 6.8px per character at 18px and IBM Plex Serif
+about 8.9px, so the same 33rem holds 77 characters of the one and 58 of the
+other. Both sit inside the 45–85 band; neither number could have been guessed.
+Anything holding running prose takes `--measure` (33rem); larger type takes
+`--measure-wide`. Set a new max-width by running the readability pass and
+reading the number, never by eye — and re-run it after any change of face.
+
+Measure characters per line from the column width and the face's own advance,
+not from `text.length / lines`. A three-line paragraph with a half-full last
+line under-reports its measure by a sixth that way, which is enough to make a
+comfortable column look far too narrow.
 
 ### The portrait
 
@@ -392,10 +417,24 @@ Studio that edits it is in `bryans-adventures/`.
 
 ### Type identity
 
-Cormorant Garamond for display and body, IBM Plex Mono for figure tags, dimension
-labels and the title block, Caveat for margin notes and the signature — written marks
-rather than set ones. Cormorant's italic is load-bearing (the lede, the pull quotes),
-so the vendoring script has to keep roman and italic as separate files.
+Three jobs, three faces, and the split between the first two is load-bearing:
+
+- **Cormorant Garamond — display only.** The big drafted lockups and nothing
+  else. Its x-height is 0.386 em, measured off the vendored file against
+  0.46–0.53 for a face cut for running text, so at a 17px body size its
+  lowercase renders about 6.6px tall. That is what readers meant when they said
+  the text was too thin: not the weight, but letters a third smaller than the
+  size implies. At 4rem in a two-word lockup, the same delicacy is the point.
+- **IBM Plex Serif — everything anyone reads.** x-height 0.516, and the sibling
+  of the Plex Mono already carrying every label, so the voice stays industrial
+  rather than literary. Its italic is load-bearing (the lede, the pull quotes),
+  so the vendoring script keeps roman and italic as separate files.
+- **IBM Plex Mono** for figure tags, dimension labels and the title block;
+  **Caveat** for margin notes and the signature — written marks rather than set
+  ones.
+
+`--display` and `--serif` are separate tokens for exactly this reason. Setting
+body copy in `--display` puts it back under the floor.
 
 ### Fonts are self-hosted
 
@@ -408,14 +447,26 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 ## Accessibility Requirements
 
+- **APCA on every text block** — `pnpm verify:contrast`, and a CI job. Nothing
+  ships under the minimum size APCA gives for its contrast at its weight, at
+  either 1280px or 390px. This is the check; the rules below are how the design
+  stays on the right side of it.
 - **44px minimum** on every interactive target, except links inside a sentence,
   which WCAG 2.2 target size (2.5.8) exempts and which 44px would visibly break
-- **10px floor** on label text — mono uppercase below that is needless work to read
+- **Labels take `--label` and `--label-weight`,** 15px at 600 — not a 10px
+  floor, which is what this used to say and what put roughly 35 label classes
+  under the line at once. Size and weight trade against each other in APCA: at
+  the ink these labels use, weight 400 asks for 16.5px and weight 600 asks for
+  14.6px. Dropping a label to 400 is a contrast regression, not a styling choice.
 - **Semantic HTML** — real `section`/`nav`/`header`/`footer`, correct heading order,
   exactly one `h1` per page
 - **`aria-labelledby`** on every section, pointing at its heading
 - **Focus rings** are the stamp red at 2px with 3px offset; never remove them.
   6.5:1 against the sheet, well over the 3:1 that WCAG 2.2 (1.4.11) asks of them
+- **`--stamp` draws, `--stamp-ink` letters.** A 2px rule and a 15px word have
+  different floors — Lc 45 against Lc 75 — and the approval stamp is both at
+  once. One colour for both means either an illegible stamp or a washed-out
+  focus ring.
 - **`prefers-reduced-motion`** disables reveals, the mineral rail animation and smooth
   scrolling — already handled in `global.css`, keep it that way for new animation
 - Decorative elements (the rail, the sheet layers, the schematics) are `aria-hidden`
@@ -458,6 +509,18 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
     resolves to a `/_image` endpoint that does not exist on on-demand routes.
 16. **Editing `wrangler.jsonc` and re-running `wrangler dev`.** The adapter
     baked the old assets config into `dist/server/wrangler.json`. Rebuild.
+17. **Auditing against `wrangler dev` after editing source.** It serves
+    `dist/`, so an un-rebuilt change measures the previous build and reports
+    the previous numbers. `astro dev` is the one that reflects an edit.
+18. **Painting the blueprint grid in `--ink-*`.** See *Colour comes from
+    `src/brand/`* — the ruling gets `--rule-*`, and re-coupling them is the
+    site's worst contrast regression, not a tint.
+19. **A mineral as the colour of text.** Also above: under the word, or beside
+    it. Never in it.
+20. **`opacity` on something with words on it.** The approval stamp ran at
+    `0.82`, which took an already marginal red down to Lc 34 — a 67px minimum
+    for a 15px label. Opacity multiplies against the ground, and on a near-black
+    ground that is nearly all of the contrast.
 
 ## Git Workflow
 
@@ -478,21 +541,41 @@ the environment.
 2. `pnpm build` — production build
 3. `scripts/verify-fonts.py` — every font reference resolves
 4. `pnpm verify:images` — the hand-rolled Sanity image URL format still holds
-5. `pnpm audit --audit-level high`
+5. `pnpm verify:contrast` — APCA over the rendered page (its own job)
+6. `pnpm audit --audit-level high`
 
-Accessibility is checked with axe-core (WCAG 2.2 AA + best-practice), plus two
-passes axe cannot do:
+`scripts/verify-contrast.mjs` is the contrast gate, and it is worth knowing how
+it decides what the ground is, because two obvious approaches are both wrong:
 
-- **Contrast** — composites text over the painted ground. axe reports a
-  gradient parent as `incomplete` rather than testing it.
-- **Readability** — for every text block: composited contrast, rendered size,
-  leading, and characters per line taken from the real line boxes. Targets are
-  ≥16px and ≥1.5 leading for prose, ≥10px for mono uppercase labels, and 45–85
-  characters. Count lines as `height / line-height`: `getClientRects()` merges
-  adjacent line boxes in Chromium and under-reports, which inflates
-  chars-per-line by the same factor.
+- Hiding only the target element's ink reads its *parent's* ink as ground
+  whenever the target is an inline run inside a painted block — an `<em>` inside
+  a `<p>`. Same colour both sides, so an ordinary emphasis scores Lc 0.
+- Hiding every element's ink at once fixes that and breaks something else: the
+  element's box also holds its border, its mineral bar, its `::after` rule, none
+  of it under a glyph. A chip scored Lc 7.8 against its own hairline.
 
-All three must stay clean.
+So it shoots each viewport twice, ink on and ink off, treats the pixels that
+differ as the glyphs, and takes the worst-case ground *inside that mask* —
+discarding any colour that fewer than half a percent of a block's glyph pixels
+touch, or a single antialiased pixel of a button's rim decides the button's
+score.
+
+It runs against `astro dev`, not the built Worker: it reads rendered pixels, so
+nothing it measures depends on the Workers asset layer, and `wrangler dev` does
+not reliably survive a couple of minutes of browser-driven load. A server that
+dies mid-run is the one failure mode a gate must not have, which is why a
+navigation error is fatal there while a 5xx from an unreachable Sanity only
+skips the route.
+
+Two passes are still run by hand and are not gated:
+
+- **axe-core** (WCAG 2.2 AA + best-practice) — 0 violations across all 13
+  routes at both widths. It reports a gradient parent as `incomplete` rather
+  than testing it, which is the gap `verify:contrast` fills.
+- **Readability** — rendered size, leading, and characters per line. Targets
+  are ≥16px and ≥1.5 leading for prose and 45–85 characters at desktop width. A
+  390px phone cannot hold 45 characters of 18px prose, so the character band is
+  a desktop guideline; size and leading hold everywhere.
 
 ## Content Notes
 

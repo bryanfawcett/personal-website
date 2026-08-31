@@ -2,12 +2,19 @@
 /**
  * Faint technical drawings behind the content — the marks of a sheet that has
  * been worked on. Purely decorative and hidden from assistive technology.
+ *
+ * The per-SVG opacities are a contrast budget, not a taste setting. These are
+ * strokes of full-strength ink laid over the sheet, so at the .18–.28 they
+ * used to run at, a stroke composited to about rgb(68 72 77) — bright enough
+ * that any text crossing one was measured against the stroke instead of the
+ * ground. Held to .09–.13 they still read as drawings and cost the text
+ * nothing.
  */
 ---
 
 <div class="schematics" aria-hidden="true">
   <svg
-    style="top:5%;right:3%;width:190px;opacity:.28"
+    style="top:5%;right:3%;width:190px;opacity:.13"
     viewBox="0 0 200 200"
     fill="none"
     stroke="currentColor"
@@ -22,7 +29,7 @@
   </svg>
 
   <svg
-    style="bottom:7%;left:2%;width:170px;opacity:.24"
+    style="bottom:7%;left:2%;width:170px;opacity:.11"
     viewBox="0 0 200 200"
     fill="none"
     stroke="currentColor"
@@ -37,7 +44,7 @@
   </svg>
 
   <svg
-    style="top:36%;left:-40px;width:220px;opacity:.18"
+    style="top:36%;left:-40px;width:220px;opacity:.09"
     viewBox="0 0 220 160"
     fill="none"
     stroke="currentColor"

@@ -84,8 +84,8 @@ const qr = await vcardQr();
   .card__title {
     margin-block-start: 2px;
     font-family: var(--mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -115,7 +115,8 @@ const qr = await vcardQr();
     display: block;
     font-family: var(--mono);
     /* 10px floor on label text. */
-    font-size: 0.625rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -161,8 +162,8 @@ const qr = await vcardQr();
   .card__hint,
   .card__download {
     font-family: var(--mono);
-    font-size: 0.625rem;
-    font-weight: 600;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ink-soft);

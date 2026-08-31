@@ -172,13 +172,18 @@ button {
    * The ruling is the ground, not the drawing. Held back so the column rules,
    * section rules and corner brackets — all of them full-strength ink — stay
    * the lines the eye follows.
+   *
+   * The lines are painted in `--rule-*`, not `--ink-*`. See RULE in
+   * src/brand/tokens.ts: sharing the ink tokens made every text block that
+   * happened to cross a grid line get scored against the line rather than the
+   * sheet, and a grid line is one pixel of decoration.
    */
   opacity: 0.5;
   background-image:
-    linear-gradient(var(--ink-hair) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ink-hair) 1px, transparent 1px),
-    linear-gradient(var(--ink-faint) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ink-faint) 1px, transparent 1px);
+    linear-gradient(var(--rule-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule-minor) 1px, transparent 1px),
+    linear-gradient(var(--rule-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule-major) 1px, transparent 1px);
   background-size:
     var(--grid-minor) var(--grid-minor),
     var(--grid-minor) var(--grid-minor),
@@ -304,14 +309,21 @@ button {
   color: var(--pencil);
 }
 
-/* A ruled label with dimension ticks either side. */
+/*
+ * A ruled label with dimension ticks either side.
+ *
+ * `--label` is the floor for every mono label on the site. The old 10–11px
+ * cleared the WCAG 2.2 note in CLAUDE.md but not APCA: at the ink these run
+ * at, APCA asks about 13.5px at weight 600, and no label was close. Set it
+ * here once rather than in thirty-five component rules.
+ */
 .eyebrow {
   display: flex;
   align-items: center;
   gap: 0.875rem;
   font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--label-lg);
+  font-weight: var(--label-weight);
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -378,7 +390,8 @@ button {
 .dimension__label {
   padding-inline: 1rem;
   font-family: var(--mono);
-  font-size: 0.625rem;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }
@@ -391,6 +404,7 @@ button {
  * version silently fails to match anywhere else.
  */
 .drafted {
+  font-family: var(--display);
   /*
    * Fallback first: solid ink. `color: transparent` is only safe once we know
    * the stroke will actually paint — without that guard, a browser lacking
@@ -485,8 +499,8 @@ button {
   background: var(--sheet-raised);
   border: 1px solid var(--ink);
   font-family: var(--mono);
-  font-size: 0.625rem;
-  font-weight: 600;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--ink);
@@ -510,6 +524,18 @@ button {
   color: var(--ink-body);
 }
 
+/*
+ * The paragraph break, which the `* { margin: 0 }` reset had taken away.
+ *
+ * Panels carry most of the prose on the site and their paragraphs were running
+ * at a measured gap of zero — set solid, with nothing but a short last line to
+ * mark where one paragraph ended and the next began. `.prose` on /origins gets
+ * 1.1rem from a flex gap; this is the same rhythm for the panels.
+ */
+.panel p + p {
+  margin-block-start: 1.1rem;
+}
+
 /* ============================== chips ============================== */
 
 .chips {
@@ -526,9 +552,8 @@ button {
   background: var(--sheet-wash-light);
   border: 1px solid var(--ink-soft);
   font-family: var(--mono);
-  /* 10px floor: 9.5px uppercase mono is legible but needlessly hard work. */
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink);
@@ -545,8 +570,8 @@ button {
   border: 1.5px solid var(--ink);
   color: var(--sheet-raised);
   font-family: var(--mono);
-  font-size: 0.71875rem;
-  font-weight: 600;
+  font-size: var(--label);
+  font-weight: var(--label-weight);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   box-shadow: 3px 3px 0 var(--shadow);
@@ -574,7 +599,15 @@ button {
   transform: rotate(-3deg);
 }
 
-/* The approval stamp. One red, used sparingly. */
+/*
+ * The approval stamp. One red, used sparingly.
+ *
+ * The border is `--stamp`, the lettering `--stamp-ink`; see MARKS in
+ * src/brand/tokens.ts for why those are two tokens. The 0.82 opacity that used
+ * to sit here went with them — over a near-black ground it took an already
+ * marginal red down to Lc 34, and "faded rubber stamp" is not worth a label
+ * nobody can read.
+ */
 .stamp {
   position: absolute;
   inset-inline-end: 1.625rem;
@@ -583,13 +616,18 @@ button {
   border: 2px solid var(--stamp);
   border-radius: 4px;
   font-family: var(--mono);
-  font-size: 0.625rem;
-  font-weight: 600;
+  /*
+   * Larger than a label, because of where it sits: angled across the panel's
+   * top rule, so its worst-case ground is that hairline rather than the panel
+   * fill, and the hairline is four times the fill's luminance. 18px/700 is what
+   * APCA asks for on the rule; on the fill it has room to spare.
+   */
+  font-size: 1.125rem;
+  font-weight: 700;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--stamp);
+  color: var(--stamp-ink);
   transform: rotate(-6deg);
-  opacity: 0.82;
   mix-blend-mode: multiply;
 }
 
@@ -727,7 +765,8 @@ main {
   background: var(--sheet-raised);
   border: 1.5px solid var(--ink);
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: var(--label-lg);
+  font-weight: var(--label-weight);
   transform: translateY(-200%);
   transition: transform 0.2s ease-out;
 }
@@ -820,9 +859,14 @@ body:lang(zh) {
  * vendoring one costs more than the mark is worth.
  */
 .hand:lang(zh),
+/*
+ * A hand-written note set in Han falls back to the reader's system face, which
+ * has none of Caveat's exuberance and reads a size smaller for it. 18px is
+ * also where the pencil's contrast puts the APCA floor for weight 400.
+ */
 .margin-note:lang(zh) {
   font-family: var(--cjk);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.5;
 }
 

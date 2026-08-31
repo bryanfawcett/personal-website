@@ -16,6 +16,7 @@
     "cf-typegen": "wrangler types",
     "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
     "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
+    "verify:contrast": "node scripts/verify-contrast.mjs",
     "nav-portrait": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-nav-portrait.mjs"
   },
   "dependencies": {
@@ -27,7 +28,9 @@
     "@astrojs/cloudflare": "^14.2.5",
     "@astrojs/sitemap": "^3.7.3",
     "@types/qrcode": "^1.5.6",
+    "apca-w3": "^0.1.9",
     "qrcode": "^1.5.4",
+    "playwright": "^1.56.1",
     "sharp": "^0.35.4",
     "typescript": "^6.0.3",
     "wrangler": "^4.126.0"

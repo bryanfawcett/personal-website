@@ -101,15 +101,22 @@ const year = new Date().getFullYear();
   .tb-cell .k {
     display: block;
     margin-block-end: 4px;
-    font-size: 0.625rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
 
+  /*
+   * The title-block values sit one notch under the labels above them, which is
+   * as small as anything on the site gets. At 13px they were under the APCA
+   * floor for their contrast at any weight the face offers; 14px at 700 clears
+   * it and still reads as the smaller half of the pair.
+   */
   .tb-cell .v {
-    font-size: 0.8125rem;
-    font-weight: 600;
+    font-size: 0.875rem;
+    font-weight: 700;
     letter-spacing: 0.06em;
   }
 
@@ -133,7 +140,8 @@ const year = new Date().getFullYear();
     padding: 0.5rem 1rem;
     border-block-start: 1px solid var(--ink-faint);
     font-family: var(--mono);
-    font-size: 0.625rem;
+    font-size: var(--label);
+    font-weight: var(--label-weight);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-soft);
