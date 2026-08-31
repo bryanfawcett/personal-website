@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
 import { coreSkills, credentials, roles } from '../data/experience.js';
-import { MINERALS } from '../brand/minerals.js';
+import { MINERALS, keyedTo } from '../brand/minerals.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -37,7 +37,7 @@ const t = useTranslations(lang);
         roles(lang).map((role, index) => (
           <li
             class="schedule__row"
-            style={`--row-mineral: var(--mineral-${MINERALS[index % MINERALS.length]!.name})`}
+            style={keyedTo(MINERALS[index % MINERALS.length]!.name)}
           >
             <div class="schedule__meta">
               <span class="schedule__ref">{String(index + 1).padStart(2, '0')}</span>
@@ -97,142 +97,3 @@ const t = useTranslations(lang);
   </section>
 </BaseLayout>
 
-<style>
-  .eyebrow {
-    margin-block-end: 1.5rem;
-  }
-
-  /* A schedule of works: reference, dates, then the entry. */
-  .schedule {
-    list-style: none;
-    padding: 0;
-    border-block-start: 1.5px solid var(--ink);
-  }
-
-  .schedule__row {
-    display: grid;
-    grid-template-columns: 13rem 1fr;
-    gap: 1.5rem;
-    padding-block: 1.75rem;
-    border-block-end: 1px solid var(--ink-faint);
-  }
-
-  .schedule__row:last-child {
-    border-block-end: 1.5px solid var(--ink);
-  }
-
-  @media (max-width: 51rem) {
-    .schedule__row {
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
-  }
-
-  .schedule__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.375rem;
-    font-family: var(--mono);
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  /*
-   * The mineral under the reference, not in it. Set in the row's mineral this
-   * measured Lc 25.5 — the largest unreadable thing on the site. The rule
-   * carries the row's colour now, and the bullet markers below still do.
-   */
-  .schedule__ref {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-    line-height: 1;
-    padding-block-end: 0.25rem;
-    border-block-end: 3px solid var(--row-mineral);
-  }
-
-  .schedule__title {
-    font-size: 1.4375rem;
-    font-weight: 600;
-  }
-
-  .schedule__company {
-    margin-block-start: 0.125rem;
-    font-size: 1.0625rem;
-    font-style: italic;
-    color: var(--ink-soft);
-  }
-
-  /*
-   * Running prose, so it takes the body size rather than a reduced one: at
-   * 16px/400 the bullets sat just under the APCA floor their contrast asks
-   * for, and they are the densest text on the page.
-   */
-  .schedule__points {
-    margin-block-start: 0.875rem;
-    padding-inline-start: 1.1rem;
-    font-size: 1.0625rem;
-    color: var(--ink-body);
-  }
-
-  .schedule__points li {
-    margin-block-end: 0.25rem;
-  }
-
-  .schedule__points li::marker {
-    color: var(--row-mineral);
-  }
-
-  .credentials {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-    gap: 1.25rem;
-  }
-
-  .credential {
-    padding: 1.5rem 1.25rem 1.25rem;
-  }
-
-  .credential h3 {
-    font-size: 1.0625rem;
-  }
-
-  .credential__issuer {
-    font-style: italic;
-    color: var(--ink-soft);
-  }
-
-  .credential__period {
-    margin-block-start: 0.375rem;
-    font-family: var(--mono);
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .chips--large .chip {
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    padding: 7px 12px;
-  }
-
-  /*
-   * Han text in the mono-set metadata: the Latin caps tracking opens the
-   * glyphs too far, and there is no case to raise.
-   */
-  .schedule__period:lang(zh),
-  .schedule__place:lang(zh),
-  .credential__issuer:lang(zh),
-  .credential__period:lang(zh) {
-    font-family: var(--cjk-mono);
-    letter-spacing: 0.1em;
-    text-transform: none;
-  }
-</style>

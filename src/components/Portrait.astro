@@ -47,39 +47,3 @@ const height = Math.round((width * source.height) / source.width);
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
 
-<style>
-  .portrait {
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-    width: max-content;
-    max-width: 100%;
-  }
-
-  .portrait__plate {
-    --corner: 0.875rem;
-    position: relative;
-    display: block;
-    padding: 6px;
-    background: var(--sheet-wash);
-    border: 1px solid var(--ink-hair);
-  }
-
-  .portrait__plate img {
-    display: block;
-    width: 100%;
-    height: auto;
-    /* Part-way to the line work, still plainly a photograph. */
-    filter: grayscale(0.5) contrast(1.05) brightness(0.97);
-  }
-
-  figcaption {
-    font-family: var(--mono);
-    /* 10px floor on label text. */
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-</style>

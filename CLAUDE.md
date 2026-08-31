@@ -86,8 +86,9 @@ bryanfawcett.com, built with:
 - **Cloudflare Workers** via `@astrojs/cloudflare`
 - **Mzizi design system** for colour, surfaces and semantics
 - **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
-  a print rather than a wash: near-black ground with a blue cast, line work in
-  white. The ground is `#05090F`; the ink is `#F2F6FB`.
+  a print rather than a wash: matte board with a blue cast, line work in white.
+  The sheet is `#18202C`; panels are wells cut *into* it at `#05090F`; the ink
+  is `#FBFCFE`.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet
   frame there. It went, and it should not come back.
 
@@ -150,9 +151,14 @@ No React, no client framework, no UI library. The only client JavaScript is the
 scroll-reveal observer in `BaseLayout.astro` and the deferred Cal.com loader on
 `/book`. Reach for a `<script>` in an `.astro` file before reaching for a dependency.
 
-### Colour comes from `src/brand/`
+### Colour, spacing and size come from `src/brand/`
 
-Never hard-code a hex value outside `src/brand/`. `tokens.ts` generates CSS custom
+Never hard-code a hex value outside `src/brand/`, and reach for a token before a
+literal for spacing too: `--space-1` … `--space-10` is the scale. There wasn't
+one — padding, margin and gap had drifted to twenty-seven distinct values with
+`1.1rem` next to `1.125rem` next to `1.25rem` — and a scale nobody can name is a
+scale nobody can adjust. Genuine one-offs stay literals; a number deliberately
+off the scale should look like one. `tokens.ts` generates CSS custom
 properties at build time; use `var(--mineral-cobalt)`, `var(--sheet)`, `var(--ink-soft)`.
 `MineralName` is a union type derived from the mineral list, so a typo in a component
 prop fails `astro check`.
@@ -164,12 +170,23 @@ mineral bar under a heading, a swatch beside a name, a rule under a reference
 number — not a default. That restraint is the design; adding colour to more surfaces
 breaks it.
 
+**One mineral property, one weight.** Everything keyed to a mineral reads
+`--mineral`, set by the `mineral` prop on `<Panel>` or by `keyedTo()` for plain
+elements, and every mineral mark is `--mineral-weight` thick. It used to be
+eight property names for one idea — `--panel-mineral`, `--row-mineral`,
+`--stop-mineral`, `--m` and four more — so changing how a mineral is expressed
+meant finding all eight.
+
 **A mineral is never the colour of text.** Set on a near-black ground the seven
 measure Lc 25–48 as lettering, which APCA puts at a 27px minimum or forbids
 outright. The aptitude headings, the mineral key's own names and hex values, and
 the schedule reference numbers were all set that way and all failed. The mineral
 goes *under* the word, as a 3px rule, or beside it, as a swatch; the word is ink.
-The result carries the same identity and can be read.
+The result carries the same identity and can be read. That holds for hover
+states too, which the contrast gate cannot see: a link that turns a mineral
+colour under the pointer is a link that cannot be read under the pointer, so the
+mineral underlines it instead. The one exception is `::marker` — a bullet is a
+mark, so it answers to the non-text floor.
 
 **The ruling has its own ink.** `--rule-major` and `--rule-minor` paint the
 blueprint grid; `--ink-faint` and `--ink-hair` paint the column rules, the panel
@@ -179,6 +196,23 @@ to make *line work* read, and under `plus-lighter` a major grid crossing was
 compositing to `rgb(106 112 120)` over a `rgb(5 9 15)` ground. Every text block
 that happened to cross one was scored against a ground twenty times brighter than
 the sheet. Painting the grid in `--ink-*` again re-couples them.
+
+### Surfaces go down, not up
+
+The sheet is the matte board and panels are wells cut into it. Panels used to
+sit *above* a near-black ground, which left one direction for separation — up,
+toward the light — so every panel read as a bright rectangle floating on black.
+Now the near-black is the *panel*, which is where the reading happens, so ink
+sits on the darkest surface on the page rather than the lightest.
+
+Judge a surface step in CIE L\*, not APCA: APCA clamps to 0 between two
+near-black surfaces and cannot see this end of the range at all. Sheet to panel
+is dL\* 9.7. The pairing readers complained about was dL\* 0.6.
+
+The ground is matte, and that is a budget rather than a look: the lighting
+radials run at about a quarter of their old alpha with most of the blue out of
+them, the base gradient is nearly flat, and the paper grain is turned up to meet
+them. Raising the radials is how the gloss comes back.
 
 ### The ground travels with the sheet
 
@@ -213,6 +247,28 @@ Two things this breaks if you forget them:
 
 The mineral rail is `transition:persist` so it does not re-mount and
 re-animate on every navigation.
+
+### One stylesheet
+
+Every rule lives in `src/styles/global.css`. Components and views have no
+`<style>` blocks — the whole of the site's styling is one file with one order,
+so changing how something looks is one edit in one place.
+
+Three things this makes load-bearing:
+
+- **Order replaces scoping.** Base rules first, component rules after, so at
+  equal specificity the component wins. Add new component rules at the end of
+  the components section, not the top.
+- **Pair a class with an element only inside `:where()`.** `.panel p` is
+  specificity 0-1-1 and beats any single class. Under scoping that did not
+  matter, because Astro added a `data-astro-cid-*` attribute selector to every
+  component rule and quietly pushed it to 0-2-0; take the scoping away and
+  fifteen rules silently lost — `.caption` jumped from 15px to 18px and the
+  workshop captions started wrapping. `.panel :where(p)` lands at 0-1-0, which
+  makes it a default a class can override by being a class.
+- **Duplication is now visible, which is the point.** `.eyebrow` and
+  `.section-head` had each been written twice, identically, in two views —
+  scoping hid it. There is one of each now.
 
 ### Containers are the drawing, not boxes on it
 
@@ -336,11 +392,25 @@ the reader back on the home page.
 
 ### Chinese typography
 
-None of the three vendored families carry Han, and a subset that did would cost
-several megabytes against the sub-megabyte total the site ships — a bad trade on
-the connections much of this ecosystem is built for. So Han falls to the
-reader's own system face. `--cjk` and `--cjk-mono` list the Latin face *first*,
-so a proper noun inside a Chinese sentence still sets in Cormorant or Plex.
+**Every face in `--cjk` is a serif, and that matters more than it sounds.** The
+stack used to end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft
+YaHei', sans-serif` — the first entries serifs, the last four sans — so which
+one a reader got depended on their platform. A Mac found Songti and set the body
+in a serif; a Windows machine fell past it to Microsoft YaHei and set the same
+paragraph in a sans, beside Latin that was serif either way. `STSong` and
+`SimSun` are the Mac and Windows serifs and the generic is `serif`, so the
+pairing is the same everywhere now.
+
+Nothing is self-hosted, and the numbers are why. An exact subset of the 880 Han
+characters this site currently sets costs 149 kB per weight in Noto Serif SC —
+but it would have to be re-cut on every build, and the blog renders from Sanity
+per request, so a post published without a rebuild falls outside the subset
+mid-sentence. The content-independent alternative, GB2312 Level 1, is 699 kB per
+weight; Google's own unicode-range chunking delivers about 1.6 MB to a Chinese
+reader. Against three woff2 families totalling 480 kB, none of those is a trade
+worth making for a face every platform already ships a good version of. `--cjk`
+and `--cjk-mono` list the Latin face *first*, so a proper noun inside a Chinese
+sentence still sets in Plex.
 
 Two things that follow, and that new work has to keep:
 
@@ -473,8 +543,9 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 ## Common Pitfalls
 
-1. **Astro scopes styles to the template.** Elements created at runtime by a
-   `<script>` do not match a scoped selector — use `:global()` for those rules.
+1. **All CSS is in `src/styles/global.css`; components carry no `<style>`.**
+   See *One stylesheet* below. Adding a scoped block back puts one rule
+   somewhere nobody will look for it, and re-arms the specificity trap.
 2. **`threshold: 0` on IntersectionObserver reveals.** A section taller than the
    viewport can never reach a meaningful intersection ratio, so a non-zero threshold
    leaves long sections invisible forever on a phone.

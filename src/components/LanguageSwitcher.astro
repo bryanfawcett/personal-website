@@ -39,36 +39,3 @@ const other: Lang = lang === 'en' ? 'zh' : 'en';
   {languages[other]}
 </a>
 
-<style>
-  .lang {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 0.875rem;
-    font-family: var(--mono);
-    font-size: var(--label);
-    font-weight: var(--label-weight);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    border: 1px solid var(--ink-hair);
-    transition:
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  /*
-   * The Chinese label is set in the CJK stack, where the mono tracking meant
-   * for Latin caps opens the glyphs up too far.
-   */
-  .lang:lang(zh) {
-    font-family: var(--cjk);
-    letter-spacing: 0.08em;
-    text-transform: none;
-  }
-
-  .lang:hover {
-    color: var(--ink);
-    border-color: var(--ink-faint);
-  }
-</style>

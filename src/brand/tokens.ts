@@ -12,91 +12,112 @@
 import { MINERALS } from './minerals.js';
 
 /**
- * The sheet itself — near-black, the blue only a cast in it.
+ * The sheet, with wells cut into it.
  *
- * These five are a ladder, and the order matters: every step is lighter than
- * the one before it, by enough to see. It did not used to be — `raised` sat
- * *below* `washLight`, and the panel fill was two values away from the page
- * ground, which is why readers said the cards were the same as the
- * background. Keep it monotonic, and keep the steps visible.
+ * The model inverted here, and the reason is worth keeping. Panels used to sit
+ * *above* the page ground and the ground was near-black, which left only one
+ * direction to go for separation — up — and up is where the light is. So a
+ * panel had to be lighter than the sheet to be seen at all, and the whole page
+ * read as glossy: bright rectangles floating on black.
+ *
+ * Now the sheet is the matte board and the panels are recessed into it. The
+ * near-black the site was built on (#05090F) is still there, but it is the
+ * *panel* colour — which is where the reading happens, so the ink sits on the
+ * darkest surface on the page rather than the lightest. Ink on a panel measures
+ * Lc 105 against 99 before.
+ *
+ * The ladder is still monotonic and every step is still visible, measured in
+ * CIE L* rather than by eye — APCA clamps to 0 between two near-black surfaces,
+ * so it cannot judge this end of the range at all. Sheet to panel is dL* 9.7;
+ * the pairing readers complained about was dL* 0.6.
  */
 export const SHEET = {
-  /** Deepest — the vignette and the media wells. */
-  deep: '#02050A',
-  /** Page ground. */
-  base: '#05090F',
-  /** One step up: grouped regions. */
-  mid: '#0B1119',
-  /** Raised surfaces — menus, the title block, panels under the pointer. */
-  raised: '#2A3749',
+  /** The deepest well — the QR ground and the media wells. */
+  deep: '#01040A',
   /**
    * Panel fill.
    *
-   * This used to be `rgb(7 11 17 / 0.86)`, which composited over the ground to
-   * about rgb(7 11 17) against a ground of rgb(5 9 15) — two values apart out
-   * of 255. A panel was, measurably, the same colour as the page it sat on,
-   * and readers said so.
-   *
-   * The obvious worry about lightening it is that pale text loses contrast.
-   * Measured with APCA, it does not: from rgb(5 9 15) to rgb(26 35 48) — a
-   * step nobody could miss — full-strength ink goes from Lc 101.5 to Lc 99.1.
-   * Two points, for a surface that finally reads as one.
-   *
-   * Opaque so body copy sits on a settled ground rather than on whatever the
-   * lighting gradient happens to be doing behind it.
+   * Opaque, and recessed below the sheet. It used to be a 0.86-alpha wash so
+   * the lighting gradient showed through, which is exactly what made a panel
+   * indistinguishable from the page: the two were the same paint. A well has
+   * its own floor.
    */
-  wash: 'rgb(26 35 48 / 0.97)',
-  /** Brighter wash for chips and inset fields. */
-  washLight: 'rgb(38 50 67 / 0.96)',
+  wash: '#05090F',
+  /** A shallower recess — chips and inset fields. */
+  washLight: '#0B1119',
+  /** Grouped regions: barely sunk, just enough to group. */
+  mid: '#10161F',
+  /**
+   * The sheet itself — the matte board everything is cut into.
+   *
+   * Lifted from #05090F. That was a near-black with a blue cast under a set of
+   * lighting radials, and the radials were doing the work of making it look
+   * like a surface. A matte board does not need them.
+   */
+  base: '#18202C',
+  /** The few things that genuinely sit above the sheet: menus, hover, the title block. */
+  raised: '#2A3749',
 } as const;
 
 /**
  * The drawn line, at the weights a technical pen offers.
  *
  * White rather than the old pale blue: against a near-black ground the blue
- * cast only muddied it. Alpha steps are tuned so `base` and `body` clear WCAG
- * AA for text against SHEET.wash, and the fainter two are rules and grid only.
+ * cast only muddied it, and the base has been lifted from #F2F6FB now that the
+ * panels are recessed rather than raised — the ink has a darker surface under
+ * it, so it can afford to be brighter without glare. Full-strength ink on a
+ * panel measures Lc 105.
+ *
+ * The alpha steps are the site's real contrast control. `faint` and `hair` are
+ * line work only: see RULE below for why the grid does not share them.
  */
 export const INK = {
   /** Full-strength line and heading text. */
-  base: '#F2F6FB',
+  base: '#FBFCFE',
   /**
    * Body copy inside panels.
    *
-   * The alpha steps below are the site's real contrast control, and they were
-   * all set about one step too light. `soft` at 0.72 measured Lc 62.6 on a
-   * panel, which APCA says needs 17.5px at weight 600 — while every label
-   * using it ran at 10–11px. Raised until the sizes the design actually uses
-   * are the sizes APCA allows.
+   * These were all set about one step too light once. `soft` at 0.72 measured
+   * Lc 62.6 on a panel, which APCA says needs 17.5px at weight 600 — while
+   * every label using it ran at 10-11px. Raised until the sizes the design
+   * actually uses are the sizes APCA allows.
    */
-  body: 'rgb(242 246 251 / 0.96)',
+  body: 'rgb(251 252 254 / 0.97)',
   /** Secondary text and dimension labels. */
-  soft: 'rgb(242 246 251 / 0.92)',
-  /** Major grid rule, panel borders, column rules. Non-text only. */
-  faint: 'rgb(242 246 251 / 0.46)',
-  /** Minor grid rule. Non-text only. */
-  hair: 'rgb(242 246 251 / 0.26)',
+  soft: 'rgb(251 252 254 / 0.94)',
+  /** Panel borders, column rules, section rules. Non-text only. */
+  faint: 'rgb(251 252 254 / 0.42)',
+  /** The lightest line work. Non-text only. */
+  hair: 'rgb(251 252 254 / 0.24)',
   /** Fill inside stroked display type, so the outline still reads as solid. */
-  drafted: 'rgb(242 246 251 / 0.34)',
+  drafted: 'rgb(251 252 254 / 0.34)',
 } as const;
 
 /**
- * Where the light falls across the sheet.
+ * Matte board, not a lit surface.
  *
- * These were inline in global.css, which broke the rule that no colour is
- * written outside src/brand.
+ * These used to be four saturated radials at 0.22–0.72 alpha, and between them
+ * they were what made the page read as glossy: a bright pool top left, a dark
+ * one bottom right, and a blue cast over both. That is a sheen. A matte surface
+ * scatters instead — it has a fall, but a shallow and almost colourless one,
+ * and what texture it has comes from the tooth of the paper rather than from
+ * the light.
+ *
+ * So the radials are held to a quarter of what they were and most of the blue
+ * is out of them; the grain in global.css does the rest of the work and is
+ * turned up to meet it. Raising these back up is how the gloss returns.
  */
 export const GROUND = {
-  /** The lit corner, top left. */
-  lit: 'rgb(20 40 64 / 0.34)',
+  /** The lit corner, top left — a fall of light, not a highlight. */
+  lit: 'rgb(38 48 64 / 0.12)',
   /** The shaded corner, bottom right. */
-  shade: 'rgb(1 2 5 / 0.72)',
+  shade: 'rgb(2 4 8 / 0.30)',
   /** A second, weaker source. */
-  glow: 'rgb(14 32 52 / 0.22)',
+  glow: 'rgb(32 42 58 / 0.07)',
   /** The pool of dark it leaves. */
-  pool: 'rgb(1 3 6 / 0.55)',
-  /** Fall-off at the margins, as a print has. */
-  vignette: 'rgb(0 1 3 / 0.7)',
+  pool: 'rgb(2 4 8 / 0.22)',
+  /** Fall-off at the margins, as a board has where it has been handled. */
+  vignette: 'rgb(1 2 5 / 0.42)',
 } as const;
 
 /** Marks made by hand rather than by pen. */
@@ -168,6 +189,46 @@ export const LABEL = {
   weight: '600',
 } as const;
 
+/**
+ * The spacing scale.
+ *
+ * There wasn't one. Padding, margin and gap were written as literals and had
+ * drifted to twenty-seven distinct values between 0.125rem and 4rem — 1.1rem
+ * next to 1.125rem next to 1.25rem, none of them meaning anything different.
+ * A scale nobody can name is a scale nobody can adjust: tightening the site by
+ * a notch meant finding two hundred declarations and deciding each one again.
+ *
+ * These ten are the values the design was already reaching for most often, so
+ * adopting them moved nothing on the page. The genuine one-offs that remain
+ * are left as literals rather than snapped to the nearest step — a number that
+ * is deliberately not on the scale should look like one.
+ */
+export const SPACE = {
+  1: '0.25rem',
+  2: '0.5rem',
+  3: '0.75rem',
+  4: '1rem',
+  5: '1.25rem',
+  6: '1.5rem',
+  7: '2rem',
+  8: '2.5rem',
+  9: '3rem',
+  10: '4rem',
+} as const;
+
+/**
+ * How a mineral is drawn, wherever it is drawn.
+ *
+ * A mineral is never the colour of a word (see MINERALS and CLAUDE.md — on this
+ * ground the seven measure Lc 25-48 as lettering). It is a mark beside the word
+ * or under it, and this is how thick that mark is. It was written `3px` in five
+ * separate rules across four views; now the rules read the token and the weight
+ * of every mineral mark on the site is one edit.
+ */
+export const MINERAL = {
+  weight: '3px',
+} as const;
+
 /** Grid geometry for the blueprint ruling. */
 export const GRID = {
   minor: '24px',
@@ -223,17 +284,30 @@ export const TYPE = {
   /** Margin notes and the signature — written, not set. */
   hand: "'Caveat', ui-rounded, cursive",
   /*
-   * Chinese.
+   * Chinese, and every face in it is a serif.
    *
-   * Nothing here is self-hosted. The three vendored families are Latin +
-   * Latin Extended only, and a Han subset large enough to set this site
-   * would be several megabytes against three woff2 files that currently
-   * total well under one — a bad trade on the connections a lot of this
-   * ecosystem is built for. So Chinese falls to the reader's own system
-   * face, which every platform ships, and Latin runs first in the stack so
-   * that a proper noun inside a Chinese sentence still sets in Cormorant.
+   * That is the whole of the fix, and it was a real bug: this stack used to
+   * end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+   * sans-serif`. The first three entries are serifs and the last four are
+   * sans, so which one a reader got depended entirely on their platform — a
+   * Mac found Songti and set the body in a serif, a Windows machine fell past
+   * Songti to Microsoft YaHei and set it in a sans, beside Latin that was
+   * serif either way. Same page, two different pairings. `STSong` and `SimSun`
+   * are the Mac and Windows serifs, and the generic at the end is `serif`, so
+   * the pairing is now the same everywhere.
+   *
+   * Nothing here is self-hosted. Measured: an exact subset of the 880 Han
+   * characters this site currently sets costs 149 kB per weight in Noto Serif
+   * SC, and it would have to be re-cut on every build — the blog renders from
+   * Sanity per request, so a post published without a rebuild would fall
+   * outside the subset mid-sentence. The content-independent alternative,
+   * GB2312 Level 1, is 699 kB per weight; Google's own unicode-range chunking
+   * delivers about 1.6 MB to a Chinese reader. Against three woff2 families
+   * totalling 480 kB, none of those is a trade worth making for a face every
+   * platform already ships a good version of. Latin runs first in the stack so
+   * a proper noun inside a Chinese sentence still sets in Plex.
    */
-  cjk: "'IBM Plex Serif', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
+  cjk: "'IBM Plex Serif', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
   /**
    * The mono equivalent: Latin from IBM Plex, Han from the system.
    *
@@ -268,6 +342,8 @@ export function tokensToCss(): string {
     ['Measure', 'measure', MEASURE],
     ['Marks', '', MARKS],
     ['Label', 'label', LABEL],
+    ['Space', 'space', SPACE],
+    ['Mineral', 'mineral', MINERAL],
     ['Grid', 'grid', GRID],
     ['Rule', 'rule', RULE],
     ['Type', '', TYPE],
