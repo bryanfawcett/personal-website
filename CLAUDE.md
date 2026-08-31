@@ -520,10 +520,24 @@ Three jobs, three faces, and the split between the first two is load-bearing:
 `--display` and `--serif` are separate tokens for exactly this reason. Setting
 body copy in `--display` puts it back under the floor.
 
-### Fonts are self-hosted
+### Fonts are self-hosted, and licensed
 
 `public/fonts/` plus generated `src/styles/fonts.css`. No request to fonts.googleapis.com.
 Regenerate with `python3 scripts/fetch-fonts.py` after changing the type stack.
+
+**`public/fonts/OFL.txt` is not optional.** All five families are under the SIL
+Open Font License 1.1, which requires the copyright notice and the licence to
+travel with the Font Software — and the vendored Han face is a *modified*
+version, which makes that an obligation rather than a courtesy.
+`verify-fonts.py` fails the build if the file goes missing.
+
+**The Han subset keeps the name "Noto Serif SC", deliberately.** The OFL would
+permit renaming — none of these families declares a Reserved Font Name — but
+the design is Adobe's and nothing here was redrawn. `build-cjk-subset.mjs`
+removes glyphs; it does not draw any. A house name on someone else's outlines
+would misstate where they came from, which is the opposite of what the mineral
+page argues for everywhere else on this site. If a Bundu type identity is ever
+wanted, it is a commission, not a rename.
 
 Several families are variable fonts where Google serves one file per subset covering
 every weight — key generated filenames off the URL, not the weight, or the CSS ends up
