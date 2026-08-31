@@ -2,11 +2,11 @@
  * The site's design tokens.
  *
  * The site is a cyanotype — a real blueprint, but a print rather than a wash:
- * near-black ground with a blue cast, line work in white. Dark only: there is
- * no light ramp and no theme toggle by design.
+ * a matte board with a blue cast, line work in white, and the panels cut into
+ * it as wells. Dark only: there is no light ramp and no theme toggle by design.
  *
  * "Ink" here means the colour a line is drawn in, which on a cyanotype is the
- * pale one. The ground is the near-black.
+ * pale one. The sheet is the dark; the panels are darker still.
  */
 
 import { MINERALS } from './minerals.js';

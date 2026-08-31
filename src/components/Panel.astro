@@ -9,7 +9,7 @@
  * Any extra attribute (href, target, style, …) passes through to the element.
  */
 import type { HTMLAttributes } from 'astro/types';
-import type { MineralName } from '../brand/minerals.js';
+import { keyedTo, type MineralName } from '../brand/minerals.js';
 
 type Tag = 'section' | 'article' | 'div' | 'li' | 'a';
 
@@ -26,9 +26,9 @@ export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
    *
    * Sets `--mineral`, which every mineral mark on the site reads: the bar under
    * a heading, the rule down an edge, the swatch, the list marker. Pass the
-   * name and let `.mineral-*` in global.css decide how it is drawn — the point
-   * of one property and one set of classes is that changing how a mineral is
-   * expressed is one edit, not eight.
+   * name; the rule that draws the mark decides its shape, and reads both this
+   * property and `--mineral-weight` rather than naming a colour or a thickness
+   * of its own. One property, not the eight this replaced.
    *
    * `MineralName` is a union off the mineral list, so a typo fails astro check.
    */
@@ -39,7 +39,7 @@ export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
 
 const { fig, mineral, as: Element = 'article', class: className, style, ...rest } = Astro.props;
 
-const keyed = mineral ? `--mineral: var(--mineral-${mineral});` : '';
+const keyed = mineral ? `${keyedTo(mineral)};` : '';
 const styles = [keyed, style].filter(Boolean).join(' ');
 ---
 

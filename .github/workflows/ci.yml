@@ -45,6 +45,13 @@ jobs:
       - name: Verify the Sanity image URL format
         run: pnpm verify:images
 
+      # Two things the rendered-pixel contrast gate structurally cannot see: a
+      # var() that resolves to nothing (it falls back to `unset` and inherits,
+      # so there is nothing to measure), and a base rule that outranks a class
+      # on specificity. The second shipped a white-on-white call to action.
+      - name: Verify the stylesheet
+        run: pnpm verify:stylesheet
+
   contrast:
     name: APCA contrast
     runs-on: ubuntu-latest

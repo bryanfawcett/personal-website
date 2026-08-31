@@ -17,6 +17,7 @@
     "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
     "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
     "verify:contrast": "node scripts/verify-contrast.mjs",
+    "verify:stylesheet": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-stylesheet.mjs",
     "nav-portrait": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-nav-portrait.mjs"
   },
   "dependencies": {
