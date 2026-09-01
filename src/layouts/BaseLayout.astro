@@ -90,7 +90,19 @@ const switchHref = alternates?.[lang === 'en' ? 'zh' : 'en'] ?? alternatePath(pa
  *
  * The loader and this bootstrap are byte-identical on every page, so the
  * router recognises them as already-present and does not re-run them: gtag
- * is initialised once and the listener below is bound once.
+ * is initialised once and the listeners below are bound once.
+ *
+ * The second listener counts outbound clicks on the ecosystem grid, which is
+ * the one thing on this site that answers a question worth asking: which of
+ * the projects a reader actually follows. It is delegated from `document`
+ * rather than bound per link, so it survives the router's document swaps
+ * without re-binding and without stacking, and it reads `data-track-project`
+ * — the *English* title, set in `work.ts` — rather than the link's own text,
+ * which carries a Chinese gloss on two of the projects.
+ *
+ * The event is deliberately not named `click`. GA4's Enhanced Measurement
+ * emits its own `click` for every outbound link and is on by default, so
+ * reusing that name would count each of these twice.
  */
 const GA_MEASUREMENT_ID = 'G-SHMBW3J3V7';
 const gaBootstrap = `
@@ -103,6 +115,20 @@ const gaBootstrap = `
     gtag('event', 'page_view', {
       page_location: location.href,
       page_title: document.title,
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || typeof target.closest !== 'function') return;
+    var link = target.closest('[data-track-project]');
+    if (!link) return;
+
+    gtag('event', 'ecosystem_click', {
+      project: link.dataset.trackProject,
+      project_group: link.dataset.trackGroup,
+      link_url: link.href,
+      site_language: document.documentElement.lang,
     });
   });
 `;
