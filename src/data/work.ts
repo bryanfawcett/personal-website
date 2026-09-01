@@ -1,6 +1,6 @@
 import type { MineralName } from '../brand/minerals.js';
 import type { Bilingual } from '../i18n/localize.js';
-import { listInLang } from '../i18n/localize.js';
+import { inLang, listInLang } from '../i18n/localize.js';
 import type { Lang } from '../i18n/ui.js';
 
 export interface Principle {
@@ -390,11 +390,27 @@ export function sasProjects(lang: Lang): Project[] {
   return listInLang(SAS_SOURCE, lang);
 }
 
+/**
+ * A project resolved to a language, plus the language-neutral name analytics
+ * groups by.
+ *
+ * The *rendered* title is not stable across languages: a Chinese reader sees
+ * "The Bundu Foundation（本都基金会）" and "Mzizi（设计系统）", because a gloss
+ * follows the proper noun where it helps. Keying an outbound-click event on
+ * what the reader sees would therefore file one project under two names and
+ * split its row in every report. The English title is the record's own
+ * identity and never varies, so that is the key.
+ */
+export type KeyedProject = Project & { readonly key: string };
+
 /** The ecosystem grid, grouped in `PROJECT_GROUPS` order. Empty groups drop out. */
 export function nyuchiProjectsByGroup(
   lang: Lang,
-): { group: ProjectGroup; label: string; projects: Project[] }[] {
-  const projects = nyuchiProjects(lang);
+): { group: ProjectGroup; label: string; projects: KeyedProject[] }[] {
+  const projects: KeyedProject[] = NYUCHI_SOURCE.map((entry) => ({
+    ...inLang(entry, lang),
+    key: entry.title,
+  }));
 
   return PROJECT_GROUPS.map((group) => ({
     group,

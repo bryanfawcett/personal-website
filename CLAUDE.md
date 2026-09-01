@@ -163,6 +163,27 @@ leaving it on *and* sending from the router double-counts the first one, because
 page, which is what stops the router re-running them and re-initialising gtag on each
 navigation — an interpolated nonce or a per-page value in either would break that.
 
+**Outbound clicks on the ecosystem grid are counted, keyed to the English name.**
+Each tile carries `data-track-project` and `data-track-group`; one delegated
+listener on `document` turns a click into an `ecosystem_click` event. Three things
+about it are load-bearing:
+
+- **The key is the English title, not the rendered one.** `nyuchiProjectsByGroup`
+  returns a `key` alongside the localized record, because two projects carry a
+  Chinese gloss — a reader on `/zh` sees "The Bundu Foundation（本都基金会）" and
+  "Mzizi（设计系统）". Keying on link text would file those under two names and
+  split their row in every report.
+- **The event is not called `click`.** GA4's Enhanced Measurement emits its own
+  `click` for outbound links and is on by default, so that name would double-count.
+- **The listener is delegated from `document`,** so it survives the router's
+  document swaps without re-binding and without stacking. Binding per link in an
+  `astro:page-load` handler would add a second listener to every tile on every
+  return visit to `/`.
+
+The parameters (`project`, `project_group`, `link_url`, `site_language`) only
+appear in GA reports once they are registered under Admin → Custom definitions.
+Until then the event count shows up and the breakdown does not.
+
 ### Colour, spacing and size come from `src/brand/`
 
 Never hard-code a hex value outside `src/brand/`, and reach for a token before a
