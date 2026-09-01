@@ -77,6 +77,36 @@ const fullTitle = here === '/' || here === '/zh' ? title : `${title} | ${PROFILE
  */
 const switchHref = alternates?.[lang === 'en' ? 'zh' : 'en'] ?? alternatePath(path, lang);
 
+/*
+ * Google Analytics 4.
+ *
+ * `send_page_view: false`, and the page_view sent from `astro:page-load`
+ * instead. The ClientRouter swaps the document without a reload, so gtag's
+ * own automatic page view only ever fires for the first sheet a reader
+ * lands on and every later navigation goes uncounted. Sending it from the
+ * router's own event counts all of them — and leaving the automatic one on
+ * as well would double-count the first, since `astro:page-load` fires on
+ * the initial load too.
+ *
+ * The loader and this bootstrap are byte-identical on every page, so the
+ * router recognises them as already-present and does not re-run them: gtag
+ * is initialised once and the listener below is bound once.
+ */
+const GA_MEASUREMENT_ID = 'G-SHMBW3J3V7';
+const gaBootstrap = `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
+
+  document.addEventListener('astro:page-load', function () {
+    gtag('event', 'page_view', {
+      page_location: location.href,
+      page_title: document.title,
+    });
+  });
+`;
+
 const profile = profileInLang(lang);
 const t = useTranslations(lang);
 
@@ -189,6 +219,13 @@ const jsonLd = {
     </script>
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+
+    {/* Google Analytics. Loaded on every sheet, unlike the Cal.com embed on /book. */}
+    <script
+      is:inline
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+    <script is:inline set:html={gaBootstrap}></script>
 
     <ClientRouter />
   </head>
