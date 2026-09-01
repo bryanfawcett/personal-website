@@ -278,18 +278,21 @@ written without a trailing slash — 307s before it resolves. No `html_handling`
 value in `wrangler.jsonc` fixes that, because the file really does live at the
 slashed path; the build format is what decides it.
 
-### Vercel is switched off deliberately
+### Vercel is gone
 
 The domain used to point at a Vercel deployment of the old Next.js app. The apex
 `A` record and the `www` `CNAME` were replaced by the Worker Custom Domains
 above; the old values are in this repo's history if a rollback is ever needed.
 
-The repo is also still Git-connected to the `bryanfawcett-portfolio` Vercel
-project. That app no longer exists here, so every push failed that deployment.
-`vercel.json` sets `git.deploymentEnabled: false` to stop Vercel building a
-project it can no longer build. Disconnecting the Git integration in the Vercel
-dashboard would be tidier, but that is a dashboard setting rather than something
-the repo can control.
+The `bryanfawcett-portfolio` project was deleted in September 2026, and its Git
+connection to this repo went with it. Until then the project was still linked
+and still tried to build an app that no longer lived here, so `vercel.json` set
+`git.deploymentEnabled: false` to stop it failing on every push. That file was a
+muzzle on a project that now no longer exists, so it went too.
+
+Nothing here deploys to Vercel. If a push ever produces a Vercel check again, a
+project has been reconnected by hand and that is the thing to undo — do not add
+`vercel.json` back.
 
 ## Conventions
 
