@@ -150,8 +150,18 @@ repos, sharing the branding layer rather than this codebase.
 ### Everything is Astro and TypeScript
 
 No React, no client framework, no UI library. The only client JavaScript is the
-scroll-reveal observer in `BaseLayout.astro` and the deferred Cal.com loader on
-`/book`. Reach for a `<script>` in an `.astro` file before reaching for a dependency.
+scroll-reveal observer and the Google Analytics tag in `BaseLayout.astro`, and the
+deferred Cal.com loader on `/book`. Reach for a `<script>` in an `.astro` file before
+reaching for a dependency.
+
+**Analytics is GA4, and it counts navigations itself.** `gtag` is configured
+`send_page_view: false` and the `page_view` is sent from `astro:page-load`. The
+ClientRouter swaps the document without a reload, so gtag's own automatic page view
+fires only for the sheet a reader lands on and every later navigation goes uncounted;
+leaving it on *and* sending from the router double-counts the first one, because
+`astro:page-load` fires on the initial load too. Both tags are byte-identical on every
+page, which is what stops the router re-running them and re-initialising gtag on each
+navigation — an interpolated nonce or a per-page value in either would break that.
 
 ### Colour, spacing and size come from `src/brand/`
 
