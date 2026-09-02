@@ -1,11 +1,72 @@
 # robots.txt for bryanfawcett.com
 
-# Allow all crawlers
+# Content Signals
+#
+# A stated preference about how automated systems may use what is on this site.
+# The three signals mean, per the Content Signals Policy (contentsignals.org):
+#
+#   search    building a search index, and showing links back to the source
+#   ai-input  feeding the content to an AI model to help generate a response,
+#             the way an assistant cites a page it has just read
+#   ai-train  training or fine-tuning a model on the content
+#
+# Search and AI answers are welcome: both send readers back here. Training is
+# not, because it takes the writing without attribution or a route back.
+#
+# This is a declaration, not a lock. It relies on the crawler honouring it —
+# enforcement is a Cloudflare dashboard setting, not a line in this file.
+
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
-# Sitemap location
-Sitemap: https://bryanfawcett.com/sitemap.xml
+# AI crawlers, named
+#
+# The same position, spelled out for the crawlers that separate their search
+# and answer fetching from their training fetching. Where a company runs one
+# bot for each job, the search and user-initiated ones are welcome and the
+# training one is not.
 
-# LLMs context file
+# Training corpora — declined, per ai-train=no above.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+# Search and user-initiated answers — welcome, per ai-input=yes above.
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Sitemap — every route, in both languages, with hreflang alternates.
+Sitemap: https://bryanfawcett.com/sitemap-index.xml
+
+# Structured context for language models.
 # See: https://bryanfawcett.com/llms.txt

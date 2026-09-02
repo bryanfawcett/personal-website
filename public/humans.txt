@@ -5,12 +5,12 @@ Twitter: @bryanfawcett
 Location: Singapore
 
 /* THANKS */
-Nyuchi Africa Team
+The Bundu Foundation and Nyuchi Africa teams
 Singapore American School Technology & Innovation Team
 
 /* SITE */
-Last update: 2025/01/22
-Language: English
+Last update: 2026/09/02
+Language: English, Simplified Chinese
 Standards: HTML5, CSS3, ES6+
 Components: hand-written Astro components; Mzizi design system
 Software: Astro 7, TypeScript, Cloudflare Workers

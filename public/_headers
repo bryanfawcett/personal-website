@@ -1,0 +1,26 @@
+# Response headers for the static asset tree.
+#
+# The adapter puts its own immutable Cache-Control rule for /_astro/* at the
+# top of this file at build time, so what ships is that plus this — read
+# dist/client/_headers rather than this file when debugging what was served.
+
+# Discovery, per RFC 8288.
+#
+# The same two pointers the markup already carries, in the response head, so
+# an agent that issues a HEAD request — or reads only the headers of a GET —
+# finds the sitemap and the context file without parsing any HTML.
+#
+# `describedby` is the registered relation for "a resource describing this
+# one", which is what llms.txt is. `sitemap` is not in the IANA registry but
+# is the long-standing convention, and is the relation the `<link>` in
+# BaseLayout already uses; a mismatch between the two would be worse than
+# using the conventional token.
+#
+# One header field with two link-values rather than two fields: both are
+# legal, and a single field is the form least likely to be mangled in transit.
+#
+# This covers the asset tree, which is every route but the four blog ones —
+# those are rendered by the Worker, which builds its own response and never
+# consults this file.
+/*
+  Link: </sitemap-index.xml>; rel="sitemap", </llms.txt>; rel="describedby"; type="text/plain"
