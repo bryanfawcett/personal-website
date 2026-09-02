@@ -728,10 +728,11 @@ on each project. A new project needs a group, and its Chinese in the same record
 
 ### Role Title
 
-The site uses "Technology & Innovation Coordinator" throughout, matching the JSON-LD
-in `BaseLayout.astro` and the experience data. Note that the About section above says
-"Associate Technology & Innovation Coordinator" — if that is the correct current title,
-update `src/data/profile.ts` and `src/data/experience.ts` together.
+The site uses "Associate Technology & Innovation Coordinator" throughout — that is what
+`src/data/profile.ts` carries and what the JSON-LD in `BaseLayout.astro` emits, so the
+About section above and the rendered site agree. `public/llms.txt` states it too, and
+names it explicitly as the correct title, because a stale copy of a job title is the
+single most likely thing for a language model to repeat wrongly.
 
 ## Tech Stack Across Nyuchi Projects
 

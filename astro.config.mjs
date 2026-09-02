@@ -52,7 +52,26 @@ export default defineConfig({
    */
   trailingSlash: 'never',
   build: { format: 'file' },
-  integrations: [sitemap()],
+  /*
+   * The sitemap carries hreflang alternates, not just URLs.
+   *
+   * Every route exists in both languages, and the pairing is already declared
+   * in each page's head. Repeating it here is what Google asks for on a
+   * bilingual site: the two forms corroborate each other, and a crawler that
+   * reaches the sitemap first learns the pairing without fetching both pages.
+   *
+   * `en` has no path segment (prefixDefaultLocale is false), so it is the
+   * default and unprefixed URLs resolve to it; `zh` maps to the `zh-Hans`
+   * hreflang code the head already uses, rather than a bare `zh`.
+   */
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', zh: 'zh-Hans' },
+      },
+    }),
+  ],
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',
