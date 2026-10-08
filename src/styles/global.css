@@ -593,6 +593,7 @@ button {
 .panel :where(a) {
   color: var(--ink);
   text-decoration: underline;
+  text-decoration-color: var(--brand);
   text-underline-offset: 0.2em;
 }
 
@@ -630,7 +631,7 @@ button {
   padding-inline: var(--space-6);
   /*
    * Mzizi: buttons are always pills, with no drop shadow — rings over
-   * shadows. The primary fill is the brand's mineral (see SEMANTIC.brand).
+   * shadows. The fill is the site's primary, heritage river (SEMANTIC.brand).
    */
   border-radius: var(--radius-full);
   background: var(--brand);
@@ -638,7 +639,11 @@ button {
   color: var(--on-brand);
   font-family: var(--sans);
   font-size: 1rem;
-  font-weight: 600;
+  /*
+   * 700, not 600: dark text on river measures Lc 69.3, and APCA asks 16.5px
+   * of weight 600 at that contrast but 15px of weight 700.
+   */
+  font-weight: 700;
   letter-spacing: 0.01em;
   transition:
     background-color 0.15s ease,
@@ -646,8 +651,8 @@ button {
 }
 
 .btn:hover {
-  background: var(--mineral-gold-on-container);
-  border-color: var(--mineral-gold-on-container);
+  /* One colour, no tint: the hover draws the ink ring rather than mixing. */
+  border-color: var(--ink);
 }
 
 .btn.is-ghost {
@@ -698,8 +703,13 @@ button {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--stamp-ink);
+  /*
+   * Opaque, on the panel's own surface. It used to multiply into the ground,
+   * which on Mzizi's dark surfaces turned the lettering black wherever the
+   * stamp crossed the panel.
+   */
+  background: var(--sheet-wash);
   transform: rotate(-6deg);
-  mix-blend-mode: multiply;
 }
 
 /* ====================== unrolling the sheet ====================== */
@@ -1034,73 +1044,19 @@ body:lang(zh) {
  * they were only ever there to opt a selector out of it.
  */
 
-/* ---------------------------- MineralBar ---------------------------- */
+/* ---------------------------- MineralStrip ---------------------------- */
 
-.mineral-rail {
-  display: flex;
-  flex-direction: column;
-  width: var(--rail-thickness);
-}
-
-.mineral-rail.is-edge {
-  position: fixed;
-  inset-block: 0;
-  inset-inline-start: 0;
-  z-index: 60;
-  height: 100dvh;
-}
-
-.mineral-rail.is-inline {
-  height: 100%;
-}
-
-.mineral-rail__segment {
-  flex: 1;
-  /* Segments draw down the edge on load rather than snapping in. */
-  transform: scaleY(0);
-  transform-origin: center top;
-  animation: mineral-rail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.mineral-rail__segment:nth-child(1) {
-  animation-delay: 0.02s;
-}
-.mineral-rail__segment:nth-child(2) {
-  animation-delay: 0.06s;
-}
-.mineral-rail__segment:nth-child(3) {
-  animation-delay: 0.1s;
-}
-.mineral-rail__segment:nth-child(4) {
-  animation-delay: 0.14s;
-}
-.mineral-rail__segment:nth-child(5) {
-  animation-delay: 0.18s;
-}
-.mineral-rail__segment:nth-child(6) {
-  animation-delay: 0.22s;
-}
-.mineral-rail__segment:nth-child(7) {
-  animation-delay: 0.26s;
-}
-
-@keyframes mineral-rail-in {
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mineral-rail__segment {
-    transform: none;
-    animation: none;
-  }
-}
-
-@media (max-width: 51rem) {
-  .mineral-rail.is-edge {
-    width: 4px;
-  }
+/*
+ * The page-edge rail is @bundu/ui's MineralStrip (BaseLayout): fixed, full
+ * height, on every page, styled by the package itself.
+ *
+ * Mzizi's own `--primary` is pointed at the site's primary too, so anything
+ * built against the Bundu standard picks up river. `:root.dark` outranks the
+ * package's `.dark` default (tanzanite).
+ */
+:root.dark {
+  --primary: var(--brand);
+  --primary-foreground: var(--on-brand);
 }
 
 /* ---------------------------- Schematics ---------------------------- */
@@ -1220,6 +1176,12 @@ body:lang(zh) {
 .nav__cta {
   /* Clear of the pill's rounded ends, which a 44px-tall pill makes 22px deep. */
   padding-inline: var(--space-6);
+  /* A button, so it sets like one: Noto Sans 700 clears APCA on river (see .btn). */
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
   color: var(--on-brand);
   background: var(--brand);
   border-color: var(--brand);
@@ -1229,8 +1191,8 @@ body:lang(zh) {
 .nav__cta:hover,
 .nav__cta.is-current {
   color: var(--on-brand);
-  background: var(--mineral-gold-on-container);
-  border-color: var(--mineral-gold-on-container);
+  background: var(--brand);
+  border-color: var(--ink);
 }
 
 /* Mono tracking meant for Latin caps opens Han glyphs up too far. */
@@ -1239,6 +1201,10 @@ body:lang(zh) {
   font-family: var(--cjk-mono);
   letter-spacing: 0.1em;
   text-transform: none;
+}
+
+.nav__cta:lang(zh) {
+  font-family: var(--cjk);
 }
 
 @media (max-width: 40rem) {
@@ -1550,7 +1516,7 @@ figcaption {
 .card__qr {
   width: 11rem;
   padding: 0.625rem;
-  background: var(--container-cobalt);
+  background: var(--color-cobalt-container);
   border: 1px solid var(--ink-faint);
   border-radius: var(--radius-md);
 }
@@ -1740,86 +1706,6 @@ figcaption {
   .tb-cell:nth-child(3) {
     border-inline-end: none;
   }
-}
-
-/* ---------------------------- SiteFooter ---------------------------- */
-
-.footer {
-  margin-block-start: var(--space-10);
-  /*
-   * `--void` did not exist, so the footer had no ground of its own and simply
-   * showed the sheet. It reads as the foot of the drawing now: the deepest
-   * well on the page, the same recess the QR sits in.
-   */
-  background: var(--sheet-deep);
-}
-
-.footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-9);
-  padding-block: var(--space-9);
-}
-
-.footer__identity {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.footer__wordmark {
-  font-family: var(--display);
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-/*
- * `--ink-soft`, not `--faint`.
- *
- * This block referenced four custom properties that no longer exist — `--void`,
- * `--faint`, `--muted`, `--foreground`, from a vocabulary that predates
- * tokens.ts. Each silently fell back to `unset` and inherited, so the footer
- * rendered at full ink and *looked* fine: the intended hierarchy was simply
- * gone. A pixel-based contrast gate structurally cannot see this — a dropped
- * declaration leaves nothing to measure.
- */
-.footer__copy {
-  font-size: var(--label);
-  color: var(--ink-soft);
-  margin-block-start: var(--space-2);
-}
-
-.footer__columns {
-  display: flex;
-  gap: var(--space-9);
-}
-
-.footer__nav :where(ul) {
-  list-style: none;
-  padding: 0;
-  margin-block-start: var(--space-3);
-  display: flex;
-  flex-direction: column;
-}
-
-/*
- * 44px, not 40, and the label floor rather than 14px — both were under the
- * minimums stated in CLAUDE.md, and both were invisible for the same reason as
- * the colour above: nothing was measuring a footer nobody scrolled to.
- */
-.footer__nav :where(a) {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: var(--label);
-  color: var(--ink-soft);
-  transition: color 0.25s ease;
-}
-
-.footer__nav :where(a):hover {
-  color: var(--ink);
 }
 
 /* ---------------------------- HomeView ---------------------------- */

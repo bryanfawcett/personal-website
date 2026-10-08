@@ -40,7 +40,7 @@ description from here.
 | **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
 | **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
 | **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
-| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool; SAS helps maintain it |
+| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool; SAS helps maintain it and uses it free |
 | **Mukoko** | mukoko.com | Consumer pillar: super-app with a single identity across its mini-apps. Sovereign, self-held identity is a later phase — do not describe it as live |
 | **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
@@ -98,10 +98,22 @@ bryanfawcett.com, built with:
 - **The Mzizi standard** for colour, type, radius and semantics, from the Mzizi
   registry (Mzizi is a programming-language research project; its components
   and brand system support it). The site is a showcase for it.
-- **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
-  a print rather than a wash: matte board with a blue cast, line work in white.
-  The sheet is `#18202C`; panels are wells cut *into* it at `#05090F`; the ink
-  is `#FBFCFE`.
+- **The Bundu standard, from `@bundu/ui`** (pinned, MIT): its `styles/tokens.css`
+  loads first in `BaseLayout` and supplies all 21 Mzizi colour families, the
+  surface ladder, the radius scale and `--ring`; its `MineralStrip.astro` is the
+  rail. Its Button/Card/Section components are written in Tailwind utilities,
+  which this site does not run, so they are not used.
+- **Dark only** — no light ramp, no theme toggle; `<html class="dark"
+  data-theme="dark">` selects the package's dark values. Surfaces are Mzizi's
+  ladder: the page is `base` `#0E0D0C`, panels `surface` `#131211`, chips
+  `container` `#1E1D1A`; the ink is Mzizi `foreground` `#F0EFE9`. `SHEET` in
+  `tokens.ts` holds the same values as literals for the few places that need a
+  hex (the QR, the social card, the /minerals contrast table).
+- **One primary colour: heritage river `#4DD0E1`** (Bryan's choice from the
+  heritage and experimental families). It fills the primary buttons and the nav
+  button and underlines links, with Mzizi `base` as its text at weight 700 — Lc
+  69.3, which APCA clears at 15px for 700 but asks 16.5px of 600. Do not mix it
+  or add a second accent; the pillar cards keep their own brand minerals.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet
   frame there. It went, and it should not come back.
 
@@ -160,7 +172,8 @@ repos, sharing the branding layer rather than this codebase.
 
 ### Everything is Astro and TypeScript
 
-No React, no client framework, no UI library. The only client JavaScript is the
+No React, no client framework. The one UI package is `@bundu/ui`, used for its
+tokens and its Astro `MineralStrip` — no client JavaScript and no Tailwind. The only client JavaScript is the
 scroll-reveal observer and the Google Analytics tag in `BaseLayout.astro`, and the
 deferred Cal.com loader on `/book`. Reach for a `<script>` in an `.astro` file before
 reaching for a dependency.
@@ -220,8 +233,8 @@ before adding a colour, a radius or a face, and prefer its names:
   title block). Caveat stays for the margin notes and signature; it is the one
   face that is not Mzizi's.
 - **Buttons are pills** (`--radius-full`), 48px, 56px for the hero's action;
-  no drop shadows — rings over shadows. The primary fill is `--brand`, Nyuchi
-  gold, because the action is hiring Nyuchi.
+  no drop shadows — rings over shadows. The primary fill is `--brand`, river;
+  Mzizi's own `--primary` points at it too.
 - **Panels take `--radius-lg` (14px).** The corner brackets follow the curve.
 - **Focus is a 2px cobalt ring, 2px offset** (`--ring`).
 - **Theme a surface in its brand's mineral.** The system and audience cards sit
@@ -265,22 +278,18 @@ compositing to `rgb(106 112 120)` over a `rgb(5 9 15)` ground. Every text block
 that happened to cross one was scored against a ground twenty times brighter than
 the sheet. Painting the grid in `--ink-*` again re-couples them.
 
-### Surfaces go down, not up
+### Surfaces follow Mzizi's ladder
 
-The sheet is the matte board and panels are wells cut into it. Panels used to
-sit *above* a near-black ground, which left one direction for separation — up,
-toward the light — so every panel read as a bright rectangle floating on black.
-Now the near-black is the *panel*, which is where the reading happens, so ink
-sits on the darkest surface on the page rather than the lightest.
+The page is Mzizi `base`, and cards and panels sit on `surface`, one step up;
+inset chips take `container`, menus and the title block `overlay` and
+`raised`. The step between base and surface is small (judge it in CIE L\*, not
+APCA, which clamps to 0 between two near-blacks), so panels carry their hairline
+and corner brackets to separate them. The system and audience cards sit on their
+mineral's dark container instead, which is where the colour on the page lives.
 
-Judge a surface step in CIE L\*, not APCA: APCA clamps to 0 between two
-near-black surfaces and cannot see this end of the range at all. Sheet to panel
-is dL\* 9.7. The pairing readers complained about was dL\* 0.6.
-
-The ground is matte, and that is a budget rather than a look: the lighting
-radials run at about a quarter of their old alpha with most of the blue out of
-them, the base gradient is nearly flat, and the paper grain is turned up to meet
-them. Raising the radials is how the gloss comes back.
+The ground is matte and neutral: the lighting radials carry no blue, and the
+blueprint grid and grain are line work on warm stone. Raising the radials is how
+the gloss comes back.
 
 ### The ground travels with the sheet
 
@@ -313,8 +322,10 @@ Two things this breaks if you forget them:
   the top of global.css selects `*` and its two pseudo-elements, which never
   matches `::view-transition-old(root)`.
 
-The mineral rail is `transition:persist` so it does not re-mount and
-re-animate on every navigation.
+The mineral rail (`@bundu/ui`'s `MineralStrip`) is `transition:persist` so it
+does not re-mount on every navigation. It is fixed, 6px, full viewport height,
+on every page. A full-page screenshot draws a fixed element once at the top, so
+it looks like the rail stops after one screen; check it in a viewport capture.
 
 ### One stylesheet
 
@@ -421,9 +432,9 @@ older Android scanners still choke on 4.0's `KIND` and typed URLs. Lines are
 escaped and folded per RFC 6350 §3.4 — an unfolded long line is the usual reason
 a card imports with a truncated title on one platform and not another.
 
-The QR is ink (`INK.base`) on the sheet blue (`SHEET.base`), both taken from the
-tokens and written into the SVG itself, so a saved or printed code keeps its
-ground. That makes it an inverted code — light on dark — which the iOS Camera and
+The QR is ink (`INK.base`) on Mzizi's cobalt container (`#001F3F`), both taken
+from the tokens and written into the SVG itself, so a saved or printed code keeps
+its ground. That makes it an inverted code — light on dark — which the iOS Camera and
 Google Lens read; it stays that way rather than becoming a white box on a dark
 site. The site is dark only, so there is no light-theme variant to keep in step.
 If you change the payload or the styling, re-verify by decoding a real screen
@@ -635,6 +646,7 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 ## Common Pitfalls
 
 1. **All CSS is in `src/styles/global.css`; components carry no `<style>`.**
+   The one exception is `@bundu/ui`'s `MineralStrip`, which styles itself.
    See *One stylesheet* below. Adding a scoped block back puts one rule
    somewhere nobody will look for it, and re-arms the specificity trap.
 2. **`threshold: 0` on IntersectionObserver reveals.** A section taller than the
@@ -754,7 +766,8 @@ revenue is the priority. Everything on `/` serves that:
   weather chain, and the Bundu Foundation with Mzizi.
 - **The Toddle Enhancement Extension is Nyuchi's, not SAS's.** Bryan built it
   through Nyuchi in his own time to solve problems he saw at SAS; SAS did not
-  commission it and does not own it, though SAS helps maintain it. Say exactly
+  commission it and does not own it, though SAS helps maintain it, and SAS uses
+  it free of charge — it has never paid for a licence. Say exactly
   that and no more: it is never presented as an SAS tool, and it does not go on
   the SAS system card. It lives on `/experience` as a Nyuchi Learning tile. Each answers the same three
   questions in order: who it is for, how the parts connect, what changed. A fourth

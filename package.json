@@ -22,6 +22,7 @@
     "cjk": "node scripts/build-cjk-subset.mjs"
   },
   "dependencies": {
+    "@bundu/ui": "0.5.0",
     "@portabletext/to-html": "^6.0.0",
     "astro": "^7.2.7"
   },
@@ -31,8 +32,8 @@
     "@astrojs/sitemap": "^3.7.3",
     "@types/qrcode": "^1.5.6",
     "apca-w3": "^0.1.9",
-    "qrcode": "^1.5.4",
     "playwright": "^1.56.1",
+    "qrcode": "^1.5.4",
     "sharp": "^0.35.4",
     "typescript": "^6.0.3",
     "wrangler": "^4.126.0"

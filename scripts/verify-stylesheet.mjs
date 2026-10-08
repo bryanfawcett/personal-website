@@ -29,13 +29,19 @@ import { tokensToCss } from '../src/brand/tokens.ts';
 
 const CSS_PATH = new URL('../src/styles/global.css', import.meta.url);
 const css = readFileSync(CSS_PATH, 'utf8');
+/* The Bundu standard's tokens load first (BaseLayout) and define the Mzizi
+ * colour families, surface ladder, radii and --ring the site reads. */
+const BUNDU_TOKENS = readFileSync(
+  new URL('../node_modules/@bundu/ui/styles/tokens.css', import.meta.url),
+  'utf8',
+);
 
 /* Properties set by markup rather than by the stylesheet. `--mineral`, and the
  * `--mineral-container` / `--mineral-on` pair that themes a surface in its
- * mineral, come from the `mineral` prop on Panel or from `keyedTo()`;
- * `--rail-thickness` from MineralBar's own inline style. Add to this list only
- * for a property a component genuinely sets inline, never to silence a typo. */
-const SET_INLINE = new Set(['--mineral', '--mineral-container', '--mineral-on', '--rail-thickness']);
+ * mineral, come from the `mineral` prop on Panel or from `keyedTo()`. Add to
+ * this list only for a property a component genuinely sets inline, never to
+ * silence a typo. */
+const SET_INLINE = new Set(['--mineral', '--mineral-container', '--mineral-on']);
 
 /*
  * Blank the comments out rather than deleting them: line numbers have to stay
@@ -49,9 +55,10 @@ const fail = [];
 {
   const used = new Set([...body.matchAll(/var\((--[a-z0-9-]+)/g)].map((m) => m[1]));
   const declared = new Set([...body.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]));
-  const emitted = new Set(
-    [...tokensToCss().matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]),
-  );
+  const emitted = new Set([
+    ...[...tokensToCss().matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]),
+    ...[...BUNDU_TOKENS.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]),
+  ]);
 
   const unresolved = [...used].filter(
     (p) => !declared.has(p) && !emitted.has(p) && !SET_INLINE.has(p),

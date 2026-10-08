@@ -1,10 +1,16 @@
 ---
+/*
+ * The Bundu standard first: @bundu/ui's tokens carry all 21 Mzizi colour
+ * families, the surface ladder and the radius scale. The site's own tokens
+ * and global.css build on top of them, so they load after.
+ */
+import '@bundu/ui/styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import { tokensToCss } from '../brand/tokens.js';
 import { unroll } from '../brand/transitions.js';
-import MineralBar from '../components/MineralBar.astro';
+import MineralStrip from '@bundu/ui/MineralStrip.astro';
 import Schematics from '../components/Schematics.astro';
 import SiteNav from '../components/SiteNav.astro';
 import TitleBlock from '../components/TitleBlock.astro';
@@ -171,7 +177,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang={bcp47[lang]} dir={direction[lang]} class="no-js">
+<html lang={bcp47[lang]} dir={direction[lang]} class="no-js dark" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -261,7 +267,8 @@ const jsonLd = {
     <div class="sheet-ground" aria-hidden="true"></div>
     <div class="blueprint" aria-hidden="true"></div>
     <Schematics />
-    <MineralBar placement="edge" transition:persist />
+    {/* The Bundu mineral strip: fixed to the left edge, full height, every page. */}
+    <MineralStrip transition:persist />
 
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
 

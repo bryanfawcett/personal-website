@@ -32,48 +32,39 @@ import { MINERALS } from './minerals.js';
  * the pairing readers complained about was dL* 0.6.
  */
 export const SHEET = {
-  /** The deepest well — the QR ground and the media wells. */
-  deep: '#01040A',
   /**
-   * Panel fill.
-   *
-   * Opaque, and recessed below the sheet. It used to be a 0.86-alpha wash so
-   * the lighting gradient showed through, which is exactly what made a panel
-   * indistinguishable from the page: the two were the same paint. A well has
-   * its own floor.
+   * The Mzizi surface ladder, dark mode (`@bundu/ui` styles/tokens.css,
+   * generated from Mzizi canon). Literal here because a few things need a
+   * hex rather than a var(): the QR, the social card, the contrast table on
+   * /minerals. The values must match the package; `verify-stylesheet` reads
+   * both.
    */
-  wash: '#05090F',
-  /** A shallower recess — chips and inset fields. */
-  washLight: '#0B1119',
-  /** Grouped regions: barely sunk, just enough to group. */
-  mid: '#10161F',
-  /**
-   * The sheet itself — the matte board everything is cut into.
-   *
-   * Lifted from #05090F. That was a near-black with a blue cast under a set of
-   * lighting radials, and the radials were doing the work of making it look
-   * like a surface. A matte board does not need them.
-   */
-  base: '#18202C',
-  /** The few things that genuinely sit above the sheet: menus, hover, the title block. */
-  raised: '#2A3749',
+  /** Mzizi `pitch` — the deepest surface: media wells, the QR's frame. */
+  deep: '#050505',
+  /** Mzizi `surface` — cards and panels. */
+  wash: '#131211',
+  /** Mzizi `container` — chips, inset fields, grouped content. */
+  washLight: '#1E1D1A',
+  /** Mzizi `overlay` — overlays and the title block. */
+  mid: '#23221F',
+  /** Mzizi `base` — the page itself. */
+  base: '#0E0D0C',
+  /** Mzizi `raised` — menus, hover, things above the page. */
+  raised: '#2E2C29',
 } as const;
 
 /**
  * The drawn line, at the weights a technical pen offers.
  *
- * White rather than the old pale blue: against a near-black ground the blue
- * cast only muddied it, and the base has been lifted from #F2F6FB now that the
- * panels are recessed rather than raised — the ink has a darker surface under
- * it, so it can afford to be brighter without glare. Full-strength ink on a
- * panel measures Lc 105.
+ * Mzizi's dark `foreground`, #F0EFE9: a warm off-white that sits on the
+ * warm-stone surfaces without the blue cast the old cyanotype ink carried.
  *
  * The alpha steps are the site's real contrast control. `faint` and `hair` are
  * line work only: see RULE below for why the grid does not share them.
  */
 export const INK = {
   /** Full-strength line and heading text. */
-  base: '#FBFCFE',
+  base: '#F0EFE9',
   /**
    * Body copy inside panels.
    *
@@ -82,15 +73,15 @@ export const INK = {
    * every label using it ran at 10-11px. Raised until the sizes the design
    * actually uses are the sizes APCA allows.
    */
-  body: 'rgb(251 252 254 / 0.97)',
+  body: 'rgb(240 239 233 / 0.97)',
   /** Secondary text and dimension labels. */
-  soft: 'rgb(251 252 254 / 0.94)',
+  soft: 'rgb(240 239 233 / 0.94)',
   /** Panel borders, column rules, section rules. Non-text only. */
-  faint: 'rgb(251 252 254 / 0.42)',
+  faint: 'rgb(240 239 233 / 0.42)',
   /** The lightest line work. Non-text only. */
-  hair: 'rgb(251 252 254 / 0.24)',
+  hair: 'rgb(240 239 233 / 0.24)',
   /** Fill inside stroked display type, so the outline still reads as solid. */
-  drafted: 'rgb(251 252 254 / 0.34)',
+  drafted: 'rgb(240 239 233 / 0.34)',
 } as const;
 
 /**
@@ -109,15 +100,15 @@ export const INK = {
  */
 export const GROUND = {
   /** The lit corner, top left — a fall of light, not a highlight. */
-  lit: 'rgb(38 48 64 / 0.12)',
+  lit: 'rgb(48 46 42 / 0.12)',
   /** The shaded corner, bottom right. */
-  shade: 'rgb(2 4 8 / 0.30)',
+  shade: 'rgb(0 0 0 / 0.30)',
   /** A second, weaker source. */
-  glow: 'rgb(32 42 58 / 0.07)',
+  glow: 'rgb(40 38 34 / 0.07)',
   /** The pool of dark it leaves. */
-  pool: 'rgb(2 4 8 / 0.22)',
+  pool: 'rgb(0 0 0 / 0.22)',
   /** Fall-off at the margins, as a board has where it has been handled. */
-  vignette: 'rgb(1 2 5 / 0.42)',
+  vignette: 'rgb(0 0 0 / 0.42)',
 } as const;
 
 /** Marks made by hand rather than by pen. */
@@ -151,7 +142,7 @@ export const MARKS = {
   /** Cast shadow under a drafted panel. */
   shadow: 'rgb(0 0 0 / 0.55)',
   /** The hairline inset that gives a panel its thickness. */
-  inset: 'rgb(242 246 251 / 0.06)',
+  inset: 'rgb(240 239 233 / 0.06)',
 } as const;
 
 /**
@@ -254,9 +245,9 @@ export const GRID = {
  */
 export const RULE = {
   /** Major grid line, at 120px. */
-  major: 'rgb(242 246 251 / 0.16)',
+  major: 'rgb(240 239 233 / 0.16)',
   /** Minor grid line, at 24px. */
-  minor: 'rgb(242 246 251 / 0.09)',
+  minor: 'rgb(240 239 233 / 0.09)',
 } as const;
 
 export const TYPE = {
@@ -318,32 +309,22 @@ export const TYPE = {
 } as const;
 
 /**
- * Mzizi's radius scale and the semantic roles this site uses, from the
- * registry (doctrine v4.1.0). Cards and panels take `lg`, buttons `full`.
- */
-export const RADIUS = {
-  none: '0px',
-  xs: '4px',
-  sm: '7px',
-  md: '12px',
-  lg: '14px',
-  xl: '17px',
-  '2xl': '24px',
-  full: '9999px',
-} as const;
-
-/**
- * Mzizi semantic colours, dark values.
+ * Mzizi's radius scale, its `--color-*` families (all 21) and `--ring` are not
+ * defined here: they come from `@bundu/ui/styles/tokens.css`, which
+ * BaseLayout loads ahead of these tokens, so there is one source for them.
  *
- * `ring` is cobalt: Mzizi's focus indicator, 2px with a 2px offset. `brand`
- * is the mineral the page's primary action wears — Nyuchi's gold, because
- * the action on this site is hiring Nyuchi (Mzizi: theme a surface in its
- * brand's mineral). `onBrand` is the text on that fill.
+ * The site's one primary colour: Mzizi heritage **river** (dark value), the
+ * great rivers — Zambezi, Nile, Congo — flow and the journey. Chosen by Bryan
+ * from the heritage and experimental families, and used alone: the primary
+ * action, the nav button and link underlines. The pillar cards keep their own
+ * brand minerals, because those say which pillar is which.
+ *
+ * `onBrand` is Mzizi's dark `base`: Lc 69 on river, so a 16px/600 label clears
+ * APCA comfortably. River also reads as text on the page (Lc 68).
  */
 export const SEMANTIC = {
-  ring: '#00B0FF',
-  brand: '#FFD740',
-  onBrand: '#1A1300',
+  brand: '#4DD0E1',
+  onBrand: '#0E0D0C',
 } as const;
 
 /**
@@ -362,17 +343,6 @@ export function tokensToCss(): string {
     lines.push(`  --mineral-${m.name}-on-container: ${m.onContainer};`);
   }
 
-  /*
-   * The same minerals under Mzizi's own names, so markup and CSS written
-   * against the Mzizi standard (`--color-cobalt`, `--container-gold`) work
-   * here unchanged. Dark values: the site is dark only.
-   */
-  lines.push('  /* Mzizi standard names */');
-  for (const m of MINERALS) {
-    lines.push(`  --color-${m.name}: ${m.hex};`);
-    lines.push(`  --container-${m.name}: ${m.container};`);
-    lines.push(`  --on-container-${m.name}: ${m.onContainer};`);
-  }
 
   const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
     ['Sheet', 'sheet', SHEET],
@@ -386,7 +356,6 @@ export function tokensToCss(): string {
     ['Grid', 'grid', GRID],
     ['Rule', 'rule', RULE],
     ['Type', '', TYPE],
-    ['Radius', 'radius', RADIUS],
     ['Semantic', '', SEMANTIC],
   ];
 
