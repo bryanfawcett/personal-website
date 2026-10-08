@@ -19,34 +19,41 @@ This document provides essential context for AI assistants working on this Astro
 ### The Bundu Ecosystem (Passion Project)
 
 Bryan is Founder & CEO of Nyuchi Africa and Founder of **The Bundu Foundation** — a
-Zimbabwean company limited by guarantee researching the open agricultural data
-commons and the standards it will run on, under the Ubuntu philosophy ("I am
-because we are"). Research comes first there; the governance layer itself is not
-yet fully built. Nyuchi Africa, Mukoko and Shamwari AI are the Foundation's three
-pillars; StationKit and Mukoko Weather are how the commons gets filled and put to
-use once it exists.
+Zimbabwean research foundation, a company limited by guarantee, whose main activity
+is research into infrastructure gaps in African and emerging markets, under the
+Ubuntu philosophy ("I am because we are"). Research comes first there; the
+governance layer itself is not yet fully built. It governs four pillars: Bundu Labs
+(research), Nyuchi Africa (commercial), Mukoko (consumer) and Shamwari AI
+(community). StationKit and Mukoko Weather are how the open data commons gets
+filled and put to use.
+
+The live sites are the source of truth for all of this, and they move faster than
+this file. Check bundu.org, nyuchi.com, mukoko.com and mzizi.dev before repeating a
+description from here.
 
 | Platform | URL | Description |
 |----------|-----|-------------|
-| **The Bundu Foundation** | bundu.org | Research, open standards, and the agricultural data commons — in progress |
-| **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
-| **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar-powered weather + soil station, from $25 |
-| **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
-| **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform for African languages |
-| **Mukoko** | mukoko.com | Privacy-focused social platform with 6 apps (ID, Clips, Pulse, Connect, Novels, Events) |
-| **Mukoko Weather** | weather.mukoko.com | AI-powered hyperlocal forecasts for farming, mining and travel |
+| **The Bundu Foundation** | bundu.org | Research foundation (Zimbabwe CLG) governing four pillars — governance in progress |
+| **Mzizi** | mzizi.dev | Programming-language research project (Phase 0); publishes every benchmark run, including negative ones. Its brand system supplies this site's minerals |
+| **Bundu Labs** | bundu.org/research | Research pillar: open standards, benchmarks and frameworks |
+| **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
+| **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
+| **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
+| **Mukoko** | mukoko.com | Consumer pillar: privacy-first super-app of mini-apps under one identity |
+| **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
-| **Nhimbe** | nhimbe.com | Community events and gatherings platform (part of Mukoko ecosystem) |
-| **Shamwari AI** | shamwari.ai | Open-source, culturally-grounded AI model for low-bandwidth African hardware |
-| **Zimbabwe Travel Info** | travel-info.co.zw | Comprehensive travel guide for Zimbabwe |
+| **Mukoko Lingo** | lingo.mukoko.com | African language learning, Shona and Ndebele first (was Nyuchi Lingo) |
+| **Mukoko Events** | events.mukoko.com | Community events and gatherings (was Nhimbe; nhimbe.com no longer resolves) |
+| **Shamwari AI** | shamwari.ai | Community pillar: a companion answering in Shona, Ndebele and English, citing sources |
+| **Zimbabwe Information Platform** | travel-info.co.zw | Foundation initiative: verified directories, travel and business information |
 | **Iconic Expeditions** | iconic-expeditions.com | Luxury bespoke safaris across Southern and Eastern Africa |
 | **Workspace Tools** | (internal) | Gmail signature management for Google Workspace |
 
 The Foundation also directly maintains six open-source technical projects (Neural
 Transfer Layer, Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi
 itself) across the `bundu-labs`, `openNTL` and `siafuDB` GitHub organizations. None
-of those are showcased individually on this site — Mzizi is, as the branding layer
-this site is built on.
+of those are showcased individually on this site except Mzizi, which appears on the
+home page as proof of how the work is done: measured, and published either way.
 
 ### GitHub Organizations
 
@@ -86,7 +93,8 @@ bryanfawcett.com, built with:
 - **Astro 7** — no client framework, no React
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
-- **Mzizi design system** for colour, surfaces and semantics
+- **Mzizi's brand system** for colour, surfaces and semantics (Mzizi itself is a
+  programming-language research project; its registry carries the minerals)
 - **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
   a print rather than a wash: matte board with a blue cast, line work in white.
   The sheet is `#18202C`; panels are wells cut *into* it at `#05090F`; the ink
@@ -163,7 +171,7 @@ leaving it on *and* sending from the router double-counts the first one, because
 page, which is what stops the router re-running them and re-initialising gtag on each
 navigation — an interpolated nonce or a per-page value in either would break that.
 
-**Outbound clicks on the ecosystem grid are counted, keyed to the English name.**
+**Outbound clicks on the ecosystem grid (on `/experience`) are counted, keyed to the English name.**
 Each tile carries `data-track-project` and `data-track-group`; one delegated
 listener on `document` turns a click into an `ecosystem_click` event. Three things
 about it are load-bearing:
@@ -171,7 +179,7 @@ about it are load-bearing:
 - **The key is the English title, not the rendered one.** `nyuchiProjectsByGroup`
   returns a `key` alongside the localized record, because two projects carry a
   Chinese gloss — a reader on `/zh` sees "The Bundu Foundation（本都基金会）" and
-  "Mzizi（设计系统）". Keying on link text would file those under two names and
+  "Mzizi（编程语言研究）". Keying on link text would file those under two names and
   split their row in every report.
 - **The event is not called `click`.** GA4's Enhanced Measurement emits its own
   `click` for outbound links and is on by default, so that name would double-count.
@@ -415,7 +423,7 @@ the reader back on the home page.
   ecosystem grid; splitting project copy into the chrome dictionary would give
   it two.
 - **Proper nouns are never translated.** Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,
-  Nhimbe, the school names — Latin script in both, with a short Chinese gloss in
+  the school names — Latin script in both, with a short Chinese gloss in
   parentheses where a reader needs the handhold. The vCard and its QR stay
   English in both languages: it is one canonical contact record, and a card that
   differs by which page it was scanned from is a duplicate contact waiting to
@@ -711,14 +719,38 @@ Two passes are still run by hand and are not gated:
 
 ### Projects Listed
 
-`src/data/work.ts` (`nyuchiProjects`) is the single source of truth for the ecosystem
-grid on `/` — The Bundu Foundation, Mzizi, Nyuchi Africa, Nyuchi StationKit, Nyuchi
-Learning, Nyuchi Lingo, Mukoko, Mukoko Weather, Mukoko News, Nhimbe, Shamwari AI,
-Zimbabwe Travel Info and Iconic Expeditions. Add new ecosystem projects there — the
-homepage section-head text describes the Foundation/pillar relationship in general
-terms rather than naming each project, so it should not need to change alongside it.
+### The home page has one visitor and one action
 
-The grid is grouped rather than one flat run of thirteen tiles: `foundation`,
+The visitor is an organisation deciding whether to hire Nyuchi; the action is
+booking a call on `/book`. Bryan chose this over schools and over funders because
+revenue is the priority. Everything on `/` serves that:
+
+- **Identity:** "Digital Craftsman, builder of communities", with systems thinking
+  as the thread — how people, data, tools and constraints connect. Shown through
+  the work, never claimed in an adjective.
+- **At most three featured systems** (`systems()` in `work.ts`): SAS, Nyuchi's
+  weather chain, and the Bundu Foundation with Mzizi. Each answers the same three
+  questions in order: who it is for, how the parts connect, what changed. A fourth
+  means one comes off.
+- **Do not frame Bryan around AI.** No "AI-powered" in copy. Shamwari AI appears
+  as a pillar's name and nothing more.
+- **No number without proof.** Every figure on the page is one a live site states
+  today. User counts, client names and quotes go in when they exist, not before.
+  The call is described as "free", not "30-minute": the Cal.com event types are 15,
+  45 and 90 minutes, and none is a scoping call yet.
+- **Tokens stay off the site** (MIT, MXT, NST, NHC). To a buyer they read as risk.
+
+### Projects Listed
+
+`src/data/work.ts` (`nyuchiProjects`) is the single source of truth for the ecosystem
+grid, which lives on `/experience` (`#ecosystem`), not on `/` — The Bundu Foundation,
+Mzizi, Bundu Labs, Nyuchi Africa, Mukoko, Shamwari AI, Nyuchi StationKit, Mukoko
+Weather, Mukoko News, Nyuchi Learning, Mukoko Lingo, Mukoko Events, the Zimbabwe
+Information Platform and Iconic Expeditions. Add new ecosystem projects there — the
+section lede describes the Foundation/pillar relationship in general terms rather
+than naming each project, so it should not need to change alongside it.
+
+The grid is grouped rather than one flat run of tiles: `foundation`,
 `pillars`, `commons`, `community`, `travel`, in that order, from the `group` field
 on each project. A new project needs a group, and its Chinese in the same record.
 
@@ -745,4 +777,4 @@ For context, the broader ecosystem uses:
 - **AI:** DeepSeek via Cloudflare AI Gateway
 - **Payments:** Stripe
 - **Deployment:** Cloudflare Workers
-- **Design system:** Mzizi (mzizi.dev)
+- **Brand system:** Mzizi (mzizi.dev)

@@ -8,8 +8,8 @@
  * block. Splitting it the other way would give the ecosystem grid two sources
  * of truth, and `src/data/work.ts` is meant to be the only one.
  *
- * Proper nouns are never translated. Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,
- * Nhimbe and SAS stay in Latin script; where a reader needs a handhold, a
+ * Proper nouns are never translated. Nyuchi, Mukoko, Bundu, Shamwari, Mzizi
+ * and SAS stay in Latin script; where a reader needs a handhold, a
  * short Chinese gloss follows in parentheses on first use rather than
  * replacing the name.
  */
@@ -64,9 +64,13 @@ export const ui = {
     'tb.rev': 'Rev',
 
     // --- home ---
-    'home.eyebrow': 'Harare → Singapore · Building since 2012',
+    'home.eyebrow': 'Builder of communities · Harare → Singapore · since 2012',
     'home.solid': 'Digital',
     'home.drafted': 'Craftsman',
+    'home.sub':
+      'I design for how people, data, tools and constraints connect, not single features. Through Nyuchi Africa, my team builds that for organisations whose people work offline, outdoors and in more than one language.',
+    'home.cta_primary': 'Book a scoping call',
+    'home.cta_secondary': 'See the systems',
     'home.note': 'measure twice,\nship once',
     'home.dimension': 'Drawn to scale',
 
@@ -74,6 +78,23 @@ export const ui = {
     'home.strip_a': 'Harare, ZW',
     'home.strip_b': 'Singapore',
     'home.strip_c': 'The workbench',
+
+    'home.who_eyebrow': 'Sheet 01 · Who we build for',
+    'home.who_note': 'the people, first',
+    'home.who_heading': 'Who we build for',
+
+    'home.systems_eyebrow': 'Sheet 02 · Three systems',
+    'home.systems_note': 'the whole drawing, not one part',
+    'home.systems_heading': 'Three systems, and how their parts connect',
+    'home.systems_fig': 'Fig.',
+    'home.systems_people': 'For',
+    'home.systems_system': 'The system',
+    'home.systems_result': 'What changed',
+
+    'home.steps_eyebrow': 'Sheet 03 · How a job runs',
+    'home.steps_note': 'the same four steps, every time',
+    'home.steps_heading': 'How a job runs',
+    'home.steps_fig': 'Step',
 
     'home.quote_fig': 'Message from the bench',
     'home.quote_heading': 'Message from the bench',
@@ -84,45 +105,19 @@ export const ui = {
     'home.quote_after': ' you build it with.”',
     'home.quote_sig': '— Bryan',
 
-    'home.philosophy_eyebrow': 'Sheet 01 · Philosophy',
-    'home.philosophy_note': 'how the work gets made',
-    'home.philosophy_heading': 'Philosophy and approach',
-
-    'home.competencies_eyebrow': 'Sheet 02 · Core competencies',
-    'home.competencies_note': '10+ years at the bench',
-    'home.competencies_heading': 'Core competencies',
-    'home.fig_1': 'Fig. 01 — Structure',
-    'home.fig_2': 'Fig. 02 — Framing',
-    'home.fig_3': 'Fig. 03 — Finish',
-    'home.fig_4': 'Fig. 04 — Detail',
-
-    'home.projects_eyebrow': 'Sheet 03 · Assemblies',
-    'home.projects_heading': 'Projects and work',
-    'home.projects_group': 'The Bundu Ecosystem',
-    'home.projects_lede':
-      'Nyuchi Africa, Mukoko and Shamwari AI are the three pillars of the Bundu Foundation, a Zimbabwean nonprofit whose research comes first — the open agricultural data commons and the standards it will run on are still being built. Digital solutions across Africa, from weather stations to travel systems and community networks.',
-    'home.projects_sas': 'Singapore American School',
-    'home.projects_visit': 'Visit →',
-    'home.projects_repo': 'Repository →',
-
-    'home.nav_eyebrow': 'Sheet 04 · Navigation',
-    'home.nav_heading': 'Where to next',
-    'home.split_at': 'At the',
-    'home.split_off': 'Off the',
-    'home.split_bench': 'Bench',
-    'home.split_at_body':
-      'Current builds, career work, and the systems taking shape — from Nyuchi Africa to EdTech at scale.',
-    'home.split_off_body':
-      'Collaboration, strategy sessions, and conversations about African tech, education, and community.',
-
-    'home.toolmarks_label': 'Tools of the trade',
+    'home.bigger_fig': 'Fig. 04 — The wider drawing',
+    'home.bigger_heading': 'Where Nyuchi sits',
+    'home.bigger_body':
+      'Nyuchi Africa is the commercial pillar of The Bundu Foundation, a Zimbabwean research foundation with four pillars: Bundu Labs for research, Mukoko for consumers, Nyuchi for organisations, and Shamwari AI for community. What we learn building for one goes into the standards the others are held to.',
+    'home.bigger_all': 'All projects',
+    'home.bigger_bundu': 'bundu.org',
 
     'home.connect_fig': 'Fig. 05 — Commission',
-    'home.connect_stamp': 'Open to work',
-    'home.connect_heading': 'Let’s build something together',
+    'home.connect_stamp': 'Now booking',
+    'home.connect_heading': 'Bring the drawing',
     'home.connect_lede':
-      'EdTech solutions, African tech initiatives, or digital innovation strategy — commissions welcome at the workshop.',
-    'home.connect_cta': 'Book a call',
+      'If your people work offline, outdoors or in more than one language, start with a free call. You will leave with a clearer picture of the system, whether or not you hire us.',
+    'home.connect_cta': 'Book a scoping call',
 
     // --- contact card ---
     'card.fig': 'Fig. 00 — The draughtsman',
@@ -140,6 +135,14 @@ export const ui = {
     'exp.credentials_heading': 'Education and certifications',
     'exp.skills_eyebrow': 'Schedule C · Toolkit',
     'exp.skills_heading': 'Core skills',
+    'exp.ecosystem_eyebrow': 'Schedule D · Everything at the bench',
+    'exp.ecosystem_heading': 'Projects and work',
+    'exp.ecosystem_group': 'The Bundu Ecosystem',
+    'exp.ecosystem_lede':
+      'The Bundu Foundation is a Zimbabwean research foundation, and research into infrastructure gaps comes first. It governs four pillars: Bundu Labs, Nyuchi Africa, Mukoko and Shamwari AI. Below, what each builds, linked to the live site.',
+    'exp.ecosystem_sas': 'Singapore American School',
+    'exp.ecosystem_visit': 'Visit →',
+    'exp.ecosystem_repo': 'Repository →',
 
     // --- origins ---
     'origins.eyebrow': 'Sheet 04 · Off the bench',
@@ -220,7 +223,7 @@ export const ui = {
     'minerals.eyebrow': 'Sheet 05 · Legend',
     'minerals.title': 'The mineral rail',
     'minerals.description':
-      'Seven minerals from across Africa, one per segment of the rail down the edge of every page — what each stands for, where it is mined, and how it is used. Drawn from the Mzizi design system.',
+      'Seven minerals from across Africa, one per segment of the rail down the edge of every page — what each stands for, where it is mined, and how it is used. Drawn from Mzizi’s brand system.',
     'minerals.lede':
       'Seven segments run down the binding edge of every page on this site. Each is a mineral mined in Africa, and each carries a meaning the interface actually uses. This is the key.',
     'minerals.note': 'read the edge',
@@ -234,7 +237,7 @@ export const ui = {
     'minerals.why_p1_sep2': ' and ',
     'minerals.why_p1_mid':
       ' tells you where a colour goes and nothing about why it exists. The ',
-    'minerals.why_p1_link': 'Mzizi design system',
+    'minerals.why_p1_link': 'Mzizi brand system',
     'minerals.why_p1_after':
       ' names its colours after minerals mined across the continent, and keeps the provenance attached: where the stone comes from, what it stands for, what it is for in an interface.',
     'minerals.why_p2':
@@ -244,7 +247,7 @@ export const ui = {
     'minerals.why_p3_mid':
       ' project in the Bundu ecosystem, built on the Ubuntu principle that gives the whole thing its shape — ',
     'minerals.why_p3_ubuntu': 'I am because we are',
-    'minerals.why_p3_after': '. The system, its tokens and its accessibility toolkit are at ',
+    'minerals.why_p3_after': '. Its brand system, tokens and accessibility toolkit are at ',
     'minerals.why_p3_end': '.',
 
     'minerals.key_eyebrow': 'Sheet 05 · The seven',
@@ -275,9 +278,9 @@ export const ui = {
     'book.eyebrow': 'Sheet 06 · Commission',
     'book.title': 'Book a call',
     'book.description':
-      'Book a conversation with Bryan Fawcett about EdTech, digital transformation, systems architecture, or building for African communities.',
+      'Book a call with Bryan Fawcett to scope a build with Nyuchi Africa, or to talk about EdTech, systems architecture, and building for African communities.',
     'book.lede':
-      'Let’s discuss your project, explore collaboration, or talk about EdTech, digital transformation, and building for African communities.',
+      'Bring the drawing, however rough. We will work out who it is for, what it runs on and where it breaks, then whether Nyuchi is the right team to build it.',
     'book.note': 'bring the drawing',
     'book.topics_eyebrow': 'What to expect',
     'book.topics_heading': 'Worth talking about',
@@ -341,9 +344,13 @@ export const ui = {
     'tb.rev': '版次',
 
     // --- home ---
-    'home.eyebrow': '哈拉雷 → 新加坡 · 自 2012 年起动手打造',
+    'home.eyebrow': '社区的建造者 · 哈拉雷 → 新加坡 · 自 2012 年起',
     'home.solid': '数字',
     'home.drafted': '工匠',
+    'home.sub':
+      '我设计的不是单个功能，而是人、数据、工具与约束之间如何相连。通过 Nyuchi Africa，我的团队为那些在离线、户外、多语言环境中工作的机构，把这样的系统建造出来。',
+    'home.cta_primary': '预约需求梳理通话',
+    'home.cta_secondary': '看看这些系统',
     'home.note': '量两次，\n出一次',
     'home.dimension': '按比例绘制',
 
@@ -351,6 +358,23 @@ export const ui = {
     'home.strip_a': '津巴布韦 哈拉雷',
     'home.strip_b': '新加坡',
     'home.strip_c': '工作台',
+
+    'home.who_eyebrow': '图 01 · 为谁而建',
+    'home.who_note': '先看人',
+    'home.who_heading': '为谁而建',
+
+    'home.systems_eyebrow': '图 02 · 三个系统',
+    'home.systems_note': '看整张图，而不是一个零件',
+    'home.systems_heading': '三个系统，以及它们的部件如何相连',
+    'home.systems_fig': '图',
+    'home.systems_people': '服务对象',
+    'home.systems_system': '系统',
+    'home.systems_result': '带来的改变',
+
+    'home.steps_eyebrow': '图 03 · 一项工作如何进行',
+    'home.steps_note': '每一次，都是这四步',
+    'home.steps_heading': '一项工作如何进行',
+    'home.steps_fig': '步骤',
 
     'home.quote_fig': '匠人寄语',
     'home.quote_heading': '匠人寄语',
@@ -361,44 +385,19 @@ export const ui = {
     'home.quote_after': '并肩共建。」',
     'home.quote_sig': '——Bryan',
 
-    'home.philosophy_eyebrow': '图 01 · 理念',
-    'home.philosophy_note': '作品如何成形',
-    'home.philosophy_heading': '理念与方法',
-
-    'home.competencies_eyebrow': '图 02 · 核心专长',
-    'home.competencies_note': '十余年伏案打磨',
-    'home.competencies_heading': '核心专长',
-    'home.fig_1': '图 01 — 结构',
-    'home.fig_2': '图 02 — 框架',
-    'home.fig_3': '图 03 — 收尾',
-    'home.fig_4': '图 04 — 细部',
-
-    'home.projects_eyebrow': '图 03 · 组件',
-    'home.projects_heading': '作品与项目',
-    'home.projects_group': 'Bundu 生态（本都生态）',
-    'home.projects_lede':
-      'Nyuchi Africa、Mukoko 与 Shamwari AI 是 The Bundu Foundation 的三大支柱。这家津巴布韦非营利机构以研究先行——开放农业数据共享库及其所依托的标准仍在建设之中。生态覆盖全非洲的数字方案，从气象站到旅行系统，再到社区网络。',
-    'home.projects_sas': 'Singapore American School（新加坡美国学校）',
-    'home.projects_visit': '访问 →',
-    'home.projects_repo': '代码库 →',
-
-    'home.nav_eyebrow': '图 04 · 导览',
-    'home.nav_heading': '下一站',
-    'home.split_at': '在',
-    'home.split_off': '离开',
-    'home.split_bench': '工作台',
-    'home.split_at_body':
-      '正在进行的构建、职业历程，以及逐渐成形的系统——从 Nyuchi Africa 到规模化的教育科技。',
-    'home.split_off_body': '合作、策略研讨，以及关于非洲科技、教育与社区的对话。',
-
-    'home.toolmarks_label': '常用工具',
+    'home.bigger_fig': '图 04 — 更大的图纸',
+    'home.bigger_heading': 'Nyuchi 的位置',
+    'home.bigger_body':
+      'Nyuchi Africa 是 The Bundu Foundation（本都基金会）的商业支柱。这家津巴布韦研究型基金会有四大支柱：负责研究的 Bundu Labs、面向消费者的 Mukoko、面向机构的 Nyuchi，以及面向社区的 Shamwari AI。为其中一方构建时学到的东西，会写进约束其他各方的标准。',
+    'home.bigger_all': '全部项目',
+    'home.bigger_bundu': 'bundu.org',
 
     'home.connect_fig': '图 05 — 委托',
     'home.connect_stamp': '接受委托',
-    'home.connect_heading': '一起构建些什么',
+    'home.connect_heading': '带上你的图纸',
     'home.connect_lede':
-      '教育科技方案、非洲科技倡议，或数字创新战略——工作室欢迎各类委托。',
-    'home.connect_cta': '预约通话',
+      '如果你的团队在离线、户外或多语言的环境中工作，先从一次免费的通话开始。无论最后是否委托我们，你都会对整个系统看得更清楚。',
+    'home.connect_cta': '预约需求梳理通话',
 
     // --- contact card ---
     'card.fig': '图 00 — 制图人',
@@ -415,6 +414,14 @@ export const ui = {
     'exp.credentials_heading': '教育背景与专业认证',
     'exp.skills_eyebrow': '附表 C · 工具箱',
     'exp.skills_heading': '核心技能',
+    'exp.ecosystem_eyebrow': '附表 D · 工作台上的一切',
+    'exp.ecosystem_heading': '作品与项目',
+    'exp.ecosystem_group': 'Bundu 生态（本都生态）',
+    'exp.ecosystem_lede':
+      'The Bundu Foundation（本都基金会）是一家津巴布韦研究型基金会，对基础设施缺口的研究先行。它统辖四大支柱：Bundu Labs、Nyuchi Africa、Mukoko 与 Shamwari AI。以下是各自在做的事，均链接到线上站点。',
+    'exp.ecosystem_sas': 'Singapore American School（新加坡美国学校）',
+    'exp.ecosystem_visit': '访问 →',
+    'exp.ecosystem_repo': '代码库 →',
 
     // --- origins ---
     'origins.eyebrow': '图 04 · 离开工作台',
@@ -491,7 +498,7 @@ export const ui = {
     'minerals.eyebrow': '图 05 · 图例',
     'minerals.title': '矿物色带',
     'minerals.description':
-      '来自非洲各地的七种矿物，对应每一页边缘色带上的一段——各自代表什么、产自何处、如何使用。取自 Mzizi 设计系统。',
+      '来自非洲各地的七种矿物，对应每一页边缘色带上的一段——各自代表什么、产自何处、如何使用。取自 Mzizi 的品牌系统。',
     'minerals.lede':
       '本站每一页的装订边都有七段色带。每一段都是一种产自非洲的矿物，也都承载着界面真正会用到的含义。这里是它的图例。',
     'minerals.note': '读一读边缘',
@@ -504,7 +511,7 @@ export const ui = {
     'minerals.why_p1_sep1': '、',
     'minerals.why_p1_sep2': '与',
     'minerals.why_p1_mid': '的色板，只告诉你一种颜色用在哪里，却说不出它为何存在。',
-    'minerals.why_p1_link': 'Mzizi 设计系统',
+    'minerals.why_p1_link': 'Mzizi 品牌系统',
     'minerals.why_p1_after':
       '以整片非洲大陆所产的矿物为色彩命名，并保留其来处：这块石头产自哪里、代表什么、在界面中派什么用场。',
     'minerals.why_p2':
@@ -513,7 +520,7 @@ export const ui = {
     'minerals.why_p3_nyuchi': 'nyuchi',
     'minerals.why_p3_mid': ' 项目，建立在赋予这一切形态的乌班图（Ubuntu）原则之上——',
     'minerals.why_p3_ubuntu': '我在，因为我们在',
-    'minerals.why_p3_after': '。该系统、它的设计令牌及其无障碍工具包，都在 ',
+    'minerals.why_p3_after': '。它的品牌系统、设计令牌与无障碍工具包，都在 ',
     'minerals.why_p3_end': '。',
 
     'minerals.key_eyebrow': '图 05 · 七种矿物',
@@ -542,9 +549,9 @@ export const ui = {
     'book.eyebrow': '图 06 · 委托',
     'book.title': '预约通话',
     'book.description':
-      '与 Bryan Fawcett 预约一次对话，聊聊教育科技、数字化转型、系统架构，或为非洲社区而建的产品。',
+      '与 Bryan Fawcett 预约通话：与 Nyuchi Africa 梳理一项构建，或聊聊教育科技、系统架构，以及为非洲社区而建的产品。',
     'book.lede':
-      '聊聊你的项目、探讨合作可能，或谈谈教育科技、数字化转型，以及为非洲社区而建的产品。',
+      '把图纸带上，再粗糙也无妨。我们一起弄清它为谁而建、跑在什么上面、会在哪里出问题，再看 Nyuchi 是否是合适的建造团队。',
     'book.note': '把图纸带上',
     'book.topics_eyebrow': '可以聊些什么',
     'book.topics_heading': '值得一谈的话题',

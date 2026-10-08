@@ -1,7 +1,7 @@
 /**
  * The seven Mzizi minerals.
  *
- * Mirrored from the Mzizi design system (mzizi.dev/api/v1, `minerals` family)
+ * Mirrored from the Mzizi registry's brand system (mzizi.dev/api/v1, `minerals` family)
  * so the site builds without a network call. Each mineral carries the origin
  * and meaning it was named for — that provenance is the point of the palette,
  * not decoration.

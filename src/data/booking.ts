@@ -18,6 +18,17 @@ export interface BookingTopic {
 
 const TOPICS: readonly Bilingual<BookingTopic, 'title' | 'detail'>[] = [
   {
+    title: 'Scoping a build with Nyuchi',
+    detail:
+      'Who will use it, what it runs on, where the data goes, and what breaks when the signal drops. You leave with a clearer picture of the system, whether or not you hire us.',
+    mineral: 'gold',
+    zh: {
+      title: '与 Nyuchi 梳理一项构建',
+      detail:
+        '谁会用它、它跑在什么上面、数据流向哪里、信号一断会坏掉什么。无论最后是否委托我们，你都会对整个系统看得更清楚。',
+    },
+  },
+  {
     title: 'EdTech & digital transformation',
     detail:
       'Platform selection, rollout, governance, and the change management that decides whether any of it sticks.',
@@ -45,15 +56,6 @@ const TOPICS: readonly Bilingual<BookingTopic, 'title' | 'detail'>[] = [
     zh: {
       title: '为非洲社区而建',
       detail: 'Nyuchi 生态教会我的事：如何为受限的网络条件和真实的预算做设计。',
-    },
-  },
-  {
-    title: 'Something else entirely',
-    detail: 'If it sits near any of the above, it is probably worth a conversation.',
-    mineral: 'gold',
-    zh: {
-      title: '别的什么',
-      detail: '只要和上面几项沾点边，多半就值得聊一聊。',
     },
   },
 ];

@@ -166,20 +166,21 @@ const SCHOOL_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
 const NYUCHI_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
   {
     title: 'Nyuchi Learning',
-    detail: 'Open-source K–12 digital transformation frameworks, built for African schools.',
+    detail:
+      'Training, the open Bundu Education frameworks, and classroom tools built for African schools.',
     mineral: 'malachite',
     href: 'https://learning.nyuchi.com',
     zh: {
       title: 'Nyuchi Learning',
-      detail: '为非洲学校打造的开源 K–12 数字化转型框架。',
+      detail: '培训课程、开放的 Bundu Education 框架，以及为非洲学校打造的课堂工具。',
     },
   },
   {
-    title: 'Nyuchi Lingo',
-    detail: 'A language learning platform for African languages.',
+    title: 'Mukoko Lingo',
+    detail: 'Learning African languages, with Shona and Ndebele first.',
     mineral: 'terracotta',
-    href: 'https://lingo.nyuchi.com',
-    zh: { title: 'Nyuchi Lingo', detail: '一个面向非洲语言的学习平台。' },
+    href: 'https://lingo.mukoko.com',
+    zh: { title: 'Mukoko Lingo', detail: '学习非洲语言，以绍纳语和恩德贝莱语为先。' },
   },
   {
     title: 'Mukoko & Mukoko News',
@@ -193,14 +194,14 @@ const NYUCHI_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
     },
   },
   {
-    title: 'Nhimbe',
+    title: 'Mukoko Events',
     detail:
-      'Community events and gatherings — named for the Shona tradition of working a field together.',
+      'Community events and gatherings — grown out of nhimbe, the Shona tradition of working a field together.',
     mineral: 'copper',
-    href: 'https://nhimbe.com',
+    href: 'https://events.mukoko.com',
     zh: {
-      title: 'Nhimbe',
-      detail: '社区活动与聚会——名字取自绍纳人合力耕作同一片田地的传统。',
+      title: 'Mukoko Events',
+      detail: '社区活动与聚会——源自 nhimbe，绍纳人合力耕作同一片田地的传统。',
     },
   },
 ];

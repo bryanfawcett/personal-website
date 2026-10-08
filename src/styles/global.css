@@ -1920,8 +1920,7 @@ figcaption {
   width: 3.5rem;
 }
 
-.link-panel__path,
-.split__path {
+.link-panel__path {
   display: block;
   margin-block-start: var(--space-4);
   font-family: var(--mono);
@@ -1932,70 +1931,129 @@ figcaption {
   color: var(--ink-soft);
 }
 
-/* --- split nav --- */
+/* --- hero actions --- */
 
-.split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.75rem;
-}
-
-@media (max-width: 51rem) {
-  .split {
-    grid-template-columns: 1fr;
-  }
-}
-
-.split__card {
-  display: block;
-  padding: var(--space-8) var(--space-7);
-  transition: background-color 0.25s ease;
-}
-
-.split__card:hover {
-  background: var(--sheet-raised);
-}
-
-.split__big {
-  font-family: var(--display);
-  font-size: clamp(2.25rem, 7vw, 4.5rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  line-height: 0.95;
-}
-
-/* See Hero: Han fills the em box that Latin caps leave room in. */
-.split__big:lang(zh) {
-  line-height: 1.1;
-  letter-spacing: 0.03em;
-}
-
-/* Slightly finer stroke than the hero — the type is smaller here. */
-.split__big .drafted {
-  -webkit-text-stroke-width: 1.3px;
-}
-
-.split__card p {
-  max-width: 21.25rem;
-  margin-block-start: 0.875rem;
-}
-
-/* --- toolmarks --- */
-
-.toolmarks {
-  margin-block-start: var(--space-9);
-  padding-block: var(--space-4);
-  border-block: 1.5px solid var(--ink);
+.hero__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.375rem;
+  gap: var(--space-4);
+  margin-block-start: var(--space-6);
+}
+
+/* --- three systems --- */
+
+/*
+ * One card per system, full width, because each carries three answers in the
+ * same order — who it is for, how the parts connect, what changed — and a
+ * reader comparing them reads down a column, not across a row.
+ */
+.systems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.system,
+.bigger {
+  padding: var(--space-8) var(--space-7);
+}
+
+.system__org {
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
-  letter-spacing: 0.3em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-soft);
+  margin-block-end: var(--space-2);
+}
+
+.system__spec {
+  display: grid;
+  grid-template-columns: minmax(8rem, auto) 1fr;
+  gap: var(--space-4) var(--space-6);
+  margin-block-start: var(--space-5);
+}
+
+.system__spec dt {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-block-start: 0.3rem;
+}
+
+.system__spec dd {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+
+.system__spec dd:lang(zh) {
+  line-height: 1.8;
+}
+
+@media (max-width: 51rem) {
+  /* On a phone the panel's own padding is enough; more starves the column. */
+  .system,
+  .bigger {
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .system__spec {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .system__spec dd + dt {
+    margin-block-start: var(--space-4);
+  }
+}
+
+.system__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-6);
+}
+
+/* Outranks `.panel :where(a)`, which would otherwise underline these. */
+.system__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.system__links a:hover {
+  border-color: var(--ink);
+  background: var(--sheet-raised);
+}
+
+/* --- how a job runs --- */
+
+.steps {
+  list-style: none;
+  padding: 0;
 }
 
 /* --- connect --- */
@@ -2101,8 +2159,9 @@ figcaption {
 .cluster__label:lang(zh),
 .group-label:lang(zh),
 .link-panel__path:lang(zh),
-.split__path:lang(zh),
-.toolmarks:lang(zh) {
+.system__org:lang(zh),
+.system__spec dt:lang(zh),
+.system__links a:lang(zh) {
   font-family: var(--cjk-mono);
   letter-spacing: 0.1em;
   text-transform: none;

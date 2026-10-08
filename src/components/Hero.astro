@@ -64,6 +64,15 @@ const comma = lang === 'zh' ? '，' : ', ';
 
   {sub && <p class="hero__sub">{sub}</p>}
 
+  {/* The page's primary action, when it has one. */}
+  {
+    Astro.slots.has('default') && (
+      <div class="hero__actions">
+        <slot />
+      </div>
+    )
+  }
+
   <div class="dimension hero__dimension">
     <span class="dimension__line"></span>
     <span class="dimension__label">{dimension}</span>

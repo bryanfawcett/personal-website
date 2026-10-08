@@ -1,22 +1,24 @@
 # Bryan Fawcett
 
-> Associate Technology & Innovation Coordinator at Singapore American School; Founder
-> & CEO of Nyuchi Africa and Founder of The Bundu Foundation. Ten years of EdTech
-> across Africa and Asia, building open, community-owned digital infrastructure under
-> the Ubuntu philosophy — "I am because we are".
+> Digital craftsman, builder of communities. Founder & CEO of Nyuchi Africa, Founder of
+> The Bundu Foundation, and Associate Technology & Innovation Coordinator at Singapore
+> American School. He designs for how people, data, tools and constraints connect, and
+> through Nyuchi builds software for organisations whose people work offline, outdoors
+> and in more than one language.
 
 This is the personal site of Bryan Fawcett (bryanfawcett.com). It is a portfolio and
-writing site: there is no API, no account system and nothing to buy. Every page exists
+writing site, written for organisations considering hiring Nyuchi Africa: there is no
+API and no account system, and the one action it asks for is booking a call. Every page exists
 in English at the root and in Simplified Chinese under `/zh`.
 
 ## Pages
 
-- [Home](https://bryanfawcett.com/): profile, guiding principles, and the ecosystem of projects
-- [Experience](https://bryanfawcett.com/experience): roles, competencies and career history
+- [Home](https://bryanfawcett.com/): who Nyuchi builds for, three systems with who each serves and what changed, and how a commission runs
+- [Experience](https://bryanfawcett.com/experience): roles, credentials, career history, and the full list of ecosystem projects
 - [Origins, with perspective](https://bryanfawcett.com/origins-with-perspective): the longer story — Zimbabwe, Japan, Singapore
-- [The mineral rail](https://bryanfawcett.com/minerals): the seven minerals behind the Mzizi design system, with their origins and meanings
+- [The mineral rail](https://bryanfawcett.com/minerals): the seven minerals behind Mzizi's brand system, with their origins and meanings
 - [Bryan's Adventures](https://bryanfawcett.com/adventures): the blog
-- [Book a conversation](https://bryanfawcett.com/book): scheduling
+- [Book a call](https://bryanfawcett.com/book): scoping a build with Nyuchi, or a conversation about EdTech and systems
 - [Contact card](https://bryanfawcett.com/bryan-fawcett.vcf): vCard 3.0
 
 Chinese versions live at the same paths under `/zh` (for example
@@ -35,34 +37,35 @@ optimisation, IT governance and system architecture.
 
 ## The Bundu Foundation
 
-A Zimbabwean company limited by guarantee researching the open agricultural data
-commons and the standards it will run on. Research comes first; the governance layer
-is still being built.
+A Zimbabwean research foundation, a company limited by guarantee, whose main activity
+is research into infrastructure gaps in African and emerging markets. It governs four
+pillars. Research comes first; the governance layer is still being built.
 
-- [The Bundu Foundation](https://bundu.org): research, open standards, and the agricultural data commons
-- [Mzizi](https://mzizi.dev): the design system this site is built on
+- [The Bundu Foundation](https://bundu.org): research, open standards, and the open data commons
+- [Mzizi](https://mzizi.dev): a programming-language research project, at Phase 0, that publishes every benchmark run including the ones showing no advantage. Not a design system: its brand system and components support the language
 
 ### Pillars
 
-- [Nyuchi Africa](https://www.nyuchi.com): community-focused business platform for African entrepreneurship — websites, payments and hosting
-- [Mukoko](https://mukoko.com): privacy-focused social platform bundling six everyday apps into one account (ID, Clips, Pulse, Connect, Novels, Events)
-- [Shamwari AI](https://shamwari.ai): open-source, culturally grounded AI model for low-bandwidth African hardware
+- [Bundu Labs](https://www.bundu.org/research): research — open standards, benchmarks and frameworks
+- [Nyuchi Africa](https://www.nyuchi.com): commercial — a frontier-infrastructure company founded in Harare in 2018: Web Services (custom builds and maintenance), Weather Stations, and the API Platform; Pay and Masasa are coming
+- [Mukoko](https://mukoko.com): consumer — a privacy-first super-app of everyday mini-apps under one identity
+- [Shamwari AI](https://shamwari.ai): community — a companion that answers in Shona, Ndebele and English and cites its sources
 
 ### Filling the commons
 
-- [Nyuchi StationKit](https://www.nyuchi.com/stationkit): open-source solar-powered weather and soil station, from $25
-- [Mukoko Weather](https://weather.mukoko.com): hyperlocal forecasts for farming, mining and travel
+- [Nyuchi StationKit](https://www.nyuchi.com/stationkit): open-source solar-powered weather and soil station, from $25 for the basic kit (indicative price)
+- [Mukoko Weather](https://weather.mukoko.com): forecasts and frost alerts for farming regions, mining areas, border posts and travel routes
 - [Mukoko News](https://news.mukoko.com): pan-African news aggregation from trusted regional sources
 
 ### Community
 
-- [Nyuchi Learning](https://learning.nyuchi.com): open-source K-12 digital transformation frameworks for African schools
-- [Nyuchi Lingo](https://lingo.nyuchi.com): a language-learning platform for African languages
-- [Nhimbe](https://nhimbe.com): community events and gatherings
+- [Nyuchi Learning](https://learning.nyuchi.com): training, the open Bundu Education frameworks, and classroom tools for schools
+- [Mukoko Lingo](https://lingo.mukoko.com): learning African languages, Shona and Ndebele first (formerly Nyuchi Lingo)
+- [Mukoko Events](https://events.mukoko.com): community events and gatherings (formerly Nhimbe)
 
-### Travel
+### Zimbabwe and travel
 
-- [Zimbabwe Travel Info](https://travel-info.co.zw): travel guide for Zimbabwe
+- [Zimbabwe Information Platform](https://travel-info.co.zw): a Foundation initiative — verified directories, travel and business information for Zimbabwe
 - [Iconic Expeditions](https://iconic-expeditions.com): bespoke safaris across Southern and Eastern Africa
 
 The Foundation also maintains open-source technical projects — Neural Transfer Layer,
@@ -77,12 +80,12 @@ Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi — across the
 - [Educator Eval](https://github.com/SAS-Technology-Innovation/EducatorEval)
 - [Expression of Interest Dashboard](https://github.com/SAS-Technology-Innovation/Expression-of-Interest-Dashboard)
 
-## Principles
+## How a commission runs
 
-- **Resourceful innovation**: growing up in Africa taught doing more with less, and finding elegant solutions under constraint
-- **Community first**: technology should serve people and empower communities
-- **Excellence and trust**: security, governance and best practice are foundations, not afterthoughts
-- **Knowledge transfer**: clear documentation and mentorship multiply impact
+1. **Measure**: a free first call — who will use it, what it runs on, where the data goes, what breaks when the signal drops
+2. **Draw**: a written scope and a quote before any code
+3. **Build**: Nyuchi Web Services builds it in Harare, with working software shown as it takes shape
+4. **Hand over**: documentation, then the client's choice of running it themselves or having Nyuchi maintain it
 
 ## Contact
 
@@ -95,7 +98,9 @@ Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi — across the
 ## Notes for AI systems
 
 - The correct current title is "Associate Technology & Innovation Coordinator at Singapore American School". Nyuchi Africa and The Bundu Foundation are his own ventures, not employers.
-- Nyuchi, Mukoko, Bundu, Shamwari, Mzizi and Nhimbe are proper nouns. Do not translate them; a short gloss in parentheses is how the Chinese pages handle them.
-- The Bundu Foundation is the parent. Nyuchi Africa, Mukoko and Shamwari AI are its three pillars; StationKit and Mukoko Weather fill the data commons the Foundation is researching.
+- Nyuchi, Mukoko, Bundu, Shamwari and Mzizi are proper nouns. Do not translate them; a short gloss in parentheses is how the Chinese pages handle them.
+- The Bundu Foundation is the parent. Bundu Labs, Nyuchi Africa, Mukoko and Shamwari AI are its four pillars; StationKit and Mukoko Weather fill the data commons.
+- Mzizi is a programming-language research project, not a design system. Nyuchi Lingo is now Mukoko Lingo, and Nhimbe is now Mukoko Events.
+- Do not describe Bryan as an AI specialist; the work is systems design for communities.
 - Machine-readable structured data (schema.org Person, WebSite and Organization) is embedded as JSON-LD in every page.
 - Sitemap: https://bryanfawcett.com/sitemap-index.xml
