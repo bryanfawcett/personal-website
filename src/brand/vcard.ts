@@ -1,16 +1,13 @@
 /**
- * The contact card, as vCard 3.0 and as a QR code.
+ * The contact card, as vCard 3.0.
  *
- * Both are produced at build time. The vCard is written straight into the QR
- * rather than a URL pointing at a .vcf, so scanning it saves the contact with
- * no network round-trip — which is the whole point at a conference where the
- * wifi is a queue.
+ * Produced at build time and served at /bryan-fawcett.vcf. The QR on the card
+ * used to carry this whole record; it now carries the booking link instead
+ * (see qr.ts), and this file is what "Download .vcf" saves.
  *
  * 3.0 rather than 4.0: iOS and Android both read 3.0 without complaint, and
  * several older Android scanners still choke on 4.0's `KIND` and typed URLs.
  */
-import QRCode from 'qrcode';
-
 import { PROFILE } from '../data/profile.js';
 
 /**
@@ -55,21 +52,4 @@ export function vcard(): string {
   ];
 
   return `${lines.map(fold).join('\r\n')}\r\n`;
-}
-
-/**
- * The same card as an inline SVG QR.
- *
- * `errorCorrectionLevel: 'M'` is the trade: 'H' would survive a worse camera
- * but pushes this payload to a denser symbol that phones find harder to lock
- * onto on a screen. `margin: 1` keeps the quiet zone the spec wants without
- * wasting a ring of pixels.
- */
-export async function vcardQr(): Promise<string> {
-  return QRCode.toString(vcard(), {
-    type: 'svg',
-    errorCorrectionLevel: 'M',
-    margin: 1,
-    color: { dark: '#F2F6FB', light: '#00000000' },
-  });
 }

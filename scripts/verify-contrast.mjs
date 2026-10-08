@@ -37,6 +37,12 @@ const HOST = process.env['CONTRAST_HOST'] || '127.0.0.1';
  * and the display sizes clamp down, so a pairing that clears the floor on one
  * can miss it on the other. */
 const WIDTHS = (process.argv[3] || '1280,390').split(',').map(Number);
+/*
+ * The site follows the device's colour scheme, so every block is scored in
+ * both: a pairing that clears on the dark board can fail on paper, and the
+ * reverse. Pass a third argument to narrow it, e.g. `light`.
+ */
+const SCHEMES = (process.argv[4] || 'light,dark').split(',');
 const ROUTES = [
   '/', '/experience', '/adventures', '/origins-with-perspective', '/minerals', '/book', '/nope',
   '/zh', '/zh/experience', '/zh/adventures', '/zh/origins-with-perspective', '/zh/minerals', '/zh/book',
@@ -82,10 +88,14 @@ const browser = await chromium.launch();
  * width buffers its own report and prints it whole at the end, so the two do
  * not interleave. Measured 133s to 89s.
  */
-const checkWidth = async (WIDTH) => {
+const checkWidth = async (WIDTH, SCHEME) => {
 const out = [];
 const log = (...a) => out.push(a.join(' '));
-const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({
+  viewport: { width: WIDTH, height: 900 },
+  deviceScaleFactor: 1,
+  colorScheme: SCHEME,
+});
 const findings = [];
 const aside = [];
 const unreachable = [];
@@ -159,7 +169,13 @@ for (const route of ROUTES) {
       if (!stroked && alpha === 0) continue;
 
       // Parked off-canvas until focused (the skip link): no ground to sample.
-      const offCanvas = r.bottom + scrollY < 0 || r.right + scrollX < 0;
+      // A link scrolled out of a sideways row (the phone header) is not
+      // parked: the row is scrolled to it before it is measured.
+      let inRow = false;
+      for (let c = el.parentElement; c; c = c.parentElement) {
+        if (/auto|scroll/.test(getComputedStyle(c).overflowX)) { inRow = true; break; }
+      }
+      const offCanvas = !inRow && (r.bottom + scrollY < 0 || r.right + scrollX < 0);
 
       const cls = (typeof el.className === 'string' ? el.className.split(' ')[0] : '') || el.tagName.toLowerCase();
       const key = `${cls}|${cs.fontSize}|${cs.fontWeight}|${ink}`;
@@ -205,15 +221,71 @@ for (const route of ROUTES) {
   queue.sort((a, b) => (docY[a.i] ?? 0) - (docY[b.i] ?? 0));
 
   let windowTop = null;
+  /*
+   * The skip link is focused only while the skip link itself is measured.
+   * Left focused for the whole route, it sits over the sticky header, and
+   * every header label under it was scored against the skip link rather than
+   * against the header a reader sees. Changing the focus changes the page, so
+   * the held window is dropped and the plates are taken again.
+   */
+  let skipFocused = true;
   for (const t of queue) {
     const el = await page.$(`[data-apca="${t.i}"]`);
     if (!el) continue;
 
+    const wantSkip = await el.evaluate((node) => node.closest('.skip-link') !== null);
+    if (wantSkip !== skipFocused) {
+      await page.evaluate((focus) => {
+        const link = document.querySelector('.skip-link');
+        if (!(link instanceof HTMLElement)) return;
+        if (focus) link.focus();
+        else link.blur();
+      }, wantSkip);
+      await page.waitForTimeout(30);
+      skipFocused = wantSkip;
+      windowTop = null;
+    }
+
+    /*
+     * A target in a sideways-scrolling row (the phone header's links and its
+     * language switcher) can sit past the viewport's edge, where no screenshot
+     * sees it. Scroll the row to it; that changes the page, so drop the held
+     * window and take the plates again.
+     */
+    const rowMoved = await el.evaluate((node) => {
+      let c = node.parentElement;
+      while (c && !(c.scrollWidth > c.clientWidth && /auto|scroll/.test(getComputedStyle(c).overflowX))) {
+        c = c.parentElement;
+      }
+      if (!c) return false;
+      const r = node.getBoundingClientRect();
+      const cr = c.getBoundingClientRect();
+      if (r.left >= cr.left && r.right <= cr.right) return false;
+      c.scrollLeft += r.left - cr.left - 16;
+      return true;
+    });
+    if (rowMoved) {
+      await page.waitForTimeout(30);
+      windowTop = null;
+    }
+
     // Re-scroll only when this target does not fit in the window already held.
     let box = await el.boundingBox();
     if (!box || box.width < 2 || box.height < 2) continue;
-    if (windowTop === null || box.y < 0 || box.y + box.height > vp.height) {
-      const top = Math.max(0, (docY[t.i] ?? 0) - 80);
+    /*
+     * The sticky header covers the top of every window, 118px of it on a
+     * phone where the navigation takes a second row. A target scrolled to
+     * 80px from the top sat underneath it and was scored as no glyph at all,
+     * so the window clears the header's height first.
+     */
+    const stuck = await page.evaluate(() => {
+      const header = document.querySelector('[data-slot="mzizi-header"]');
+      return header instanceof HTMLElement && getComputedStyle(header).position === 'sticky' ? header.offsetHeight : 0;
+    });
+    const inHeader = await el.evaluate((node) => node.closest('[data-slot="mzizi-header"]') !== null);
+    const clear = inHeader ? 0 : stuck;
+    if (windowTop === null || box.y < clear || box.y + box.height > vp.height) {
+      const top = Math.max(0, (docY[t.i] ?? 0) - 80 - clear);
       await page.evaluate((y) => scrollTo(0, y), top);
       await page.waitForTimeout(30);
       box = await el.boundingBox();
@@ -239,12 +311,42 @@ for (const route of ROUTES) {
       windowTop = top;
     }
 
+    /*
+     * Read the content box, not the border box. Glyphs paint inside the
+     * content box; the padding and border around them are where a pill's
+     * rounded ends live, and Chromium re-rasterises that curve's antialiasing
+     * a hair differently when the text colour changes. On a 44px pill the
+     * edge pixels that moved were enough to pass as "glyph", scored against
+     * the sheet beyond the curve, and failed a gold button with dark text as
+     * Lc 0. Trimming to the content box loses no glyph pixel.
+     */
+    const inset = await el.evaluate((node) => {
+      const cs = getComputedStyle(node);
+      const n = (v) => parseFloat(v) || 0;
+      // Inline boxes wrap across lines; their padding is not a frame to trim.
+      if (cs.display.startsWith('inline') && cs.display !== 'inline-flex' && cs.display !== 'inline-block') {
+        return { l: 0, r: 0, t: 0, b: 0 };
+      }
+      return {
+        l: n(cs.paddingLeft) + n(cs.borderLeftWidth),
+        r: n(cs.paddingRight) + n(cs.borderRightWidth),
+        t: n(cs.paddingTop) + n(cs.borderTopWidth),
+        b: n(cs.paddingBottom) + n(cs.borderBottomWidth),
+      };
+    });
+    const content = {
+      x: box.x + inset.l,
+      y: box.y + inset.t,
+      width: Math.max(2, box.width - inset.l - inset.r),
+      height: Math.max(2, box.height - inset.t - inset.b),
+    };
+
     // Clamp the read into the viewport: a box hanging off the edge would
     // otherwise read pixels the capture does not hold.
-    const cx = Math.max(0, Math.min(box.x, vp.width - 2));
-    const cy = Math.max(0, Math.min(box.y, vp.height - 2));
-    const cw = Math.max(2, Math.min(box.width, vp.width - cx));
-    const ch = Math.max(2, Math.min(box.height, vp.height - cy));
+    const cx = Math.max(0, Math.min(content.x, vp.width - 2));
+    const cy = Math.max(0, Math.min(content.y, vp.height - 2));
+    const cw = Math.max(2, Math.min(content.width, vp.width - cx));
+    const ch = Math.max(2, Math.min(content.height, vp.height - cy));
 
     const ink = parseRGB(t.color);
     const ground = await page.evaluate(([rect, inkRGB]) => {
@@ -338,7 +440,7 @@ for (const route of ROUTES) {
 }
 
 findings.sort((a, b) => a.Lc - b.Lc);
-log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px`);
+log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px, ${SCHEME}`);
 log(`APCA failures: ${findings.length}\n`);
 const seen = new Set();
 for (const f of findings) {
@@ -371,8 +473,15 @@ console.log(out.join('\n'));
 return findings.length;
 };
 
-/* Independent per width, so run them together and sum the failures. */
-const failed = (await Promise.all(WIDTHS.map(checkWidth))).reduce((a, b) => a + b, 0);
+/*
+ * Independent per width, so a scheme's widths run together; the schemes run
+ * one after the other, so the dev server never carries more than the two
+ * concurrent passes it was measured against.
+ */
+let failed = 0;
+for (const scheme of SCHEMES) {
+  failed += (await Promise.all(WIDTHS.map((w) => checkWidth(w, scheme)))).reduce((a, b) => a + b, 0);
+}
 
 await browser.close();
 if (failed) {

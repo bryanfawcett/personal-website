@@ -3,126 +3,13 @@ import type { Bilingual } from '../i18n/localize.js';
 import { inLang, listInLang } from '../i18n/localize.js';
 import type { Lang } from '../i18n/ui.js';
 
-export interface Principle {
-  readonly title: string;
-  readonly body: string;
-  readonly mineral: MineralName;
-}
-
-const PRINCIPLES_SOURCE: readonly Bilingual<Principle, 'title' | 'body'>[] = [
-  {
-    title: 'Resourceful Innovation',
-    body: 'Growing up in Africa taught me to do more with less and find elegant solutions under constraints. This informs every system I build — efficient, resilient, and designed for impact.',
-    mineral: 'copper',
-    zh: {
-      title: '因陋见巧',
-      body: '在非洲长大教会我以少成多，在约束之下找到利落的解法。这影响着我构建的每一个系统——高效、坚韧，并为实效而设计。',
-    },
-  },
-  {
-    title: 'Community First',
-    body: 'Whether at SAS or driving Nyuchi Africa, I believe technology should serve people and empower communities. Solutions must be accessible and meaningful.',
-    mineral: 'terracotta',
-    zh: {
-      title: '社区优先',
-      body: '无论是在 SAS，还是推动 Nyuchi Africa，我都相信技术应当服务于人、赋能社区。方案必须触手可及，也必须真的有意义。',
-    },
-  },
-  {
-    title: 'Excellence & Trust',
-    body: "Security, governance, and best practices aren't afterthoughts — they're foundational. I build systems that educators, travellers, and communities can rely on.",
-    mineral: 'cobalt',
-    zh: {
-      title: '精工与信任',
-      body: '安全、治理与最佳实践不是事后补丁，而是地基。我构建的系统，是教育者、旅行者和社区可以放心依赖的。',
-    },
-  },
-  {
-    title: 'Knowledge Transfer',
-    body: 'Clear documentation and mentorship multiply impact. I empower teams and individuals through education and shared understanding.',
-    mineral: 'malachite',
-    zh: {
-      title: '知识传承',
-      body: '清晰的文档与言传身教会让影响成倍放大。我通过教学与共识来赋能团队和个人。',
-    },
-  },
-];
-
-export function principles(lang: Lang): Principle[] {
-  return listInLang(PRINCIPLES_SOURCE, lang);
-}
-
-export interface Competency {
-  readonly title: string;
-  readonly description: string;
-  readonly highlights: readonly string[];
-}
-
-const COMPETENCIES_SOURCE: readonly Bilingual<
-  Competency,
-  'title' | 'description' | 'highlights'
->[] = [
-  {
-    title: 'Full Stack Development',
-    description:
-      'End-to-end web applications from architecture to deployment. Educational platforms, travel systems, and community tools — joinery-tight from database to interface.',
-    highlights: ['Node.js', 'React', 'Database Design', 'API Architecture'],
-    zh: {
-      title: '全栈开发',
-      description:
-        '从架构到部署的端到端 Web 应用。教育平台、旅行系统与社区工具——从数据库到界面，接榫严丝合缝。',
-      highlights: ['Node.js', 'React', '数据库设计', 'API 架构'],
-    },
-  },
-  {
-    title: 'Systems Architecture',
-    description:
-      'Scalable, resilient systems that serve real needs — learning platforms, information systems, and organisational dashboards built for reliability and growth.',
-    highlights: ['Infrastructure Design', 'System Scalability', 'Data Architecture'],
-    zh: {
-      title: '系统架构',
-      description:
-        '可扩展、有韧性、真正解决实际需求的系统——为可靠与成长而建的学习平台、信息系统与机构仪表盘。',
-      highlights: ['基础设施设计', '系统可扩展性', '数据架构'],
-    },
-  },
-  {
-    title: 'Education Technology',
-    description:
-      'Deep EdTech expertise that enhances learning at scale. Platforms that hand educators and students accessible, intuitive tools and resources.',
-    highlights: ['Learning Platforms', 'Educational Tools', 'EdTech Strategy'],
-    zh: {
-      title: '教育科技',
-      description:
-        '深耕教育科技，规模化地改善学习。让教育者与学生随手可用、一看就懂的平台、工具和资源。',
-      highlights: ['学习平台', '教学工具', '教育科技战略'],
-    },
-  },
-  {
-    title: 'Digital Product Strategy',
-    description:
-      'Concept to market, end to end. Digital experiences that serve communities — from travel platforms to learning ecosystems to tech director networks.',
-    highlights: ['Product Vision', 'Technical Leadership', 'Community Impact'],
-    zh: {
-      title: '数字产品战略',
-      description:
-        '从概念到落地，一以贯之。服务社区的数字体验——从旅行平台到学习生态，再到技术主管网络。',
-      highlights: ['产品愿景', '技术领导力', '社区影响'],
-    },
-  },
-];
-
-export function competencies(lang: Lang): Competency[] {
-  return listInLang(COMPETENCIES_SOURCE, lang);
-}
-
 /**
  * How the ecosystem grid is grouped.
  *
  * A flat list of thirteen tiles gave a reader no way in — the Foundation sat
  * next to a safari company with nothing to say how they relate. The groups
  * follow the ecosystem's actual shape rather than a taxonomy invented for the
- * page: the Foundation and its design system, then the three pillars, then the
+ * page: the Foundation and its research, then the four pillars, then the
  * things that fill the commons and the things built on top.
  */
 export type ProjectGroup = 'foundation' | 'pillars' | 'commons' | 'community' | 'travel';
@@ -137,18 +24,18 @@ export const PROJECT_GROUPS: readonly ProjectGroup[] = [
 
 export const GROUP_LABELS: Record<Lang, Record<ProjectGroup, string>> = {
   en: {
-    foundation: 'Foundation & standards',
-    pillars: 'The three pillars',
+    foundation: 'Foundation & research',
+    pillars: 'The four pillars',
     commons: 'Filling the commons',
     community: 'Community & learning',
-    travel: 'Travel',
+    travel: 'Zimbabwe & travel',
   },
   zh: {
-    foundation: '基金会与标准',
-    pillars: '三大支柱',
+    foundation: '基金会与研究',
+    pillars: '四大支柱',
     commons: '充实共享库',
     community: '社区与学习',
-    travel: '旅行',
+    travel: '津巴布韦与旅行',
   },
 };
 
@@ -161,7 +48,7 @@ export interface Project {
 }
 
 /**
- * The single source of truth for the ecosystem grid on `/`.
+ * The single source of truth for the ecosystem grid on `/experience`.
  *
  * Project names are proper nouns and are never translated; where a Chinese
  * reader needs a handhold, a short gloss follows the name in parentheses.
@@ -170,92 +57,103 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'The Bundu Foundation',
     description:
-      "The nonprofit researching the standards and open agricultural data commons that Nyuchi, Mukoko and Shamwari AI are building toward — governance in progress, research first",
+      'A Zimbabwean research foundation, a company limited by guarantee. Research into the infrastructure gaps in informal and formal markets across Africa comes first, and it governs the four pillars below and its own open-source projects',
     href: 'https://bundu.org',
     mineral: 'copper',
     group: 'foundation',
     zh: {
       title: 'The Bundu Foundation（本都基金会）',
       description:
-        '这家非营利机构正在研究 Nyuchi、Mukoko 与 Shamwari AI 共同指向的标准与开放农业数据共享库——治理层仍在建设中，研究先行',
+        '一家津巴布韦研究型基金会（担保有限公司）。研究先行——研究非洲非正规与正规市场中的基础设施缺口；它统辖下面四大支柱，以及基金会自己的开源项目',
     },
   },
   {
     title: 'Mzizi',
     description:
-      'The design system the whole ecosystem is built on — seven minerals, Ubuntu doctrine, and an accessibility toolkit, served over an API and an MCP',
+      "A programming-language research project that writes a product's rules into its code, and publishes every test run, including the two pilots that showed no advantage yet",
     href: 'https://mzizi.dev',
     mineral: 'sodalite',
     group: 'foundation',
     zh: {
-      title: 'Mzizi（设计系统）',
+      title: 'Mzizi（编程语言研究）',
       description:
-        '整个生态赖以构建的设计系统——七种矿物、乌班图（Ubuntu）准则，以及一套无障碍工具包，通过 API 与 MCP 提供',
+        '一个编程语言研究项目：把产品必须遵守的规则写进代码本身，并公开每一次测试——包括两次尚未显示出优势的试点',
+    },
+  },
+  {
+    title: 'Bundu Labs',
+    description:
+      'The research pillar: infrastructure gaps studied, published as open standards and frameworks, then built into products Nyuchi and Mukoko run',
+    href: 'https://www.bundu.org/research',
+    mineral: 'copper',
+    group: 'pillars',
+    zh: {
+      title: 'Bundu Labs（本都实验室）',
+      description:
+        '研究支柱：研究基础设施缺口，以开放标准与框架的形式发布，再落地为 Nyuchi 与 Mukoko 运营的产品',
     },
   },
   {
     title: 'Nyuchi Africa',
     description:
-      'The commercial engine of the ecosystem — web presence, payments and hosting that let African entrepreneurs run a business without a large IT team behind them',
+      'The commercial pillar: custom software, weather stations and an API platform for organisations in informal and formal markets, whose people work on slow connections, shared phones and in more than one language',
     href: 'https://www.nyuchi.com',
     mineral: 'gold',
     group: 'pillars',
     zh: {
       title: 'Nyuchi Africa',
       description:
-        '生态的商业引擎——网站、支付与托管，让非洲创业者不必养一支庞大的 IT 团队也能把生意跑起来',
+        '商业支柱：为非正规与正规市场中、在慢速网络、共用手机、多种语言环境下工作的机构，提供定制软件、气象站与 API 平台',
     },
   },
   {
     title: 'Mukoko',
     description:
-      'Privacy-focused social platform bundling 6 everyday apps into one account, instead of juggling tools built for other markets',
+      'The consumer pillar: a super-app of everyday tools, from messaging and news to events and weather, with one identity across all of them',
     href: 'https://mukoko.com',
     mineral: 'tanzanite',
     group: 'pillars',
     zh: {
       title: 'Mukoko',
       description:
-        '注重隐私的社交平台，把 6 款日常应用收进一个账号，不必再周旋于为别处市场设计的工具之间',
+        '消费者支柱：一个汇集日常工具的超级应用，从消息、新闻到活动与天气，所有应用共用同一个身份',
     },
   },
   {
     title: 'Shamwari AI',
     description:
-      "Nyuchi Africa's open-source initiative for a small, culturally-grounded AI model built to run on affordable, low-bandwidth hardware",
+      'The community pillar: a companion that answers in Shona, Ndebele and English, and cites its sources rather than guessing',
     href: 'https://shamwari.ai',
     mineral: 'sodalite',
     group: 'pillars',
     zh: {
       title: 'Shamwari AI',
-      description:
-        'Nyuchi Africa 的开源计划：一个植根本土文化的小型 AI 模型，专为廉价、低带宽的硬件而生',
+      description: '社区支柱：一个用绍纳语、恩德贝莱语和英语作答的伙伴，引用出处而不是凭空猜测',
     },
   },
   {
     title: 'Nyuchi StationKit',
     description:
-      'Open-source solar-powered weather and soil station for smallholder farmers — from $25, feeding readings into the open commons',
+      'A solar weather and soil station for smallholder farms, from $25 for the basic kit (indicative price), with its readings feeding the open data commons',
     href: 'https://www.nyuchi.com/stationkit',
     mineral: 'terracotta',
     group: 'commons',
     zh: {
       title: 'Nyuchi StationKit',
       description:
-        '面向小农户的开源太阳能气象与土壤监测站——25 美元起，把读数汇入开放共享库',
+        '面向小农户的太阳能气象与土壤监测站，基础套件 25 美元起（参考价），读数汇入开放数据共享库',
     },
   },
   {
     title: 'Mukoko Weather',
     description:
-      'AI-powered hyperlocal forecasts and advisory for farming, mining and travel, grounded by StationKit sensor data',
+      "Forecasts and frost alerts for farming regions, mining areas, border posts and travel routes, with advice for the day's work",
     href: 'https://weather.mukoko.com',
     mineral: 'cobalt',
     group: 'commons',
     zh: {
       title: 'Mukoko Weather',
-      description:
-        '由 AI 驱动的超本地化预报与建议，服务于农业、采矿与出行，底层数据来自 StationKit 的传感器',
+      description: '为农区、矿区、边境口岸与出行路线提供预报与霜冻预警，并附上当天如何安排工作的建议',
     },
   },
   {
@@ -273,50 +171,62 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'Nyuchi Learning',
     description:
-      'Open-source K-12 digital transformation frameworks, so African schools can modernise without locking into expensive proprietary platforms',
+      'Training programmes, the open Bundu Education frameworks, and the classroom tools Nyuchi builds for schools',
     href: 'https://learning.nyuchi.com',
     mineral: 'malachite',
     group: 'community',
     zh: {
       title: 'Nyuchi Learning',
-      description:
-        '开源的 K-12 数字化转型框架，让非洲学校无需被昂贵的专有平台绑定也能完成现代化',
+      description: '培训课程、开放的 Bundu Education 框架，以及 Nyuchi 为学校打造的课堂工具',
     },
   },
   {
-    title: 'Nyuchi Lingo',
+    title: 'Toddle Enhancement Extension',
     description:
-      'A language-learning platform for African languages mainstream apps mostly ignore — built to help preserve and spread them',
-    href: 'https://lingo.nyuchi.com',
+      'A Chrome extension for schools on Toddle, built by Nyuchi: every rubric criterion as its own gradebook column, CSV export, and a free switch that conceals student flags before a screen is shared. It reads Toddle, writes nothing, and sends student data nowhere. Singapore American School helps maintain it and uses it free of charge',
+    href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
+    mineral: 'malachite',
+    group: 'community',
+    zh: {
+      title: 'Toddle Enhancement Extension（Toddle 增强扩展）',
+      description:
+        '为使用 Toddle 的学校打造的 Chrome 扩展：每条评分标准都成为成绩册中独立的一列，可导出 CSV，并有一个免费开关，在共享屏幕前隐藏学生标记。它只读取 Toddle，不写入任何内容，也不把学生数据发往任何地方。Singapore American School（新加坡美国学校）协助维护，并免费使用',
+    },
+  },
+  {
+    title: 'Mukoko Lingo',
+    description:
+      'Learning the African languages mainstream apps mostly ignore, with Shona and Ndebele first',
+    href: 'https://lingo.mukoko.com',
     mineral: 'terracotta',
     group: 'community',
     zh: {
-      title: 'Nyuchi Lingo',
-      description:
-        '主流应用大多忽视的非洲语言，在这里有了自己的学习平台——为保存与传播而建',
+      title: 'Mukoko Lingo',
+      description: '学习主流应用大多忽视的非洲语言，以绍纳语和恩德贝莱语为先',
     },
   },
   {
-    title: 'Nhimbe',
+    title: 'Mukoko Events',
     description:
-      'Community events and gatherings, named for the Zimbabwean tradition of neighbours coming together to get work done',
-    href: 'https://nhimbe.com',
+      'Community gatherings, hosted and found in one place. It grew out of nhimbe, the Shona tradition of neighbours coming together to get work done',
+    href: 'https://events.mukoko.com',
     mineral: 'copper',
     group: 'community',
     zh: {
-      title: 'Nhimbe',
-      description: '社区活动与聚会平台，名字取自津巴布韦邻里合力干活的传统',
+      title: 'Mukoko Events',
+      description: '在同一处发起和找到社区聚会。它源自 nhimbe——绍纳人邻里合力干活的传统',
     },
   },
   {
-    title: 'Zimbabwe Travel Info',
-    description: 'A practical travel guide for visitors planning a trip to Zimbabwe',
+    title: 'Zimbabwe Information Platform',
+    description:
+      'A Foundation initiative: verified directories, and travel and business information for anyone visiting or working in Zimbabwe',
     href: 'https://travel-info.co.zw',
     mineral: 'cobalt',
     group: 'travel',
     zh: {
-      title: 'Zimbabwe Travel Info',
-      description: '给计划前往津巴布韦的旅行者的实用指南',
+      title: 'Zimbabwe Information Platform（津巴布韦信息平台）',
+      description: '基金会直属项目：经过核验的名录，以及面向赴津旅行或工作者的出行与商务信息',
     },
   },
   {
@@ -395,7 +305,7 @@ export function sasProjects(lang: Lang): Project[] {
  * groups by.
  *
  * The *rendered* title is not stable across languages: a Chinese reader sees
- * "The Bundu Foundation（本都基金会）" and "Mzizi（设计系统）", because a gloss
+ * "The Bundu Foundation（本都基金会）" and "Mzizi（编程语言研究）", because a gloss
  * follows the proper noun where it helps. Keying an outbound-click event on
  * what the reader sees would therefore file one project under two names and
  * split its row in every report. The English title is the record's own
@@ -417,4 +327,215 @@ export function nyuchiProjectsByGroup(
     label: GROUP_LABELS[lang][group],
     projects: projects.filter((project) => project.group === group),
   })).filter((section) => section.projects.length > 0);
+}
+
+/*
+ * ------------------------------------------------------------------------
+ * The home page: one visitor, one action.
+ *
+ * The home sheet is written for an organisation deciding whether to hire
+ * Nyuchi, and everything on it is there to get a scoping call booked. The
+ * full ecosystem grid lives on /experience, where a reader who wants the
+ * whole picture can find it without it standing between a buyer and the
+ * button.
+ *
+ * Every claim below is one a live site makes today. Where proof is still
+ * missing (user numbers, client names, quotes) the copy says less rather
+ * than guessing; add the figure here when it exists, not before.
+ * ------------------------------------------------------------------------
+ */
+
+/** A problem an organisation recognises, stated as the people who have it. */
+export interface Audience {
+  readonly title: string;
+  readonly body: string;
+  readonly mineral: MineralName;
+}
+
+const AUDIENCE_SOURCE: readonly Bilingual<Audience, 'title' | 'body'>[] = [
+  {
+    title: 'Teams who work where the signal drops',
+    body: "Field officers, inspectors and outreach staff. What they enter saves on the phone and syncs when the network comes back, so a day's work is never lost at the edge of coverage.",
+    mineral: 'cobalt',
+    zh: {
+      title: '在信号时有时无处工作的团队',
+      body: '外勤人员、巡查员、外展工作者。录入的内容先存在手机上，网络恢复后再同步——一天的工作不会因为走到覆盖边缘而丢失。',
+    },
+  },
+  {
+    title: 'Services where five people share one phone',
+    body: 'Clinics, schools and households. Switching accounts is quick, and nothing punishes someone for the device they can afford.',
+    mineral: 'terracotta',
+    zh: {
+      title: '五个人共用一部手机的服务',
+      body: '诊所、学校、家庭。切换账号又快又简单，也不会因为一个人买得起什么设备而亏待他。',
+    },
+  },
+  {
+    title: 'People who read Shona or Ndebele first',
+    body: 'English, Shona and Ndebele built in from the first screen, not translated at the end, with type that stays readable in midday sun.',
+    mineral: 'malachite',
+    zh: {
+      title: '首先读绍纳语或恩德贝莱语的人',
+      body: '英语、绍纳语、恩德贝莱语从第一屏就内建其中，而不是最后才翻译；字体在正午的阳光下依然清晰可读。',
+    },
+  },
+];
+
+export function audiences(lang: Lang): Audience[] {
+  return listInLang(AUDIENCE_SOURCE, lang);
+}
+
+export interface SystemLink {
+  readonly label: string;
+  readonly href: string;
+}
+
+/**
+ * Three systems, one per place the work happens.
+ *
+ * Each card answers the same three questions in the same order: who it is
+ * for, how the parts connect, and what that changed. Systems thinking is
+ * shown by the parts and the connections, never claimed in an adjective.
+ */
+export interface SystemCard {
+  readonly org: string;
+  readonly title: string;
+  readonly people: string;
+  readonly system: string;
+  readonly result: string;
+  readonly links: readonly SystemLink[];
+  readonly mineral: MineralName;
+}
+
+const SYSTEMS_SOURCE: readonly Bilingual<
+  SystemCard,
+  'org' | 'title' | 'people' | 'system' | 'result' | 'links'
+>[] = [
+  {
+    org: 'Singapore American School',
+    title: 'One process for a whole school',
+    people: 'Teachers, school leaders, and the staff who keep a school running.',
+    system:
+      "The Digital Toolkit sets one central, school-wide process for the tools staff use, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups.",
+    result:
+      'Each one replaced something done by hand, and each is built knowing what it plugs into, because I have worked every layer of the same school: application systems, infrastructure, privacy and governance, and now innovation.',
+    links: [
+      { label: 'The repositories', href: 'https://github.com/SAS-Technology-Innovation' },
+    ],
+    mineral: 'cobalt',
+    zh: {
+      org: 'Singapore American School（新加坡美国学校）',
+      title: '整所学校，一套流程',
+      people: '教师、学校管理者，以及让学校正常运转的教职员。',
+      system:
+        '数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。',
+      result:
+        '每一个都取代了某件原本靠手工完成的事；每一个在建造时都清楚自己要接入什么——因为同一所学校的每一层我都做过：应用系统、基础设施、隐私与治理，以及如今的创新。',
+      links: [{ label: '代码库', href: 'https://github.com/SAS-Technology-Innovation' }],
+    },
+  },
+  {
+    org: 'Nyuchi Africa',
+    title: 'From weather station to farmer',
+    people: 'Smallholder farmers, mine operators, and people on the road.',
+    system:
+      'A solar weather and soil station (StationKit, from $25 for the basic kit), a console where the people hosting stations register them and watch their battery health, and Mukoko Weather, which turns forecasts into frost alerts and advice for the day.',
+    result:
+      'Forecasts for farming regions, mining areas, border posts and national parks across Zimbabwe and beyond, built to the same rules as every Nyuchi product: usable on a slow connection, readable outdoors.',
+    links: [
+      { label: 'Mukoko Weather', href: 'https://weather.mukoko.com' },
+      { label: 'StationKit', href: 'https://www.nyuchi.com/stationkit' },
+    ],
+    mineral: 'gold',
+    zh: {
+      org: 'Nyuchi Africa',
+      title: '从气象站到农户',
+      people: '小农户、矿场运营者，以及在路上的人。',
+      system:
+        '一座太阳能气象与土壤监测站（StationKit，基础套件 25 美元起），一个供站点托管者登记设备、查看电池状况的控制台，以及 Mukoko Weather——把预报变成霜冻预警和当天的行动建议。',
+      result:
+        '为津巴布韦及更远处的农区、矿区、边境口岸与国家公园提供预报，并遵循每一款 Nyuchi 产品共同的规则：慢速网络下可用，户外阳光下可读。',
+      links: [
+        { label: 'Mukoko Weather', href: 'https://weather.mukoko.com' },
+        { label: 'StationKit', href: 'https://www.nyuchi.com/stationkit' },
+      ],
+    },
+  },
+  {
+    org: 'The Bundu Foundation & Mzizi',
+    title: 'Rules that hold across every product',
+    people: 'Every team building in the Bundu ecosystem, and the people their products serve.',
+    system:
+      "The Foundation sets the standards, Nyuchi and Mukoko build to them, and Mzizi writes them into the code. Nyuchi's rule is large touch targets, so an app works outdoors on a small phone; in Mzizi, a button's minimum 48px height is part of the button's own definition, and a change that breaks it fails the check before it can ship.",
+    result:
+      'Mzizi publishes every test run, including the two pilots that showed no advantage yet, and set the bar it must clear before the decisive run, not after. Measured, and said as it is.',
+    links: [
+      { label: 'mzizi.dev', href: 'https://mzizi.dev' },
+      { label: 'bundu.org', href: 'https://bundu.org' },
+    ],
+    mineral: 'copper',
+    zh: {
+      org: 'The Bundu Foundation 与 Mzizi',
+      title: '在每一款产品中都成立的规则',
+      people: '在 Bundu 生态中构建的每一个团队，以及他们的产品所服务的人。',
+      system:
+        '基金会制定标准，Nyuchi 与 Mukoko 按标准构建，Mzizi 把标准写进代码。Nyuchi 的规则是足够大的触控区域，让应用在户外、在小屏手机上也好用；在 Mzizi 中，按钮最少 48px 的高度是按钮定义本身的一部分，任何违反它的改动在发布之前就无法通过检查。',
+      result:
+        'Mzizi 公开每一次测试，包括两次尚未显示出优势的试点；它必须跨过的门槛在决定性测试之前就已定下，而不是事后。量过，再如实说出来。',
+      links: [
+        { label: 'mzizi.dev', href: 'https://mzizi.dev' },
+        { label: 'bundu.org', href: 'https://bundu.org' },
+      ],
+    },
+  },
+];
+
+export function systems(lang: Lang): SystemCard[] {
+  return listInLang(SYSTEMS_SOURCE, lang);
+}
+
+/** How a commission runs: measure twice, ship once. */
+export interface Step {
+  readonly title: string;
+  readonly body: string;
+}
+
+const STEPS_SOURCE: readonly Bilingual<Step, 'title' | 'body'>[] = [
+  {
+    title: 'Measure',
+    body: 'A free 30-minute call. Who will use it, what it runs on, where the data goes, and what breaks when the signal drops.',
+    zh: {
+      title: '测量',
+      body: '一次 30 分钟的免费通话。谁会用它、它跑在什么上面、数据流向哪里、信号一断会坏掉什么。',
+    },
+  },
+  {
+    title: 'Draw',
+    body: 'A written scope and a quote before any code is written, so you know what you are getting and what it will cost.',
+    zh: {
+      title: '绘图',
+      body: '在写下任何代码之前，先给出书面范围与报价——你清楚会得到什么，也清楚要花多少。',
+    },
+  },
+  {
+    title: 'Build',
+    body: 'Nyuchi Web Services builds it in Harare, and you see working software as it takes shape, not a slide deck at the end.',
+    zh: {
+      title: '建造',
+      body: '由 Nyuchi Web Services 在哈拉雷建造；你看到的是一步步成形、能运行的软件，而不是最后的一套幻灯片。',
+    },
+  },
+  {
+    title: 'Hand over',
+    body: 'Documentation your team can use, then your choice: run it yourselves, or have us maintain it.',
+    zh: {
+      title: '交付',
+      body: '交付你的团队用得上的文档，然后由你选择：自己运行，或交给我们维护。',
+    },
+  },
+];
+
+export function steps(lang: Lang): Step[] {
+  return listInLang(STEPS_SOURCE, lang);
 }

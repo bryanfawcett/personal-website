@@ -17,17 +17,18 @@ import subprocess
 import sys
 import urllib.parse
 
-# Cormorant is display only. Its x-height is 0.386 em — measured off the
-# vendored file, against 0.46–0.53 for a face built for running text — so at a
-# 17px body size its lowercase renders about 6.6px tall and reads as thin and
-# small however much weight you add. It is still the right face for the big
-# drafted lockups, where that delicacy is the point. Everything a reader
-# actually reads is IBM Plex Serif, which sits at 0.52 and is the sibling of
-# the Plex Mono already carrying every label on the site.
+# The Mzizi type standard: Noto Serif for H1–H3 and the display lockups,
+# Noto Sans for everything a reader reads and every UI label, JetBrains Mono
+# for the technical marks — figure tags, dimension labels, the title block.
+# Noto is Mzizi's choice for its language coverage: African names and
+# diacritics set in the same face as the rest of the sentence.
+#
+# Caveat is not part of Mzizi. It stays for the draughtsman's margin notes and
+# the signature, which are written marks rather than set type.
 FAMILIES = [
-    "Cormorant Garamond:ital,wght@0,500;0,600;0,700;1,500",
-    "IBM Plex Serif:ital,wght@0,400;0,600;0,700;1,400",
-    "IBM Plex Mono:wght@400;500;600",
+    "Noto Serif:ital,wght@0,400;0,600;0,700;1,400",
+    "Noto Sans:ital,wght@0,400;0,500;0,600;0,700;1,400",
+    "JetBrains Mono:wght@400;500;600",
     "Caveat:wght@500;600",
 ]
 

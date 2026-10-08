@@ -19,34 +19,43 @@ This document provides essential context for AI assistants working on this Astro
 ### The Bundu Ecosystem (Passion Project)
 
 Bryan is Founder & CEO of Nyuchi Africa and Founder of **The Bundu Foundation** — a
-Zimbabwean company limited by guarantee researching the open agricultural data
-commons and the standards it will run on, under the Ubuntu philosophy ("I am
-because we are"). Research comes first there; the governance layer itself is not
-yet fully built. Nyuchi Africa, Mukoko and Shamwari AI are the Foundation's three
-pillars; StationKit and Mukoko Weather are how the commons gets filled and put to
-use once it exists.
+Zimbabwean research foundation, a company limited by guarantee, whose main activity
+is research into infrastructure gaps in African and emerging markets, under the
+Ubuntu philosophy ("I am because we are"). It researches and builds for informal and
+formal markets. Research comes first, and its governance is in place
+(bundu.org/governance): it governs four pillars — Bundu Labs (research), Nyuchi Africa
+(commercial), Mukoko (consumer) and Shamwari AI (community) — and its own open-source
+projects. The platform tokens are a future phase and stay out of the framing. StationKit and Mukoko Weather are how the open data commons gets
+filled and put to use.
+
+The live sites are the source of truth for all of this, and they move faster than
+this file. Check bundu.org, nyuchi.com, mukoko.com and mzizi.dev before repeating a
+description from here.
 
 | Platform | URL | Description |
 |----------|-----|-------------|
-| **The Bundu Foundation** | bundu.org | Research, open standards, and the agricultural data commons — in progress |
-| **Nyuchi Africa** | nyuchi.com | Community-focused business platform for African entrepreneurship |
-| **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar-powered weather + soil station, from $25 |
-| **Nyuchi Learning** | learning.nyuchi.com | Open-source K-12 digital transformation frameworks for African schools |
-| **Nyuchi Lingo** | lingo.nyuchi.com | Language learning platform for African languages |
-| **Mukoko** | mukoko.com | Privacy-focused social platform with 6 apps (ID, Clips, Pulse, Connect, Novels, Events) |
-| **Mukoko Weather** | weather.mukoko.com | AI-powered hyperlocal forecasts for farming, mining and travel |
+| **The Bundu Foundation** | bundu.org | Research foundation (Zimbabwe CLG): research first, governing four pillars and its open-source projects |
+| **Mzizi** | mzizi.dev | Programming-language research project (Phase 0); publishes every benchmark run, including negative ones. Its brand system supplies this site's minerals |
+| **Bundu Labs** | bundu.org/research | Research pillar: open standards, benchmarks and frameworks |
+| **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
+| **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
+| **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
+| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool; SAS helps maintain it and uses it free |
+| **Mukoko** | mukoko.com | Consumer pillar: super-app with a single identity across its mini-apps. Sovereign, self-held identity is a later phase — do not describe it as live |
+| **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
-| **Nhimbe** | nhimbe.com | Community events and gatherings platform (part of Mukoko ecosystem) |
-| **Shamwari AI** | shamwari.ai | Open-source, culturally-grounded AI model for low-bandwidth African hardware |
-| **Zimbabwe Travel Info** | travel-info.co.zw | Comprehensive travel guide for Zimbabwe |
+| **Mukoko Lingo** | lingo.mukoko.com | African language learning, Shona and Ndebele first (was Nyuchi Lingo) |
+| **Mukoko Events** | events.mukoko.com | Community events and gatherings (was Nhimbe; nhimbe.com no longer resolves) |
+| **Shamwari AI** | shamwari.ai | Community pillar: a companion answering in Shona, Ndebele and English, citing sources |
+| **Zimbabwe Information Platform** | travel-info.co.zw | Foundation initiative: verified directories, travel and business information |
 | **Iconic Expeditions** | iconic-expeditions.com | Luxury bespoke safaris across Southern and Eastern Africa |
 | **Workspace Tools** | (internal) | Gmail signature management for Google Workspace |
 
 The Foundation also directly maintains six open-source technical projects (Neural
 Transfer Layer, Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi
 itself) across the `bundu-labs`, `openNTL` and `siafuDB` GitHub organizations. None
-of those are showcased individually on this site — Mzizi is, as the branding layer
-this site is built on.
+of those are showcased individually on this site except Mzizi, which appears on the
+home page as proof of how the work is done: measured, and published either way.
 
 ### GitHub Organizations
 
@@ -86,11 +95,47 @@ bryanfawcett.com, built with:
 - **Astro 7** — no client framework, no React
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
-- **Mzizi design system** for colour, surfaces and semantics
-- **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
-  a print rather than a wash: matte board with a blue cast, line work in white.
-  The sheet is `#18202C`; panels are wells cut *into* it at `#05090F`; the ink
-  is `#FBFCFE`.
+- **The Mzizi standard** for colour, type, radius and semantics, from the Mzizi
+  registry (Mzizi is a programming-language research project; its components
+  and brand system support it). The site is a showcase for it.
+- **The Bundu standard, from `@bundu/ui`** (pinned, MIT): its `styles/tokens.css`
+  loads first in `BaseLayout` and supplies all 21 Mzizi colour families, the
+  surface ladder, the radius scale and `--ring`; its `MineralStrip.astro` is the
+  rail. Its Button/Card/Section components are written in Tailwind utilities,
+  which this site does not run, so they are not used.
+- **Light and dark, following the device.** `@bundu/ui`'s `color-scheme.css`
+  and the site's own tokens switch on `prefers-color-scheme`; the header's
+  theme toggle stores an explicit choice in `localStorage('theme')`, which an
+  inline head script applies as `data-theme` before first paint and again on
+  `astro:after-swap` (the router replaces `<html>`'s attributes). Every themed
+  token in `tokens.ts` has a `*_LIGHT` twin; `tokensToCss()` emits light on
+  `:root`, dark under the media query unless `data-theme="light"`, and dark
+  whenever `data-theme="dark"`. Surfaces are Mzizi's ladder — dark: page `base`
+  `#0E0D0C`, panels `surface` `#131211`, ink `#F0EFE9`; light: page `#F3F3F1`,
+  cards white, ink `#1A1A17`. `--show-dark-only` / `--show-light-only` swap
+  per-theme elements (the toggle's sun and moon, the two QR codes).
+- **One primary colour: heritage river** (Bryan's choice from the heritage and
+  experimental families) — `#4DD0E1` with Mzizi `base` text in dark, its light
+  tone `#006064` with white text in light. It fills the primary buttons and
+  underlines links, at weight 700: dark measures Lc 69.3, which APCA clears at
+  15px for 700 but asks 16.5px of 600. Do not mix it or add a second accent;
+  the pillar cards keep their own brand minerals.
+- **Header and footer are the Mzizi registry's `mzizi-header` and
+  `mzizi-footer`, built for Astro** in `src/components/mzizi/`. The registry
+  ships them in React (and the footer in Rust) only, so these are written
+  against the contract — same `data-slot`, `data-portal` and anatomy — with no
+  framework. The header is laid out as Nyuchi Learning's (learning.nyuchi.com):
+  sticky, 64px (80px from 64rem); portrait and serif name, text links in the
+  middle, the language switcher, a ghost theme toggle and the "Book a Call"
+  pill. **On a phone (below 56rem) the links drop to a second row that scrolls
+  sideways, ending in the language switcher — never a hamburger.** Every
+  destination stays visible and one tap away, and a row needs no script to be
+  accessible where a disclosure would. The bar keeps brand, toggle and pill;
+  the name goes below 22.5rem. The contrast gate clears the sticky header's
+  height and scrolls the row to each link before measuring — a taller header
+  without that scores whatever sits under it as invisible. The footer is the canonical navigation: Site, Ecosystem, Connect,
+  "© year Bryan Fawcett. All rights reserved.", the title-block line and the
+  mineral dots.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet
   frame there. It went, and it should not come back.
 
@@ -149,7 +194,8 @@ repos, sharing the branding layer rather than this codebase.
 
 ### Everything is Astro and TypeScript
 
-No React, no client framework, no UI library. The only client JavaScript is the
+No React, no client framework. The one UI package is `@bundu/ui`, used for its
+tokens and its Astro `MineralStrip` — no client JavaScript and no Tailwind. The only client JavaScript is the
 scroll-reveal observer and the Google Analytics tag in `BaseLayout.astro`, and the
 deferred Cal.com loader on `/book`. Reach for a `<script>` in an `.astro` file before
 reaching for a dependency.
@@ -163,7 +209,7 @@ leaving it on *and* sending from the router double-counts the first one, because
 page, which is what stops the router re-running them and re-initialising gtag on each
 navigation — an interpolated nonce or a per-page value in either would break that.
 
-**Outbound clicks on the ecosystem grid are counted, keyed to the English name.**
+**Outbound clicks on the ecosystem grid (on `/experience`) are counted, keyed to the English name.**
 Each tile carries `data-track-project` and `data-track-group`; one delegated
 listener on `document` turns a click into an `ecosystem_click` event. Three things
 about it are load-bearing:
@@ -171,7 +217,7 @@ about it are load-bearing:
 - **The key is the English title, not the rendered one.** `nyuchiProjectsByGroup`
   returns a `key` alongside the localized record, because two projects carry a
   Chinese gloss — a reader on `/zh` sees "The Bundu Foundation（本都基金会）" and
-  "Mzizi（设计系统）". Keying on link text would file those under two names and
+  "Mzizi（编程语言研究）". Keying on link text would file those under two names and
   split their row in every report.
 - **The event is not called `click`.** GA4's Enhanced Measurement emits its own
   `click` for outbound links and is on by default, so that name would double-count.
@@ -196,12 +242,33 @@ properties at build time; use `var(--mineral-cobalt)`, `var(--sheet)`, `var(--in
 `MineralName` is a union type derived from the mineral list, so a typo in a component
 prop fails `astro check`.
 
-The **mineral rail** is the brand signature — seven segments, one per mineral, running
-vertically down the binding edge of the sheet. It is the one place saturated colour
-appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward — a
-mineral bar under a heading, a swatch beside a name, a rule under a reference
-number — not a default. That restraint is the design; adding colour to more surfaces
-breaks it.
+### The site follows the Mzizi standard, and is a showcase for it
+
+Mzizi (mzizi.dev, doctrine v4.1.0) is the standard here, not an inspiration.
+Read it from the registry (`mzizi_get_tokens`, the `mzizi:nyuchi-design` skill)
+before adding a colour, a radius or a face, and prefer its names:
+`--color-<mineral>`, `--container-<mineral>`, `--on-container-<mineral>`,
+`--radius-<name>` and `--ring` are all emitted by `tokens.ts`. In practice:
+
+- **Type:** Noto Serif for H1–H3 and the display lockups, Noto Sans for body
+  and UI, JetBrains Mono for the technical marks (figure tags, dimensions, the
+  title block). Caveat stays for the margin notes and signature; it is the one
+  face that is not Mzizi's.
+- **Buttons are pills** (`--radius-full`), 48px, 56px for the hero's action;
+  no drop shadows — rings over shadows. The primary fill is `--brand`, river;
+  Mzizi's own `--primary` points at it too.
+- **Panels take `--radius-lg` (14px).** The corner brackets follow the curve.
+- **Focus is a 2px cobalt ring, 2px offset** (`--ring`).
+- **Theme a surface in its brand's mineral.** The system and audience cards sit
+  on their mineral's dark container (`keyedTo()` sets `--mineral-container`
+  and `--mineral-on` alongside `--mineral`); Nyuchi is gold, Bundu copper,
+  Mukoko tanzanite, Shamwari sodalite.
+
+Colour is welcome — this site is meant to show the Mzizi palette working — but
+it still has to clear APCA, which is why the rule below stands.
+
+The **mineral rail** is still the signature — seven segments, one per mineral,
+running vertically down the binding edge of the sheet.
 
 **One mineral property, one weight.** Everything keyed to a mineral reads
 `--mineral`, set by the `mineral` prop on `<Panel>` or by `keyedTo()` for plain
@@ -210,7 +277,10 @@ eight property names for one idea — `--panel-mineral`, `--row-mineral`,
 `--stop-mineral`, `--m` and four more — so changing how a mineral is expressed
 meant finding all eight.
 
-**A mineral is never the colour of text.** Set on a near-black ground the seven
+**A raw mineral is never the colour of text; its on-container tone may be.**
+Mzizi's `--on-container-<mineral>` values are cut for lettering on that
+mineral's container, and the system cards use them for labels. The raw
+mineral is not: set on a near-black ground the seven
 measure Lc 25–48 as lettering, which APCA puts at a 27px minimum or forbids
 outright. The aptitude headings, the mineral key's own names and hex values, and
 the schedule reference numbers were all set that way and all failed. The mineral
@@ -230,22 +300,18 @@ compositing to `rgb(106 112 120)` over a `rgb(5 9 15)` ground. Every text block
 that happened to cross one was scored against a ground twenty times brighter than
 the sheet. Painting the grid in `--ink-*` again re-couples them.
 
-### Surfaces go down, not up
+### Surfaces follow Mzizi's ladder
 
-The sheet is the matte board and panels are wells cut into it. Panels used to
-sit *above* a near-black ground, which left one direction for separation — up,
-toward the light — so every panel read as a bright rectangle floating on black.
-Now the near-black is the *panel*, which is where the reading happens, so ink
-sits on the darkest surface on the page rather than the lightest.
+The page is Mzizi `base`, and cards and panels sit on `surface`, one step up;
+inset chips take `container`, menus and the title block `overlay` and
+`raised`. The step between base and surface is small (judge it in CIE L\*, not
+APCA, which clamps to 0 between two near-blacks), so panels carry their hairline
+and corner brackets to separate them. The system and audience cards sit on their
+mineral's dark container instead, which is where the colour on the page lives.
 
-Judge a surface step in CIE L\*, not APCA: APCA clamps to 0 between two
-near-black surfaces and cannot see this end of the range at all. Sheet to panel
-is dL\* 9.7. The pairing readers complained about was dL\* 0.6.
-
-The ground is matte, and that is a budget rather than a look: the lighting
-radials run at about a quarter of their old alpha with most of the blue out of
-them, the base gradient is nearly flat, and the paper grain is turned up to meet
-them. Raising the radials is how the gloss comes back.
+The ground is matte and neutral: the lighting radials carry no blue, and the
+blueprint grid and grain are line work on warm stone. Raising the radials is how
+the gloss comes back.
 
 ### The ground travels with the sheet
 
@@ -278,8 +344,10 @@ Two things this breaks if you forget them:
   the top of global.css selects `*` and its two pseudo-elements, which never
   matches `::view-transition-old(root)`.
 
-The mineral rail is `transition:persist` so it does not re-mount and
-re-animate on every navigation.
+The mineral rail (`@bundu/ui`'s `MineralStrip`) is `transition:persist` so it
+does not re-mount on every navigation. It is fixed, 6px, full viewport height,
+on every page. A full-page screenshot draws a fixed element once at the top, so
+it looks like the rail stops after one screen; check it in a viewport capture.
 
 ### One stylesheet
 
@@ -309,7 +377,7 @@ The ground and the containers share one line vocabulary — the same hairline, t
 same ink, the same dashed rule. Nothing is a card.
 
 - **Column rules.** `.shell` draws a dashed rule down each of its border-box
-  edges. Nav, main and the title block are sibling shells inside `.page`, so
+  edges. Main is a shell inside `.page` under the sticky header, so
   those rules run continuously from the masthead to the foot of the sheet. The
   shell uses `width: min(67.5rem, 100% - 4rem)` rather than `max-width`, so it
   always keeps a margin — that margin is what stops the column rules colliding
@@ -333,8 +401,8 @@ read as a card floating over the sheet instead of part of it.
 ### Measure is a token, not a guess
 
 A column that *looks* right is routinely wrong, and by a different amount for
-each face: Cormorant runs about 6.8px per character at 18px and IBM Plex Serif
-about 8.9px, so the same 33rem holds 77 characters of the one and 58 of the
+each face: Cormorant ran about 6.8px per character at 18px and IBM Plex Serif
+about 8.9px (both since replaced by Noto), so the same 33rem holds 77 characters of the one and 58 of the
 other. Both sit inside the 45–85 band; neither number could have been guessed.
 Anything holding running prose takes `--measure` (33rem); larger type takes
 `--measure-wide`. Set a new max-width by running the readability pass and
@@ -356,7 +424,7 @@ in `src/assets/`, not `public/`: a file in `public/` is copied verbatim.
 brackets, ruled caption — and desaturates it halfway, enough to belong to the
 drawing without the face going muddy.
 
-**The masthead portrait is not astro:assets.** `SiteNav` uses a plain `<img>` at
+**The masthead portrait is not astro:assets.** `MziziHeader` uses a plain `<img>` at
 `/nav-portrait.webp`, rendered by `pnpm nav-portrait`. Under `imageService:
 'compile'` the adapter emits a `/_image?…` URL for on-demand routes with no service
 behind it, so an `<Image>` in the nav renders perfectly on every prerendered page
@@ -373,20 +441,26 @@ silently falls back to a system sans.
 
 ### The contact card
 
-`ContactCard.astro` carries the portrait, the particulars and a QR. The QR holds
-the **whole vCard**, not a link to one, so scanning it saves the contact with no
-network — the case that matters standing in a room at a conference. Rendered to
-SVG at build time by `src/brand/vcard.ts`; nothing about it ships as JavaScript.
-`/bryan-fawcett.vcf` is a prerendered static endpoint serving the same card.
+`ContactCard.astro` carries the portrait, the particulars and a QR. The QR opens
+the **30-minute booking page** (`BOOKING_URL` in `src/data/booking.ts`, the same
+constant the `/book` embed reads), because booking is the one action the site
+asks for. It used to hold the whole vCard; that is now the "Download .vcf" link
+beneath it. Rendered to SVG at build time by `src/brand/qr.ts`; nothing about it
+ships as JavaScript. `/bryan-fawcett.vcf` is a prerendered static endpoint
+serving the card, built by `src/brand/vcard.ts`.
 
 vCard **3.0**, not 4.0: both mobile platforms read 3.0 without complaint, and
 older Android scanners still choke on 4.0's `KIND` and typed URLs. Lines are
 escaped and folded per RFC 6350 §3.4 — an unfolded long line is the usual reason
 a card imports with a truncated title on one platform and not another.
 
-The QR needs its own opaque ground (`--sheet-deep`). A code sitting over the
-blueprint ruling is a code a phone will not lock onto. If you change the payload
-or the styling, re-verify by decoding a real screen capture, not by eye.
+There are two QR codes, one per theme, and the tokens show the matching one.
+Dark: ink on Mzizi's cobalt container (`#001F3F`), an inverted code the iOS
+Camera and Google Lens read. Light: the light ink on white, a conventional code
+every scanner reads. Colours are written into each SVG, so a saved or printed
+code keeps its ground.
+If you change the payload or the styling, re-verify by decoding a real screen
+capture, not by eye.
 
 ### Content lives in `src/data/`
 
@@ -415,7 +489,7 @@ the reader back on the home page.
   ecosystem grid; splitting project copy into the chrome dictionary would give
   it two.
 - **Proper nouns are never translated.** Nyuchi, Mukoko, Bundu, Shamwari, Mzizi,
-  Nhimbe, the school names — Latin script in both, with a short Chinese gloss in
+  the school names — Latin script in both, with a short Chinese gloss in
   parentheses where a reader needs the handhold. The vCard and its QR stay
   English in both languages: it is one canonical contact record, and a card that
   differs by which page it was scanned from is a duplicate contact waiting to
@@ -425,16 +499,15 @@ the reader back on the home page.
 
 ### Chinese typography
 
-**Every face in `--cjk` is a serif, and that matters more than it sounds.** The
-stack used to end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft
-YaHei', sans-serif` — the first entries serifs, the last four sans — so which
-one a reader got depended on their platform. A Mac found Songti and set the body
-in a serif; a Windows machine fell past it to Microsoft YaHei and set the same
-paragraph in a sans, beside Latin that was serif either way. `STSong` and
-`SimSun` are the Mac and Windows serifs and the generic is `serif`, so the
-pairing is the same everywhere now.
+**Body Han is a sans; heading Han is a serif — and neither stack mixes the two.**
+Mzizi sets body in Noto Sans and H1–H3 in Noto Serif, so `--cjk` (body) lists
+only sans faces (Noto Sans for Latin, then PingFang, YaHei, Noto Sans CJK) and
+`--cjk-display` (H1–H3 and the lockups) only serifs. A stack that mixed them
+once set the same paragraph in Songti on a Mac and YaHei on Windows. Body Han
+is not vendored at all — every platform ships a good Chinese sans — so most of
+a `/zh` page costs no font download.
 
-**Han is vendored: Noto Serif SC, GB2312 Level 1, two weights.** Build it with
+**Heading Han is vendored: Noto Serif SC, GB2312 Level 1, two weights.** Build it with
 `pnpm cjk`, never by hand. Level 1 is the 3,755 most common characters and
 covers ~99.9% of running modern Chinese; the rare tail falls through to the
 system face, which is where all of it used to land. An exact subset of the text
@@ -453,9 +526,9 @@ to get wrong:
   English page; pointing it at `--cjk` put the vendored face back on the English
   routes for two glyphs. `--cjk-chrome` deliberately omits the vendored face.
 
-Verified: an English route fetches **0 kB** of Han, a `/zh` route fetches both
-weights. `--cjk` and `--cjk-mono` still list the Latin face *first*, so a proper
-noun inside a Chinese sentence sets in Plex.
+An English route must fetch **0 kB** of Han. `--cjk` and `--cjk-mono` list the
+Latin face *first*, so a proper noun inside a Chinese sentence sets in Noto Sans
+or JetBrains Mono.
 
 Two things that follow, and that new work has to keep:
 
@@ -468,7 +541,7 @@ Two things that follow, and that new work has to keep:
   uppercase Latin and not for Han, where the strokes stop separating at 1x.
   Rather than a `:lang(zh)` twin for each of ~35 label classes, `global.css`
   declares a `Mzizi CJK Label` `@font-face` with `size-adjust: 120%`, sourced
-  `local()` only and sitting in `--cjk-mono` *after* IBM Plex Mono — so Han in a
+  `local()` only and sitting in `--cjk-mono` *after* JetBrains Mono — so Han in a
   label scales and the Latin beside it does not. Add labels normally; they
   inherit the floor.
 
@@ -532,24 +605,17 @@ Studio that edits it is in `bryans-adventures/`.
 
 ### Type identity
 
-Three jobs, three faces, and the split between the first two is load-bearing:
+Mzizi's three faces, plus one hand:
 
-- **Cormorant Garamond — display only.** The big drafted lockups and nothing
-  else. Its x-height is 0.386 em, measured off the vendored file against
-  0.46–0.53 for a face cut for running text, so at a 17px body size its
-  lowercase renders about 6.6px tall. That is what readers meant when they said
-  the text was too thin: not the weight, but letters a third smaller than the
-  size implies. At 4rem in a two-word lockup, the same delicacy is the point.
-- **IBM Plex Serif — everything anyone reads.** x-height 0.516, and the sibling
-  of the Plex Mono already carrying every label, so the voice stays industrial
-  rather than literary. Its italic is load-bearing (the lede, the pull quotes),
-  so the vendoring script keeps roman and italic as separate files.
-- **IBM Plex Mono** for figure tags, dimension labels and the title block;
-  **Caveat** for margin notes and the signature — written marks rather than set
-  ones.
+- **Noto Serif** — H1–H3 and the big drafted lockups (`--display`).
+- **Noto Sans** — everything anyone reads, H4 and below, and buttons (`--sans`).
+  Its italic is load-bearing (the lede, the pull quotes), so the vendoring
+  script keeps roman and italic as separate files.
+- **JetBrains Mono** — figure tags, dimension labels, the title block (`--mono`).
+- **Caveat** — margin notes and the signature: written marks, not set ones.
 
-`--display` and `--serif` are separate tokens for exactly this reason. Setting
-body copy in `--display` puts it back under the floor.
+Noto is Mzizi's choice for its coverage of African names and diacritics, and
+Noto Serif SC is the same design for the Chinese headings.
 
 ### Fonts are self-hosted, and licensed
 
@@ -576,9 +642,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 ## Accessibility Requirements
 
-- **APCA on every text block** — `pnpm verify:contrast`, and a CI job. Nothing
-  ships under the minimum size APCA gives for its contrast at its weight, at
-  either 1280px or 390px. This is the check; the rules below are how the design
+- **APCA on every text block, in both themes** — `pnpm verify:contrast`, and a
+  CI job. Nothing ships under the minimum size APCA gives for its contrast at
+  its weight, at 1280px or 390px, light or dark. The gate focuses the skip link
+  only while measuring the skip link: left focused, it sits over the sticky
+  header and every header label under it was scored against it. This is the check; the rules below are how the design
   stays on the right side of it.
 - **44px minimum** on every interactive target, except links inside a sentence,
   which WCAG 2.2 target size (2.5.8) exempts and which 44px would visibly break
@@ -590,12 +658,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 - **Semantic HTML** — real `section`/`nav`/`header`/`footer`, correct heading order,
   exactly one `h1` per page
 - **`aria-labelledby`** on every section, pointing at its heading
-- **Focus rings** are the stamp red at 2px with 3px offset; never remove them.
-  6.5:1 against the sheet, well over the 3:1 that WCAG 2.2 (1.4.11) asks of them
+- **Focus rings** are Mzizi's: `--ring` (cobalt `#00B0FF`), 2px with a 2px
+  offset; never remove them. Well over the 3:1 that WCAG 2.2 (1.4.11) asks.
 - **`--stamp` draws, `--stamp-ink` letters.** A 2px rule and a 15px word have
   different floors — Lc 45 against Lc 75 — and the approval stamp is both at
-  once. One colour for both means either an illegible stamp or a washed-out
-  focus ring.
+  once. One colour for both means an illegible stamp.
 - **`prefers-reduced-motion`** disables reveals, the mineral rail animation and smooth
   scrolling — already handled in `global.css`, keep it that way for new animation
 - Decorative elements (the rail, the sheet layers, the schematics) are `aria-hidden`
@@ -603,6 +670,7 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 ## Common Pitfalls
 
 1. **All CSS is in `src/styles/global.css`; components carry no `<style>`.**
+   The one exception is `@bundu/ui`'s `MineralStrip`, which styles itself.
    See *One stylesheet* below. Adding a scoped block back puts one rule
    somewhere nobody will look for it, and re-arms the specificity trap.
 2. **`threshold: 0` on IntersectionObserver reveals.** A section taller than the
@@ -709,16 +777,46 @@ Two passes are still run by hand and are not gated:
 
 ## Content Notes
 
+### The home page has one visitor and one action
+
+The visitor is an organisation deciding whether to hire Nyuchi; the action is
+booking a call on `/book`. Bryan chose this over schools and over funders because
+revenue is the priority. Everything on `/` serves that:
+
+- **Identity:** "Digital Craftsman, builder of communities", with systems thinking
+  as the thread — how people, data, tools and constraints connect. Shown through
+  the work, never claimed in an adjective.
+- **At most three featured systems** (`systems()` in `work.ts`): SAS, Nyuchi's
+  weather chain, and the Bundu Foundation with Mzizi.
+- **The Toddle Enhancement Extension is Nyuchi's, not SAS's.** Bryan built it
+  through Nyuchi in his own time to solve problems he saw at SAS; SAS did not
+  commission it and does not own it, though SAS helps maintain it, and SAS uses
+  it free of charge — it has never paid for a licence. Say exactly
+  that and no more: it is never presented as an SAS tool, and it does not go on
+  the SAS system card. It lives on `/experience` as a Nyuchi Learning tile. Each answers the same three
+  questions in order: who it is for, how the parts connect, what changed. A fourth
+  means one comes off.
+- **Do not frame Bryan around AI.** No "AI-powered" in copy. Shamwari AI appears
+  as a pillar's name and nothing more.
+- **No number without proof.** Every figure on the page is one a live site states
+  today. User counts, client names and quotes go in when they exist, not before.
+  The call is a free 30-minute one, and `/book` embeds that event directly
+  (`bryanfawcett/book-a-call`), not the profile with every event type on it.
+- **Tokens stay out of the framing** (MIT, MXT, NST, NHC). They are a future phase,
+  and to a buyer they read as risk. So does calling Mukoko's identity sovereign: one
+  identity across its apps is live, sovereign identity is not.
+
 ### Projects Listed
 
 `src/data/work.ts` (`nyuchiProjects`) is the single source of truth for the ecosystem
-grid on `/` — The Bundu Foundation, Mzizi, Nyuchi Africa, Nyuchi StationKit, Nyuchi
-Learning, Nyuchi Lingo, Mukoko, Mukoko Weather, Mukoko News, Nhimbe, Shamwari AI,
-Zimbabwe Travel Info and Iconic Expeditions. Add new ecosystem projects there — the
-homepage section-head text describes the Foundation/pillar relationship in general
-terms rather than naming each project, so it should not need to change alongside it.
+grid, which lives on `/experience` (`#ecosystem`), not on `/` — The Bundu Foundation,
+Mzizi, Bundu Labs, Nyuchi Africa, Mukoko, Shamwari AI, Nyuchi StationKit, Mukoko
+Weather, Mukoko News, Nyuchi Learning, Mukoko Lingo, Mukoko Events, the Zimbabwe
+Information Platform and Iconic Expeditions. Add new ecosystem projects there — the
+section lede describes the Foundation/pillar relationship in general terms rather
+than naming each project, so it should not need to change alongside it.
 
-The grid is grouped rather than one flat run of thirteen tiles: `foundation`,
+The grid is grouped rather than one flat run of tiles: `foundation`,
 `pillars`, `commons`, `community`, `travel`, in that order, from the `group` field
 on each project. A new project needs a group, and its Chinese in the same record.
 
@@ -745,4 +843,4 @@ For context, the broader ecosystem uses:
 - **AI:** DeepSeek via Cloudflare AI Gateway
 - **Payments:** Stripe
 - **Deployment:** Cloudflare Workers
-- **Design system:** Mzizi (mzizi.dev)
+- **Brand system:** Mzizi (mzizi.dev)

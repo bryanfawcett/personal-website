@@ -87,7 +87,7 @@ export const PROFILE = {
   email: 'bryan@nyuchi.com',
   tagline: 'I craft dynamic ecosystems that unite and empower communities.',
   summary:
-    'Technology & Innovation Coordinator building digital ecosystems that unite and empower communities. Founder of Nyuchi Africa.',
+    'Digital craftsman and builder of communities. Founder & CEO of Nyuchi Africa, which builds software for organisations whose people work offline, outdoors and in more than one language.',
   knowsAbout: [
     'Education Technology',
     'Systems Architecture',
@@ -95,6 +95,8 @@ export const PROFILE = {
     'Digital Innovation',
     'IT Governance',
     'Process Optimization',
+    'Offline-first Software',
+    'Systems Design',
   ],
   /** Every hat, in the order he'd introduce them. */
   roles: ROLES,
@@ -130,7 +132,7 @@ const PROFILE_ZH = {
   location: '新加坡',
   tagline: '我打造充满活力的生态系统，让社区彼此联结、各得其力。',
   summary:
-    '技术与创新协调员，构建让社区彼此联结、各得其力的数字生态系统。Nyuchi Africa 创始人。',
+    '数字工匠，社区的建造者。Nyuchi Africa 创始人兼首席执行官——为在离线、户外、多语言环境中工作的机构构建软件。',
 } as const;
 
 export interface LocalizedProfile {

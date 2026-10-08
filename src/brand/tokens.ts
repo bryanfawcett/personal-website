@@ -32,48 +32,39 @@ import { MINERALS } from './minerals.js';
  * the pairing readers complained about was dL* 0.6.
  */
 export const SHEET = {
-  /** The deepest well — the QR ground and the media wells. */
-  deep: '#01040A',
   /**
-   * Panel fill.
-   *
-   * Opaque, and recessed below the sheet. It used to be a 0.86-alpha wash so
-   * the lighting gradient showed through, which is exactly what made a panel
-   * indistinguishable from the page: the two were the same paint. A well has
-   * its own floor.
+   * The Mzizi surface ladder, dark mode (`@bundu/ui` styles/tokens.css,
+   * generated from Mzizi canon). Literal here because a few things need a
+   * hex rather than a var(): the QR, the social card, the contrast table on
+   * /minerals. The values must match the package; `verify-stylesheet` reads
+   * both.
    */
-  wash: '#05090F',
-  /** A shallower recess — chips and inset fields. */
-  washLight: '#0B1119',
-  /** Grouped regions: barely sunk, just enough to group. */
-  mid: '#10161F',
-  /**
-   * The sheet itself — the matte board everything is cut into.
-   *
-   * Lifted from #05090F. That was a near-black with a blue cast under a set of
-   * lighting radials, and the radials were doing the work of making it look
-   * like a surface. A matte board does not need them.
-   */
-  base: '#18202C',
-  /** The few things that genuinely sit above the sheet: menus, hover, the title block. */
-  raised: '#2A3749',
+  /** Mzizi `pitch` — the deepest surface: media wells, the QR's frame. */
+  deep: '#050505',
+  /** Mzizi `surface` — cards and panels. */
+  wash: '#131211',
+  /** Mzizi `container` — chips, inset fields, grouped content. */
+  washLight: '#1E1D1A',
+  /** Mzizi `overlay` — overlays and the title block. */
+  mid: '#23221F',
+  /** Mzizi `base` — the page itself. */
+  base: '#0E0D0C',
+  /** Mzizi `raised` — menus, hover, things above the page. */
+  raised: '#2E2C29',
 } as const;
 
 /**
  * The drawn line, at the weights a technical pen offers.
  *
- * White rather than the old pale blue: against a near-black ground the blue
- * cast only muddied it, and the base has been lifted from #F2F6FB now that the
- * panels are recessed rather than raised — the ink has a darker surface under
- * it, so it can afford to be brighter without glare. Full-strength ink on a
- * panel measures Lc 105.
+ * Mzizi's dark `foreground`, #F0EFE9: a warm off-white that sits on the
+ * warm-stone surfaces without the blue cast the old cyanotype ink carried.
  *
  * The alpha steps are the site's real contrast control. `faint` and `hair` are
  * line work only: see RULE below for why the grid does not share them.
  */
 export const INK = {
   /** Full-strength line and heading text. */
-  base: '#FBFCFE',
+  base: '#F0EFE9',
   /**
    * Body copy inside panels.
    *
@@ -82,15 +73,15 @@ export const INK = {
    * every label using it ran at 10-11px. Raised until the sizes the design
    * actually uses are the sizes APCA allows.
    */
-  body: 'rgb(251 252 254 / 0.97)',
+  body: 'rgb(240 239 233 / 0.97)',
   /** Secondary text and dimension labels. */
-  soft: 'rgb(251 252 254 / 0.94)',
+  soft: 'rgb(240 239 233 / 0.94)',
   /** Panel borders, column rules, section rules. Non-text only. */
-  faint: 'rgb(251 252 254 / 0.42)',
+  faint: 'rgb(240 239 233 / 0.42)',
   /** The lightest line work. Non-text only. */
-  hair: 'rgb(251 252 254 / 0.24)',
+  hair: 'rgb(240 239 233 / 0.24)',
   /** Fill inside stroked display type, so the outline still reads as solid. */
-  drafted: 'rgb(251 252 254 / 0.34)',
+  drafted: 'rgb(240 239 233 / 0.34)',
 } as const;
 
 /**
@@ -109,15 +100,15 @@ export const INK = {
  */
 export const GROUND = {
   /** The lit corner, top left — a fall of light, not a highlight. */
-  lit: 'rgb(38 48 64 / 0.12)',
+  lit: 'rgb(48 46 42 / 0.12)',
   /** The shaded corner, bottom right. */
-  shade: 'rgb(2 4 8 / 0.30)',
+  shade: 'rgb(0 0 0 / 0.30)',
   /** A second, weaker source. */
-  glow: 'rgb(32 42 58 / 0.07)',
+  glow: 'rgb(40 38 34 / 0.07)',
   /** The pool of dark it leaves. */
-  pool: 'rgb(2 4 8 / 0.22)',
+  pool: 'rgb(0 0 0 / 0.22)',
   /** Fall-off at the margins, as a board has where it has been handled. */
-  vignette: 'rgb(1 2 5 / 0.42)',
+  vignette: 'rgb(0 0 0 / 0.42)',
 } as const;
 
 /** Marks made by hand rather than by pen. */
@@ -151,7 +142,7 @@ export const MARKS = {
   /** Cast shadow under a drafted panel. */
   shadow: 'rgb(0 0 0 / 0.55)',
   /** The hairline inset that gives a panel its thickness. */
-  inset: 'rgb(242 246 251 / 0.06)',
+  inset: 'rgb(240 239 233 / 0.06)',
 } as const;
 
 /**
@@ -254,127 +245,245 @@ export const GRID = {
  */
 export const RULE = {
   /** Major grid line, at 120px. */
-  major: 'rgb(242 246 251 / 0.16)',
+  major: 'rgb(240 239 233 / 0.16)',
   /** Minor grid line, at 24px. */
-  minor: 'rgb(242 246 251 / 0.09)',
+  minor: 'rgb(240 239 233 / 0.09)',
 } as const;
 
 export const TYPE = {
   /**
-   * The big drafted lockups, and nothing else.
+   * The Mzizi type standard: Noto Serif for H1–H3 and the display lockups.
    *
-   * Cormorant's x-height is 0.386 em — measured off the vendored file, against
-   * 0.46–0.53 for a face cut for running text. At a 17px body size its
-   * lowercase renders about 6.6px tall, which is why readers called the text
-   * thin: it is not the weight, it is that the letters are a third smaller
-   * than the size implies. At 4rem, in a two-word lockup, that delicacy is
-   * exactly what makes it worth keeping.
+   * Mzizi chose Noto for its coverage — African names and diacritics set in
+   * the same face as the sentence around them — and the same family carries
+   * the Han the Chinese pages set, so the two languages share a design.
    */
-  display: "'Cormorant Garamond', ui-serif, Georgia, serif",
-  /**
-   * Everything a reader actually reads.
-   *
-   * IBM Plex Serif sits at 0.516 and is the sibling of the Plex Mono already
-   * carrying every label on the site, so the voice stays industrial rather
-   * than literary — which suits a drawing sheet better than a Garamond did.
-   */
-  serif: "'IBM Plex Serif', ui-serif, Georgia, serif",
-  /** Labels, figures, dimensions, the title block. */
-  mono: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-  /** Margin notes and the signature — written, not set. */
+  display: "'Noto Serif', 'Noto Serif SC', ui-serif, Georgia, serif",
+  /** Noto Sans: everything a reader reads, H4 and below, and the UI. */
+  sans: "'Noto Sans', ui-sans-serif, system-ui, sans-serif",
+  /** JetBrains Mono: figure tags, dimensions, the title block — technical marks. */
+  mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+  /** Margin notes and the signature — written, not set. Not part of Mzizi. */
   hand: "'Caveat', ui-rounded, cursive",
   /*
-   * Chinese, and every face in it is a serif.
+   * Chinese body text, and every face in it is a sans.
    *
-   * That is the whole of the fix, and it was a real bug: this stack used to
-   * end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
-   * sans-serif`. The first three entries are serifs and the last four are
-   * sans, so which one a reader got depended entirely on their platform — a
-   * Mac found Songti and set the body in a serif, a Windows machine fell past
-   * Songti to Microsoft YaHei and set it in a sans, beside Latin that was
-   * serif either way. Same page, two different pairings. `STSong` and `SimSun`
-   * are the Mac and Windows serifs, and the generic at the end is `serif`, so
-   * the pairing is now the same everywhere.
+   * Body is Noto Sans under Mzizi, so Chinese body text is a sans too, and
+   * every entry here is one — the pairing does not change with the platform.
+   * (This stack once mixed serifs and sans, so a Mac set the body in Songti
+   * and Windows in Microsoft YaHei; a mixed stack is a different page per OS.)
    *
-   * Nothing here is self-hosted. Measured: an exact subset of the 880 Han
-   * characters this site currently sets costs 149 kB per weight in Noto Serif
-   * SC, and it would have to be re-cut on every build — the blog renders from
-   * Sanity per request, so a post published without a rebuild would fall
-   * outside the subset mid-sentence. The content-independent alternative,
-   * GB2312 Level 1, is 699 kB per weight; Google's own unicode-range chunking
-   * delivers about 1.6 MB to a Chinese reader. Against three woff2 families
-   * totalling 480 kB, none of those is a trade worth making for a face every
-   * platform already ships a good version of. Latin runs first in the stack so
-   * a proper noun inside a Chinese sentence still sets in Plex.
+   * None of these is vendored. Every platform ships a good Chinese sans, so
+   * Chinese body text costs no download at all; the vendored Noto Serif SC is
+   * reserved for headings (`cjkDisplay`). Latin runs first so a proper noun in
+   * a Chinese sentence still sets in Noto Sans.
    */
-  cjk: "'IBM Plex Serif', 'Noto Serif SC', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
+  cjk: "'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif",
   /**
-   * The mono equivalent: Latin from IBM Plex, Han from the system.
-   *
-   * `Mzizi CJK Label` is not a font — it is the size-adjusted alias declared in
-   * global.css, and it has to sit ahead of the real family names so the Han in
-   * a label is scaled up before the unadjusted faces are reached. Latin still
-   * comes from Plex, which is listed first and is untouched by the adjust.
-   *
-   * The vendored `Noto Serif SC` sits at the *end* rather than the front: a
-   * label wants the size-adjusted local face where the reader has one, and the
-   * vendored face only as the floor for a reader who has none. Ahead of the
-   * adjust it would win and give back the size problem the adjust exists for.
+   * Chinese headings: Noto Serif with its Han sibling, Noto Serif SC, vendored
+   * as GB2312 Level 1 (see the @font-face in global.css), so H1–H3 match the
+   * Latin headings' Noto Serif on every platform.
    */
+  cjkDisplay:
+    "'Noto Serif', 'Noto Serif SC', 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
   /**
    * Han in the chrome — the language switcher, and nothing else.
    *
-   * Deliberately *without* the vendored `Noto Serif SC`, and that omission is
-   * the whole point. `unicode-range` gates a download on whether the page sets
-   * a character in the range, and the switcher puts 中文 on every English page
-   * on the site — so listing the vendored face here made an English reader
-   * download 690 kB of Chinese to draw two glyphs of chrome.
-   *
-   * Those two glyphs do not need to match the body face of a page written in
-   * another language. They take whatever Han the reader already has.
+   * Deliberately *without* the vendored `Noto Serif SC`. `unicode-range`
+   * gates a download on whether the page sets a character in the range, and
+   * the switcher puts 中文 on every English page — so listing the vendored face
+   * here made an English reader download 690 kB of Chinese to draw two glyphs.
    */
   cjkChrome:
-    "'IBM Plex Mono', ui-monospace, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Songti SC', 'SimSun', sans-serif",
+    "'JetBrains Mono', ui-monospace, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif",
+  /**
+   * The mono equivalent: Latin from JetBrains Mono, Han from the system sans.
+   *
+   * `Mzizi CJK Label` is not a font — it is the size-adjusted alias declared
+   * in global.css, and it sits ahead of the real family names so the Han in a
+   * label is scaled up before the unadjusted faces are reached. Latin comes
+   * from JetBrains Mono, listed first and untouched by the adjust.
+   */
   cjkMono:
-    "'IBM Plex Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Serif SC', sans-serif",
+    "'JetBrains Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif",
 } as const;
 
 /**
- * Render every token as CSS custom properties on `:root`.
+ * Mzizi's radius scale, its `--color-*` families (all 21) and `--ring` are not
+ * defined here: they come from `@bundu/ui/styles/tokens.css`, which
+ * BaseLayout loads ahead of these tokens, so there is one source for them.
+ *
+ * The site's one primary colour: Mzizi heritage **river** (dark value), the
+ * great rivers — Zambezi, Nile, Congo — flow and the journey. Chosen by Bryan
+ * from the heritage and experimental families, and used alone: the primary
+ * action, the nav button and link underlines. The pillar cards keep their own
+ * brand minerals, because those say which pillar is which.
+ *
+ * `onBrand` is Mzizi's dark `base`: Lc 69 on river, so a 16px/600 label clears
+ * APCA comfortably. River also reads as text on the page (Lc 68).
+ */
+export const SEMANTIC = {
+  brand: '#4DD0E1',
+  onBrand: '#0E0D0C',
+} as const;
+
+/*
+ * ------------------------------------------------------------------------
+ * The light theme.
+ *
+ * Everything above is the dark theme. These are its light counterparts, for
+ * the groups that change with the scheme; measure, labels, spacing, grid
+ * geometry and type do not. Surfaces are Mzizi's light ladder (cards are
+ * white on the warm-paper base, as @bundu/ui's light --card is), ink is
+ * Mzizi's light foreground, and the primary is river's light tone.
+ *
+ * The page follows the device: light unless the reader's system asks for
+ * dark, and an explicit choice from the header's theme toggle
+ * (`data-theme` on <html>) wins over either.
+ * ------------------------------------------------------------------------
+ */
+
+export const SHEET_LIGHT: Record<keyof typeof SHEET, string> = {
+  deep: '#FAFAFA',
+  wash: '#FFFFFF',
+  washLight: '#E5E4E1',
+  mid: '#E0DFDC',
+  base: '#F3F3F1',
+  raised: '#D6D5D1',
+};
+
+export const INK_LIGHT: Record<keyof typeof INK, string> = {
+  base: '#1A1A17',
+  body: 'rgb(26 26 23 / 0.94)',
+  soft: 'rgb(26 26 23 / 0.86)',
+  faint: 'rgb(26 26 23 / 0.36)',
+  hair: 'rgb(26 26 23 / 0.18)',
+  drafted: 'rgb(26 26 23 / 0.12)',
+};
+
+export const GROUND_LIGHT: Record<keyof typeof GROUND, string> = {
+  lit: 'rgb(255 255 255 / 0.30)',
+  shade: 'rgb(0 0 0 / 0.04)',
+  glow: 'rgb(255 255 255 / 0.15)',
+  pool: 'rgb(0 0 0 / 0.03)',
+  vignette: 'rgb(0 0 0 / 0.06)',
+};
+
+export const MARKS_LIGHT: Record<keyof typeof MARKS, string> = {
+  /** Graphite on paper, where the dark theme has chalk on a board. */
+  pencil: '#6B4A1F',
+  stamp: '#C23A1E',
+  stampInk: '#9E2A12',
+  shadow: 'rgb(0 0 0 / 0.12)',
+  inset: 'rgb(0 0 0 / 0.04)',
+};
+
+/** Dark lines on paper: the ruling is drawn darker than the ground here. */
+export const RULE_LIGHT: Record<keyof typeof RULE, string> = {
+  /*
+   * Held low for the same reason as the dark ruling: at 0.10 a major
+   * crossing multiplied the paper down to rgb(225 225 224), and body text
+   * that crossed one was scored against that rather than the page.
+   */
+  major: 'rgb(26 26 23 / 0.06)',
+  minor: 'rgb(26 26 23 / 0.035)',
+};
+
+/**
+ * River's light tone, #006064, with white text: Lc 87.9, so the 700-weight
+ * labels on it have room to spare.
+ */
+export const SEMANTIC_LIGHT: Record<keyof typeof SEMANTIC, string> = {
+  brand: '#006064',
+  onBrand: '#FFFFFF',
+};
+
+/**
+ * How the blueprint layers composite. On a dark board the ruling is lighter
+ * than the ground and adds light; on paper it is darker and takes it away.
+ */
+export const BLEND = { ground: 'plus-lighter' } as const;
+export const BLEND_LIGHT: Record<keyof typeof BLEND, string> = { ground: 'multiply' };
+
+/**
+ * Show one element per theme without a theme selector in the stylesheet:
+ * `display: var(--show-dark-only)`. The header's sun and moon, and the
+ * contact card's two QR codes, use it.
+ */
+export const SHOW = { darkOnly: 'block', lightOnly: 'none' } as const;
+export const SHOW_LIGHT: Record<keyof typeof SHOW, string> = { darkOnly: 'none', lightOnly: 'block' };
+
+type Group = Readonly<Record<string, string>>;
+
+/** Groups whose values do not change with the theme. */
+const INVARIANT: ReadonlyArray<readonly [string, string, Group]> = [
+  ['Measure', 'measure', MEASURE],
+  ['Label', 'label', LABEL],
+  ['Space', 'space', SPACE],
+  ['Mineral', 'mineral', MINERAL],
+  ['Grid', 'grid', GRID],
+  ['Type', '', TYPE],
+];
+
+/** Groups that do, as [label, prefix, dark, light]. */
+const THEMED: ReadonlyArray<readonly [string, string, Group, Group]> = [
+  ['Sheet', 'sheet', SHEET, SHEET_LIGHT],
+  ['Ground', 'ground', GROUND, GROUND_LIGHT],
+  ['Ink', 'ink', INK, INK_LIGHT],
+  ['Marks', '', MARKS, MARKS_LIGHT],
+  ['Rule', 'rule', RULE, RULE_LIGHT],
+  ['Semantic', '', SEMANTIC, SEMANTIC_LIGHT],
+  ['Blend', 'blend', BLEND, BLEND_LIGHT],
+  ['Show', 'show', SHOW, SHOW_LIGHT],
+];
+
+function themed(scheme: 'light' | 'dark', indent: string): string[] {
+  const out: string[] = [];
+  out.push(`${indent}/* Mzizi minerals, ${scheme} */`);
+  for (const m of MINERALS) {
+    const dark = scheme === 'dark';
+    out.push(`${indent}--mineral-${m.name}: ${dark ? m.hex : m.onLight};`);
+    out.push(`${indent}--mineral-${m.name}-container: ${dark ? m.container : m.containerLight};`);
+    out.push(
+      `${indent}--mineral-${m.name}-on-container: ${dark ? m.onContainer : m.onContainerLight};`,
+    );
+  }
+  for (const [label, prefix, dark, light] of THEMED) {
+    out.push(`${indent}/* ${label} */`);
+    for (const [key, value] of Object.entries(scheme === 'dark' ? dark : light)) {
+      out.push(`${indent}--${varName(prefix, key)}: ${value};`);
+    }
+  }
+  return out;
+}
+
+/**
+ * Render every token as CSS custom properties.
  *
  * Generated at build time rather than hand-maintained, so the TypeScript above
- * stays the single source of truth and the two cannot drift.
+ * stays the single source of truth and the two cannot drift. The selectors
+ * match @bundu/ui's color-scheme.css: light on :root, dark under the device
+ * preference unless the reader chose light, and dark whenever they chose it.
  */
 export function tokensToCss(): string {
   const lines: string[] = [':root {'];
-
-  lines.push('  /* Mzizi minerals — the rail and the accents */');
-  for (const m of MINERALS) {
-    lines.push(`  --mineral-${m.name}: ${m.hex};`);
-    lines.push(`  --mineral-${m.name}-container: ${m.container};`);
-  }
-
-  const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
-    ['Sheet', 'sheet', SHEET],
-    ['Ground', 'ground', GROUND],
-    ['Ink', 'ink', INK],
-    ['Measure', 'measure', MEASURE],
-    ['Marks', '', MARKS],
-    ['Label', 'label', LABEL],
-    ['Space', 'space', SPACE],
-    ['Mineral', 'mineral', MINERAL],
-    ['Grid', 'grid', GRID],
-    ['Rule', 'rule', RULE],
-    ['Type', '', TYPE],
-  ];
-
-  for (const [label, prefix, group] of groups) {
+  for (const [label, prefix, group] of INVARIANT) {
     lines.push(`  /* ${label} */`);
     for (const [key, value] of Object.entries(group)) {
       lines.push(`  --${varName(prefix, key)}: ${value};`);
     }
   }
+  lines.push(...themed('light', '  '));
+  lines.push('}');
 
+  lines.push('@media (prefers-color-scheme: dark) {');
+  lines.push('  :root:where(:not([data-theme="light"], .light)) {');
+  lines.push(...themed('dark', '    '));
+  lines.push('  }');
+  lines.push('}');
+
+  lines.push(':root:where([data-theme="dark"], .dark) {');
+  lines.push(...themed('dark', '  '));
   lines.push('}');
   return lines.join('\n');
 }

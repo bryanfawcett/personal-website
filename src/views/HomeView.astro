@@ -6,6 +6,11 @@
  * language — so a copy edit or a layout change happens once. Duplicating the
  * markup into `pages/zh/` would mean every future change had to be made twice
  * and would drift the first time someone forgot.
+ *
+ * One visitor, one action: an organisation deciding whether to hire Nyuchi,
+ * and a scoping call. Every section either shows them who the work is for,
+ * proves it with a system that exists, or says how a job runs. The full
+ * ecosystem grid lives on /experience.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
@@ -14,9 +19,9 @@ import ContactCard from '../components/ContactCard.astro';
 import Portrait from '../components/Portrait.astro';
 import WorkshopStrip from '../components/WorkshopStrip.astro';
 import { PROFILE, profileInLang, socialsInLang } from '../data/profile.js';
-import { competencies, nyuchiProjectsByGroup, principles, sasProjects } from '../data/work.js';
+import { audiences, steps, systems } from '../data/work.js';
 import { localizePath } from '../i18n/routing.js';
-import { useTranslations, type Lang, type UiKey } from '../i18n/ui.js';
+import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
   lang: Lang;
@@ -26,10 +31,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const profile = profileInLang(lang);
 
-const FIGURE_KEYS: readonly UiKey[] = ['home.fig_1', 'home.fig_2', 'home.fig_3', 'home.fig_4'];
-
-const ecosystem = nyuchiProjectsByGroup(lang);
-const sas = sasProjects(lang);
+const ref = (i: number) => String(i + 1).padStart(2, '0');
+const book = localizePath('/book', lang);
 ---
 
 <BaseLayout
@@ -44,17 +47,97 @@ const sas = sasProjects(lang);
     eyebrow={t('home.eyebrow')}
     solid={t('home.solid')}
     drafted={t('home.drafted')}
-    sub={profile.tagline}
+    sub={t('home.sub')}
     note={t('home.note')}
     dimension={t('home.dimension')}
     lang={lang}
     showByline
-  />
+  >
+    <a class="btn" href={book}>{t('home.cta_primary')}</a>
+    <a class="btn is-ghost" href="#systems">{t('home.cta_secondary')}</a>
+  </Hero>
 
   <!-- Workshop views -->
   <div class="section reveal">
     <WorkshopStrip lang={lang} />
   </div>
+
+  <!-- Who we build for -->
+  <section class="section reveal" id="who" aria-labelledby="who-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.who_eyebrow')}</p>
+      <span class="margin-note">{t('home.who_note')}</span>
+    </div>
+    <h2 class="visually-hidden" id="who-heading">{t('home.who_heading')}</h2>
+
+    <div class="board">
+      {
+        audiences(lang).map((audience) => (
+          <Panel class="w4 audience" mineral={audience.mineral}>
+            <h3>{audience.title}</h3>
+            <p>{audience.body}</p>
+          </Panel>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Three systems -->
+  <section class="section reveal" id="systems" aria-labelledby="systems-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.systems_eyebrow')}</p>
+      <span class="margin-note">{t('home.systems_note')}</span>
+    </div>
+    <h2 class="visually-hidden" id="systems-heading">{t('home.systems_heading')}</h2>
+
+    <div class="systems">
+      {
+        systems(lang).map((system, i) => (
+          <Panel class="system" mineral={system.mineral} fig={`${t('home.systems_fig')} ${ref(i)}`}>
+            <p class="system__org">{system.org}</p>
+            <h3>{system.title}</h3>
+            <dl class="system__spec">
+              <dt>{t('home.systems_people')}</dt>
+              <dd>{system.people}</dd>
+              <dt>{t('home.systems_system')}</dt>
+              <dd>{system.system}</dd>
+              <dt>{t('home.systems_result')}</dt>
+              <dd>{system.result}</dd>
+            </dl>
+            <ul class="system__links">
+              {system.links.map((link) => (
+                <li>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer">
+                    {link.label} →
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </Panel>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- How a job runs -->
+  <section class="section reveal" id="process" aria-labelledby="steps-heading">
+    <div class="section-head">
+      <p class="eyebrow is-open">{t('home.steps_eyebrow')}</p>
+      <span class="margin-note">{t('home.steps_note')}</span>
+    </div>
+    <h2 class="visually-hidden" id="steps-heading">{t('home.steps_heading')}</h2>
+
+    <ol class="board steps">
+      {
+        steps(lang).map((step, i) => (
+          <Panel as="li" class="w6" fig={`${t('home.steps_fig')} ${ref(i)}`}>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </Panel>
+        ))
+      }
+    </ol>
+  </section>
 
   <!-- Message from the bench -->
   <section class="section reveal" aria-labelledby="quote-heading">
@@ -73,166 +156,23 @@ const sas = sasProjects(lang);
     </Panel>
   </section>
 
-  <!-- Philosophy -->
-  <section class="section reveal" id="philosophy" aria-labelledby="philosophy-heading">
-    <div class="section-head">
-      <p class="eyebrow is-open">{t('home.philosophy_eyebrow')}</p>
-      <span class="margin-note">{t('home.philosophy_note')}</span>
-    </div>
-    <h2 class="visually-hidden" id="philosophy-heading">{t('home.philosophy_heading')}</h2>
-
-    <div class="board">
-      {
-        principles(lang).map((principle) => (
-          <Panel class="w6" mineral={principle.mineral}>
-            <h3>{principle.title}</h3>
-            <p>{principle.body}</p>
-          </Panel>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- Competencies -->
-  <section class="section reveal" id="expertise" aria-labelledby="expertise-heading">
-    <div class="section-head">
-      <p class="eyebrow is-open">{t('home.competencies_eyebrow')}</p>
-      <span class="margin-note">{t('home.competencies_note')}</span>
-    </div>
-    <h2 class="visually-hidden" id="expertise-heading">{t('home.competencies_heading')}</h2>
-
-    <div class="board">
-      {
-        competencies(lang).map((competency, i) => {
-          const figKey = FIGURE_KEYS[i];
-          return (
-            <Panel class="w6" fig={figKey ? t(figKey) : undefined}>
-              <h2>{competency.title}</h2>
-              <p>{competency.description}</p>
-              <ul class="chips">
-                {competency.highlights.map((highlight) => (
-                  <li class="chip">{highlight}</li>
-                ))}
-              </ul>
-            </Panel>
-          );
-        })
-      }
-    </div>
-  </section>
-
-  <!-- Projects -->
-  <section class="section reveal" id="projects" aria-labelledby="projects-heading">
-    <div class="section-head">
-      <p class="eyebrow is-open">{t('home.projects_eyebrow')}</p>
-    </div>
-    <h2 class="visually-hidden" id="projects-heading">{t('home.projects_heading')}</h2>
-
-    <p class="group-label">{t('home.projects_group')}</p>
-    <p class="lede">{t('home.projects_lede')}</p>
-
-    {
-      /*
-       * Grouped rather than one flat run of thirteen tiles. The Foundation
-       * used to sit next to a safari company with nothing to say how the two
-       * relate; the subheads carry that relationship without any extra prose.
-       */
-    }
-    {
-      ecosystem.map((section) => (
-        <div class="cluster">
-          <p class="cluster__label">{section.label}</p>
-          <div class="board board--tight">
-            {section.projects.map((project) => (
-              <Panel
-                as="a"
-                href={project.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="w4 link-panel"
-                mineral={project.mineral}
-                data-track-project={project.key}
-                data-track-group={section.group}
-              >
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <span class="link-panel__path">{t('home.projects_visit')}</span>
-              </Panel>
-            ))}
-          </div>
-        </div>
-      ))
-    }
-
-    <p class="group-label">{t('home.projects_sas')}</p>
-    <div class="board board--tight">
-      {
-        sas.map((project) => (
-          <Panel
-            as="a"
-            href={project.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w6 link-panel"
-            mineral={project.mineral}
+  <!-- The wider drawing -->
+  <section class="section reveal" aria-labelledby="bigger-heading">
+    <Panel fig={t('home.bigger_fig')} mineral="copper" class="bigger">
+      <h2 id="bigger-heading">{t('home.bigger_heading')}</h2>
+      <p>{t('home.bigger_body')}</p>
+      <ul class="system__links">
+        <li>
+          <a href={`${localizePath('/experience', lang)}#ecosystem`}>{t('home.bigger_all')} →</a>
+        </li>
+        <li>
+          <a href="https://bundu.org" target="_blank" rel="noopener noreferrer"
+            >{t('home.bigger_bundu')} →</a
           >
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <span class="link-panel__path">{t('home.projects_repo')}</span>
-          </Panel>
-        ))
-      }
-    </div>
+        </li>
+      </ul>
+    </Panel>
   </section>
-
-  <!-- Split navigation -->
-  <section class="section reveal" aria-labelledby="nav-heading">
-    <div class="section-head">
-      <p class="eyebrow is-open">{t('home.nav_eyebrow')}</p>
-    </div>
-    <h2 class="visually-hidden" id="nav-heading">{t('home.nav_heading')}</h2>
-
-    <div class="split">
-      <Panel as="a" href={localizePath('/experience', lang)} class="split__card">
-        <span class="split__big">
-          <span>{t('home.split_at')}</span><br /><span class="drafted">{t('home.split_bench')}</span>
-        </span>
-        <p>{t('home.split_at_body')}</p>
-        <span class="split__path">{localizePath('/experience', lang)} →</span>
-      </Panel>
-
-      <Panel as="a" href={localizePath('/book', lang)} class="split__card">
-        <span class="split__big">
-          <span>{t('home.split_off')}</span><br /><span class="drafted">{t('home.split_bench')}</span
-          >
-        </span>
-        <p>{t('home.split_off_body')}</p>
-        <span class="split__path">{localizePath('/book', lang)} →</span>
-      </Panel>
-    </div>
-  </section>
-
-  <!-- Toolmarks -->
-  <div class="toolmarks reveal" aria-label={t('home.toolmarks_label')}>
-    {
-      [
-        'Node.js',
-        'React',
-        'Astro',
-        'Rust',
-        'Cloudflare',
-        'Sanity',
-        'Supabase',
-        'Nyuchi Africa',
-        'Mukoko',
-      ].map((tool, i) => (
-        <>
-          {i > 0 && <span aria-hidden="true">·</span>}
-          <span>{tool}</span>
-        </>
-      ))
-    }
-  </div>
 
   <!-- Connect -->
   <section class="section reveal" id="connect" aria-labelledby="connect-heading">
@@ -256,8 +196,7 @@ const sas = sasProjects(lang);
         }
       </ul>
 
-      <a class="btn" href={localizePath('/book', lang)}>{t('home.connect_cta')}</a>
+      <a class="btn" href={book}>{t('home.connect_cta')}</a>
     </Panel>
   </section>
 </BaseLayout>
-

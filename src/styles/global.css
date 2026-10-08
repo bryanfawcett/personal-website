@@ -16,8 +16,10 @@
 }
 
 html {
-  /* A cyanotype. There is no light ramp. */
-  color-scheme: dark;
+  /*
+   * Light and dark, following the device; @bundu/ui's color-scheme.css sets
+   * `color-scheme` per theme, and an explicit data-theme narrows it.
+   */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -41,7 +43,7 @@ body {
   position: relative;
   background: var(--sheet);
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 1.0625rem;
   line-height: 1.62;
   -webkit-font-smoothing: antialiased;
@@ -53,10 +55,16 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--serif);
   font-weight: 600;
   line-height: 1.12;
   text-wrap: balance;
+}
+
+/* Mzizi: H1–H3 are Noto Serif; H4 and below stay in the body's Noto Sans. */
+h1,
+h2,
+h3 {
+  font-family: var(--display);
 }
 
 p {
@@ -84,8 +92,9 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--stamp);
-  outline-offset: 3px;
+  /* Mzizi's focus indicator: a 2px cobalt ring, 2px off the element. */
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 ::selection {
@@ -179,7 +188,8 @@ button {
    * than the ground, so the lines have to add light. Multiply would make them
    * darker than the sheet and the grid would disappear.
    */
-  mix-blend-mode: plus-lighter;
+  /* plus-lighter on the dark board, multiply on paper (--blend-ground). */
+  mix-blend-mode: var(--blend-ground);
   /*
    * The ruling is the ground, not the drawing. Held back so the column rules,
    * section rules and corner brackets — all of them full-strength ink — stay
@@ -465,6 +475,8 @@ button {
   position: relative;
   background: var(--sheet-wash);
   border: 1px solid var(--ink-hair);
+  /* Mzizi: cards and panels take the `lg` radius, 14px. */
+  border-radius: var(--radius-lg);
   padding: 2.125rem 1.875rem 1.875rem;
 }
 
@@ -483,6 +495,8 @@ button {
   inset: -1px;
   pointer-events: none;
   border: 1px solid var(--ink);
+  /* The brackets follow the panel's rounded corners. */
+  border-radius: inherit;
   mask:
     var(--seg) 0 0 / var(--corner) 1px no-repeat,
     var(--seg) 100% 0 / var(--corner) 1px no-repeat,
@@ -516,7 +530,8 @@ button {
   inset-block-start: -11px;
   inset-inline-start: 1.75rem;
   z-index: 1;
-  padding: 2px 10px;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
   background: var(--sheet-raised);
   border: 1px solid var(--ink);
   font-family: var(--mono);
@@ -581,6 +596,7 @@ button {
 .panel :where(a) {
   color: var(--ink);
   text-decoration: underline;
+  text-decoration-color: var(--brand);
   text-underline-offset: 0.2em;
 }
 
@@ -596,7 +612,8 @@ button {
 }
 
 .chip {
-  padding: 5px 10px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
   background: var(--sheet-wash-light);
   border: 1px solid var(--ink-soft);
   font-family: var(--mono);
@@ -612,30 +629,44 @@ button {
 .btn {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding-inline: 1.875rem;
-  background: var(--ink);
-  border: 1.5px solid var(--ink);
-  color: var(--sheet-raised);
-  font-family: var(--mono);
-  font-size: var(--label);
-  font-weight: var(--label-weight);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  box-shadow: 3px 3px 0 var(--shadow);
+  justify-content: center;
+  min-height: 48px;
+  padding-inline: var(--space-6);
+  /*
+   * Mzizi: buttons are always pills, with no drop shadow — rings over
+   * shadows. The fill is the site's primary, heritage river (SEMANTIC.brand).
+   */
+  border-radius: var(--radius-full);
+  background: var(--brand);
+  border: 1.5px solid var(--brand);
+  color: var(--on-brand);
+  font-family: var(--sans);
+  font-size: 1rem;
+  /*
+   * 700, not 600: dark text on river measures Lc 69.3, and APCA asks 16.5px
+   * of weight 600 at that contrast but 15px of weight 700.
+   */
+  font-weight: 700;
+  letter-spacing: 0.01em;
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--shadow);
+  /* One colour, no tint: the hover draws the ink ring rather than mixing. */
+  border-color: var(--ink);
 }
 
 .btn.is-ghost {
-  background: var(--sheet-wash-light);
+  background: transparent;
+  border-color: var(--ink-soft);
   color: var(--ink);
+}
+
+.btn.is-ghost:hover {
+  background: var(--sheet-raised);
+  border-color: var(--ink);
 }
 
 /* A margin note in pencil, set at a slight angle. */
@@ -675,8 +706,13 @@ button {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--stamp-ink);
+  /*
+   * Opaque, on the panel's own surface. It used to multiply into the ground,
+   * which on Mzizi's dark surfaces turned the lettering black wherever the
+   * stamp crossed the panel.
+   */
+  background: var(--sheet-wash);
   transform: rotate(-6deg);
-  mix-blend-mode: multiply;
 }
 
 /* ====================== unrolling the sheet ====================== */
@@ -827,12 +863,10 @@ main {
 /*
  * The Chinese sheet.
  *
- * None of the three vendored families carry Han, and a subset that did would
- * cost several megabytes against the sub-megabyte total the site ships today —
- * a bad trade on the connections much of this ecosystem is built for. So the
- * Han falls to the reader's own system face (`--cjk`, which lists Cormorant
- * first so a proper noun inside a Chinese sentence still sets in the site's
- * own serif), and the rules below fix what changes when it does.
+ * Body Han sets in the reader's own system sans (`--cjk`, which lists Noto
+ * Sans first so a proper noun inside a Chinese sentence still sets in the
+ * site's own face); heading Han in the vendored Noto Serif SC
+ * (`--cjk-display`). The rules below fix what changes when it does.
  *
  * `:lang()` matches on the language subtag, so `zh-Hans` on <html> is enough
  * — nothing needs a class.
@@ -902,7 +936,7 @@ body:lang(zh) {
  * in the codebase — about thirty-five of them, and a trap for the next label
  * somebody adds. `size-adjust` on the fallback face does it in one place
  * instead: the descriptor scales only the glyphs rendered *from this face*, and
- * IBM Plex Mono sits ahead of it in `--cjk-mono`, so Latin in the same label is
+ * JetBrains Mono sits ahead of it in `--cjk-mono`, so Latin in the same label is
  * untouched. 120% takes 15px of Han to 18px.
  *
  * `local()` only — nothing is downloaded, and a reader with none of these
@@ -931,12 +965,15 @@ body:lang(zh) {
  */
 .eyebrow:lang(zh),
 .chip:lang(zh),
-.btn:lang(zh),
 .stamp:lang(zh),
 .dimension__label:lang(zh) {
   font-family: var(--cjk-mono);
   letter-spacing: 0.1em;
   text-transform: none;
+}
+
+.btn:lang(zh) {
+  font-family: var(--cjk);
 }
 
 .panel :where(p):lang(zh),
@@ -967,11 +1004,20 @@ body:lang(zh) {
  * Han sets a real line at any width, so `text-wrap: balance` on a heading has
  * far more places to break and will happily leave a one-character last line.
  */
+:lang(zh) h4 {
+  font-family: var(--cjk);
+}
+
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3 {
+  font-family: var(--cjk-display);
+}
+
 :lang(zh) h1,
 :lang(zh) h2,
 :lang(zh) h3,
 :lang(zh) h4 {
-  font-family: var(--cjk);
   text-wrap: normal;
   line-height: 1.35;
 }
@@ -1001,73 +1047,19 @@ body:lang(zh) {
  * they were only ever there to opt a selector out of it.
  */
 
-/* ---------------------------- MineralBar ---------------------------- */
+/* ---------------------------- MineralStrip ---------------------------- */
 
-.mineral-rail {
-  display: flex;
-  flex-direction: column;
-  width: var(--rail-thickness);
-}
-
-.mineral-rail.is-edge {
-  position: fixed;
-  inset-block: 0;
-  inset-inline-start: 0;
-  z-index: 60;
-  height: 100dvh;
-}
-
-.mineral-rail.is-inline {
-  height: 100%;
-}
-
-.mineral-rail__segment {
-  flex: 1;
-  /* Segments draw down the edge on load rather than snapping in. */
-  transform: scaleY(0);
-  transform-origin: center top;
-  animation: mineral-rail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.mineral-rail__segment:nth-child(1) {
-  animation-delay: 0.02s;
-}
-.mineral-rail__segment:nth-child(2) {
-  animation-delay: 0.06s;
-}
-.mineral-rail__segment:nth-child(3) {
-  animation-delay: 0.1s;
-}
-.mineral-rail__segment:nth-child(4) {
-  animation-delay: 0.14s;
-}
-.mineral-rail__segment:nth-child(5) {
-  animation-delay: 0.18s;
-}
-.mineral-rail__segment:nth-child(6) {
-  animation-delay: 0.22s;
-}
-.mineral-rail__segment:nth-child(7) {
-  animation-delay: 0.26s;
-}
-
-@keyframes mineral-rail-in {
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mineral-rail__segment {
-    transform: none;
-    animation: none;
-  }
-}
-
-@media (max-width: 51rem) {
-  .mineral-rail.is-edge {
-    width: 4px;
-  }
+/*
+ * The page-edge rail is @bundu/ui's MineralStrip (BaseLayout): fixed, full
+ * height, on every page, styled by the package itself.
+ *
+ * Mzizi's own `--primary` is pointed at the site's primary too, so anything
+ * built against the Bundu standard picks up river. `:root.dark` outranks the
+ * package's `.dark` default (tanzanite).
+ */
+:root.dark {
+  --primary: var(--brand);
+  --primary-foreground: var(--on-brand);
 }
 
 /* ---------------------------- Schematics ---------------------------- */
@@ -1080,136 +1072,292 @@ body:lang(zh) {
   }
 }
 
-/* ---------------------------- SiteNav ---------------------------- */
-
-.nav {
-  padding-block-start: 2.25rem;
-}
-
-.nav__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-block-end: var(--space-3);
-  border-block-end: 1px solid var(--ink-faint);
-}
-
-.nav__wordmark {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-}
+/* ---------------------------- MziziHeader ---------------------------- */
 
 /*
- * The file is already square and already cropped onto the face — see
- * scripts/build-nav-portrait.mjs — so no object-position reframing here.
+ * The registry's mzizi-header, laid out as Nyuchi Learning's: sticky, 64px
+ * (80px from 64rem), on the page's own surface with a hairline under it.
+ * Solid rather than blurred, so nothing scrolling beneath can lower the
+ * contrast of its labels.
  */
-.nav__portrait {
-  flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
-  border: 1px solid var(--ink-faint);
-  filter: grayscale(0.5) contrast(1.05);
+.mzizi-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 40;
+  background: var(--sheet);
+  border-block-end: 1px solid var(--ink-hair);
 }
 
-.nav__id {
+.mzizi-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(67.5rem, 100% - 2rem);
+  min-height: 64px;
+  margin-inline: auto;
+}
+
+.mzizi-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 44px;
+  flex-shrink: 0;
+}
+
+.mzizi-header__portrait {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.mzizi-header__id {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  line-height: 1.15;
 }
 
-.nav__name {
-  font-size: 1.625rem;
+/* The name is the wordmark, so it is set as one: Noto Serif, bold. */
+.mzizi-header__name {
+  font-family: var(--display);
+  font-size: 1.1875rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1;
   color: var(--ink);
 }
 
-.nav__role {
+.mzizi-header__role {
+  display: none;
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
-  letter-spacing: 0.24em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
 
-.nav__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  list-style: none;
-  padding: 0;
+.mzizi-header__nav {
+  flex: 1;
+  min-width: 0;
 }
 
-.nav__link {
+.mzizi-header__nav ul,
+.mzizi-header__row ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mzizi-header__nav ul {
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+/* Desktop links are text, not pills: soft ink, full ink on hover. */
+.mzizi-header__link {
   display: flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: 0.875rem;
-  font-family: var(--mono);
-  font-size: var(--label);
-  font-weight: var(--label-weight);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  padding-inline: var(--space-3);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--ink-soft);
-  border: 1px solid transparent;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 0.45em;
   transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease;
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
 }
 
-.nav__link:hover {
+.mzizi-header__link:hover {
   color: var(--ink);
-  border-color: var(--ink-faint);
 }
 
-.nav__link.is-current {
+/* The current page is ink, underlined in the primary: a mark under the word. */
+.mzizi-header__link.is-current {
   color: var(--ink);
-  background: var(--sheet-wash-light);
-  border-color: var(--ink);
+  text-decoration-color: var(--brand);
+}
+
+.mzizi-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* A ghost icon button: no rim until the pointer finds it. */
+.mzizi-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mzizi-header__icon:hover {
+  background: var(--sheet-raised);
+}
+
+.mzizi-header__icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The toggle shows where it will take you: a sun on dark, a moon on light. */
+.mzizi-header__icon .theme-toggle__sun {
+  display: var(--show-dark-only);
+}
+
+.mzizi-header__icon .theme-toggle__moon {
+  display: var(--show-light-only);
+}
+
+.mzizi-header__cta {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding-inline: var(--space-5);
+  white-space: nowrap;
 }
 
 /*
- * The commission stamp.
- *
- * A full-strength rule and ink rather than a fill: this is the site's one
- * standing call to action, and it has to read as the loudest thing in the
- * nav without becoming a button floating over the sheet. On hover the ink
- * and the ground swap, which is the same move the social links already
- * make — no lift, no shadow.
+ * The phone row. Hidden on desktop; below 56rem it holds the navigation,
+ * scrolled sideways rather than folded into a menu. The links are pills so a
+ * thumb has a 44px target, and the row's own scrollbar is hidden — the link
+ * cut off at the edge is what says there is more.
  */
-.nav__cta {
+.mzizi-header__row {
+  display: none;
+  border-block-start: 1px solid var(--ink-hair);
+}
+
+.mzizi-header__row ul {
+  align-items: center;
+  gap: var(--space-1);
+  width: min(67.5rem, 100% - 2rem);
+  margin-inline: auto;
+  padding-block: var(--space-1);
+}
+
+.mzizi-header__chip {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-full);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.mzizi-header__chip:hover {
   color: var(--ink);
-  border-color: var(--ink);
+  background: var(--sheet-raised);
 }
 
-.nav__cta:hover,
-.nav__cta.is-current {
-  color: var(--sheet-raised);
-  background: var(--ink);
-  border-color: var(--ink);
+.mzizi-header__chip.is-current {
+  color: var(--ink);
+  background: var(--sheet-wash-light);
 }
 
-/* Mono tracking meant for Latin caps opens Han glyphs up too far. */
-.nav__link:lang(zh),
-.nav__role:lang(zh) {
-  font-family: var(--cjk-mono);
-  letter-spacing: 0.1em;
-  text-transform: none;
+.mzizi-header__row-lang {
+  flex-shrink: 0;
+  margin-inline-start: var(--space-2);
 }
 
-@media (max-width: 40rem) {
-  .nav__inner {
-    align-items: flex-start;
+.mzizi-header__link:lang(zh),
+.mzizi-header__chip:lang(zh) {
+  font-family: var(--cjk);
+}
+
+@media (min-width: 64rem) {
+  .mzizi-header__inner {
+    min-height: 80px;
   }
 
-  .nav__list {
-    margin-inline-start: -0.875rem;
+  .mzizi-header__role {
+    display: block;
+  }
+}
+
+@media (max-width: 56rem) {
+  .mzizi-header__nav,
+  .mzizi-header__lang {
+    display: none;
+  }
+
+  .mzizi-header__row {
+    display: block;
+  }
+
+  /*
+   * The row scrolls, not the ul inside it: the ul keeps the shell's width
+   * and margin so the first link lines up with the brand above it.
+   */
+  .mzizi-header__row {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .mzizi-header__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mzizi-header__row ul {
+    width: max-content;
+    min-width: min(67.5rem, 100% - 2rem);
+    margin-inline: 1rem;
+  }
+}
+
+/*
+ * A 390px bar holds the portrait, the name, the toggle and the pill only with
+ * the name a size down and the gaps taken in; the serif at 19px pushed the
+ * pill 16px past the edge.
+ */
+@media (max-width: 30rem) {
+  .mzizi-header__inner {
+    gap: var(--space-2);
+  }
+
+  .mzizi-header__name {
+    font-size: 1.0625rem;
+  }
+
+  .mzizi-header__actions {
+    gap: var(--space-1);
+  }
+
+  .mzizi-header__cta {
+    padding-inline: var(--space-4);
+  }
+}
+
+/* On the narrowest phones the name goes; the portrait still says whose site. */
+@media (max-width: 22.5rem) {
+  .mzizi-header__id {
+    display: none;
   }
 }
 
@@ -1218,6 +1366,8 @@ body:lang(zh) {
 .lang {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
   min-height: 44px;
   padding-inline: 0.875rem;
   font-family: var(--mono);
@@ -1227,6 +1377,8 @@ body:lang(zh) {
   text-transform: uppercase;
   color: var(--ink-soft);
   border: 1px solid var(--ink-hair);
+  border-radius: var(--radius-full);
+  padding-inline: var(--space-5);
   transition:
     color 0.2s ease,
     border-color 0.2s ease;
@@ -1271,7 +1423,8 @@ body:lang(zh) {
   text-transform: uppercase;
   line-height: 0.92;
   letter-spacing: 0.01em;
-  font-size: clamp(3rem, 11.5vw, 7.75rem);
+  /* Noto Serif runs wider than the Cormorant this was sized for. */
+  font-size: clamp(2.75rem, 10vw, 6.5rem);
 }
 
 .stack__solid {
@@ -1502,14 +1655,25 @@ figcaption {
 }
 
 /*
- * The QR is drawn in ink on nothing, so it needs its own quiet ground: a
- * code over the blueprint ruling is a code a phone will not lock onto.
+ * The QR carries its own opaque ground in the SVG (Mzizi's cobalt container), and the
+ * frame matches it so the quiet zone reads as part of the code rather than a
+ * gap. A code over the blueprint ruling is a code a phone will not lock onto.
  */
 .card__qr {
   width: 11rem;
   padding: 0.625rem;
-  background: var(--sheet-deep);
+  background: var(--color-cobalt-container);
   border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-md);
+}
+
+.card__qr--dark {
+  display: var(--show-dark-only);
+}
+
+.card__qr--light {
+  display: var(--show-light-only);
+  background: var(--sheet-wash);
 }
 
 .card__qr svg {
@@ -1596,67 +1760,75 @@ figcaption {
   color: var(--ink-soft);
 }
 
-/* ---------------------------- TitleBlock ---------------------------- */
+/* ---------------------------- MziziFooter ---------------------------- */
 
-.title-block {
-  margin-block: var(--space-10) var(--space-9);
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+/*
+ * The registry's mzizi-footer: the card surface, a hairline above, the 3px
+ * mineral strip on its top edge, link sections and a bottom bar.
+ */
+.mzizi-footer {
+  position: relative;
+  z-index: 3;
+  margin-block-start: var(--space-9);
   background: var(--sheet-wash);
-  border: 1px solid var(--ink-faint);
+  border-block-start: 1px solid var(--ink-hair);
 }
 
-.tb-cell {
-  padding: var(--space-3) var(--space-4);
-  border-inline-end: 1px solid var(--ink-faint);
-  font-family: var(--mono);
+.mzizi-footer__strip {
+  display: flex;
+  height: 3px;
 }
 
-.tb-cell:nth-child(4) {
-  border-inline-end: none;
+.mzizi-footer__strip span {
+  flex: 1;
 }
 
-.tb-cell .k {
-  display: block;
-  margin-block-end: 4px;
-  font-size: var(--label);
-  font-weight: var(--label-weight);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+.mzizi-footer__inner {
+  width: min(67.5rem, 100% - 4rem);
+  margin-inline: auto;
+  padding-block: var(--space-9) var(--space-6);
+}
+
+.mzizi-footer__grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: var(--space-7);
+}
+
+@media (max-width: 56rem) {
+  .mzizi-footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mzizi-footer__brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 30rem) {
+  .mzizi-footer__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mzizi-footer__wordmark {
+  font-family: var(--display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mzizi-footer__tagline {
+  max-width: 22rem;
+  margin-block-start: var(--space-3);
+  font-size: 1.0625rem;
+  font-style: italic;
+  line-height: 1.6;
   color: var(--ink-soft);
 }
 
-/*
- * The title-block values sit one notch under the labels above them, which is
- * as small as anything on the site gets. At 13px they were under the APCA
- * floor for their contrast at any weight the face offers; 14px at 700 clears
- * it and still reads as the smaller half of the pair.
- */
-.tb-cell .v {
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-
-.tb-name {
-  font-family: var(--serif);
-}
-
-.tb-name .v {
-  font-size: 1.1875rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.tb-foot {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2) var(--space-6);
-  padding: var(--space-2) var(--space-4);
-  border-block-start: 1px solid var(--ink-faint);
+.mzizi-footer__title {
+  margin-block-end: var(--space-2);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -1665,118 +1837,71 @@ figcaption {
   color: var(--ink-soft);
 }
 
-.tb-foot ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
+.mzizi-footer__section ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.tb-foot a {
-  display: inline-flex;
+.mzizi-footer__link {
+  display: flex;
   align-items: center;
   min-height: 44px;
-  transition: color 0.2s ease;
+  font-size: 1.0625rem;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25em;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
 }
 
-.tb-foot a:hover {
+.mzizi-footer__link:hover {
   color: var(--ink);
+  text-decoration-color: var(--brand);
 }
 
-@media (max-width: 40rem) {
-  .title-block {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .tb-name {
-    grid-column: 1 / -1;
-    border-inline-end: none;
-  }
-
-  .tb-cell:nth-child(3) {
-    border-inline-end: none;
-  }
-}
-
-/* ---------------------------- SiteFooter ---------------------------- */
-
-.footer {
-  margin-block-start: var(--space-10);
-  /*
-   * `--void` did not exist, so the footer had no ground of its own and simply
-   * showed the sheet. It reads as the foot of the drawing now: the deepest
-   * well on the page, the same recess the QR sits in.
-   */
-  background: var(--sheet-deep);
-}
-
-.footer__inner {
+.mzizi-footer__bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-9);
-  padding-block: var(--space-9);
+  gap: var(--space-3) var(--space-6);
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-5);
+  border-block-start: 1px solid var(--ink-hair);
 }
 
-.footer__identity {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.footer__wordmark {
-  font-family: var(--display);
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-/*
- * `--ink-soft`, not `--faint`.
- *
- * This block referenced four custom properties that no longer exist — `--void`,
- * `--faint`, `--muted`, `--foreground`, from a vocabulary that predates
- * tokens.ts. Each silently fell back to `unset` and inherited, so the footer
- * rendered at full ink and *looked* fine: the intended hierarchy was simply
- * gone. A pixel-based contrast gate structurally cannot see this — a dropped
- * declaration leaves nothing to measure.
- */
-.footer__copy {
-  font-size: var(--label);
+.mzizi-footer__copy {
+  font-size: 1.0625rem;
   color: var(--ink-soft);
-  margin-block-start: var(--space-2);
 }
 
-.footer__columns {
-  display: flex;
-  gap: var(--space-9);
-}
-
-.footer__nav :where(ul) {
-  list-style: none;
-  padding: 0;
-  margin-block-start: var(--space-3);
-  display: flex;
-  flex-direction: column;
-}
-
-/*
- * 44px, not 40, and the label floor rather than 14px — both were under the
- * minimums stated in CLAUDE.md, and both were invisible for the same reason as
- * the colour above: nothing was measuring a footer nobody scrolled to.
- */
-.footer__nav :where(a) {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
+.mzizi-footer__sheet {
+  font-family: var(--mono);
   font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.12em;
   color: var(--ink-soft);
-  transition: color 0.25s ease;
 }
 
-.footer__nav :where(a):hover {
-  color: var(--ink);
+.mzizi-footer__dots {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.mzizi-footer__dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+}
+
+.mzizi-footer__title:lang(zh),
+.mzizi-footer__sheet:lang(zh) {
+  font-family: var(--cjk-mono);
+  letter-spacing: 0.08em;
+  text-transform: none;
 }
 
 /* ---------------------------- HomeView ---------------------------- */
@@ -1797,7 +1922,8 @@ figcaption {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  /* minmax(0, …): a plain 1fr will not shrink below its content at 320px. */
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 1.75rem;
 }
 
@@ -1920,8 +2046,7 @@ figcaption {
   width: 3.5rem;
 }
 
-.link-panel__path,
-.split__path {
+.link-panel__path {
   display: block;
   margin-block-start: var(--space-4);
   font-family: var(--mono);
@@ -1932,70 +2057,166 @@ figcaption {
   color: var(--ink-soft);
 }
 
-/* --- split nav --- */
+/* --- hero actions --- */
 
-.split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.75rem;
-}
-
-@media (max-width: 51rem) {
-  .split {
-    grid-template-columns: 1fr;
-  }
-}
-
-.split__card {
-  display: block;
-  padding: var(--space-8) var(--space-7);
-  transition: background-color 0.25s ease;
-}
-
-.split__card:hover {
-  background: var(--sheet-raised);
-}
-
-.split__big {
-  font-family: var(--display);
-  font-size: clamp(2.25rem, 7vw, 4.5rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  line-height: 0.95;
-}
-
-/* See Hero: Han fills the em box that Latin caps leave room in. */
-.split__big:lang(zh) {
-  line-height: 1.1;
-  letter-spacing: 0.03em;
-}
-
-/* Slightly finer stroke than the hero — the type is smaller here. */
-.split__big .drafted {
-  -webkit-text-stroke-width: 1.3px;
-}
-
-.split__card p {
-  max-width: 21.25rem;
-  margin-block-start: 0.875rem;
-}
-
-/* --- toolmarks --- */
-
-.toolmarks {
-  margin-block-start: var(--space-9);
-  padding-block: var(--space-4);
-  border-block: 1.5px solid var(--ink);
+.hero__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.375rem;
+  gap: var(--space-4);
+  margin-block-start: var(--space-6);
+}
+
+/* Mzizi reserves 56px for the prominent surfaces: the hero's call to action. */
+.hero__actions .btn {
+  min-height: 56px;
+}
+
+/* --- three systems --- */
+
+/*
+ * One card per system, full width, because each carries three answers in the
+ * same order — who it is for, how the parts connect, what changed — and a
+ * reader comparing them reads down a column, not across a row.
+ */
+.systems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.system,
+.bigger {
+  padding: var(--space-8) var(--space-7);
+}
+
+/* The three audiences, each on its mineral's container, as the systems are. */
+.audience {
+  background: var(--mineral-container, var(--sheet-wash));
+  border-color: color-mix(in oklab, var(--mineral, var(--ink)) 40%, transparent);
+}
+
+/*
+ * Mzizi: theme a surface in its brand's mineral. Each system card sits on its
+ * mineral's dark container, and its labels take the on-container tone —
+ * colour as identity, with the reading text left in ink.
+ */
+.system,
+.bigger {
+  background: var(--mineral-container, var(--sheet-wash));
+  border-color: color-mix(in oklab, var(--mineral, var(--ink)) 45%, transparent);
+}
+
+.system .system__org,
+.system .system__spec dt,
+.bigger .system__links a {
+  color: var(--mineral-on, var(--ink-soft));
+}
+
+.system__org {
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
-  letter-spacing: 0.3em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-soft);
+  margin-block-end: var(--space-2);
+}
+
+.system__spec {
+  display: grid;
+  grid-template-columns: minmax(8rem, auto) 1fr;
+  gap: var(--space-4) var(--space-6);
+  margin-block-start: var(--space-5);
+}
+
+.system__spec dt {
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-block-start: 0.3rem;
+}
+
+.system__spec dd {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+
+.system__spec dd:lang(zh) {
+  line-height: 1.8;
+}
+
+@media (max-width: 51rem) {
+  /* On a phone the panel's own padding is enough; more starves the column. */
+  .system,
+  .bigger {
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .system__spec {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .system__spec dd + dt {
+    margin-block-start: var(--space-4);
+  }
+}
+
+.system__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--space-6);
+}
+
+/* Outranks `.panel :where(a)`, which would otherwise underline these. */
+.system__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--label);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* At 320px a no-wrap pill is wider than the column; let it wrap there. */
+@media (max-width: 24rem) {
+  .system__links a {
+    white-space: normal;
+    letter-spacing: 0.12em;
+  }
+}
+
+.system__links a:hover {
+  border-color: var(--ink);
+  background: var(--sheet-raised);
+}
+
+/* --- how a job runs --- */
+
+.steps {
+  list-style: none;
+  padding: 0;
 }
 
 /* --- connect --- */
@@ -2034,7 +2255,8 @@ figcaption {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: var(--space-4);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-full);
   background: var(--sheet-wash-light);
   border: 1px solid var(--ink);
   font-family: var(--mono);
@@ -2101,8 +2323,9 @@ figcaption {
 .cluster__label:lang(zh),
 .group-label:lang(zh),
 .link-panel__path:lang(zh),
-.split__path:lang(zh),
-.toolmarks:lang(zh) {
+.system__org:lang(zh),
+.system__spec dt:lang(zh),
+.system__links a:lang(zh) {
   font-family: var(--cjk-mono);
   letter-spacing: 0.1em;
   text-transform: none;
@@ -2289,9 +2512,10 @@ figcaption {
   margin-block: var(--space-8);
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
-  font-weight: 300;
+  /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
+  font-weight: 400;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -2338,7 +2562,8 @@ figcaption {
 .journey__title {
   margin-block: 0.35rem var(--space-2);
   font-size: 1.3125rem;
-  font-weight: 300;
+  /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
+  font-weight: 400;
 }
 
 .journey__body {
@@ -2372,7 +2597,7 @@ figcaption {
 }
 
 .work-list h3 {
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.125rem;
   font-weight: 500;
   margin-block-end: var(--space-1);
@@ -2439,7 +2664,7 @@ figcaption {
 
 .aptitudes h3,
 .questions h3 {
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.125rem;
   font-weight: 500;
   margin-block-end: 0.35rem;
@@ -2896,9 +3121,8 @@ code {
 /*
  * The body column.
  *
- * `--measure` is the token, not a number picked here — Cormorant runs about
- * 6.8px per character and a column that looks right by eye measures far past
- * a comfortable line.
+ * `--measure` is the token, not a number picked here — a column that looks
+ * right by eye routinely measures past a comfortable line.
  */
 .adventure__body {
   max-width: var(--measure);
@@ -2943,9 +3167,10 @@ code {
   margin-block: var(--space-8);
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
-  font-weight: 300;
+  /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
+  font-weight: 400;
   line-height: 1.4;
   color: var(--ink);
   text-wrap: balance;
