@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
 import { PROFILE } from '../data/profile.js';
-import { bookingTopics } from '../data/booking.js';
+import { CAL_LINK, bookingTopics } from '../data/booking.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -55,7 +55,7 @@ const t = useTranslations(lang);
         scheduler embed on every page load is a tracker the reader did not
         request, and it is the heaviest thing on the page.
       -->
-      <div id="cal-embed" class="scheduler__embed" data-cal-link="bryanfawcett/book-a-call"></div>
+      <div id="cal-embed" class="scheduler__embed" data-cal-link={CAL_LINK}></div>
       <button id="cal-load" class="btn" type="button" data-error={t('book.error')}>
         {t('book.load')}
       </button>
@@ -126,7 +126,8 @@ const t = useTranslations(lang);
       Cal('init', { origin: 'https://cal.com' });
       Cal('inline', {
         elementOrSelector: '#cal-embed',
-        calLink: 'bryanfawcett/book-a-call',
+        // Read off the element: the script cannot import the frontmatter's value.
+        calLink: embed.dataset['calLink'] ?? '',
         config: { layout: 'month_view' },
       });
       // linkReady / linkFailed fire once the calendar iframe itself has

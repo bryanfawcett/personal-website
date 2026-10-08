@@ -10,6 +10,16 @@ import type { Bilingual } from '../i18n/localize.js';
 import { listInLang } from '../i18n/localize.js';
 import type { Lang } from '../i18n/ui.js';
 
+/**
+ * The 30-minute "Book a call" event on Cal.com.
+ *
+ * One constant, because two things point at it: the embed on /book and the QR
+ * on the contact card. A renamed event that one of them missed would send a
+ * reader to a Cal.com 404 from a printed card nobody can update.
+ */
+export const CAL_LINK = 'bryanfawcett/book-a-call';
+export const BOOKING_URL = `https://cal.com/${CAL_LINK}`;
+
 export interface BookingTopic {
   readonly title: string;
   readonly detail: string;

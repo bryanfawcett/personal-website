@@ -1502,13 +1502,14 @@ figcaption {
 }
 
 /*
- * The QR is drawn in ink on nothing, so it needs its own quiet ground: a
- * code over the blueprint ruling is a code a phone will not lock onto.
+ * The QR carries its own opaque ground in the SVG (the sheet blue), and the
+ * frame matches it so the quiet zone reads as part of the code rather than a
+ * gap. A code over the blueprint ruling is a code a phone will not lock onto.
  */
 .card__qr {
   width: 11rem;
   padding: 0.625rem;
-  background: var(--sheet-deep);
+  background: var(--sheet);
   border: 1px solid var(--ink-faint);
 }
 

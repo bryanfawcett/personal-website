@@ -383,20 +383,26 @@ silently falls back to a system sans.
 
 ### The contact card
 
-`ContactCard.astro` carries the portrait, the particulars and a QR. The QR holds
-the **whole vCard**, not a link to one, so scanning it saves the contact with no
-network — the case that matters standing in a room at a conference. Rendered to
-SVG at build time by `src/brand/vcard.ts`; nothing about it ships as JavaScript.
-`/bryan-fawcett.vcf` is a prerendered static endpoint serving the same card.
+`ContactCard.astro` carries the portrait, the particulars and a QR. The QR opens
+the **30-minute booking page** (`BOOKING_URL` in `src/data/booking.ts`, the same
+constant the `/book` embed reads), because booking is the one action the site
+asks for. It used to hold the whole vCard; that is now the "Download .vcf" link
+beneath it. Rendered to SVG at build time by `src/brand/qr.ts`; nothing about it
+ships as JavaScript. `/bryan-fawcett.vcf` is a prerendered static endpoint
+serving the card, built by `src/brand/vcard.ts`.
 
 vCard **3.0**, not 4.0: both mobile platforms read 3.0 without complaint, and
 older Android scanners still choke on 4.0's `KIND` and typed URLs. Lines are
 escaped and folded per RFC 6350 §3.4 — an unfolded long line is the usual reason
 a card imports with a truncated title on one platform and not another.
 
-The QR needs its own opaque ground (`--sheet-deep`). A code sitting over the
-blueprint ruling is a code a phone will not lock onto. If you change the payload
-or the styling, re-verify by decoding a real screen capture, not by eye.
+The QR is ink (`INK.base`) on the sheet blue (`SHEET.base`), both taken from the
+tokens and written into the SVG itself, so a saved or printed code keeps its
+ground. That makes it an inverted code — light on dark — which the iOS Camera and
+Google Lens read; it stays that way rather than becoming a white box on a dark
+site. The site is dark only, so there is no light-theme variant to keep in step.
+If you change the payload or the styling, re-verify by decoding a real screen
+capture, not by eye.
 
 ### Content lives in `src/data/`
 

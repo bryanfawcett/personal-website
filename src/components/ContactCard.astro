@@ -1,13 +1,13 @@
 ---
 /**
- * The contact card: portrait, particulars, and a QR that saves the contact.
+ * The contact card: portrait, particulars, and a QR that books a call.
  *
- * The QR carries the whole vCard, not a link to one, so it works with no
- * network — which is the case that matters, standing in a room at a workshop.
- * It is rendered to SVG at build time; nothing about it ships as JavaScript.
+ * The QR opens the 30-minute booking page, because booking is the one action
+ * the site asks for; the vCard is a download beneath it. It is rendered to SVG
+ * at build time; nothing about it ships as JavaScript.
  */
 import Portrait from './Portrait.astro';
-import { vcardQr } from '../brand/vcard.js';
+import { bookingQr } from '../brand/qr.js';
 import { PROFILE, profileInLang } from '../data/profile.js';
 import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
 
@@ -25,12 +25,12 @@ const t = useTranslations(lang);
 const profile = profileInLang(lang);
 
 /*
- * The vCard itself stays English in both languages: it is one canonical
- * contact record that ends up in a stranger's address book, and a card that
- * says something different depending on which page it was scanned from is a
- * duplicate contact waiting to happen.
+ * The vCard behind "Download .vcf" stays English in both languages: it is one
+ * canonical contact record that ends up in a stranger's address book, and a
+ * card that differs by the page it came from is a duplicate contact waiting
+ * to happen. The QR's booking link is the same in both, for the same reason.
  */
-const qr = await vcardQr();
+const qr = await bookingQr();
 ---
 
 <div class:list={['card', className]}>
@@ -55,7 +55,7 @@ const qr = await vcardQr();
   </div>
 
   <div class="card__scan">
-    {/* Decorative: the same details are in text above, and in the link below. */}
+    {/* Decorative: the page's own booking button goes to the same place. */}
     <div class="card__qr" aria-hidden="true" set:html={qr} />
     <p class="card__hint">{t('card.scan')}</p>
     <a class="card__download" href="/bryan-fawcett.vcf" download>{t('card.download')}</a>

@@ -121,7 +121,7 @@ export const ui = {
 
     // --- contact card ---
     'card.fig': 'Fig. 00 — The draughtsman',
-    'card.scan': 'Scan to save',
+    'card.scan': 'Scan to book a call',
     'card.download': 'Download .vcf',
 
     // --- experience ---
@@ -401,7 +401,7 @@ export const ui = {
 
     // --- contact card ---
     'card.fig': '图 00 — 制图人',
-    'card.scan': '扫码保存名片',
+    'card.scan': '扫码预约通话',
     'card.download': '下载 .vcf',
 
     // --- experience ---
