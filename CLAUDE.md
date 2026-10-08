@@ -124,9 +124,16 @@ bryanfawcett.com, built with:
   `mzizi-footer`, built for Astro** in `src/components/mzizi/`. The registry
   ships them in React (and the footer in Rust) only, so these are written
   against the contract — same `data-slot`, `data-portal` and anatomy — with no
-  framework. The header is sticky: brand, nav (a Popover-API menu below 56rem),
-  language switcher (into the menu below 24rem), theme toggle, and the "Book a
-  Call" pill. The footer is the canonical navigation: Site, Ecosystem, Connect,
+  framework. The header is laid out as Nyuchi Learning's (learning.nyuchi.com):
+  sticky, 64px (80px from 64rem); portrait and serif name, text links in the
+  middle, the language switcher, a ghost theme toggle and the "Book a Call"
+  pill. **On a phone (below 56rem) the links drop to a second row that scrolls
+  sideways, ending in the language switcher — never a hamburger.** Every
+  destination stays visible and one tap away, and a row needs no script to be
+  accessible where a disclosure would. The bar keeps brand, toggle and pill;
+  the name goes below 22.5rem. The contrast gate clears the sticky header's
+  height and scrolls the row to each link before measuring — a taller header
+  without that scores whatever sits under it as invisible. The footer is the canonical navigation: Site, Ecosystem, Connect,
   "© year Bryan Fawcett. All rights reserved.", the title-block line and the
   mineral dots.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet

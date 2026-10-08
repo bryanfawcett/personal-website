@@ -169,7 +169,13 @@ for (const route of ROUTES) {
       if (!stroked && alpha === 0) continue;
 
       // Parked off-canvas until focused (the skip link): no ground to sample.
-      const offCanvas = r.bottom + scrollY < 0 || r.right + scrollX < 0;
+      // A link scrolled out of a sideways row (the phone header) is not
+      // parked: the row is scrolled to it before it is measured.
+      let inRow = false;
+      for (let c = el.parentElement; c; c = c.parentElement) {
+        if (/auto|scroll/.test(getComputedStyle(c).overflowX)) { inRow = true; break; }
+      }
+      const offCanvas = !inRow && (r.bottom + scrollY < 0 || r.right + scrollX < 0);
 
       const cls = (typeof el.className === 'string' ? el.className.split(' ')[0] : '') || el.tagName.toLowerCase();
       const key = `${cls}|${cs.fontSize}|${cs.fontWeight}|${ink}`;
@@ -240,11 +246,46 @@ for (const route of ROUTES) {
       windowTop = null;
     }
 
+    /*
+     * A target in a sideways-scrolling row (the phone header's links and its
+     * language switcher) can sit past the viewport's edge, where no screenshot
+     * sees it. Scroll the row to it; that changes the page, so drop the held
+     * window and take the plates again.
+     */
+    const rowMoved = await el.evaluate((node) => {
+      let c = node.parentElement;
+      while (c && !(c.scrollWidth > c.clientWidth && /auto|scroll/.test(getComputedStyle(c).overflowX))) {
+        c = c.parentElement;
+      }
+      if (!c) return false;
+      const r = node.getBoundingClientRect();
+      const cr = c.getBoundingClientRect();
+      if (r.left >= cr.left && r.right <= cr.right) return false;
+      c.scrollLeft += r.left - cr.left - 16;
+      return true;
+    });
+    if (rowMoved) {
+      await page.waitForTimeout(30);
+      windowTop = null;
+    }
+
     // Re-scroll only when this target does not fit in the window already held.
     let box = await el.boundingBox();
     if (!box || box.width < 2 || box.height < 2) continue;
-    if (windowTop === null || box.y < 0 || box.y + box.height > vp.height) {
-      const top = Math.max(0, (docY[t.i] ?? 0) - 80);
+    /*
+     * The sticky header covers the top of every window, 118px of it on a
+     * phone where the navigation takes a second row. A target scrolled to
+     * 80px from the top sat underneath it and was scored as no glyph at all,
+     * so the window clears the header's height first.
+     */
+    const stuck = await page.evaluate(() => {
+      const header = document.querySelector('[data-slot="mzizi-header"]');
+      return header instanceof HTMLElement && getComputedStyle(header).position === 'sticky' ? header.offsetHeight : 0;
+    });
+    const inHeader = await el.evaluate((node) => node.closest('[data-slot="mzizi-header"]') !== null);
+    const clear = inHeader ? 0 : stuck;
+    if (windowTop === null || box.y < clear || box.y + box.height > vp.height) {
+      const top = Math.max(0, (docY[t.i] ?? 0) - 80 - clear);
       await page.evaluate((y) => scrollTo(0, y), top);
       await page.waitForTimeout(30);
       box = await el.boundingBox();

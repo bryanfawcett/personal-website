@@ -1075,9 +1075,10 @@ body:lang(zh) {
 /* ---------------------------- MziziHeader ---------------------------- */
 
 /*
- * The registry's mzizi-header, in this stylesheet's terms: sticky, 56px,
- * on the page's own surface with a hairline under it. Solid rather than
- * blurred, so nothing scrolling beneath can lower the contrast of its labels.
+ * The registry's mzizi-header, laid out as Nyuchi Learning's: sticky, 64px
+ * (80px from 64rem), on the page's own surface with a hairline under it.
+ * Solid rather than blurred, so nothing scrolling beneath can lower the
+ * contrast of its labels.
  */
 .mzizi-header {
   position: sticky;
@@ -1092,9 +1093,8 @@ body:lang(zh) {
   align-items: center;
   gap: var(--space-4);
   width: min(67.5rem, 100% - 2rem);
-  min-height: 56px;
+  min-height: 64px;
   margin-inline: auto;
-  padding-block: var(--space-2);
 }
 
 .mzizi-header__brand {
@@ -1118,14 +1118,16 @@ body:lang(zh) {
   line-height: 1.15;
 }
 
+/* The name is the wordmark, so it is set as one: Noto Serif, bold. */
 .mzizi-header__name {
-  font-family: var(--sans);
-  font-size: 1rem;
+  font-family: var(--display);
+  font-size: 1.1875rem;
   font-weight: 700;
   color: var(--ink);
 }
 
 .mzizi-header__role {
+  display: none;
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -1140,7 +1142,7 @@ body:lang(zh) {
 }
 
 .mzizi-header__nav ul,
-.mzizi-header__menu ul {
+.mzizi-header__row ul {
   display: flex;
   list-style: none;
   padding: 0;
@@ -1152,32 +1154,31 @@ body:lang(zh) {
   gap: var(--space-1);
 }
 
-.mzizi-header__link,
-.mzizi-header__menu-link {
+/* Desktop links are text, not pills: soft ink, full ink on hover. */
+.mzizi-header__link {
   display: flex;
   align-items: center;
   min-height: 44px;
   padding-inline: var(--space-3);
-  border-radius: var(--radius-full);
   font-family: var(--sans);
   font-size: 1rem;
   font-weight: 600;
   color: var(--ink-soft);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 0.45em;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
 }
 
-.mzizi-header__link:hover,
-.mzizi-header__menu-link:hover {
+.mzizi-header__link:hover {
   color: var(--ink);
-  background: var(--sheet-raised);
 }
 
-.mzizi-header__link.is-current,
-.mzizi-header__menu-link.is-current {
+/* The current page is ink, underlined in the primary: a mark under the word. */
+.mzizi-header__link.is-current {
   color: var(--ink);
-  background: var(--sheet-wash-light);
+  text-decoration-color: var(--brand);
 }
 
 .mzizi-header__actions {
@@ -1187,14 +1188,16 @@ body:lang(zh) {
   margin-inline-start: auto;
 }
 
+/* A ghost icon button: no rim until the pointer finds it. */
 .mzizi-header__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid var(--ink-hair);
+  border: 0;
   border-radius: var(--radius-full);
   background: transparent;
   color: var(--ink);
@@ -1225,97 +1228,137 @@ body:lang(zh) {
 }
 
 .mzizi-header__cta {
+  flex-shrink: 0;
   min-height: 44px;
   padding-inline: var(--space-5);
   white-space: nowrap;
 }
 
-.mzizi-header__menu-button {
+/*
+ * The phone row. Hidden on desktop; below 56rem it holds the navigation,
+ * scrolled sideways rather than folded into a menu. The links are pills so a
+ * thumb has a 44px target, and the row's own scrollbar is hidden — the link
+ * cut off at the edge is what says there is more.
+ */
+.mzizi-header__row {
   display: none;
+  border-block-start: 1px solid var(--ink-hair);
 }
 
-/* The phone menu: a popover under the header's right edge. */
-.mzizi-header__menu {
-  position: fixed;
-  inset: 64px var(--space-4) auto auto;
-  margin: 0;
-  min-width: 14rem;
-  padding: var(--space-2);
-  background: var(--sheet-wash);
-  color: var(--ink);
-  border: 1px solid var(--ink-hair);
-  border-radius: var(--radius-lg);
-}
-
-.mzizi-header__menu ul {
-  flex-direction: column;
+.mzizi-header__row ul {
+  align-items: center;
   gap: var(--space-1);
+  width: min(67.5rem, 100% - 2rem);
+  margin-inline: auto;
+  padding-block: var(--space-1);
 }
 
-.mzizi-header__menu-link {
-  min-height: 48px;
+.mzizi-header__chip {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-full);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
-@media (max-width: 64rem) {
+.mzizi-header__chip:hover {
+  color: var(--ink);
+  background: var(--sheet-raised);
+}
+
+.mzizi-header__chip.is-current {
+  color: var(--ink);
+  background: var(--sheet-wash-light);
+}
+
+.mzizi-header__row-lang {
+  flex-shrink: 0;
+  margin-inline-start: var(--space-2);
+}
+
+.mzizi-header__link:lang(zh),
+.mzizi-header__chip:lang(zh) {
+  font-family: var(--cjk);
+}
+
+@media (min-width: 64rem) {
+  .mzizi-header__inner {
+    min-height: 80px;
+  }
+
   .mzizi-header__role {
-    display: none;
+    display: block;
   }
 }
 
 @media (max-width: 56rem) {
-  .mzizi-header__nav {
-    display: none;
-  }
-
-  .mzizi-header__menu-button {
-    display: inline-flex;
-  }
-}
-
-@media (max-width: 30rem) {
-  .mzizi-header__id {
-    display: none;
-  }
-
-  /*
-   * Five controls on a 390px phone. "ENGLISH" on the Chinese pages is the
-   * widest of them at full tracking, and pushed the menu button 23px past
-   * the edge; tighter tracking and gaps bring the row back inside.
-   */
-  .mzizi-header__actions {
-    gap: var(--space-1);
-  }
-
-  .mzizi-header__actions .lang {
-    padding-inline: var(--space-3);
-    letter-spacing: 0.06em;
-  }
-}
-
-.mzizi-header__menu-lang {
-  display: none;
-  margin-block-start: var(--space-2);
-  padding-block-start: var(--space-2);
-  border-block-start: 1px solid var(--ink-hair);
-}
-
-/*
- * Below 24rem (360px and 320px phones) the row cannot hold all five
- * controls, so the language switcher moves into the menu.
- */
-@media (max-width: 24rem) {
+  .mzizi-header__nav,
   .mzizi-header__lang {
     display: none;
   }
 
-  .mzizi-header__menu-lang {
-    display: flex;
+  .mzizi-header__row {
+    display: block;
+  }
+
+  /*
+   * The row scrolls, not the ul inside it: the ul keeps the shell's width
+   * and margin so the first link lines up with the brand above it.
+   */
+  .mzizi-header__row {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .mzizi-header__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mzizi-header__row ul {
+    width: max-content;
+    min-width: min(67.5rem, 100% - 2rem);
+    margin-inline: 1rem;
   }
 }
 
-.mzizi-header__link:lang(zh),
-.mzizi-header__menu-link:lang(zh) {
-  font-family: var(--cjk);
+/*
+ * A 390px bar holds the portrait, the name, the toggle and the pill only with
+ * the name a size down and the gaps taken in; the serif at 19px pushed the
+ * pill 16px past the edge.
+ */
+@media (max-width: 30rem) {
+  .mzizi-header__inner {
+    gap: var(--space-2);
+  }
+
+  .mzizi-header__name {
+    font-size: 1.0625rem;
+  }
+
+  .mzizi-header__actions {
+    gap: var(--space-1);
+  }
+
+  .mzizi-header__cta {
+    padding-inline: var(--space-4);
+  }
+}
+
+/* On the narrowest phones the name goes; the portrait still says whose site. */
+@media (max-width: 22.5rem) {
+  .mzizi-header__id {
+    display: none;
+  }
 }
 
 /* ---------------------------- LanguageSwitcher ---------------------------- */

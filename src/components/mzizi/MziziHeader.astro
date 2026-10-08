@@ -8,13 +8,19 @@
  * missing target "against the contract": same `data-slot`, same
  * `data-portal`, same anatomy. So here it is with no client framework:
  *
- *   - sticky, 56px tall, on the page's own background with a hairline under
- *     it (sticky chrome is the one place Mzizi allows a backdrop blur);
- *   - left: the brand link — here the portrait, name and role;
- *   - desktop: the navigation links; below 56rem they move into a menu that
- *     opens from a button, using the Popover API so it needs no script;
- *   - right: the actions — the language switcher, the theme toggle, and the
- *     one primary action, booking a call.
+ *   - sticky, 64px tall (80px from 64rem), on the page's own surface with a
+ *     hairline under it;
+ *   - left: the brand link — the portrait and the name as a serif wordmark;
+ *   - desktop: the navigation, as plain text links in the middle;
+ *   - right: the actions — the language switcher, a ghost theme toggle, and
+ *     the one primary action, booking a call.
+ *
+ * On a phone the bar keeps the brand, the toggle and the pill, and the
+ * navigation drops to a second row under it: the same links, scrolled
+ * sideways rather than folded into a menu. That is Nyuchi Learning's header
+ * (learning.nyuchi.com), and the reason is the same: every destination stays
+ * one tap away and visible, and a row needs no script to be accessible where a
+ * disclosure would. The language switcher closes the row.
  *
  * The theme toggle is the contract's ThemeToggle. The page follows the
  * device's theme until the reader chooses; the choice is kept in
@@ -131,28 +137,17 @@ const book = NAV.find((item) => item.href === '/book');
           </a>
         )
       }
-
-      <button
-        class="mzizi-header__icon mzizi-header__menu-button"
-        type="button"
-        popovertarget="mzizi-header-menu"
-        aria-label={t('nav.menu')}
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16"></path>
-        </svg>
-      </button>
     </div>
   </div>
 
-  {/* The phone menu: the same links, in a popover the menu button opens. */}
-  <nav id="mzizi-header-menu" class="mzizi-header__menu" popover aria-label={t('nav.label')}>
+  {/* The phone row: the same links, scrolled sideways; the switcher closes it. */}
+  <nav class="mzizi-header__row" aria-label={t('nav.label')}>
     <ul>
       {
-        NAV.map((item) => (
+        links.map((item) => (
           <li>
             <a
-              class:list={['mzizi-header__menu-link', { 'is-current': isCurrent(item.href) }]}
+              class:list={['mzizi-header__chip', { 'is-current': isCurrent(item.href) }]}
               href={localizePath(item.href, lang)}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
@@ -161,11 +156,10 @@ const book = NAV.find((item) => item.href === '/book');
           </li>
         ))
       }
+      <li class="mzizi-header__row-lang">
+        <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
+      </li>
     </ul>
-    {/* On the narrowest phones the switcher leaves the bar and lives here. */}
-    <div class="mzizi-header__menu-lang">
-      <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
-    </div>
   </nav>
 </header>
 
@@ -202,6 +196,21 @@ const book = NAV.find((item) => item.href === '/book');
     label();
   });
 
-  document.addEventListener('astro:page-load', label);
+  /*
+   * A reader on /minerals should not land with their own page scrolled out of
+   * the row. Scroll the row itself — never the page — to bring it in.
+   */
+  const reveal = () => {
+    const row = document.querySelector<HTMLElement>('.mzizi-header__row');
+    const current = row?.querySelector<HTMLElement>('.is-current');
+    if (!row || !current) return;
+    const overflow = current.offsetLeft + current.offsetWidth - row.clientWidth;
+    if (overflow > 0) row.scrollLeft = overflow + 16;
+  };
+
+  document.addEventListener('astro:page-load', () => {
+    label();
+    reveal();
+  });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label);
 </script>
