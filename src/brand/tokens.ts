@@ -327,45 +327,163 @@ export const SEMANTIC = {
   onBrand: '#0E0D0C',
 } as const;
 
+/*
+ * ------------------------------------------------------------------------
+ * The light theme.
+ *
+ * Everything above is the dark theme. These are its light counterparts, for
+ * the groups that change with the scheme; measure, labels, spacing, grid
+ * geometry and type do not. Surfaces are Mzizi's light ladder (cards are
+ * white on the warm-paper base, as @bundu/ui's light --card is), ink is
+ * Mzizi's light foreground, and the primary is river's light tone.
+ *
+ * The page follows the device: light unless the reader's system asks for
+ * dark, and an explicit choice from the header's theme toggle
+ * (`data-theme` on <html>) wins over either.
+ * ------------------------------------------------------------------------
+ */
+
+export const SHEET_LIGHT: Record<keyof typeof SHEET, string> = {
+  deep: '#FAFAFA',
+  wash: '#FFFFFF',
+  washLight: '#E5E4E1',
+  mid: '#E0DFDC',
+  base: '#F3F3F1',
+  raised: '#D6D5D1',
+};
+
+export const INK_LIGHT: Record<keyof typeof INK, string> = {
+  base: '#1A1A17',
+  body: 'rgb(26 26 23 / 0.94)',
+  soft: 'rgb(26 26 23 / 0.86)',
+  faint: 'rgb(26 26 23 / 0.36)',
+  hair: 'rgb(26 26 23 / 0.18)',
+  drafted: 'rgb(26 26 23 / 0.12)',
+};
+
+export const GROUND_LIGHT: Record<keyof typeof GROUND, string> = {
+  lit: 'rgb(255 255 255 / 0.30)',
+  shade: 'rgb(0 0 0 / 0.04)',
+  glow: 'rgb(255 255 255 / 0.15)',
+  pool: 'rgb(0 0 0 / 0.03)',
+  vignette: 'rgb(0 0 0 / 0.06)',
+};
+
+export const MARKS_LIGHT: Record<keyof typeof MARKS, string> = {
+  /** Graphite on paper, where the dark theme has chalk on a board. */
+  pencil: '#6B4A1F',
+  stamp: '#C23A1E',
+  stampInk: '#9E2A12',
+  shadow: 'rgb(0 0 0 / 0.12)',
+  inset: 'rgb(0 0 0 / 0.04)',
+};
+
+/** Dark lines on paper: the ruling is drawn darker than the ground here. */
+export const RULE_LIGHT: Record<keyof typeof RULE, string> = {
+  /*
+   * Held low for the same reason as the dark ruling: at 0.10 a major
+   * crossing multiplied the paper down to rgb(225 225 224), and body text
+   * that crossed one was scored against that rather than the page.
+   */
+  major: 'rgb(26 26 23 / 0.06)',
+  minor: 'rgb(26 26 23 / 0.035)',
+};
+
 /**
- * Render every token as CSS custom properties on `:root`.
+ * River's light tone, #006064, with white text: Lc 87.9, so the 700-weight
+ * labels on it have room to spare.
+ */
+export const SEMANTIC_LIGHT: Record<keyof typeof SEMANTIC, string> = {
+  brand: '#006064',
+  onBrand: '#FFFFFF',
+};
+
+/**
+ * How the blueprint layers composite. On a dark board the ruling is lighter
+ * than the ground and adds light; on paper it is darker and takes it away.
+ */
+export const BLEND = { ground: 'plus-lighter' } as const;
+export const BLEND_LIGHT: Record<keyof typeof BLEND, string> = { ground: 'multiply' };
+
+/**
+ * Show one element per theme without a theme selector in the stylesheet:
+ * `display: var(--show-dark-only)`. The header's sun and moon, and the
+ * contact card's two QR codes, use it.
+ */
+export const SHOW = { darkOnly: 'block', lightOnly: 'none' } as const;
+export const SHOW_LIGHT: Record<keyof typeof SHOW, string> = { darkOnly: 'none', lightOnly: 'block' };
+
+type Group = Readonly<Record<string, string>>;
+
+/** Groups whose values do not change with the theme. */
+const INVARIANT: ReadonlyArray<readonly [string, string, Group]> = [
+  ['Measure', 'measure', MEASURE],
+  ['Label', 'label', LABEL],
+  ['Space', 'space', SPACE],
+  ['Mineral', 'mineral', MINERAL],
+  ['Grid', 'grid', GRID],
+  ['Type', '', TYPE],
+];
+
+/** Groups that do, as [label, prefix, dark, light]. */
+const THEMED: ReadonlyArray<readonly [string, string, Group, Group]> = [
+  ['Sheet', 'sheet', SHEET, SHEET_LIGHT],
+  ['Ground', 'ground', GROUND, GROUND_LIGHT],
+  ['Ink', 'ink', INK, INK_LIGHT],
+  ['Marks', '', MARKS, MARKS_LIGHT],
+  ['Rule', 'rule', RULE, RULE_LIGHT],
+  ['Semantic', '', SEMANTIC, SEMANTIC_LIGHT],
+  ['Blend', 'blend', BLEND, BLEND_LIGHT],
+  ['Show', 'show', SHOW, SHOW_LIGHT],
+];
+
+function themed(scheme: 'light' | 'dark', indent: string): string[] {
+  const out: string[] = [];
+  out.push(`${indent}/* Mzizi minerals, ${scheme} */`);
+  for (const m of MINERALS) {
+    const dark = scheme === 'dark';
+    out.push(`${indent}--mineral-${m.name}: ${dark ? m.hex : m.onLight};`);
+    out.push(`${indent}--mineral-${m.name}-container: ${dark ? m.container : m.containerLight};`);
+    out.push(
+      `${indent}--mineral-${m.name}-on-container: ${dark ? m.onContainer : m.onContainerLight};`,
+    );
+  }
+  for (const [label, prefix, dark, light] of THEMED) {
+    out.push(`${indent}/* ${label} */`);
+    for (const [key, value] of Object.entries(scheme === 'dark' ? dark : light)) {
+      out.push(`${indent}--${varName(prefix, key)}: ${value};`);
+    }
+  }
+  return out;
+}
+
+/**
+ * Render every token as CSS custom properties.
  *
  * Generated at build time rather than hand-maintained, so the TypeScript above
- * stays the single source of truth and the two cannot drift.
+ * stays the single source of truth and the two cannot drift. The selectors
+ * match @bundu/ui's color-scheme.css: light on :root, dark under the device
+ * preference unless the reader chose light, and dark whenever they chose it.
  */
 export function tokensToCss(): string {
   const lines: string[] = [':root {'];
-
-  lines.push('  /* Mzizi minerals — the rail and the accents */');
-  for (const m of MINERALS) {
-    lines.push(`  --mineral-${m.name}: ${m.hex};`);
-    lines.push(`  --mineral-${m.name}-container: ${m.container};`);
-    lines.push(`  --mineral-${m.name}-on-container: ${m.onContainer};`);
-  }
-
-
-  const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
-    ['Sheet', 'sheet', SHEET],
-    ['Ground', 'ground', GROUND],
-    ['Ink', 'ink', INK],
-    ['Measure', 'measure', MEASURE],
-    ['Marks', '', MARKS],
-    ['Label', 'label', LABEL],
-    ['Space', 'space', SPACE],
-    ['Mineral', 'mineral', MINERAL],
-    ['Grid', 'grid', GRID],
-    ['Rule', 'rule', RULE],
-    ['Type', '', TYPE],
-    ['Semantic', '', SEMANTIC],
-  ];
-
-  for (const [label, prefix, group] of groups) {
+  for (const [label, prefix, group] of INVARIANT) {
     lines.push(`  /* ${label} */`);
     for (const [key, value] of Object.entries(group)) {
       lines.push(`  --${varName(prefix, key)}: ${value};`);
     }
   }
+  lines.push(...themed('light', '  '));
+  lines.push('}');
 
+  lines.push('@media (prefers-color-scheme: dark) {');
+  lines.push('  :root:where(:not([data-theme="light"], .light)) {');
+  lines.push(...themed('dark', '    '));
+  lines.push('  }');
+  lines.push('}');
+
+  lines.push(':root:where([data-theme="dark"], .dark) {');
+  lines.push(...themed('dark', '  '));
   lines.push('}');
   return lines.join('\n');
 }

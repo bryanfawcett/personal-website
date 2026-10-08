@@ -1,0 +1,207 @@
+---
+/**
+ * mzizi Header — the Mzizi registry's `mzizi-header` (N7 shell), built for
+ * Astro against its contract.
+ *
+ * The registry ships this component for React only (a `"use client"` app
+ * header with a sidebar trigger and the Nyuchi logo), and says to write the
+ * missing target "against the contract": same `data-slot`, same
+ * `data-portal`, same anatomy. So here it is with no client framework:
+ *
+ *   - sticky, 56px tall, on the page's own background with a hairline under
+ *     it (sticky chrome is the one place Mzizi allows a backdrop blur);
+ *   - left: the brand link — here the portrait, name and role;
+ *   - desktop: the navigation links; below 56rem they move into a menu that
+ *     opens from a button, using the Popover API so it needs no script;
+ *   - right: the actions — the language switcher, the theme toggle, and the
+ *     one primary action, booking a call.
+ *
+ * The theme toggle is the contract's ThemeToggle. The page follows the
+ * device's theme until the reader chooses; the choice is kept in
+ * localStorage and applied by the inline script in BaseLayout's head.
+ */
+import LanguageSwitcher from '../LanguageSwitcher.astro';
+import { NAV, PROFILE, profileInLang } from '../../data/profile.js';
+import { localizePath, stripLang } from '../../i18n/routing.js';
+import { useTranslations, type Lang } from '../../i18n/ui.js';
+
+interface Props {
+  /** Language-neutral path, e.g. `/experience`. */
+  path: string;
+  lang: Lang;
+  /** Overrides the switcher target where the counterpart is not this path. */
+  switchHref?: string | undefined;
+}
+
+const { path, lang, switchHref } = Astro.props;
+const t = useTranslations(lang);
+const profile = profileInLang(lang);
+const here = stripLang(path);
+
+/** `/` matches only itself; every other route also matches its children. */
+function isCurrent(href: string): boolean {
+  return href === '/' ? here === '/' : here === href || here.startsWith(`${href}/`);
+}
+
+/* The one action is pulled out of the list and set as the primary pill. */
+const links = NAV.filter((item) => item.href !== '/book');
+const book = NAV.find((item) => item.href === '/book');
+---
+
+<header
+  class="mzizi-header"
+  data-slot="mzizi-header"
+  data-portal="https://mzizi.dev/components/mzizi-header"
+>
+  <div class="mzizi-header__inner">
+    <a class="mzizi-header__brand" href={localizePath('/', lang)} aria-label={t('nav.home')}>
+      {/*
+        A plain <img> at a fixed path, not astro:assets: the header renders on
+        on-demand routes too (/adventures), where `imageService: 'compile'`
+        emits a `/_image?…` URL with no service behind it. `pnpm nav-portrait`
+        renders public/nav-portrait.webp.
+      */}
+      <img
+        class="mzizi-header__portrait"
+        src="/nav-portrait.webp"
+        alt=""
+        width="36"
+        height="36"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <span class="mzizi-header__id">
+        <span class="mzizi-header__name">{PROFILE.name}</span>
+        <span class="mzizi-header__role">{profile.title}</span>
+      </span>
+    </a>
+
+    <nav class="mzizi-header__nav" aria-label={t('nav.label')}>
+      <ul>
+        {
+          links.map((item) => (
+            <li>
+              <a
+                class:list={['mzizi-header__link', { 'is-current': isCurrent(item.href) }]}
+                href={localizePath(item.href, lang)}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {t(item.labelKey)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mzizi-header__actions">
+      <div class="mzizi-header__lang">
+        <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
+      </div>
+
+      <button
+        class="mzizi-header__icon theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label={t('theme.toggle')}
+        data-label-light={t('theme.to_light')}
+        data-label-dark={t('theme.to_dark')}
+      >
+        {/* Sun when dark (switch to light), moon when light; CSS picks one. */}
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path
+            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+          ></path>
+        </svg>
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      {
+        book && (
+          <a
+            class:list={['btn', 'mzizi-header__cta', { 'is-current': isCurrent(book.href) }]}
+            href={localizePath(book.href, lang)}
+            aria-current={isCurrent(book.href) ? 'page' : undefined}
+          >
+            {t(book.labelKey)}
+          </a>
+        )
+      }
+
+      <button
+        class="mzizi-header__icon mzizi-header__menu-button"
+        type="button"
+        popovertarget="mzizi-header-menu"
+        aria-label={t('nav.menu')}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {/* The phone menu: the same links, in a popover the menu button opens. */}
+  <nav id="mzizi-header-menu" class="mzizi-header__menu" popover aria-label={t('nav.label')}>
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              class:list={['mzizi-header__menu-link', { 'is-current': isCurrent(item.href) }]}
+              href={localizePath(item.href, lang)}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
+              {t(item.labelKey)}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    {/* On the narrowest phones the switcher leaves the bar and lives here. */}
+    <div class="mzizi-header__menu-lang">
+      <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
+    </div>
+  </nav>
+</header>
+
+<script>
+  /*
+   * The theme toggle. Delegated from `document`, so it survives the router's
+   * document swaps without re-binding — the same reason the analytics
+   * listener is delegated.
+   */
+  const effective = (): 'light' | 'dark' => {
+    const chosen = document.documentElement.dataset['theme'];
+    if (chosen === 'light' || chosen === 'dark') return chosen;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+
+  const label = () => {
+    const next = effective() === 'dark' ? 'light' : 'dark';
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
+      const text = button.dataset[next === 'light' ? 'labelLight' : 'labelDark'];
+      if (text) button.setAttribute('aria-label', text);
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest('[data-theme-toggle]')) return;
+    const next = effective() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset['theme'] = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* Private mode: the choice holds for this page only. */
+    }
+    label();
+  });
+
+  document.addEventListener('astro:page-load', label);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label);
+</script>

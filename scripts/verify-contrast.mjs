@@ -37,6 +37,12 @@ const HOST = process.env['CONTRAST_HOST'] || '127.0.0.1';
  * and the display sizes clamp down, so a pairing that clears the floor on one
  * can miss it on the other. */
 const WIDTHS = (process.argv[3] || '1280,390').split(',').map(Number);
+/*
+ * The site follows the device's colour scheme, so every block is scored in
+ * both: a pairing that clears on the dark board can fail on paper, and the
+ * reverse. Pass a third argument to narrow it, e.g. `light`.
+ */
+const SCHEMES = (process.argv[4] || 'light,dark').split(',');
 const ROUTES = [
   '/', '/experience', '/adventures', '/origins-with-perspective', '/minerals', '/book', '/nope',
   '/zh', '/zh/experience', '/zh/adventures', '/zh/origins-with-perspective', '/zh/minerals', '/zh/book',
@@ -82,10 +88,14 @@ const browser = await chromium.launch();
  * width buffers its own report and prints it whole at the end, so the two do
  * not interleave. Measured 133s to 89s.
  */
-const checkWidth = async (WIDTH) => {
+const checkWidth = async (WIDTH, SCHEME) => {
 const out = [];
 const log = (...a) => out.push(a.join(' '));
-const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({
+  viewport: { width: WIDTH, height: 900 },
+  deviceScaleFactor: 1,
+  colorScheme: SCHEME,
+});
 const findings = [];
 const aside = [];
 const unreachable = [];
@@ -205,9 +215,30 @@ for (const route of ROUTES) {
   queue.sort((a, b) => (docY[a.i] ?? 0) - (docY[b.i] ?? 0));
 
   let windowTop = null;
+  /*
+   * The skip link is focused only while the skip link itself is measured.
+   * Left focused for the whole route, it sits over the sticky header, and
+   * every header label under it was scored against the skip link rather than
+   * against the header a reader sees. Changing the focus changes the page, so
+   * the held window is dropped and the plates are taken again.
+   */
+  let skipFocused = true;
   for (const t of queue) {
     const el = await page.$(`[data-apca="${t.i}"]`);
     if (!el) continue;
+
+    const wantSkip = await el.evaluate((node) => node.closest('.skip-link') !== null);
+    if (wantSkip !== skipFocused) {
+      await page.evaluate((focus) => {
+        const link = document.querySelector('.skip-link');
+        if (!(link instanceof HTMLElement)) return;
+        if (focus) link.focus();
+        else link.blur();
+      }, wantSkip);
+      await page.waitForTimeout(30);
+      skipFocused = wantSkip;
+      windowTop = null;
+    }
 
     // Re-scroll only when this target does not fit in the window already held.
     let box = await el.boundingBox();
@@ -368,7 +399,7 @@ for (const route of ROUTES) {
 }
 
 findings.sort((a, b) => a.Lc - b.Lc);
-log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px`);
+log(`\nchecked ${checked} text blocks across ${ROUTES.length - unreachable.length} routes at ${WIDTH}px, ${SCHEME}`);
 log(`APCA failures: ${findings.length}\n`);
 const seen = new Set();
 for (const f of findings) {
@@ -401,8 +432,15 @@ console.log(out.join('\n'));
 return findings.length;
 };
 
-/* Independent per width, so run them together and sum the failures. */
-const failed = (await Promise.all(WIDTHS.map(checkWidth))).reduce((a, b) => a + b, 0);
+/*
+ * Independent per width, so a scheme's widths run together; the schemes run
+ * one after the other, so the dev server never carries more than the two
+ * concurrent passes it was measured against.
+ */
+let failed = 0;
+for (const scheme of SCHEMES) {
+  failed += (await Promise.all(WIDTHS.map((w) => checkWidth(w, scheme)))).reduce((a, b) => a + b, 0);
+}
 
 await browser.close();
 if (failed) {

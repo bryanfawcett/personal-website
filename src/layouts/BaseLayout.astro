@@ -5,15 +5,16 @@
  * and global.css build on top of them, so they load after.
  */
 import '@bundu/ui/styles/tokens.css';
+import '@bundu/ui/styles/color-scheme.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
-import { tokensToCss } from '../brand/tokens.js';
+import { SHEET, SHEET_LIGHT, tokensToCss } from '../brand/tokens.js';
 import { unroll } from '../brand/transitions.js';
 import MineralStrip from '@bundu/ui/MineralStrip.astro';
 import Schematics from '../components/Schematics.astro';
-import SiteNav from '../components/SiteNav.astro';
-import TitleBlock from '../components/TitleBlock.astro';
+import MziziHeader from '../components/mzizi/MziziHeader.astro';
+import MziziFooter from '../components/mzizi/MziziFooter.astro';
 import { PROFILE, profileInLang } from '../data/profile.js';
 import { allPaths, alternatePath, localizePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, direction, ogLocale, useTranslations, type Lang } from '../i18n/ui.js';
@@ -177,15 +178,16 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang={bcp47[lang]} dir={direction[lang]} class="no-js dark" data-theme="dark">
+<html lang={bcp47[lang]} dir={direction[lang]} class="no-js">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#0A1826" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content={SHEET_LIGHT.base} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={SHEET.base} media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
 
     {/*
@@ -250,6 +252,26 @@ const jsonLd = {
       document.documentElement.classList.remove('no-js');
     </script>
 
+    <script is:inline>
+      // The reader's theme choice, if they made one in the header; otherwise
+      // the page follows the device. Applied before first paint so a dark
+      // reader never sees a light flash, and again after every router swap,
+      // which replaces <html>'s attributes with the new document's.
+      // Byte-identical on every page, so the router does not re-run it.
+      (function () {
+        function apply() {
+          try {
+            var chosen = localStorage.getItem('theme');
+            if (chosen === 'light' || chosen === 'dark') {
+              document.documentElement.dataset.theme = chosen;
+            }
+          } catch (e) {}
+        }
+        apply();
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
+
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 
     {/* Google Analytics. Loaded on every sheet, unlike the Cal.com embed on /book. */}
@@ -273,16 +295,15 @@ const jsonLd = {
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
 
     <div class="page">
-      <SiteNav path={path} lang={lang} switchHref={switchHref} />
+      <MziziHeader path={path} lang={lang} switchHref={switchHref} />
 
       <main id="main" class="shell" transition:animate={unroll}>
         <slot />
       </main>
 
-      <div class="shell">
-        <TitleBlock sheet={sheet} lang={lang} path={path} switchHref={switchHref} />
-      </div>
     </div>
+
+    <MziziFooter lang={lang} sheet={sheet} />
 
     <script>
       // Reveal sections as they enter the viewport.

@@ -103,17 +103,32 @@ bryanfawcett.com, built with:
   surface ladder, the radius scale and `--ring`; its `MineralStrip.astro` is the
   rail. Its Button/Card/Section components are written in Tailwind utilities,
   which this site does not run, so they are not used.
-- **Dark only** — no light ramp, no theme toggle; `<html class="dark"
-  data-theme="dark">` selects the package's dark values. Surfaces are Mzizi's
-  ladder: the page is `base` `#0E0D0C`, panels `surface` `#131211`, chips
-  `container` `#1E1D1A`; the ink is Mzizi `foreground` `#F0EFE9`. `SHEET` in
-  `tokens.ts` holds the same values as literals for the few places that need a
-  hex (the QR, the social card, the /minerals contrast table).
-- **One primary colour: heritage river `#4DD0E1`** (Bryan's choice from the
-  heritage and experimental families). It fills the primary buttons and the nav
-  button and underlines links, with Mzizi `base` as its text at weight 700 — Lc
-  69.3, which APCA clears at 15px for 700 but asks 16.5px of 600. Do not mix it
-  or add a second accent; the pillar cards keep their own brand minerals.
+- **Light and dark, following the device.** `@bundu/ui`'s `color-scheme.css`
+  and the site's own tokens switch on `prefers-color-scheme`; the header's
+  theme toggle stores an explicit choice in `localStorage('theme')`, which an
+  inline head script applies as `data-theme` before first paint and again on
+  `astro:after-swap` (the router replaces `<html>`'s attributes). Every themed
+  token in `tokens.ts` has a `*_LIGHT` twin; `tokensToCss()` emits light on
+  `:root`, dark under the media query unless `data-theme="light"`, and dark
+  whenever `data-theme="dark"`. Surfaces are Mzizi's ladder — dark: page `base`
+  `#0E0D0C`, panels `surface` `#131211`, ink `#F0EFE9`; light: page `#F3F3F1`,
+  cards white, ink `#1A1A17`. `--show-dark-only` / `--show-light-only` swap
+  per-theme elements (the toggle's sun and moon, the two QR codes).
+- **One primary colour: heritage river** (Bryan's choice from the heritage and
+  experimental families) — `#4DD0E1` with Mzizi `base` text in dark, its light
+  tone `#006064` with white text in light. It fills the primary buttons and
+  underlines links, at weight 700: dark measures Lc 69.3, which APCA clears at
+  15px for 700 but asks 16.5px of 600. Do not mix it or add a second accent;
+  the pillar cards keep their own brand minerals.
+- **Header and footer are the Mzizi registry's `mzizi-header` and
+  `mzizi-footer`, built for Astro** in `src/components/mzizi/`. The registry
+  ships them in React (and the footer in Rust) only, so these are written
+  against the contract — same `data-slot`, `data-portal` and anatomy — with no
+  framework. The header is sticky: brand, nav (a Popover-API menu below 56rem),
+  language switcher (into the menu below 24rem), theme toggle, and the "Book a
+  Call" pill. The footer is the canonical navigation: Site, Ecosystem, Connect,
+  "© year Bryan Fawcett. All rights reserved.", the title-block line and the
+  mineral dots.
 - **Nothing on the page edge but the mineral rail.** There used to be a sheet
   frame there. It went, and it should not come back.
 
@@ -355,7 +370,7 @@ The ground and the containers share one line vocabulary — the same hairline, t
 same ink, the same dashed rule. Nothing is a card.
 
 - **Column rules.** `.shell` draws a dashed rule down each of its border-box
-  edges. Nav, main and the title block are sibling shells inside `.page`, so
+  edges. Main is a shell inside `.page` under the sticky header, so
   those rules run continuously from the masthead to the foot of the sheet. The
   shell uses `width: min(67.5rem, 100% - 4rem)` rather than `max-width`, so it
   always keeps a margin — that margin is what stops the column rules colliding
@@ -402,7 +417,7 @@ in `src/assets/`, not `public/`: a file in `public/` is copied verbatim.
 brackets, ruled caption — and desaturates it halfway, enough to belong to the
 drawing without the face going muddy.
 
-**The masthead portrait is not astro:assets.** `SiteNav` uses a plain `<img>` at
+**The masthead portrait is not astro:assets.** `MziziHeader` uses a plain `<img>` at
 `/nav-portrait.webp`, rendered by `pnpm nav-portrait`. Under `imageService:
 'compile'` the adapter emits a `/_image?…` URL for on-demand routes with no service
 behind it, so an `<Image>` in the nav renders perfectly on every prerendered page
@@ -432,11 +447,11 @@ older Android scanners still choke on 4.0's `KIND` and typed URLs. Lines are
 escaped and folded per RFC 6350 §3.4 — an unfolded long line is the usual reason
 a card imports with a truncated title on one platform and not another.
 
-The QR is ink (`INK.base`) on Mzizi's cobalt container (`#001F3F`), both taken
-from the tokens and written into the SVG itself, so a saved or printed code keeps
-its ground. That makes it an inverted code — light on dark — which the iOS Camera and
-Google Lens read; it stays that way rather than becoming a white box on a dark
-site. The site is dark only, so there is no light-theme variant to keep in step.
+There are two QR codes, one per theme, and the tokens show the matching one.
+Dark: ink on Mzizi's cobalt container (`#001F3F`), an inverted code the iOS
+Camera and Google Lens read. Light: the light ink on white, a conventional code
+every scanner reads. Colours are written into each SVG, so a saved or printed
+code keeps its ground.
 If you change the payload or the styling, re-verify by decoding a real screen
 capture, not by eye.
 
@@ -620,9 +635,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 ## Accessibility Requirements
 
-- **APCA on every text block** — `pnpm verify:contrast`, and a CI job. Nothing
-  ships under the minimum size APCA gives for its contrast at its weight, at
-  either 1280px or 390px. This is the check; the rules below are how the design
+- **APCA on every text block, in both themes** — `pnpm verify:contrast`, and a
+  CI job. Nothing ships under the minimum size APCA gives for its contrast at
+  its weight, at 1280px or 390px, light or dark. The gate focuses the skip link
+  only while measuring the skip link: left focused, it sits over the sticky
+  header and every header label under it was scored against it. This is the check; the rules below are how the design
   stays on the right side of it.
 - **44px minimum** on every interactive target, except links inside a sentence,
   which WCAG 2.2 target size (2.5.8) exempts and which 44px would visibly break

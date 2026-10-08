@@ -30,7 +30,8 @@ const profile = profileInLang(lang);
  * card that differs by the page it came from is a duplicate contact waiting
  * to happen. The QR's booking link is the same in both, for the same reason.
  */
-const qr = await bookingQr();
+const qrDark = await bookingQr('dark');
+const qrLight = await bookingQr('light');
 ---
 
 <div class:list={['card', className]}>
@@ -56,7 +57,9 @@ const qr = await bookingQr();
 
   <div class="card__scan">
     {/* Decorative: the page's own booking button goes to the same place. */}
-    <div class="card__qr" aria-hidden="true" set:html={qr} />
+    {/* One code per theme; tokens show the one that matches the page. */}
+    <div class="card__qr card__qr--dark" aria-hidden="true" set:html={qrDark} />
+    <div class="card__qr card__qr--light" aria-hidden="true" set:html={qrLight} />
     <p class="card__hint">{t('card.scan')}</p>
     <a class="card__download" href="/bryan-fawcett.vcf" download>{t('card.download')}</a>
   </div>

@@ -26,6 +26,8 @@ export interface Mineral {
   readonly containerLight: string;
   /** Text and line work on the dark container — Mzizi's on-container value. */
   readonly onContainer: string;
+  /** The same on the light container, for the light theme. */
+  readonly onContainerLight: string;
   /** Where the stone is mined. */
   readonly origin: string;
   /** What it stands for in the system. */
@@ -42,6 +44,7 @@ export const MINERALS = [
     container: '#001F3F',
     containerLight: '#E3F2FD',
     onContainer: '#B3E5FC',
+    onContainerLight: '#002966',
     origin: 'Katanga (DRC) and the Zambian Copperbelt',
     symbolism: 'Digital future, trust, knowledge',
     usage: 'Links, focus rings, informational states',
@@ -53,6 +56,7 @@ export const MINERALS = [
     container: '#1A0033',
     containerLight: '#F3E5F5',
     onContainer: '#E1BEE7',
+    onContainerLight: '#2E004D',
     origin: 'Merelani Hills, Tanzania',
     symbolism: 'Premium, creativity, connection',
     usage: 'Primary brand accent',
@@ -64,6 +68,7 @@ export const MINERALS = [
     container: '#00251A',
     containerLight: '#E0F2F1',
     onContainer: '#A7FFEB',
+    onContainerLight: '#00332B',
     origin: 'Congo Copper Belt',
     symbolism: 'Growth, nature, success',
     usage: 'Success states, positive actions',
@@ -75,6 +80,7 @@ export const MINERALS = [
     container: '#332200',
     containerLight: '#FFF8E1',
     onContainer: '#FFECB3',
+    onContainerLight: '#3E2723',
     origin: 'Ghana, South Africa, Mali',
     symbolism: 'Honey, rewards, warmth',
     usage: 'Achievements and highlights',
@@ -86,6 +92,7 @@ export const MINERALS = [
     container: '#3E2817',
     containerLight: '#F5E6D3',
     onContainer: '#FFCCBC',
+    onContainerLight: '#5D2906',
     origin: 'the Pan-African Sahel',
     symbolism: 'Earth, community, grounding',
     usage: 'Community surfaces, warmth',
@@ -97,6 +104,7 @@ export const MINERALS = [
     container: '#0D1442',
     containerLight: '#E8EAF6',
     onContainer: '#C5CAE9',
+    onContainerLight: '#1A237E',
     origin: 'the Kunene River, Namibia and South Africa',
     symbolism: 'Intelligence, depth, reasoning',
     usage: 'AI surfaces, deep-reasoning states',
@@ -108,6 +116,7 @@ export const MINERALS = [
     container: '#3A1A0E',
     containerLight: '#FBE4DA',
     onContainer: '#FFCCBC',
+    onContainerLight: '#5A2310',
     origin: 'the Central African Copperbelt, Zambia and DRC',
     symbolism: 'Connection, foundation, stewardship',
     usage: 'Ecosystem identity, the commons',

@@ -55,6 +55,20 @@ export const ui = {
     'nav.switch_lang_label': 'Switch to Chinese',
     'nav.skip': 'Skip to main content',
     'nav.portrait_alt': 'Bryan Fawcett, photographed',
+    'nav.menu': 'Menu',
+    'nav.home': 'Bryan Fawcett, home',
+    'theme.toggle': 'Switch colour theme',
+    'theme.to_light': 'Switch to light theme',
+    'theme.to_dark': 'Switch to dark theme',
+
+    // --- footer ---
+    'footer.label': 'Site footer',
+    'footer.tagline': 'Digital craftsman, builder of communities. Ndiri nekuti tiri — I am because we are.',
+    'footer.site': 'Site',
+    'footer.ecosystem': 'Ecosystem',
+    'footer.connect': 'Connect',
+    'footer.vcf': 'Save contact (.vcf)',
+    'footer.rights': 'All rights reserved.',
 
     // --- title block ---
     'tb.label': 'Title block',
@@ -335,6 +349,20 @@ export const ui = {
     'nav.switch_lang_label': '切换到英文',
     'nav.skip': '跳到主要内容',
     'nav.portrait_alt': 'Bryan Fawcett 本人照片',
+    'nav.menu': '菜单',
+    'nav.home': 'Bryan Fawcett，首页',
+    'theme.toggle': '切换配色主题',
+    'theme.to_light': '切换到浅色主题',
+    'theme.to_dark': '切换到深色主题',
+
+    // --- footer ---
+    'footer.label': '网站页脚',
+    'footer.tagline': '数字工匠，社区的建造者。Ndiri nekuti tiri——我在，因为我们在。',
+    'footer.site': '本站',
+    'footer.ecosystem': '生态',
+    'footer.connect': '联系',
+    'footer.vcf': '保存联系人（.vcf）',
+    'footer.rights': '保留所有权利。',
 
     // --- title block ---
     'tb.label': '图签栏',

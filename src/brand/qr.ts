@@ -16,7 +16,7 @@ import QRCode from 'qrcode';
 
 import { BOOKING_URL } from '../data/booking.js';
 import { mineral } from './minerals.js';
-import { INK } from './tokens.js';
+import { INK, INK_LIGHT, SHEET_LIGHT } from './tokens.js';
 
 /**
  * `errorCorrectionLevel: 'M'`: a URL this short makes a small symbol at any
@@ -24,11 +24,19 @@ import { INK } from './tokens.js';
  * across a table wants. `margin: 2` is a wider quiet zone than the vCard
  * needed, because an inverted code leans on it harder to be found.
  */
-export async function bookingQr(): Promise<string> {
+export async function bookingQr(scheme: 'dark' | 'light' = 'dark'): Promise<string> {
   return QRCode.toString(BOOKING_URL, {
     type: 'svg',
     errorCorrectionLevel: 'M',
     margin: 2,
-    color: { dark: INK.base, light: mineral('cobalt').container },
+    /*
+     * Dark theme: ink on Mzizi's cobalt container, an inverted code. Light
+     * theme: the light ink on white — the conventional dark-on-light code,
+     * which every scanner reads.
+     */
+    color:
+      scheme === 'dark'
+        ? { dark: INK.base, light: mineral('cobalt').container }
+        : { dark: INK_LIGHT.base, light: SHEET_LIGHT.wash },
   });
 }
