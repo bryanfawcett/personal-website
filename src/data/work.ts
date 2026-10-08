@@ -413,36 +413,26 @@ const SYSTEMS_SOURCE: readonly Bilingual<
   'org' | 'title' | 'people' | 'system' | 'result' | 'links'
 >[] = [
   {
-    org: 'Singapore American School · Nyuchi Learning',
-    title: 'Tools for a whole school',
+    org: 'Singapore American School',
+    title: 'One process for a whole school',
     people: 'Teachers, school leaders, and the staff who keep a school running.',
     system:
-      "At Singapore American School, the Digital Toolkit sets one central process for the tools staff use, school-wide, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups. I have worked every layer of that school, from application systems and infrastructure to privacy and governance.",
+      "The Digital Toolkit sets one central, school-wide process for the tools staff use, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups.",
     result:
-      'Through Nyuchi Learning, the same care now ships to any school on Toddle. The Toddle Enhancement Extension, launched in October 2026, puts every rubric criterion in its own gradebook column and lets a teacher conceal student flags before sharing a screen. It reads Toddle, writes nothing back, and sends student data nowhere. The flag switch is free, always.',
+      'Each one replaced something done by hand, and each is built knowing what it plugs into, because I have worked every layer of the same school: application systems, infrastructure, privacy and governance, and now innovation.',
     links: [
-      {
-        label: 'Toddle extension',
-        href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
-      },
-      { label: 'SAS repositories', href: 'https://github.com/SAS-Technology-Innovation' },
+      { label: 'The repositories', href: 'https://github.com/SAS-Technology-Innovation' },
     ],
     mineral: 'cobalt',
     zh: {
-      org: 'Singapore American School（新加坡美国学校）· Nyuchi Learning',
-      title: '服务整所学校的工具',
+      org: 'Singapore American School（新加坡美国学校）',
+      title: '整所学校，一套流程',
       people: '教师、学校管理者，以及让学校正常运转的教职员。',
       system:
-        '在新加坡美国学校，数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。这所学校的每一层我都做过，从应用系统、基础设施，到隐私与治理。',
+        '数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。',
       result:
-        '通过 Nyuchi Learning，同样的用心如今交付给任何使用 Toddle 的学校。2026 年 10 月上线的 Toddle 增强扩展，让每条评分标准在成绩册中各占一列，也让教师在共享屏幕前隐藏学生标记。它只读取 Toddle，不回写任何内容，也不把学生数据发往任何地方。隐藏标记的开关永远免费。',
-      links: [
-        {
-          label: 'Toddle 扩展',
-          href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
-        },
-        { label: 'SAS 代码库', href: 'https://github.com/SAS-Technology-Innovation' },
-      ],
+        '每一个都取代了某件原本靠手工完成的事；每一个在建造时都清楚自己要接入什么——因为同一所学校的每一层我都做过：应用系统、基础设施、隐私与治理，以及如今的创新。',
+      links: [{ label: '代码库', href: 'https://github.com/SAS-Technology-Innovation' }],
     },
   },
   {

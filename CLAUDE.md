@@ -40,7 +40,7 @@ description from here.
 | **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
 | **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
 | **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
-| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026 |
+| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool |
 | **Mukoko** | mukoko.com | Consumer pillar: super-app with a single identity across its mini-apps. Sovereign, self-held identity is a later phase — do not describe it as live |
 | **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
@@ -736,9 +736,12 @@ revenue is the priority. Everything on `/` serves that:
 - **Identity:** "Digital Craftsman, builder of communities", with systems thinking
   as the thread — how people, data, tools and constraints connect. Shown through
   the work, never claimed in an adjective.
-- **At most three featured systems** (`systems()` in `work.ts`): SAS with Nyuchi
-  Learning's Toddle extension, Nyuchi's weather chain, and the Bundu Foundation with
-  Mzizi. Each answers the same three
+- **At most three featured systems** (`systems()` in `work.ts`): SAS, Nyuchi's
+  weather chain, and the Bundu Foundation with Mzizi.
+- **The Toddle Enhancement Extension is Nyuchi's, not SAS's.** Bryan built it
+  through Nyuchi in his own time; SAS did not commission it and does not own it.
+  Never put it on the same card, sentence or link row as SAS. It lives on
+  `/experience` as a Nyuchi Learning tile. Each answers the same three
   questions in order: who it is for, how the parts connect, what changed. A fourth
   means one comes off.
 - **Do not frame Bryan around AI.** No "AI-powered" in copy. Shamwari AI appears
