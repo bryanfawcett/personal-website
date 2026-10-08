@@ -30,11 +30,12 @@ import { tokensToCss } from '../src/brand/tokens.ts';
 const CSS_PATH = new URL('../src/styles/global.css', import.meta.url);
 const css = readFileSync(CSS_PATH, 'utf8');
 
-/* Properties set by markup rather than by the stylesheet. `--mineral` comes
- * from the `mineral` prop on Panel or from `keyedTo()`; `--rail-thickness` from
- * MineralBar's own inline style. Add to this list only for a property a
- * component genuinely sets inline, never to silence a typo. */
-const SET_INLINE = new Set(['--mineral', '--rail-thickness']);
+/* Properties set by markup rather than by the stylesheet. `--mineral`, and the
+ * `--mineral-container` / `--mineral-on` pair that themes a surface in its
+ * mineral, come from the `mineral` prop on Panel or from `keyedTo()`;
+ * `--rail-thickness` from MineralBar's own inline style. Add to this list only
+ * for a property a component genuinely sets inline, never to silence a typo. */
+const SET_INLINE = new Set(['--mineral', '--mineral-container', '--mineral-on', '--rail-thickness']);
 
 /*
  * Blank the comments out rather than deleting them: line numbers have to stay

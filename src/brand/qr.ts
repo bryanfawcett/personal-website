@@ -5,7 +5,8 @@
  * booked — so the code opens the 30-minute Cal.com event rather than saving a
  * contact. The vCard is still one tap away under it, as "Download .vcf".
  *
- * Drawn in the site's own ink on the sheet blue, both from the tokens, and
+ * Drawn in the site's ink on Mzizi's cobalt container (#001F3F), both from
+ * the tokens, and
  * both written into the SVG itself rather than left to CSS: a code that is
  * screenshotted, saved or printed off the page keeps its ground. Light modules
  * on a dark ground is an inverted code. The iOS Camera and Google Lens read it;
@@ -14,7 +15,8 @@
 import QRCode from 'qrcode';
 
 import { BOOKING_URL } from '../data/booking.js';
-import { INK, SHEET } from './tokens.js';
+import { mineral } from './minerals.js';
+import { INK } from './tokens.js';
 
 /**
  * `errorCorrectionLevel: 'M'`: a URL this short makes a small symbol at any
@@ -27,6 +29,6 @@ export async function bookingQr(): Promise<string> {
     type: 'svg',
     errorCorrectionLevel: 'M',
     margin: 2,
-    color: { dark: INK.base, light: SHEET.base },
+    color: { dark: INK.base, light: mineral('cobalt').container },
   });
 }

@@ -73,7 +73,7 @@ const book = localizePath('/book', lang);
     <div class="board">
       {
         audiences(lang).map((audience) => (
-          <Panel class="w4" mineral={audience.mineral}>
+          <Panel class="w4 audience" mineral={audience.mineral}>
             <h3>{audience.title}</h3>
             <p>{audience.body}</p>
           </Panel>

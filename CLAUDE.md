@@ -40,7 +40,7 @@ description from here.
 | **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
 | **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
 | **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
-| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool |
+| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026. Built by Nyuchi independently — not an SAS tool; SAS helps maintain it |
 | **Mukoko** | mukoko.com | Consumer pillar: super-app with a single identity across its mini-apps. Sovereign, self-held identity is a later phase — do not describe it as live |
 | **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
@@ -95,8 +95,9 @@ bryanfawcett.com, built with:
 - **Astro 7** — no client framework, no React
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
-- **Mzizi's brand system** for colour, surfaces and semantics (Mzizi itself is a
-  programming-language research project; its registry carries the minerals)
+- **The Mzizi standard** for colour, type, radius and semantics, from the Mzizi
+  registry (Mzizi is a programming-language research project; its components
+  and brand system support it). The site is a showcase for it.
 - **Dark only** — no light ramp, no theme toggle. The site is a cyanotype, but
   a print rather than a wash: matte board with a blue cast, line work in white.
   The sheet is `#18202C`; panels are wells cut *into* it at `#05090F`; the ink
@@ -206,12 +207,33 @@ properties at build time; use `var(--mineral-cobalt)`, `var(--sheet)`, `var(--in
 `MineralName` is a union type derived from the mineral list, so a typo in a component
 prop fails `astro check`.
 
-The **mineral rail** is the brand signature — seven segments, one per mineral, running
-vertically down the binding edge of the sheet. It is the one place saturated colour
-appears on an otherwise monochrome cyanotype. Everywhere else colour is a reward — a
-mineral bar under a heading, a swatch beside a name, a rule under a reference
-number — not a default. That restraint is the design; adding colour to more surfaces
-breaks it.
+### The site follows the Mzizi standard, and is a showcase for it
+
+Mzizi (mzizi.dev, doctrine v4.1.0) is the standard here, not an inspiration.
+Read it from the registry (`mzizi_get_tokens`, the `mzizi:nyuchi-design` skill)
+before adding a colour, a radius or a face, and prefer its names:
+`--color-<mineral>`, `--container-<mineral>`, `--on-container-<mineral>`,
+`--radius-<name>` and `--ring` are all emitted by `tokens.ts`. In practice:
+
+- **Type:** Noto Serif for H1–H3 and the display lockups, Noto Sans for body
+  and UI, JetBrains Mono for the technical marks (figure tags, dimensions, the
+  title block). Caveat stays for the margin notes and signature; it is the one
+  face that is not Mzizi's.
+- **Buttons are pills** (`--radius-full`), 48px, 56px for the hero's action;
+  no drop shadows — rings over shadows. The primary fill is `--brand`, Nyuchi
+  gold, because the action is hiring Nyuchi.
+- **Panels take `--radius-lg` (14px).** The corner brackets follow the curve.
+- **Focus is a 2px cobalt ring, 2px offset** (`--ring`).
+- **Theme a surface in its brand's mineral.** The system and audience cards sit
+  on their mineral's dark container (`keyedTo()` sets `--mineral-container`
+  and `--mineral-on` alongside `--mineral`); Nyuchi is gold, Bundu copper,
+  Mukoko tanzanite, Shamwari sodalite.
+
+Colour is welcome — this site is meant to show the Mzizi palette working — but
+it still has to clear APCA, which is why the rule below stands.
+
+The **mineral rail** is still the signature — seven segments, one per mineral,
+running vertically down the binding edge of the sheet.
 
 **One mineral property, one weight.** Everything keyed to a mineral reads
 `--mineral`, set by the `mineral` prop on `<Panel>` or by `keyedTo()` for plain
@@ -220,7 +242,10 @@ eight property names for one idea — `--panel-mineral`, `--row-mineral`,
 `--stop-mineral`, `--m` and four more — so changing how a mineral is expressed
 meant finding all eight.
 
-**A mineral is never the colour of text.** Set on a near-black ground the seven
+**A raw mineral is never the colour of text; its on-container tone may be.**
+Mzizi's `--on-container-<mineral>` values are cut for lettering on that
+mineral's container, and the system cards use them for labels. The raw
+mineral is not: set on a near-black ground the seven
 measure Lc 25–48 as lettering, which APCA puts at a 27px minimum or forbids
 outright. The aptitude headings, the mineral key's own names and hex values, and
 the schedule reference numbers were all set that way and all failed. The mineral
@@ -343,8 +368,8 @@ read as a card floating over the sheet instead of part of it.
 ### Measure is a token, not a guess
 
 A column that *looks* right is routinely wrong, and by a different amount for
-each face: Cormorant runs about 6.8px per character at 18px and IBM Plex Serif
-about 8.9px, so the same 33rem holds 77 characters of the one and 58 of the
+each face: Cormorant ran about 6.8px per character at 18px and IBM Plex Serif
+about 8.9px (both since replaced by Noto), so the same 33rem holds 77 characters of the one and 58 of the
 other. Both sit inside the 45–85 band; neither number could have been guessed.
 Anything holding running prose takes `--measure` (33rem); larger type takes
 `--measure-wide`. Set a new max-width by running the readability pass and
@@ -441,16 +466,15 @@ the reader back on the home page.
 
 ### Chinese typography
 
-**Every face in `--cjk` is a serif, and that matters more than it sounds.** The
-stack used to end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft
-YaHei', sans-serif` — the first entries serifs, the last four sans — so which
-one a reader got depended on their platform. A Mac found Songti and set the body
-in a serif; a Windows machine fell past it to Microsoft YaHei and set the same
-paragraph in a sans, beside Latin that was serif either way. `STSong` and
-`SimSun` are the Mac and Windows serifs and the generic is `serif`, so the
-pairing is the same everywhere now.
+**Body Han is a sans; heading Han is a serif — and neither stack mixes the two.**
+Mzizi sets body in Noto Sans and H1–H3 in Noto Serif, so `--cjk` (body) lists
+only sans faces (Noto Sans for Latin, then PingFang, YaHei, Noto Sans CJK) and
+`--cjk-display` (H1–H3 and the lockups) only serifs. A stack that mixed them
+once set the same paragraph in Songti on a Mac and YaHei on Windows. Body Han
+is not vendored at all — every platform ships a good Chinese sans — so most of
+a `/zh` page costs no font download.
 
-**Han is vendored: Noto Serif SC, GB2312 Level 1, two weights.** Build it with
+**Heading Han is vendored: Noto Serif SC, GB2312 Level 1, two weights.** Build it with
 `pnpm cjk`, never by hand. Level 1 is the 3,755 most common characters and
 covers ~99.9% of running modern Chinese; the rare tail falls through to the
 system face, which is where all of it used to land. An exact subset of the text
@@ -469,9 +493,9 @@ to get wrong:
   English page; pointing it at `--cjk` put the vendored face back on the English
   routes for two glyphs. `--cjk-chrome` deliberately omits the vendored face.
 
-Verified: an English route fetches **0 kB** of Han, a `/zh` route fetches both
-weights. `--cjk` and `--cjk-mono` still list the Latin face *first*, so a proper
-noun inside a Chinese sentence sets in Plex.
+An English route must fetch **0 kB** of Han. `--cjk` and `--cjk-mono` list the
+Latin face *first*, so a proper noun inside a Chinese sentence sets in Noto Sans
+or JetBrains Mono.
 
 Two things that follow, and that new work has to keep:
 
@@ -484,7 +508,7 @@ Two things that follow, and that new work has to keep:
   uppercase Latin and not for Han, where the strokes stop separating at 1x.
   Rather than a `:lang(zh)` twin for each of ~35 label classes, `global.css`
   declares a `Mzizi CJK Label` `@font-face` with `size-adjust: 120%`, sourced
-  `local()` only and sitting in `--cjk-mono` *after* IBM Plex Mono — so Han in a
+  `local()` only and sitting in `--cjk-mono` *after* JetBrains Mono — so Han in a
   label scales and the Latin beside it does not. Add labels normally; they
   inherit the floor.
 
@@ -548,24 +572,17 @@ Studio that edits it is in `bryans-adventures/`.
 
 ### Type identity
 
-Three jobs, three faces, and the split between the first two is load-bearing:
+Mzizi's three faces, plus one hand:
 
-- **Cormorant Garamond — display only.** The big drafted lockups and nothing
-  else. Its x-height is 0.386 em, measured off the vendored file against
-  0.46–0.53 for a face cut for running text, so at a 17px body size its
-  lowercase renders about 6.6px tall. That is what readers meant when they said
-  the text was too thin: not the weight, but letters a third smaller than the
-  size implies. At 4rem in a two-word lockup, the same delicacy is the point.
-- **IBM Plex Serif — everything anyone reads.** x-height 0.516, and the sibling
-  of the Plex Mono already carrying every label, so the voice stays industrial
-  rather than literary. Its italic is load-bearing (the lede, the pull quotes),
-  so the vendoring script keeps roman and italic as separate files.
-- **IBM Plex Mono** for figure tags, dimension labels and the title block;
-  **Caveat** for margin notes and the signature — written marks rather than set
-  ones.
+- **Noto Serif** — H1–H3 and the big drafted lockups (`--display`).
+- **Noto Sans** — everything anyone reads, H4 and below, and buttons (`--sans`).
+  Its italic is load-bearing (the lede, the pull quotes), so the vendoring
+  script keeps roman and italic as separate files.
+- **JetBrains Mono** — figure tags, dimension labels, the title block (`--mono`).
+- **Caveat** — margin notes and the signature: written marks, not set ones.
 
-`--display` and `--serif` are separate tokens for exactly this reason. Setting
-body copy in `--display` puts it back under the floor.
+Noto is Mzizi's choice for its coverage of African names and diacritics, and
+Noto Serif SC is the same design for the Chinese headings.
 
 ### Fonts are self-hosted, and licensed
 
@@ -606,12 +623,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 - **Semantic HTML** — real `section`/`nav`/`header`/`footer`, correct heading order,
   exactly one `h1` per page
 - **`aria-labelledby`** on every section, pointing at its heading
-- **Focus rings** are the stamp red at 2px with 3px offset; never remove them.
-  6.5:1 against the sheet, well over the 3:1 that WCAG 2.2 (1.4.11) asks of them
+- **Focus rings** are Mzizi's: `--ring` (cobalt `#00B0FF`), 2px with a 2px
+  offset; never remove them. Well over the 3:1 that WCAG 2.2 (1.4.11) asks.
 - **`--stamp` draws, `--stamp-ink` letters.** A 2px rule and a 15px word have
   different floors — Lc 45 against Lc 75 — and the approval stamp is both at
-  once. One colour for both means either an illegible stamp or a washed-out
-  focus ring.
+  once. One colour for both means an illegible stamp.
 - **`prefers-reduced-motion`** disables reveals, the mineral rail animation and smooth
   scrolling — already handled in `global.css`, keep it that way for new animation
 - Decorative elements (the rail, the sheet layers, the schematics) are `aria-hidden`
@@ -725,8 +741,6 @@ Two passes are still run by hand and are not gated:
 
 ## Content Notes
 
-### Projects Listed
-
 ### The home page has one visitor and one action
 
 The visitor is an organisation deciding whether to hire Nyuchi; the action is
@@ -739,9 +753,10 @@ revenue is the priority. Everything on `/` serves that:
 - **At most three featured systems** (`systems()` in `work.ts`): SAS, Nyuchi's
   weather chain, and the Bundu Foundation with Mzizi.
 - **The Toddle Enhancement Extension is Nyuchi's, not SAS's.** Bryan built it
-  through Nyuchi in his own time; SAS did not commission it and does not own it.
-  Never put it on the same card, sentence or link row as SAS. It lives on
-  `/experience` as a Nyuchi Learning tile. Each answers the same three
+  through Nyuchi in his own time to solve problems he saw at SAS; SAS did not
+  commission it and does not own it, though SAS helps maintain it. Say exactly
+  that and no more: it is never presented as an SAS tool, and it does not go on
+  the SAS system card. It lives on `/experience` as a Nyuchi Learning tile. Each answers the same three
   questions in order: who it is for, how the parts connect, what changed. A fourth
   means one comes off.
 - **Do not frame Bryan around AI.** No "AI-powered" in copy. Shamwari AI appears

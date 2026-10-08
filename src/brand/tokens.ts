@@ -261,82 +261,89 @@ export const RULE = {
 
 export const TYPE = {
   /**
-   * The big drafted lockups, and nothing else.
+   * The Mzizi type standard: Noto Serif for H1–H3 and the display lockups.
    *
-   * Cormorant's x-height is 0.386 em — measured off the vendored file, against
-   * 0.46–0.53 for a face cut for running text. At a 17px body size its
-   * lowercase renders about 6.6px tall, which is why readers called the text
-   * thin: it is not the weight, it is that the letters are a third smaller
-   * than the size implies. At 4rem, in a two-word lockup, that delicacy is
-   * exactly what makes it worth keeping.
+   * Mzizi chose Noto for its coverage — African names and diacritics set in
+   * the same face as the sentence around them — and the same family carries
+   * the Han the Chinese pages set, so the two languages share a design.
    */
-  display: "'Cormorant Garamond', ui-serif, Georgia, serif",
-  /**
-   * Everything a reader actually reads.
-   *
-   * IBM Plex Serif sits at 0.516 and is the sibling of the Plex Mono already
-   * carrying every label on the site, so the voice stays industrial rather
-   * than literary — which suits a drawing sheet better than a Garamond did.
-   */
-  serif: "'IBM Plex Serif', ui-serif, Georgia, serif",
-  /** Labels, figures, dimensions, the title block. */
-  mono: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-  /** Margin notes and the signature — written, not set. */
+  display: "'Noto Serif', 'Noto Serif SC', ui-serif, Georgia, serif",
+  /** Noto Sans: everything a reader reads, H4 and below, and the UI. */
+  sans: "'Noto Sans', ui-sans-serif, system-ui, sans-serif",
+  /** JetBrains Mono: figure tags, dimensions, the title block — technical marks. */
+  mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+  /** Margin notes and the signature — written, not set. Not part of Mzizi. */
   hand: "'Caveat', ui-rounded, cursive",
   /*
-   * Chinese, and every face in it is a serif.
+   * Chinese body text, and every face in it is a sans.
    *
-   * That is the whole of the fix, and it was a real bug: this stack used to
-   * end `'Songti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
-   * sans-serif`. The first three entries are serifs and the last four are
-   * sans, so which one a reader got depended entirely on their platform — a
-   * Mac found Songti and set the body in a serif, a Windows machine fell past
-   * Songti to Microsoft YaHei and set it in a sans, beside Latin that was
-   * serif either way. Same page, two different pairings. `STSong` and `SimSun`
-   * are the Mac and Windows serifs, and the generic at the end is `serif`, so
-   * the pairing is now the same everywhere.
+   * Body is Noto Sans under Mzizi, so Chinese body text is a sans too, and
+   * every entry here is one — the pairing does not change with the platform.
+   * (This stack once mixed serifs and sans, so a Mac set the body in Songti
+   * and Windows in Microsoft YaHei; a mixed stack is a different page per OS.)
    *
-   * Nothing here is self-hosted. Measured: an exact subset of the 880 Han
-   * characters this site currently sets costs 149 kB per weight in Noto Serif
-   * SC, and it would have to be re-cut on every build — the blog renders from
-   * Sanity per request, so a post published without a rebuild would fall
-   * outside the subset mid-sentence. The content-independent alternative,
-   * GB2312 Level 1, is 699 kB per weight; Google's own unicode-range chunking
-   * delivers about 1.6 MB to a Chinese reader. Against three woff2 families
-   * totalling 480 kB, none of those is a trade worth making for a face every
-   * platform already ships a good version of. Latin runs first in the stack so
-   * a proper noun inside a Chinese sentence still sets in Plex.
+   * None of these is vendored. Every platform ships a good Chinese sans, so
+   * Chinese body text costs no download at all; the vendored Noto Serif SC is
+   * reserved for headings (`cjkDisplay`). Latin runs first so a proper noun in
+   * a Chinese sentence still sets in Noto Sans.
    */
-  cjk: "'IBM Plex Serif', 'Noto Serif SC', ui-serif, 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
+  cjk: "'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif",
   /**
-   * The mono equivalent: Latin from IBM Plex, Han from the system.
-   *
-   * `Mzizi CJK Label` is not a font — it is the size-adjusted alias declared in
-   * global.css, and it has to sit ahead of the real family names so the Han in
-   * a label is scaled up before the unadjusted faces are reached. Latin still
-   * comes from Plex, which is listed first and is untouched by the adjust.
-   *
-   * The vendored `Noto Serif SC` sits at the *end* rather than the front: a
-   * label wants the size-adjusted local face where the reader has one, and the
-   * vendored face only as the floor for a reader who has none. Ahead of the
-   * adjust it would win and give back the size problem the adjust exists for.
+   * Chinese headings: Noto Serif with its Han sibling, Noto Serif SC, vendored
+   * as GB2312 Level 1 (see the @font-face in global.css), so H1–H3 match the
+   * Latin headings' Noto Serif on every platform.
    */
+  cjkDisplay:
+    "'Noto Serif', 'Noto Serif SC', 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif",
   /**
    * Han in the chrome — the language switcher, and nothing else.
    *
-   * Deliberately *without* the vendored `Noto Serif SC`, and that omission is
-   * the whole point. `unicode-range` gates a download on whether the page sets
-   * a character in the range, and the switcher puts 中文 on every English page
-   * on the site — so listing the vendored face here made an English reader
-   * download 690 kB of Chinese to draw two glyphs of chrome.
-   *
-   * Those two glyphs do not need to match the body face of a page written in
-   * another language. They take whatever Han the reader already has.
+   * Deliberately *without* the vendored `Noto Serif SC`. `unicode-range`
+   * gates a download on whether the page sets a character in the range, and
+   * the switcher puts 中文 on every English page — so listing the vendored face
+   * here made an English reader download 690 kB of Chinese to draw two glyphs.
    */
   cjkChrome:
-    "'IBM Plex Mono', ui-monospace, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Songti SC', 'SimSun', sans-serif",
+    "'JetBrains Mono', ui-monospace, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif",
+  /**
+   * The mono equivalent: Latin from JetBrains Mono, Han from the system sans.
+   *
+   * `Mzizi CJK Label` is not a font — it is the size-adjusted alias declared
+   * in global.css, and it sits ahead of the real family names so the Han in a
+   * label is scaled up before the unadjusted faces are reached. Latin comes
+   * from JetBrains Mono, listed first and untouched by the adjust.
+   */
   cjkMono:
-    "'IBM Plex Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Serif SC', sans-serif",
+    "'JetBrains Mono', ui-monospace, 'Mzizi CJK Label', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif",
+} as const;
+
+/**
+ * Mzizi's radius scale and the semantic roles this site uses, from the
+ * registry (doctrine v4.1.0). Cards and panels take `lg`, buttons `full`.
+ */
+export const RADIUS = {
+  none: '0px',
+  xs: '4px',
+  sm: '7px',
+  md: '12px',
+  lg: '14px',
+  xl: '17px',
+  '2xl': '24px',
+  full: '9999px',
+} as const;
+
+/**
+ * Mzizi semantic colours, dark values.
+ *
+ * `ring` is cobalt: Mzizi's focus indicator, 2px with a 2px offset. `brand`
+ * is the mineral the page's primary action wears — Nyuchi's gold, because
+ * the action on this site is hiring Nyuchi (Mzizi: theme a surface in its
+ * brand's mineral). `onBrand` is the text on that fill.
+ */
+export const SEMANTIC = {
+  ring: '#00B0FF',
+  brand: '#FFD740',
+  onBrand: '#1A1300',
 } as const;
 
 /**
@@ -352,6 +359,19 @@ export function tokensToCss(): string {
   for (const m of MINERALS) {
     lines.push(`  --mineral-${m.name}: ${m.hex};`);
     lines.push(`  --mineral-${m.name}-container: ${m.container};`);
+    lines.push(`  --mineral-${m.name}-on-container: ${m.onContainer};`);
+  }
+
+  /*
+   * The same minerals under Mzizi's own names, so markup and CSS written
+   * against the Mzizi standard (`--color-cobalt`, `--container-gold`) work
+   * here unchanged. Dark values: the site is dark only.
+   */
+  lines.push('  /* Mzizi standard names */');
+  for (const m of MINERALS) {
+    lines.push(`  --color-${m.name}: ${m.hex};`);
+    lines.push(`  --container-${m.name}: ${m.container};`);
+    lines.push(`  --on-container-${m.name}: ${m.onContainer};`);
   }
 
   const groups: ReadonlyArray<readonly [string, string, Readonly<Record<string, string>>]> = [
@@ -366,6 +386,8 @@ export function tokensToCss(): string {
     ['Grid', 'grid', GRID],
     ['Rule', 'rule', RULE],
     ['Type', '', TYPE],
+    ['Radius', 'radius', RADIUS],
+    ['Semantic', '', SEMANTIC],
   ];
 
   for (const [label, prefix, group] of groups) {

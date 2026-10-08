@@ -41,7 +41,7 @@ body {
   position: relative;
   background: var(--sheet);
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 1.0625rem;
   line-height: 1.62;
   -webkit-font-smoothing: antialiased;
@@ -53,10 +53,16 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--serif);
   font-weight: 600;
   line-height: 1.12;
   text-wrap: balance;
+}
+
+/* Mzizi: H1–H3 are Noto Serif; H4 and below stay in the body's Noto Sans. */
+h1,
+h2,
+h3 {
+  font-family: var(--display);
 }
 
 p {
@@ -84,8 +90,9 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--stamp);
-  outline-offset: 3px;
+  /* Mzizi's focus indicator: a 2px cobalt ring, 2px off the element. */
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 ::selection {
@@ -465,6 +472,8 @@ button {
   position: relative;
   background: var(--sheet-wash);
   border: 1px solid var(--ink-hair);
+  /* Mzizi: cards and panels take the `lg` radius, 14px. */
+  border-radius: var(--radius-lg);
   padding: 2.125rem 1.875rem 1.875rem;
 }
 
@@ -483,6 +492,8 @@ button {
   inset: -1px;
   pointer-events: none;
   border: 1px solid var(--ink);
+  /* The brackets follow the panel's rounded corners. */
+  border-radius: inherit;
   mask:
     var(--seg) 0 0 / var(--corner) 1px no-repeat,
     var(--seg) 100% 0 / var(--corner) 1px no-repeat,
@@ -516,7 +527,8 @@ button {
   inset-block-start: -11px;
   inset-inline-start: 1.75rem;
   z-index: 1;
-  padding: 2px 10px;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
   background: var(--sheet-raised);
   border: 1px solid var(--ink);
   font-family: var(--mono);
@@ -596,7 +608,8 @@ button {
 }
 
 .chip {
-  padding: 5px 10px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
   background: var(--sheet-wash-light);
   border: 1px solid var(--ink-soft);
   font-family: var(--mono);
@@ -612,30 +625,40 @@ button {
 .btn {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding-inline: 1.875rem;
-  background: var(--ink);
-  border: 1.5px solid var(--ink);
-  color: var(--sheet-raised);
-  font-family: var(--mono);
-  font-size: var(--label);
-  font-weight: var(--label-weight);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  box-shadow: 3px 3px 0 var(--shadow);
+  justify-content: center;
+  min-height: 48px;
+  padding-inline: var(--space-6);
+  /*
+   * Mzizi: buttons are always pills, with no drop shadow — rings over
+   * shadows. The primary fill is the brand's mineral (see SEMANTIC.brand).
+   */
+  border-radius: var(--radius-full);
+  background: var(--brand);
+  border: 1.5px solid var(--brand);
+  color: var(--on-brand);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--shadow);
+  background: var(--mineral-gold-on-container);
+  border-color: var(--mineral-gold-on-container);
 }
 
 .btn.is-ghost {
-  background: var(--sheet-wash-light);
+  background: transparent;
+  border-color: var(--ink-soft);
   color: var(--ink);
+}
+
+.btn.is-ghost:hover {
+  background: var(--sheet-raised);
+  border-color: var(--ink);
 }
 
 /* A margin note in pencil, set at a slight angle. */
@@ -827,12 +850,10 @@ main {
 /*
  * The Chinese sheet.
  *
- * None of the three vendored families carry Han, and a subset that did would
- * cost several megabytes against the sub-megabyte total the site ships today —
- * a bad trade on the connections much of this ecosystem is built for. So the
- * Han falls to the reader's own system face (`--cjk`, which lists Cormorant
- * first so a proper noun inside a Chinese sentence still sets in the site's
- * own serif), and the rules below fix what changes when it does.
+ * Body Han sets in the reader's own system sans (`--cjk`, which lists Noto
+ * Sans first so a proper noun inside a Chinese sentence still sets in the
+ * site's own face); heading Han in the vendored Noto Serif SC
+ * (`--cjk-display`). The rules below fix what changes when it does.
  *
  * `:lang()` matches on the language subtag, so `zh-Hans` on <html> is enough
  * — nothing needs a class.
@@ -902,7 +923,7 @@ body:lang(zh) {
  * in the codebase — about thirty-five of them, and a trap for the next label
  * somebody adds. `size-adjust` on the fallback face does it in one place
  * instead: the descriptor scales only the glyphs rendered *from this face*, and
- * IBM Plex Mono sits ahead of it in `--cjk-mono`, so Latin in the same label is
+ * JetBrains Mono sits ahead of it in `--cjk-mono`, so Latin in the same label is
  * untouched. 120% takes 15px of Han to 18px.
  *
  * `local()` only — nothing is downloaded, and a reader with none of these
@@ -931,12 +952,15 @@ body:lang(zh) {
  */
 .eyebrow:lang(zh),
 .chip:lang(zh),
-.btn:lang(zh),
 .stamp:lang(zh),
 .dimension__label:lang(zh) {
   font-family: var(--cjk-mono);
   letter-spacing: 0.1em;
   text-transform: none;
+}
+
+.btn:lang(zh) {
+  font-family: var(--cjk);
 }
 
 .panel :where(p):lang(zh),
@@ -967,11 +991,20 @@ body:lang(zh) {
  * Han sets a real line at any width, so `text-wrap: balance` on a heading has
  * far more places to break and will happily leave a one-character last line.
  */
+:lang(zh) h4 {
+  font-family: var(--cjk);
+}
+
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3 {
+  font-family: var(--cjk-display);
+}
+
 :lang(zh) h1,
 :lang(zh) h2,
 :lang(zh) h3,
 :lang(zh) h4 {
-  font-family: var(--cjk);
   text-wrap: normal;
   line-height: 1.35;
 }
@@ -1157,6 +1190,7 @@ body:lang(zh) {
   text-transform: uppercase;
   color: var(--ink-soft);
   border: 1px solid transparent;
+  border-radius: var(--radius-full);
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
@@ -1184,15 +1218,19 @@ body:lang(zh) {
  * make — no lift, no shadow.
  */
 .nav__cta {
-  color: var(--ink);
-  border-color: var(--ink);
+  /* Clear of the pill's rounded ends, which a 44px-tall pill makes 22px deep. */
+  padding-inline: var(--space-6);
+  color: var(--on-brand);
+  background: var(--brand);
+  border-color: var(--brand);
+  border-radius: var(--radius-full);
 }
 
 .nav__cta:hover,
 .nav__cta.is-current {
-  color: var(--sheet-raised);
-  background: var(--ink);
-  border-color: var(--ink);
+  color: var(--on-brand);
+  background: var(--mineral-gold-on-container);
+  border-color: var(--mineral-gold-on-container);
 }
 
 /* Mono tracking meant for Latin caps opens Han glyphs up too far. */
@@ -1227,6 +1265,8 @@ body:lang(zh) {
   text-transform: uppercase;
   color: var(--ink-soft);
   border: 1px solid var(--ink-hair);
+  border-radius: var(--radius-full);
+  padding-inline: var(--space-5);
   transition:
     color 0.2s ease,
     border-color 0.2s ease;
@@ -1271,7 +1311,8 @@ body:lang(zh) {
   text-transform: uppercase;
   line-height: 0.92;
   letter-spacing: 0.01em;
-  font-size: clamp(3rem, 11.5vw, 7.75rem);
+  /* Noto Serif runs wider than the Cormorant this was sized for. */
+  font-size: clamp(2.75rem, 10vw, 6.5rem);
 }
 
 .stack__solid {
@@ -1502,15 +1543,16 @@ figcaption {
 }
 
 /*
- * The QR carries its own opaque ground in the SVG (the sheet blue), and the
+ * The QR carries its own opaque ground in the SVG (Mzizi's cobalt container), and the
  * frame matches it so the quiet zone reads as part of the code rather than a
  * gap. A code over the blueprint ruling is a code a phone will not lock onto.
  */
 .card__qr {
   width: 11rem;
   padding: 0.625rem;
-  background: var(--sheet);
+  background: var(--container-cobalt);
   border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-md);
 }
 
 .card__qr svg {
@@ -1640,7 +1682,7 @@ figcaption {
 }
 
 .tb-name {
-  font-family: var(--serif);
+  font-family: var(--display);
 }
 
 .tb-name .v {
@@ -1942,6 +1984,11 @@ figcaption {
   margin-block-start: var(--space-6);
 }
 
+/* Mzizi reserves 56px for the prominent surfaces: the hero's call to action. */
+.hero__actions .btn {
+  min-height: 56px;
+}
+
 /* --- three systems --- */
 
 /*
@@ -1958,6 +2005,29 @@ figcaption {
 .system,
 .bigger {
   padding: var(--space-8) var(--space-7);
+}
+
+/* The three audiences, each on its mineral's container, as the systems are. */
+.audience {
+  background: var(--mineral-container, var(--sheet-wash));
+  border-color: color-mix(in oklab, var(--mineral, var(--ink)) 40%, transparent);
+}
+
+/*
+ * Mzizi: theme a surface in its brand's mineral. Each system card sits on its
+ * mineral's dark container, and its labels take the on-container tone —
+ * colour as identity, with the reading text left in ink.
+ */
+.system,
+.bigger {
+  background: var(--mineral-container, var(--sheet-wash));
+  border-color: color-mix(in oklab, var(--mineral, var(--ink)) 45%, transparent);
+}
+
+.system .system__org,
+.system .system__spec dt,
+.bigger .system__links a {
+  color: var(--mineral-on, var(--ink-soft));
 }
 
 .system__org {
@@ -2030,7 +2100,8 @@ figcaption {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: var(--space-4);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-full);
   border: 1px solid var(--ink-soft);
   font-family: var(--mono);
   font-size: var(--label);
@@ -2093,7 +2164,8 @@ figcaption {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: var(--space-4);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-full);
   background: var(--sheet-wash-light);
   border: 1px solid var(--ink);
   font-family: var(--mono);
@@ -2349,7 +2421,7 @@ figcaption {
   margin-block: var(--space-8);
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
   font-weight: 300;
   color: var(--ink);
@@ -2432,7 +2504,7 @@ figcaption {
 }
 
 .work-list h3 {
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.125rem;
   font-weight: 500;
   margin-block-end: var(--space-1);
@@ -2499,7 +2571,7 @@ figcaption {
 
 .aptitudes h3,
 .questions h3 {
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.125rem;
   font-weight: 500;
   margin-block-end: 0.35rem;
@@ -2956,9 +3028,8 @@ code {
 /*
  * The body column.
  *
- * `--measure` is the token, not a number picked here — Cormorant runs about
- * 6.8px per character and a column that looks right by eye measures far past
- * a comfortable line.
+ * `--measure` is the token, not a number picked here — a column that looks
+ * right by eye routinely measures past a comfortable line.
  */
 .adventure__body {
   max-width: var(--measure);
@@ -3003,7 +3074,7 @@ code {
   margin-block: var(--space-8);
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
   font-weight: 300;
   line-height: 1.4;

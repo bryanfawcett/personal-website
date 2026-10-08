@@ -183,14 +183,14 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'Toddle Enhancement Extension',
     description:
-      'A Chrome extension for schools on Toddle: every rubric criterion as its own gradebook column, CSV export, and a free switch that conceals student flags before a screen is shared. It reads Toddle, writes nothing, and sends student data nowhere',
+      'A Chrome extension for schools on Toddle, built by Nyuchi: every rubric criterion as its own gradebook column, CSV export, and a free switch that conceals student flags before a screen is shared. It reads Toddle, writes nothing, and sends student data nowhere. Singapore American School helps maintain it',
     href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
     mineral: 'malachite',
     group: 'community',
     zh: {
       title: 'Toddle Enhancement Extension（Toddle 增强扩展）',
       description:
-        '为使用 Toddle 的学校打造的 Chrome 扩展：每条评分标准都成为成绩册中独立的一列，可导出 CSV，并有一个免费开关，在共享屏幕前隐藏学生标记。它只读取 Toddle，不写入任何内容，也不把学生数据发往任何地方',
+        '为使用 Toddle 的学校打造的 Chrome 扩展：每条评分标准都成为成绩册中独立的一列，可导出 CSV，并有一个免费开关，在共享屏幕前隐藏学生标记。它只读取 Toddle，不写入任何内容，也不把学生数据发往任何地方。Singapore American School（新加坡美国学校）协助维护',
     },
   },
   {
@@ -447,7 +447,7 @@ const SYSTEMS_SOURCE: readonly Bilingual<
       { label: 'Mukoko Weather', href: 'https://weather.mukoko.com' },
       { label: 'StationKit', href: 'https://www.nyuchi.com/stationkit' },
     ],
-    mineral: 'malachite',
+    mineral: 'gold',
     zh: {
       org: 'Nyuchi Africa',
       title: '从气象站到农户',

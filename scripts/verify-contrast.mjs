@@ -239,12 +239,42 @@ for (const route of ROUTES) {
       windowTop = top;
     }
 
+    /*
+     * Read the content box, not the border box. Glyphs paint inside the
+     * content box; the padding and border around them are where a pill's
+     * rounded ends live, and Chromium re-rasterises that curve's antialiasing
+     * a hair differently when the text colour changes. On a 44px pill the
+     * edge pixels that moved were enough to pass as "glyph", scored against
+     * the sheet beyond the curve, and failed a gold button with dark text as
+     * Lc 0. Trimming to the content box loses no glyph pixel.
+     */
+    const inset = await el.evaluate((node) => {
+      const cs = getComputedStyle(node);
+      const n = (v) => parseFloat(v) || 0;
+      // Inline boxes wrap across lines; their padding is not a frame to trim.
+      if (cs.display.startsWith('inline') && cs.display !== 'inline-flex' && cs.display !== 'inline-block') {
+        return { l: 0, r: 0, t: 0, b: 0 };
+      }
+      return {
+        l: n(cs.paddingLeft) + n(cs.borderLeftWidth),
+        r: n(cs.paddingRight) + n(cs.borderRightWidth),
+        t: n(cs.paddingTop) + n(cs.borderTopWidth),
+        b: n(cs.paddingBottom) + n(cs.borderBottomWidth),
+      };
+    });
+    const content = {
+      x: box.x + inset.l,
+      y: box.y + inset.t,
+      width: Math.max(2, box.width - inset.l - inset.r),
+      height: Math.max(2, box.height - inset.t - inset.b),
+    };
+
     // Clamp the read into the viewport: a box hanging off the edge would
     // otherwise read pixels the capture does not hold.
-    const cx = Math.max(0, Math.min(box.x, vp.width - 2));
-    const cy = Math.max(0, Math.min(box.y, vp.height - 2));
-    const cw = Math.max(2, Math.min(box.width, vp.width - cx));
-    const ch = Math.max(2, Math.min(box.height, vp.height - cy));
+    const cx = Math.max(0, Math.min(content.x, vp.width - 2));
+    const cy = Math.max(0, Math.min(content.y, vp.height - 2));
+    const cw = Math.max(2, Math.min(content.width, vp.width - cx));
+    const ch = Math.max(2, Math.min(content.height, vp.height - cy));
 
     const ink = parseRGB(t.color);
     const ground = await page.evaluate(([rect, inkRGB]) => {

@@ -63,7 +63,7 @@ of how this site describes the Foundation.
 ### Community
 
 - [Nyuchi Learning](https://learning.nyuchi.com): training, the open Bundu Education frameworks, and classroom tools for schools
-- [Toddle Enhancement Extension](https://learning.nyuchi.com/toddle-enhancement-extension): a Chrome extension for schools on Toddle, built by Nyuchi Web Services and launched October 2026. It is a Nyuchi product, not a Singapore American School tool — rubric criteria as gradebook columns, CSV export, and a free switch that conceals student flags. Reads Toddle, writes nothing, sends student data nowhere. US$5 a year per teacher, US$149.99 per school
+- [Toddle Enhancement Extension](https://learning.nyuchi.com/toddle-enhancement-extension): a Chrome extension for schools on Toddle, built by Nyuchi Web Services and launched October 2026. It is a Nyuchi product, not a Singapore American School tool, though Singapore American School helps maintain it — rubric criteria as gradebook columns, CSV export, and a free switch that conceals student flags. Reads Toddle, writes nothing, sends student data nowhere. US$5 a year per teacher, US$149.99 per school
 - [Mukoko Lingo](https://lingo.mukoko.com): learning African languages, Shona and Ndebele first (formerly Nyuchi Lingo)
 - [Mukoko Events](https://events.mukoko.com): community events and gatherings (formerly Nhimbe)
 
