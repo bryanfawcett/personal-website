@@ -21,10 +21,11 @@ This document provides essential context for AI assistants working on this Astro
 Bryan is Founder & CEO of Nyuchi Africa and Founder of **The Bundu Foundation** — a
 Zimbabwean research foundation, a company limited by guarantee, whose main activity
 is research into infrastructure gaps in African and emerging markets, under the
-Ubuntu philosophy ("I am because we are"). Research comes first there; the
-governance layer itself is not yet fully built. It governs four pillars: Bundu Labs
-(research), Nyuchi Africa (commercial), Mukoko (consumer) and Shamwari AI
-(community). StationKit and Mukoko Weather are how the open data commons gets
+Ubuntu philosophy ("I am because we are"). It researches and builds for informal and
+formal markets. Research comes first, and its governance is in place
+(bundu.org/governance): it governs four pillars — Bundu Labs (research), Nyuchi Africa
+(commercial), Mukoko (consumer) and Shamwari AI (community) — and its own open-source
+projects. The platform tokens are a future phase and stay out of the framing. StationKit and Mukoko Weather are how the open data commons gets
 filled and put to use.
 
 The live sites are the source of truth for all of this, and they move faster than
@@ -33,13 +34,14 @@ description from here.
 
 | Platform | URL | Description |
 |----------|-----|-------------|
-| **The Bundu Foundation** | bundu.org | Research foundation (Zimbabwe CLG) governing four pillars — governance in progress |
+| **The Bundu Foundation** | bundu.org | Research foundation (Zimbabwe CLG): research first, governing four pillars and its open-source projects |
 | **Mzizi** | mzizi.dev | Programming-language research project (Phase 0); publishes every benchmark run, including negative ones. Its brand system supplies this site's minerals |
 | **Bundu Labs** | bundu.org/research | Research pillar: open standards, benchmarks and frameworks |
 | **Nyuchi Africa** | nyuchi.com | Commercial pillar, founded in Harare in 2018: Web Services, Weather Stations, API Platform; Pay and Masasa coming |
 | **Nyuchi StationKit** | nyuchi.com/stationkit | Open-source solar weather + soil station, from $25 for the basic kit (indicative) |
 | **Nyuchi Learning** | learning.nyuchi.com | Training, the open Bundu Education frameworks, and classroom tools for schools |
-| **Mukoko** | mukoko.com | Consumer pillar: privacy-first super-app of mini-apps under one identity |
+| **Toddle Enhancement Extension** | learning.nyuchi.com/toddle-enhancement-extension | Nyuchi Learning's paid Chrome extension for Toddle schools, launched Oct 2026 |
+| **Mukoko** | mukoko.com | Consumer pillar: super-app with a single identity across its mini-apps. Sovereign, self-held identity is a later phase — do not describe it as live |
 | **Mukoko Weather** | weather.mukoko.com | Forecasts and frost alerts for farming, mining, border posts and travel |
 | **Mukoko News** | news.mukoko.com | Pan-African news aggregation from trusted regional sources |
 | **Mukoko Lingo** | lingo.mukoko.com | African language learning, Shona and Ndebele first (was Nyuchi Lingo) |
@@ -728,17 +730,20 @@ revenue is the priority. Everything on `/` serves that:
 - **Identity:** "Digital Craftsman, builder of communities", with systems thinking
   as the thread — how people, data, tools and constraints connect. Shown through
   the work, never claimed in an adjective.
-- **At most three featured systems** (`systems()` in `work.ts`): SAS, Nyuchi's
-  weather chain, and the Bundu Foundation with Mzizi. Each answers the same three
+- **At most three featured systems** (`systems()` in `work.ts`): SAS with Nyuchi
+  Learning's Toddle extension, Nyuchi's weather chain, and the Bundu Foundation with
+  Mzizi. Each answers the same three
   questions in order: who it is for, how the parts connect, what changed. A fourth
   means one comes off.
 - **Do not frame Bryan around AI.** No "AI-powered" in copy. Shamwari AI appears
   as a pillar's name and nothing more.
 - **No number without proof.** Every figure on the page is one a live site states
   today. User counts, client names and quotes go in when they exist, not before.
-  The call is described as "free", not "30-minute": the Cal.com event types are 15,
-  45 and 90 minutes, and none is a scoping call yet.
-- **Tokens stay off the site** (MIT, MXT, NST, NHC). To a buyer they read as risk.
+  The call is a free 30-minute one, and `/book` embeds that event directly
+  (`bryanfawcett/book-a-call`), not the profile with every event type on it.
+- **Tokens stay out of the framing** (MIT, MXT, NST, NHC). They are a future phase,
+  and to a buyer they read as risk. So does calling Mukoko's identity sovereign: one
+  identity across its apps is live, sovereign identity is not.
 
 ### Projects Listed
 

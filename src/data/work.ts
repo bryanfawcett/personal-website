@@ -57,14 +57,14 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'The Bundu Foundation',
     description:
-      'A Zimbabwean research foundation, a company limited by guarantee, studying the infrastructure gaps in African and emerging markets and governing the four pillars below. Research comes first; its governance is still being built',
+      'A Zimbabwean research foundation, a company limited by guarantee. Research into the infrastructure gaps in informal and formal markets across Africa comes first, and it governs the four pillars below and its own open-source projects',
     href: 'https://bundu.org',
     mineral: 'copper',
     group: 'foundation',
     zh: {
       title: 'The Bundu Foundation（本都基金会）',
       description:
-        '一家津巴布韦研究型基金会（担保有限公司），研究非洲与新兴市场的基础设施缺口，并统辖下面四大支柱。研究先行，治理层仍在建设之中',
+        '一家津巴布韦研究型基金会（担保有限公司）。研究先行——研究非洲非正规与正规市场中的基础设施缺口；它统辖下面四大支柱，以及基金会自己的开源项目',
     },
   },
   {
@@ -96,27 +96,27 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'Nyuchi Africa',
     description:
-      'The commercial pillar: custom software, weather stations and an API platform for organisations whose people work on slow connections, shared phones and in more than one language',
+      'The commercial pillar: custom software, weather stations and an API platform for organisations in informal and formal markets, whose people work on slow connections, shared phones and in more than one language',
     href: 'https://www.nyuchi.com',
     mineral: 'gold',
     group: 'pillars',
     zh: {
       title: 'Nyuchi Africa',
       description:
-        '商业支柱：为那些在慢速网络、共用手机、多种语言环境中工作的机构，提供定制软件、气象站与 API 平台',
+        '商业支柱：为非正规与正规市场中、在慢速网络、共用手机、多种语言环境下工作的机构，提供定制软件、气象站与 API 平台',
     },
   },
   {
     title: 'Mukoko',
     description:
-      "The consumer pillar: everyday tools under one account, from messaging and news to events and weather, built so the platform cannot read people's personal data",
+      'The consumer pillar: a super-app of everyday tools, from messaging and news to events and weather, with one identity across all of them',
     href: 'https://mukoko.com',
     mineral: 'tanzanite',
     group: 'pillars',
     zh: {
       title: 'Mukoko',
       description:
-        '消费者支柱：从消息、新闻到活动与天气，一个账号收纳日常工具；其架构让平台本身无法读取用户的个人数据',
+        '消费者支柱：一个汇集日常工具的超级应用，从消息、新闻到活动与天气，所有应用共用同一个身份',
     },
   },
   {
@@ -178,6 +178,19 @@ const NYUCHI_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
     zh: {
       title: 'Nyuchi Learning',
       description: '培训课程、开放的 Bundu Education 框架，以及 Nyuchi 为学校打造的课堂工具',
+    },
+  },
+  {
+    title: 'Toddle Enhancement Extension',
+    description:
+      'A Chrome extension for schools on Toddle: every rubric criterion as its own gradebook column, CSV export, and a free switch that conceals student flags before a screen is shared. It reads Toddle, writes nothing, and sends student data nowhere',
+    href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
+    mineral: 'malachite',
+    group: 'community',
+    zh: {
+      title: 'Toddle Enhancement Extension（Toddle 增强扩展）',
+      description:
+        '为使用 Toddle 的学校打造的 Chrome 扩展：每条评分标准都成为成绩册中独立的一列，可导出 CSV，并有一个免费开关，在共享屏幕前隐藏学生标记。它只读取 Toddle，不写入任何内容，也不把学生数据发往任何地方',
     },
   },
   {
@@ -400,26 +413,36 @@ const SYSTEMS_SOURCE: readonly Bilingual<
   'org' | 'title' | 'people' | 'system' | 'result' | 'links'
 >[] = [
   {
-    org: 'Singapore American School',
-    title: 'One school, one set of tools',
-    people: "Teachers, staff, and the people who run the school's programmes.",
+    org: 'Singapore American School · Nyuchi Learning',
+    title: 'Tools for a whole school',
+    people: 'Teachers, school leaders, and the staff who keep a school running.',
     system:
-      "Four tools designed to fit together: a supported Digital Toolkit in place of each department's own workarounds, a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups.",
+      "At Singapore American School, the Digital Toolkit sets one central process for the tools staff use, school-wide, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups. I have worked every layer of that school, from application systems and infrastructure to privacy and governance.",
     result:
-      'Each one replaced something done by hand, and each is built knowing what it plugs into, because I have worked every layer of the same school: application systems, infrastructure, privacy and governance, and now innovation.',
+      'Through Nyuchi Learning, the same care now ships to any school on Toddle. The Toddle Enhancement Extension, launched in October 2026, puts every rubric criterion in its own gradebook column and lets a teacher conceal student flags before sharing a screen. It reads Toddle, writes nothing back, and sends student data nowhere. The flag switch is free, always.',
     links: [
-      { label: 'The repositories', href: 'https://github.com/SAS-Technology-Innovation' },
+      {
+        label: 'Toddle extension',
+        href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
+      },
+      { label: 'SAS repositories', href: 'https://github.com/SAS-Technology-Innovation' },
     ],
     mineral: 'cobalt',
     zh: {
-      org: 'Singapore American School（新加坡美国学校）',
-      title: '一所学校，一套工具',
-      people: '教师、教职员，以及负责学校各项项目的同事。',
+      org: 'Singapore American School（新加坡美国学校）· Nyuchi Learning',
+      title: '服务整所学校的工具',
+      people: '教师、学校管理者，以及让学校正常运转的教职员。',
       system:
-        '四个彼此咬合的工具：一套有支持的数字工具箱，取代各部门各自为政的变通办法；一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。',
+        '在新加坡美国学校，数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。这所学校的每一层我都做过，从应用系统、基础设施，到隐私与治理。',
       result:
-        '每一个都取代了某件原本靠手工完成的事；每一个在建造时都清楚自己要接入什么——因为同一所学校的每一层我都做过：应用系统、基础设施、隐私与治理，以及如今的创新。',
-      links: [{ label: '代码库', href: 'https://github.com/SAS-Technology-Innovation' }],
+        '通过 Nyuchi Learning，同样的用心如今交付给任何使用 Toddle 的学校。2026 年 10 月上线的 Toddle 增强扩展，让每条评分标准在成绩册中各占一列，也让教师在共享屏幕前隐藏学生标记。它只读取 Toddle，不回写任何内容，也不把学生数据发往任何地方。隐藏标记的开关永远免费。',
+      links: [
+        {
+          label: 'Toddle 扩展',
+          href: 'https://learning.nyuchi.com/toddle-enhancement-extension',
+        },
+        { label: 'SAS 代码库', href: 'https://github.com/SAS-Technology-Innovation' },
+      ],
     },
   },
   {
@@ -456,7 +479,7 @@ const SYSTEMS_SOURCE: readonly Bilingual<
     system:
       "The Foundation sets the standards, Nyuchi and Mukoko build to them, and Mzizi writes them into the code. Nyuchi's rule is large touch targets, so an app works outdoors on a small phone; in Mzizi, a button's minimum 48px height is part of the button's own definition, and a change that breaks it fails the check before it can ship.",
     result:
-      "Mzizi publishes every test run, including the two pilots that showed no advantage yet, and the Foundation's site says plainly that its governance is still being built. Measured, and said as it is.",
+      'Mzizi publishes every test run, including the two pilots that showed no advantage yet, and set the bar it must clear before the decisive run, not after. Measured, and said as it is.',
     links: [
       { label: 'mzizi.dev', href: 'https://mzizi.dev' },
       { label: 'bundu.org', href: 'https://bundu.org' },
@@ -469,7 +492,7 @@ const SYSTEMS_SOURCE: readonly Bilingual<
       system:
         '基金会制定标准，Nyuchi 与 Mukoko 按标准构建，Mzizi 把标准写进代码。Nyuchi 的规则是足够大的触控区域，让应用在户外、在小屏手机上也好用；在 Mzizi 中，按钮最少 48px 的高度是按钮定义本身的一部分，任何违反它的改动在发布之前就无法通过检查。',
       result:
-        'Mzizi 公开每一次测试，包括两次尚未显示出优势的试点；基金会的网站也坦白写明，其治理层仍在建设之中。量过，再如实说出来。',
+        'Mzizi 公开每一次测试，包括两次尚未显示出优势的试点；它必须跨过的门槛在决定性测试之前就已定下，而不是事后。量过，再如实说出来。',
       links: [
         { label: 'mzizi.dev', href: 'https://mzizi.dev' },
         { label: 'bundu.org', href: 'https://bundu.org' },
@@ -491,10 +514,10 @@ export interface Step {
 const STEPS_SOURCE: readonly Bilingual<Step, 'title' | 'body'>[] = [
   {
     title: 'Measure',
-    body: 'A free first call. Who will use it, what it runs on, where the data goes, and what breaks when the signal drops.',
+    body: 'A free 30-minute call. Who will use it, what it runs on, where the data goes, and what breaks when the signal drops.',
     zh: {
       title: '测量',
-      body: '一次免费的初步通话。谁会用它、它跑在什么上面、数据流向哪里、信号一断会坏掉什么。',
+      body: '一次 30 分钟的免费通话。谁会用它、它跑在什么上面、数据流向哪里、信号一断会坏掉什么。',
     },
   },
   {

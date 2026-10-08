@@ -55,7 +55,7 @@ const t = useTranslations(lang);
         scheduler embed on every page load is a tracker the reader did not
         request, and it is the heaviest thing on the page.
       -->
-      <div id="cal-embed" class="scheduler__embed" data-cal-link="bryanfawcett"></div>
+      <div id="cal-embed" class="scheduler__embed" data-cal-link="bryanfawcett/book-a-call"></div>
       <button id="cal-load" class="btn" type="button" data-error={t('book.error')}>
         {t('book.load')}
       </button>
@@ -126,7 +126,7 @@ const t = useTranslations(lang);
       Cal('init', { origin: 'https://cal.com' });
       Cal('inline', {
         elementOrSelector: '#cal-embed',
-        calLink: 'bryanfawcett',
+        calLink: 'bryanfawcett/book-a-call',
         config: { layout: 'month_view' },
       });
       // linkReady / linkFailed fire once the calendar iframe itself has

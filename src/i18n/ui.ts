@@ -68,7 +68,7 @@ export const ui = {
     'home.solid': 'Digital',
     'home.drafted': 'Craftsman',
     'home.sub':
-      'I design for how people, data, tools and constraints connect, not single features. Through Nyuchi Africa, my team builds that for organisations whose people work offline, outdoors and in more than one language.',
+      'I design for how people, data, tools and constraints connect, not single features. Through The Bundu Foundation and Nyuchi Africa, I research and build for informal and formal markets, for organisations whose people work offline, outdoors and in more than one language.',
     'home.cta_primary': 'Book a scoping call',
     'home.cta_secondary': 'See the systems',
     'home.note': 'measure twice,\nship once',
@@ -108,7 +108,7 @@ export const ui = {
     'home.bigger_fig': 'Fig. 04 — The wider drawing',
     'home.bigger_heading': 'Where Nyuchi sits',
     'home.bigger_body':
-      'Nyuchi Africa is the commercial pillar of The Bundu Foundation, a Zimbabwean research foundation with four pillars: Bundu Labs for research, Mukoko for consumers, Nyuchi for organisations, and Shamwari AI for community. What we learn building for one goes into the standards the others are held to.',
+      'Nyuchi Africa is the commercial pillar of The Bundu Foundation, a Zimbabwean foundation that researches the infrastructure gaps in informal and formal markets and governs four pillars: Bundu Labs for research, Mukoko for consumers, Nyuchi for organisations, and Shamwari AI for community. What the research finds goes into the standards every pillar is held to.',
     'home.bigger_all': 'All projects',
     'home.bigger_bundu': 'bundu.org',
 
@@ -116,7 +116,7 @@ export const ui = {
     'home.connect_stamp': 'Now booking',
     'home.connect_heading': 'Bring the drawing',
     'home.connect_lede':
-      'If your people work offline, outdoors or in more than one language, start with a free call. You will leave with a clearer picture of the system, whether or not you hire us.',
+      'If your people work offline, outdoors or in more than one language, start with a free 30-minute call. You will leave with a clearer picture of the system, whether or not you hire us.',
     'home.connect_cta': 'Book a scoping call',
 
     // --- contact card ---
@@ -139,7 +139,7 @@ export const ui = {
     'exp.ecosystem_heading': 'Projects and work',
     'exp.ecosystem_group': 'The Bundu Ecosystem',
     'exp.ecosystem_lede':
-      'The Bundu Foundation is a Zimbabwean research foundation, and research into infrastructure gaps comes first. It governs four pillars: Bundu Labs, Nyuchi Africa, Mukoko and Shamwari AI. Below, what each builds, linked to the live site.',
+      'The Bundu Foundation is a Zimbabwean research foundation, and research into infrastructure gaps in informal and formal markets comes first. It governs four pillars: Bundu Labs, Nyuchi Africa, Mukoko and Shamwari AI. Below, what each builds, linked to the live site.',
     'exp.ecosystem_sas': 'Singapore American School',
     'exp.ecosystem_visit': 'Visit →',
     'exp.ecosystem_repo': 'Repository →',
@@ -348,7 +348,7 @@ export const ui = {
     'home.solid': '数字',
     'home.drafted': '工匠',
     'home.sub':
-      '我设计的不是单个功能，而是人、数据、工具与约束之间如何相连。通过 Nyuchi Africa，我的团队为那些在离线、户外、多语言环境中工作的机构，把这样的系统建造出来。',
+      '我设计的不是单个功能，而是人、数据、工具与约束之间如何相连。通过 The Bundu Foundation 与 Nyuchi Africa，我为非正规与正规市场做研究、做建造，服务那些在离线、户外、多语言环境中工作的机构。',
     'home.cta_primary': '预约需求梳理通话',
     'home.cta_secondary': '看看这些系统',
     'home.note': '量两次，\n出一次',
@@ -388,7 +388,7 @@ export const ui = {
     'home.bigger_fig': '图 04 — 更大的图纸',
     'home.bigger_heading': 'Nyuchi 的位置',
     'home.bigger_body':
-      'Nyuchi Africa 是 The Bundu Foundation（本都基金会）的商业支柱。这家津巴布韦研究型基金会有四大支柱：负责研究的 Bundu Labs、面向消费者的 Mukoko、面向机构的 Nyuchi，以及面向社区的 Shamwari AI。为其中一方构建时学到的东西，会写进约束其他各方的标准。',
+      'Nyuchi Africa 是 The Bundu Foundation（本都基金会）的商业支柱。这家津巴布韦基金会研究非正规与正规市场中的基础设施缺口，并统辖四大支柱：负责研究的 Bundu Labs、面向消费者的 Mukoko、面向机构的 Nyuchi，以及面向社区的 Shamwari AI。研究的发现，会写进每一个支柱都须遵守的标准。',
     'home.bigger_all': '全部项目',
     'home.bigger_bundu': 'bundu.org',
 
@@ -396,7 +396,7 @@ export const ui = {
     'home.connect_stamp': '接受委托',
     'home.connect_heading': '带上你的图纸',
     'home.connect_lede':
-      '如果你的团队在离线、户外或多语言的环境中工作，先从一次免费的通话开始。无论最后是否委托我们，你都会对整个系统看得更清楚。',
+      '如果你的团队在离线、户外或多语言的环境中工作，先从一次 30 分钟的免费通话开始。无论最后是否委托我们，你都会对整个系统看得更清楚。',
     'home.connect_cta': '预约需求梳理通话',
 
     // --- contact card ---
@@ -418,7 +418,7 @@ export const ui = {
     'exp.ecosystem_heading': '作品与项目',
     'exp.ecosystem_group': 'Bundu 生态（本都生态）',
     'exp.ecosystem_lede':
-      'The Bundu Foundation（本都基金会）是一家津巴布韦研究型基金会，对基础设施缺口的研究先行。它统辖四大支柱：Bundu Labs、Nyuchi Africa、Mukoko 与 Shamwari AI。以下是各自在做的事，均链接到线上站点。',
+      'The Bundu Foundation（本都基金会）是一家津巴布韦研究型基金会，对非正规与正规市场中基础设施缺口的研究先行。它统辖四大支柱：Bundu Labs、Nyuchi Africa、Mukoko 与 Shamwari AI。以下是各自在做的事，均链接到线上站点。',
     'exp.ecosystem_sas': 'Singapore American School（新加坡美国学校）',
     'exp.ecosystem_visit': '访问 →',
     'exp.ecosystem_repo': '代码库 →',
