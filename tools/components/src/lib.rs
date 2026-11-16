@@ -10,3 +10,6 @@
 pub mod canon;
 pub mod footer;
 pub mod site;
+pub mod lang_switcher;
+pub mod page_header;
+pub mod panel;
