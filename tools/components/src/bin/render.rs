@@ -17,6 +17,7 @@ use components::{
     header::header,
     schematics::schematics,
     site::{Lang, Site},
+    workshop_strip::workshop_strip,
 };
 
 /// The route a fragment is keyed by, and the path it is rendered for.
@@ -39,6 +40,7 @@ fn main() {
     let mut out: BTreeMap<String, String> = BTreeMap::new();
     out.insert("schematics.html".into(), schematics().into_string());
     for lang in [Lang::En, Lang::Zh] {
+        out.insert(format!("workshop.{}.html", lang.code()), workshop_strip(&site, lang).into_string());
         for (key, path) in ROUTES {
             let code = lang.code();
             out.insert(format!("header.{code}.{key}.html"), header(&site, lang, path, Some("%SWITCH%")).into_string());
