@@ -142,20 +142,27 @@ const sas = sasProjects(lang);
     <p class="group-label">{t('exp.ecosystem_sas')}</p>
     <div class="board board--tight">
       {
-        sas.map((project) => (
-          <Panel
-            as="a"
-            href={project.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w6 link-panel"
-            mineral={project.mineral}
-          >
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <span class="link-panel__path">{t('exp.ecosystem_repo')}</span>
-          </Panel>
-        ))
+        sas.map((project) =>
+          project.href ? (
+            <Panel
+              as="a"
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w6 link-panel"
+              mineral={project.mineral}
+            >
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+              <span class="link-panel__path">{t('exp.ecosystem_repo')}</span>
+            </Panel>
+          ) : (
+            <Panel as="div" class="w6 link-panel link-panel--static" mineral={project.mineral}>
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+            </Panel>
+          ),
+        )
       }
     </div>
   </section>

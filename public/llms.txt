@@ -79,10 +79,14 @@ Nyuchi Honeycomb, SiafuDB, SiafuDB-Kuzu, Harare Metro and Mzizi — across the
 
 ## Open source at Singapore American School
 
-- [Digital Toolkit](https://github.com/SAS-Technology-Innovation/digital-toolkit)
-- [Knowledge Base](https://github.com/SAS-Technology-Innovation/knowledge)
-- [Educator Eval](https://github.com/SAS-Technology-Innovation/EducatorEval)
-- [Expression of Interest Dashboard](https://github.com/SAS-Technology-Innovation/Expression-of-Interest-Dashboard)
+The school's GitHub organisation is [sas-technology](https://github.com/sas-technology). The public repositories:
+
+- [Knowledge Base](https://github.com/sas-technology/knowledge)
+- [SAS Knowledge](https://github.com/sas-technology/sas-knowledge): a plugin or MCP aggregation of everything SAS
+- [SAS default app](https://github.com/sas-technology/sas-default-app): a safe, ready-to-run Next.js app for schools
+- [Org defaults and delivery pipelines](https://github.com/sas-technology/.github): the shared lint gate, release automation and opt-in security workflows
+
+Also built, in private repositories: Educator Compass (formerly Educator Eval), the Digital Toolkit, the Expression of Interest Dashboard and a robotics tournament app for judging and grading engineering notebooks.
 
 ## How a commission runs
 

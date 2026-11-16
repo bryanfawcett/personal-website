@@ -142,13 +142,34 @@ const SCHOOL_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
     },
   },
   {
-    title: 'Educator Eval & the Digital Toolkit',
+    title: 'Educator Compass & the Digital Toolkit',
     detail:
       'Platforms for evaluation, growth conversations, shared tools, and a single place for institutional knowledge to live.',
     mineral: 'malachite',
     zh: {
-      title: 'Educator Eval 与数字工具箱',
+      title: 'Educator Compass 与数字工具箱',
       detail: '用于评估、成长对话与共享工具的平台，也让机构知识终于有一个统一的落脚处。',
+    },
+  },
+  {
+    title: 'Robotics tournament app',
+    detail: 'An app for judging and grading engineering notebooks at robotics tournaments.',
+    mineral: 'terracotta',
+    zh: {
+      title: '机器人赛事应用',
+      detail: '用于机器人赛事中工程笔记本评审与评分的应用。',
+    },
+  },
+  {
+    title: 'CI/CD for the technology team',
+    detail:
+      'One lint gate required on every repository, release pull requests opened and tagged automatically, and CodeQL and dependency review any repository can switch on.',
+    mineral: 'gold',
+    href: 'https://github.com/sas-technology/.github',
+    zh: {
+      title: '技术团队的 CI/CD',
+      detail:
+        '每个代码库都必须通过的统一代码检查，自动发起并打上标签的发布合并请求，以及任何代码库都可以启用的 CodeQL 与依赖审查。',
     },
   },
   {

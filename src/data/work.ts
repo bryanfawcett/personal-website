@@ -42,7 +42,11 @@ export const GROUP_LABELS: Record<Lang, Record<ProjectGroup, string>> = {
 export interface Project {
   readonly title: string;
   readonly description: string;
-  readonly href: string;
+  /**
+   * Where to read about it. Absent when there is nothing public to point at: most of
+   * the school's repositories are private, and a tile must not link to a 404.
+   */
+  readonly href?: string | undefined;
   readonly mineral: MineralName;
   readonly group: ProjectGroup;
 }
@@ -246,7 +250,6 @@ const SAS_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
   {
     title: 'Digital Toolkit',
     description: 'A consistent, supported set of digital tools for staff, instead of ad-hoc solutions per department',
-    href: 'https://github.com/SAS-Technology-Innovation/digital-toolkit',
     mineral: 'cobalt',
     group: 'community',
     zh: {
@@ -258,7 +261,7 @@ const SAS_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
     title: 'Knowledge Base',
     description:
       'Centralised institutional knowledge — how-tos, policies, processes — that survives staff turnover instead of living in inboxes',
-    href: 'https://github.com/SAS-Technology-Innovation/knowledge',
+    href: 'https://github.com/sas-technology/knowledge',
     mineral: 'sodalite',
     group: 'community',
     zh: {
@@ -268,21 +271,42 @@ const SAS_SOURCE: readonly Bilingual<Project, 'title' | 'description'>[] = [
     },
   },
   {
-    title: 'Educator Eval',
+    title: 'Educator Compass',
     description: 'Educator evaluation and assessment, replacing manual, paper-based review cycles',
-    href: 'https://github.com/SAS-Technology-Innovation/EducatorEval',
     mineral: 'malachite',
     group: 'community',
     zh: {
-      title: 'Educator Eval（教师评估）',
+      title: 'Educator Compass（教师评估）',
       description: '教师评估与考核平台，取代手工纸质的评审流程',
+    },
+  },
+  {
+    title: 'Robotics Tournament App',
+    description: 'Judging and grading engineering notebooks at robotics tournaments, in one app',
+    mineral: 'terracotta',
+    group: 'community',
+    zh: {
+      title: 'Robotics Tournament App（机器人赛事应用）',
+      description: '在一个应用里完成机器人赛事中工程笔记本的评审与评分',
+    },
+  },
+  {
+    title: 'SAS Delivery Pipelines',
+    description:
+      'The technology team’s shared CI/CD: one lint gate on every repository, release pull requests opened and tagged automatically, and security checks any repository can switch on',
+    href: 'https://github.com/sas-technology/.github',
+    mineral: 'gold',
+    group: 'community',
+    zh: {
+      title: 'SAS Delivery Pipelines（交付流水线）',
+      description:
+        '技术团队共用的 CI/CD：每个代码库都要通过统一的代码检查，发布合并请求自动发起并打上标签，任何代码库都可以启用安全检查',
     },
   },
   {
     title: 'EOI Dashboard',
     description:
       'A live view of expression-of-interest sign-ups, instead of manually collating forms',
-    href: 'https://github.com/SAS-Technology-Innovation/Expression-of-Interest-Dashboard',
     mineral: 'tanzanite',
     group: 'community',
     zh: {
@@ -417,11 +441,11 @@ const SYSTEMS_SOURCE: readonly Bilingual<
     title: 'One process for a whole school',
     people: 'Teachers, school leaders, and the staff who keep a school running.',
     system:
-      "The Digital Toolkit sets one central, school-wide process for the tools staff use, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, an evaluation app that replaces paper review cycles, and a live dashboard for programme sign-ups.",
+      "The Digital Toolkit sets one central, school-wide process for the tools staff use, in place of each department's own workarounds. Around it: a Knowledge Base that keeps how-tos and policy when staff move on, Educator Compass, an evaluation app that replaces paper review cycles, a live dashboard for programme sign-ups, and a robotics tournament app for judging engineering notebooks. Underneath them all, shared delivery pipelines, so every one of these ships the same way.",
     result:
       'Each one replaced something done by hand, and each is built knowing what it plugs into, because I have worked every layer of the same school: application systems, infrastructure, privacy and governance, and now innovation.',
     links: [
-      { label: 'The repositories', href: 'https://github.com/SAS-Technology-Innovation' },
+      { label: 'The repositories', href: 'https://github.com/sas-technology' },
     ],
     mineral: 'cobalt',
     zh: {
@@ -429,10 +453,10 @@ const SYSTEMS_SOURCE: readonly Bilingual<
       title: '整所学校，一套流程',
       people: '教师、学校管理者，以及让学校正常运转的教职员。',
       system:
-        '数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；一个评估应用，取代纸质评审流程；以及一块实时的项目报名看板。',
+        '数字工具箱为全校教职员所用的工具确立了一套统一的中心流程，取代各部门各自为政的变通办法。围绕它的还有：一个知识库，让操作指引与政策在人员更替后依然留存；Educator Compass 评估应用，取代纸质评审流程；一块实时的项目报名看板；一个用于评审工程笔记本的机器人赛事应用；以及贯穿其下的共用交付流水线，让这些系统都以同样的方式上线。',
       result:
         '每一个都取代了某件原本靠手工完成的事；每一个在建造时都清楚自己要接入什么——因为同一所学校的每一层我都做过：应用系统、基础设施、隐私与治理，以及如今的创新。',
-      links: [{ label: '代码库', href: 'https://github.com/SAS-Technology-Innovation' }],
+      links: [{ label: '代码库', href: 'https://github.com/sas-technology' }],
     },
   },
   {
