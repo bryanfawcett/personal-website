@@ -89,7 +89,7 @@ fn main() {
             .and_then(|sel| Html::parse_fragment(&astro).select(&sel).next().and_then(|e| e.value().attr("href").map(str::to_string)))
             .unwrap_or_default();
 
-        let rust = footer(&site, lang, &sheet, year, &path).into_string();
+        let rust = footer(&site, lang, &sheet, &year.to_string(), &path).into_string();
         let (a, b) = (normalize(&astro), normalize(&rust));
         checked += 1;
         let name = page.strip_prefix(&dir).unwrap_or(page).display();

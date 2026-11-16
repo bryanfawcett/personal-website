@@ -26,6 +26,8 @@
     "tokens": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-tokens.mjs",
     "site-data": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/export-site-data.mjs",
     "verify:contact:rs": "scripts/verify-contact-parity.sh",
+    "fragments": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render",
+    "fragments:check": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render -- --check",
     "verify:components:rs": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin parity",
     "design-system": "python3 scripts/build-design-system.py",
     "design-system:check": "python3 scripts/build-design-system.py --check"

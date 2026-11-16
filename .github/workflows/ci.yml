@@ -60,6 +60,13 @@ jobs:
       - name: Design-system skill is current
         run: pnpm exec vp run design-system:check
 
+      # The header, footer and schematics are Rust; Astro inserts committed fragments.
+      - name: Rust fragments are current
+        run: pnpm exec vp run fragments:check
+
+      - name: Rust components match the built pages
+        run: pnpm exec vp run verify:components:rs
+
   contrast:
     name: APCA contrast
     runs-on: ubuntu-latest
