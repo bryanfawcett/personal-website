@@ -18,7 +18,7 @@ Nothing is a card, and nothing sits on the page edge but the mineral rail.
 pnpm dev        # dev server at localhost:4321
 pnpm check      # astro check (TypeScript, under `strictest`)
 pnpm build      # production build to dist/
-pnpm preview    # run the built site in workerd via wrangler
+pnpm preview    # cf dev (delegates to astro dev)
 pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 ```
@@ -28,10 +28,10 @@ pnpm og         # re-render the social card (only after the portrait changes)
 ## Architecture
 
 The site is fully prerendered and served from an assets-only Cloudflare Worker —
-there is no `main` script in `wrangler.jsonc` because no route needs a server.
+there is no server entrypoint in `cloudflare.config.ts` because no route needs a server.
 `@astrojs/cloudflare` emits the deployable tree to `dist/client`; `dist/server`
 stays empty while every route is static. Add one non-prerendered route and the
-adapter starts populating it, at which point `wrangler.jsonc` needs a `main`.
+adapter starts populating it, at which point `cloudflare.config.ts` needs an `entrypoint`.
 
 This repo is the main site. Satellite properties — the Origins presentation, and
 whatever comes next — are their own Workers with their own repos, sharing this
@@ -266,7 +266,7 @@ own on purpose: two things deploying the same Worker only race each other.
 To push a build by hand:
 
 ```bash
-CLOUDFLARE_API_TOKEN=… npx wrangler deploy
+CLOUDFLARE_API_TOKEN=… cf deploy
 ```
 
 ### Routing
@@ -275,7 +275,7 @@ CLOUDFLARE_API_TOKEN=… npx wrangler deploy
 `minerals/index.html`. With the directory format an assets-only Worker can only
 serve that page at `/minerals/`, so every internal link — all of which are
 written without a trailing slash — 307s before it resolves. No `html_handling`
-value in `wrangler.jsonc` fixes that, because the file really does live at the
+value in `cloudflare.config.ts` fixes that, because the file really does live at the
 slashed path; the build format is what decides it.
 
 ### Vercel is gone

@@ -76,7 +76,7 @@ home page as proof of how the work is done: measured, and published either way.
 pnpm dev        # dev server at localhost:4321
 pnpm check      # astro check (TypeScript under `strictest`) — must stay at 0 errors
 pnpm build      # production build to dist/
-pnpm preview    # run the built site in workerd via wrangler
+pnpm preview    # cf dev (delegates to astro dev; no asset layer)
 pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
@@ -167,8 +167,8 @@ public/fonts/     Self-hosted woff2, Latin + Latin Extended
 
 Almost every route is prerendered and served straight from static assets. The four
 blog routes under `/adventures` are not: they read Sanity per request, so publishing
-a post is live without a rebuild. That one exception is why `wrangler.jsonc` has a
-`main` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
+a post is live without a rebuild. That one exception is why `cloudflare.config.ts` has an
+`entrypoint` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
 a file in this repo. `@astrojs/cloudflare` emits the static tree to `dist/client` and
 the server bundle to `dist/server`.
 
@@ -180,9 +180,10 @@ Three things about that split bite, and all three cost real debugging time:
   routes listed in `assets.run_worker_first`, `/adventures` 404s for every real
   visitor while `curl` returns a clean 200 from the same URL. Always test navigation
   with the header set.
-- **The adapter bakes the assets config into `dist/server/wrangler.json` at build
-  time,** and that is what takes effect. Editing `wrangler.jsonc` alone changes
-  nothing until `pnpm build` runs again — including under `wrangler dev`.
+- **The assets config is baked in at build time.** `cloudflare.config.ts`
+  (`worker.assets`) is the Cloudflare CLI (`cf`) config and replaces
+  `wrangler.jsonc`; `cf build` writes it to `.cloudflare/output/`. Editing it
+  changes nothing until the build runs again.
 - **`session: false`** in `astro.config.mjs`. With a server entrypoint the adapter
   otherwise declares a KV binding for Astro's session store, which then has to exist
   in Cloudflare before a deploy goes through. Nothing here has a session.
@@ -705,11 +706,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
     answers differently. This hid a blog that 404'd for every real visitor.
 15. **`<Image>` in anything the blog pages render.** See *The portrait* — it
     resolves to a `/_image` endpoint that does not exist on on-demand routes.
-16. **Editing `wrangler.jsonc` and re-running `wrangler dev`.** The adapter
-    baked the old assets config into `dist/server/wrangler.json`. Rebuild.
-17. **Auditing against `wrangler dev` after editing source.** It serves
-    `dist/`, so an un-rebuilt change measures the previous build and reports
-    the previous numbers. `astro dev` is the one that reflects an edit.
+16. **Editing `cloudflare.config.ts` without rebuilding.** The assets config is
+    baked into the build output. Rebuild.
+17. **`cf` rewrites `tsconfig.json`.** `cf build` adds
+    `.cloudflare/types/index.d.ts` to `include`, which breaks `pnpm check` with
+    three `ImageMetadata` errors in `Portrait.astro`. Revert that line.
 18. **Painting the blueprint grid in `--ink-*`.** See *Colour comes from
     `src/brand/`* — the ruling gets `--rule-*`, and re-coupling them is the
     site's worst contrast regression, not a tint.
@@ -730,8 +731,8 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 Cloudflare's GitHub app deploys the Worker; the repo has no deploy workflow of
 its own, and adding one back would mean two things racing for the same Worker.
-To push a build by hand, `npx wrangler deploy` with `CLOUDFLARE_API_TOKEN` in
-the environment.
+To push a build by hand, `cf deploy` (or `pnpm deploy`) with `CLOUDFLARE_API_TOKEN`
+in the environment.
 
 ### CI (every push and PR)
 
@@ -759,7 +760,7 @@ touch, or a single antialiased pixel of a button's rim decides the button's
 score.
 
 It runs against `astro dev`, not the built Worker: it reads rendered pixels, so
-nothing it measures depends on the Workers asset layer, and `wrangler dev` does
+nothing it measures depends on the Workers asset layer, and a built-Worker server does
 not reliably survive a couple of minutes of browser-driven load. A server that
 dies mid-run is the one failure mode a gate must not have, which is why a
 navigation error is fatal there while a 5xx from an unreachable Sanity only

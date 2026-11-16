@@ -1,0 +1,17 @@
+# pnpm 11+ no longer reads the "pnpm" field in package.json.
+overrides:
+  "sharp@<0.35.5": "^0.35.5"
+  "undici@>=7.0.0 <7.30.1": "^7.30.1"
+  "undici@>=8.0.0 <8.12.2": "^8.12.2"
+  "zod@<4.6.6": "^4.6.6"
+
+# pnpm 12 holds back versions published within the release-age window. These two
+# are transitive and were published hours before the install.
+minimumReleaseAgeExclude:
+  - "@cloudflare/workers-types"
+  - "@testing-library/user-event"
+
+# Native binaries that need their postinstall to run.
+allowBuilds:
+  esbuild: true
+  workerd: true

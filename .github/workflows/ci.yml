@@ -17,7 +17,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 12
 
       # Astro 7 requires Node >= 22.12.
       - name: Setup Node.js
@@ -62,7 +62,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 12
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,7 +79,7 @@ jobs:
       # Served by `astro dev`, not the built Worker. This check reads rendered
       # pixels — the same components, the same CSS, the same per-request blog
       # routes — and nothing it measures depends on the Workers asset layer.
-      # `wrangler dev` does not survive a couple of minutes of browser-driven
+      # a built-Worker server does not survive a couple of minutes of browser-driven
       # load reliably, and a server that dies mid-run is the one failure mode a
       # gate must not have.
       #
@@ -108,7 +108,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 12
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
