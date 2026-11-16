@@ -29,7 +29,9 @@
     "fragments": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render",
     "fragments:check": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render -- --check",
     "verify:components:rs": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin parity",
-    "design-system": "python3 scripts/build-design-system.py",
+    "theme": "scripts/build-theme.sh",
+    "theme:check": "scripts/build-theme.sh --check",
+    "design-system":"python3 scripts/build-design-system.py",
     "design-system:check": "python3 scripts/build-design-system.py --check"
   },
   "dependencies": {
