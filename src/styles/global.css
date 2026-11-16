@@ -2582,27 +2582,6 @@ figcaption {
   margin-block-start: var(--space-8);
 }
 
-.work-list {
-  list-style: none;
-  padding: 0;
-  margin-block-start: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.work-list li {
-  padding: var(--space-4) var(--space-5);
-  border-inline-start: var(--mineral-weight) solid var(--mineral);
-}
-
-.work-list h3 {
-  font-family: var(--display);
-  font-size: 1.125rem;
-  font-weight: 500;
-  margin-block-end: var(--space-1);
-}
-
 /*
  * These are standalone heading links, not links inside a sentence, so the
  * WCAG 2.2 target-size inline exception does not apply — they carry the
@@ -2630,12 +2609,6 @@ figcaption {
   text-decoration-color: var(--mineral);
 }
 
-.work-list p {
-  font-size: 1.0625rem;
-  line-height: 1.55;
-  color: var(--ink-body);
-}
-
 .aside {
   max-width: var(--measure);
   margin-block-start: var(--space-7);
@@ -2645,10 +2618,11 @@ figcaption {
   color: var(--ink-body);
 }
 
-/* --- aptitudes & questions --- */
+/* --- cards: aptitudes, questions, and the work lists --- */
 
 .aptitudes,
-.questions {
+.questions,
+.work-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
   gap: var(--space-3);
@@ -2658,12 +2632,14 @@ figcaption {
 }
 
 .aptitudes li,
-.questions li {
+.questions li,
+.work-list li {
   padding: var(--space-5) var(--space-6);
 }
 
 .aptitudes h3,
-.questions h3 {
+.questions h3,
+.work-list h3 {
   font-family: var(--display);
   font-size: 1.125rem;
   font-weight: 500;
@@ -2680,17 +2656,23 @@ figcaption {
  * keeps the identity it had.
  */
 .aptitudes h3,
-.questions h3 {
+.questions h3,
+.work-list h3 {
   color: var(--ink);
   padding-block-end: 0.3rem;
   border-block-end: var(--mineral-weight) solid var(--mineral);
 }
 
 .aptitudes p,
-.questions p {
+.questions p,
+.work-list p {
   font-size: 1.0625rem;
   line-height: 1.55;
   color: var(--ink-body);
+}
+
+.work-list {
+  margin-block-start: var(--space-4);
 }
 
 /* --- deck --- */
