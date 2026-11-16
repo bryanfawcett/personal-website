@@ -6,10 +6,11 @@ overrides:
   "zod@<4.6.6": "^4.6.6"
 
 # pnpm 12 holds back versions published within the release-age window. These two
-# are transitive and were published hours before the install.
+# are transitive and were published hours before the install. Pinned to the exact
+# versions so later publishes still wait out the window; drop these once they age out.
 minimumReleaseAgeExclude:
-  - "@cloudflare/workers-types"
-  - "@testing-library/user-event"
+  - "@cloudflare/workers-types@5.20261116.1"
+  - "@testing-library/user-event@14.6.12"
 
 # Native binaries that need their postinstall to run.
 allowBuilds:

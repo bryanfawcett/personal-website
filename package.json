@@ -24,7 +24,7 @@
   "dependencies": {
     "@bundu/ui": "0.14.0",
     "@portabletext/to-html": "^6.0.0",
-    "astro": "^7.4.4-beta.0"
+    "astro": "^7.4.12"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
