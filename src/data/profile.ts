@@ -164,13 +164,16 @@ export interface NavItem {
   readonly labelKey: UiKey;
   /** Language-neutral path; `localizePath` adds the locale prefix. */
   readonly href: string;
+  /** In the slim header menu. Every page is in the footer; the header carries the few that matter most. */
+  readonly header: boolean;
 }
 
 export const NAV: readonly NavItem[] = [
-  { labelKey: 'nav.profile', href: '/' },
-  { labelKey: 'nav.experience', href: '/experience' },
-  { labelKey: 'nav.adventures', href: '/adventures' },
-  { labelKey: 'nav.origins', href: '/origins-with-perspective' },
-  { labelKey: 'nav.minerals', href: '/minerals' },
-  { labelKey: 'nav.book', href: '/book' },
+  { labelKey: 'nav.profile', href: '/', header: true },
+  { labelKey: 'nav.experience', href: '/experience', header: true },
+  { labelKey: 'nav.adventures', href: '/adventures', header: true },
+  { labelKey: 'nav.origins', href: '/origins-with-perspective', header: false },
+  { labelKey: 'nav.minerals', href: '/minerals', header: false },
+  { labelKey: 'nav.build', href: '/how-this-was-built', header: false },
+  { labelKey: 'nav.book', href: '/book', header: true },
 ];

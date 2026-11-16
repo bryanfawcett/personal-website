@@ -26,12 +26,13 @@ use components::{
 };
 
 /// The route a fragment is keyed by, and the path it is rendered for.
-const ROUTES: [(&str, &str); 7] = [
+const ROUTES: [(&str, &str); 8] = [
     ("home", "/"),
     ("experience", "/experience"),
     ("adventures", "/adventures"),
     ("origins-with-perspective", "/origins-with-perspective"),
     ("minerals", "/minerals"),
+    ("how-this-was-built", "/how-this-was-built"),
     ("book", "/book"),
     // Any page that is none of the above (the 404): nothing is current.
     ("none", "/__none__"),

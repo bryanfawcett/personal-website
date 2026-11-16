@@ -150,27 +150,38 @@
   "nav": [
     {
       "labelKey": "nav.profile",
-      "href": "/"
+      "href": "/",
+      "header": true
     },
     {
       "labelKey": "nav.experience",
-      "href": "/experience"
+      "href": "/experience",
+      "header": true
     },
     {
       "labelKey": "nav.adventures",
-      "href": "/adventures"
+      "href": "/adventures",
+      "header": true
     },
     {
       "labelKey": "nav.origins",
-      "href": "/origins-with-perspective"
+      "href": "/origins-with-perspective",
+      "header": false
     },
     {
       "labelKey": "nav.minerals",
-      "href": "/minerals"
+      "href": "/minerals",
+      "header": false
+    },
+    {
+      "labelKey": "nav.build",
+      "href": "/how-this-was-built",
+      "header": false
     },
     {
       "labelKey": "nav.book",
-      "href": "/book"
+      "href": "/book",
+      "header": true
     }
   ],
   "socials": {
