@@ -44,7 +44,7 @@ body {
   background: var(--sheet);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   line-height: 1.62;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -181,7 +181,7 @@ button {
 .blueprint {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: var(--z-raised);
   pointer-events: none;
   /*
    * `plus-lighter` rather than `multiply`: on a cyanotype the ruling is lighter
@@ -224,7 +224,7 @@ button {
 .schematics {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: var(--z-raised);
   pointer-events: none;
   /* Merged in from the component's own block, which declared it a second time. */
   color: var(--ink);
@@ -260,7 +260,7 @@ button {
 
 .page {
   position: relative;
-  z-index: 3;
+  z-index: var(--z-content);
 }
 
 /*
@@ -373,7 +373,7 @@ button {
    * next page to want an eyebrow gets the spacing without asking.
    */
   margin-block-end: var(--space-6);
-  gap: 0.875rem;
+  gap: var(--space-3-5);
   font-family: var(--mono);
   font-size: var(--label-lg);
   font-weight: var(--label-weight);
@@ -395,12 +395,12 @@ button {
 }
 
 .section-title {
-  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.125rem);
+  font-size: var(--text-fluid-section);
 }
 
 .lede {
   max-width: var(--measure-wide);
-  font-size: 1.1875rem;
+  font-size: var(--text-lede);
   line-height: 1.6;
   color: var(--ink-body);
 }
@@ -499,7 +499,7 @@ button {
   border: 1px solid var(--ink-hair);
   /* Mzizi: cards and panels take the `lg` radius, 14px. */
   border-radius: var(--radius-lg);
-  padding: 2.125rem 1.875rem 1.875rem;
+  padding: var(--space-7) var(--space-6-5) var(--space-6-5);
 }
 
 /*
@@ -528,11 +528,11 @@ button {
     var(--seg) 0 100% / 1px var(--corner) no-repeat,
     var(--seg) 100% 0 / 1px var(--corner) no-repeat,
     var(--seg) 100% 100% / 1px var(--corner) no-repeat;
-  transition: --corner 0.45s ease-out;
+  transition: --corner var(--motion-slow) ease-out;
 }
 
 .panel {
-  transition: border-color 0.2s ease-out;
+  transition: border-color var(--motion-normal) ease-out;
 }
 
 /* A card answers the pointer with a stronger hairline; a framed panel also
@@ -558,7 +558,7 @@ button {
   position: absolute;
   inset-block-start: -11px;
   inset-inline-start: 1.75rem;
-  z-index: 1;
+  z-index: var(--z-raised);
   padding: 2px 12px;
   border-radius: var(--radius-full);
   background: var(--sheet-raised);
@@ -572,13 +572,13 @@ button {
 }
 
 .panel :where(h2) {
-  font-size: 1.625rem;
-  margin-block-end: 0.625rem;
+  font-size: var(--text-title);
+  margin-block-end: var(--space-2-5);
 }
 
 .panel :where(h3) {
-  font-size: 1.25rem;
-  margin-block-end: 0.375rem;
+  font-size: var(--text-lede);
+  margin-block-end: var(--space-1-5);
 }
 
 /*
@@ -598,7 +598,7 @@ button {
 .panel :where(p) {
   /* A measure, not a column width: prose stops before it gets hard to track. */
   max-width: var(--measure);
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   line-height: 1.62;
   color: var(--ink-body);
 }
@@ -612,7 +612,7 @@ button {
  * 1.1rem from a flex gap; this is the same rhythm for the panels.
  */
 .panel :where(p + p) {
-  margin-block-start: 1.1rem;
+  margin-block-start: var(--space-4);
 }
 
 /*
@@ -637,7 +637,7 @@ button {
   gap: var(--space-2);
   list-style: none;
   padding: 0;
-  margin-block-start: 1.125rem;
+  margin-block-start: var(--space-4);
 }
 
 .chip {
@@ -670,7 +670,7 @@ button {
   border: 1.5px solid var(--brand);
   color: var(--on-brand);
   font-family: var(--sans);
-  font-size: 1rem;
+  font-size: var(--text-sm);
   /*
    * 700, not 600: dark text on river measures Lc 69.3, and APCA asks 16.5px
    * of weight 600 at that contrast but 15px of weight 700.
@@ -678,8 +678,8 @@ button {
   font-weight: 700;
   letter-spacing: 0.01em;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
 }
 
 .btn:hover {
@@ -698,11 +698,62 @@ button {
   border-color: var(--ink);
 }
 
+/*
+ * The remaining states. Each one draws the ink ring or changes the surface; none of
+ * them lifts the button or adds a shadow.
+ */
+.btn:active {
+  border-color: var(--ink);
+  background: color-mix(in oklab, var(--brand) 86%, var(--ink));
+}
+
+.btn.is-ghost:active {
+  background: var(--sheet-wash-light);
+}
+
+/* Disabled: a neutral surface and an ink-soft label, and it does not answer the pointer. */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background: var(--sheet-wash-light);
+  border-color: var(--ink-hair);
+  color: var(--ink-soft);
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled='true']:hover {
+  border-color: var(--ink-hair);
+}
+
+/* Loading: the button keeps its size, stops taking clicks, and shows a ring beside the label. */
+.btn[aria-busy='true'] {
+  cursor: progress;
+  pointer-events: none;
+}
+
+.btn[aria-busy='true']::after {
+  content: '';
+  flex: none;
+  width: 1em;
+  height: 1em;
+  margin-inline-start: var(--space-2);
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: var(--radius-full);
+  animation: btn-busy 0.8s linear infinite;
+}
+
+@keyframes btn-busy {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* A margin note in pencil, set at a slight angle. */
 .margin-note {
   font-family: var(--hand);
   color: var(--pencil);
-  font-size: 1.375rem;
+  font-size: var(--text-h3);
   line-height: 1.1;
   transform: rotate(-3deg);
 }
@@ -722,7 +773,7 @@ button {
   inset-block-start: -1.5rem;
   padding: 7px 14px;
   border: 2px solid var(--stamp);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   font-family: var(--mono);
   /*
    * Larger than a label, because of where it sits: angled across the panel's
@@ -730,7 +781,7 @@ button {
    * fill, and the hairline is four times the fill's luminance. 18px/700 is what
    * APCA asks for on the rule; on the fill it has room to spare.
    */
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   font-weight: 700;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -831,8 +882,8 @@ main {
   opacity: 0;
   transform: translateY(0.75rem);
   transition:
-    opacity 0.6s ease-out,
-    transform 0.6s ease-out;
+    opacity var(--motion-page) ease-out,
+    transform var(--motion-page) ease-out;
 }
 
 .reveal.is-visible {
@@ -869,18 +920,19 @@ main {
   position: absolute;
   inset-block-start: 0.5rem;
   inset-inline-start: 2rem;
-  z-index: 100;
+  z-index: var(--z-overlay);
   display: flex;
   align-items: center;
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
   background: var(--sheet-raised);
   border: 1.5px solid var(--ink);
+  border-radius: var(--radius-full);
   font-family: var(--mono);
   font-size: var(--label-lg);
   font-weight: var(--label-weight);
   transform: translateY(-200%);
-  transition: transform 0.2s ease-out;
+  transition: transform var(--motion-normal) ease-out;
 }
 
 .skip-link:focus-visible {
@@ -1025,7 +1077,7 @@ body:lang(zh) {
  */
 .margin-note:lang(zh) {
   font-family: var(--cjk);
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   line-height: 1.5;
 }
 
@@ -1112,7 +1164,7 @@ body:lang(zh) {
 .mzizi-header {
   position: sticky;
   inset-block-start: 0;
-  z-index: 40;
+  z-index: var(--z-header);
   background: var(--sheet);
   border-block-end: 1px solid var(--ink-hair);
 }
@@ -1129,7 +1181,7 @@ body:lang(zh) {
 .mzizi-header__brand {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: var(--space-2-5);
   min-height: 44px;
   flex-shrink: 0;
 }
@@ -1150,7 +1202,7 @@ body:lang(zh) {
 /* The name is the wordmark, so it is set as one: Noto Serif, bold. */
 .mzizi-header__name {
   font-family: var(--display);
-  font-size: 1.1875rem;
+  font-size: var(--text-lede);
   font-weight: 700;
   color: var(--ink);
 }
@@ -1190,22 +1242,26 @@ body:lang(zh) {
   min-height: 44px;
   padding-inline: var(--space-3);
   font-family: var(--sans);
-  font-size: 1rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--ink-soft);
   text-decoration: underline 2px transparent;
   text-underline-offset: 0.45em;
   transition:
-    color 0.15s ease,
-    text-decoration-color 0.15s ease;
+    color var(--motion-fast) ease,
+    text-decoration-color var(--motion-fast) ease;
 }
 
 .mzizi-header__link:hover {
   color: var(--ink);
+  /* A visible answer: a faint underline, so hover is not just a 6% change of opacity. The
+   * current page keeps the primary-coloured underline. */
+  text-decoration-color: var(--ink-faint);
 }
 
 /* The current page is ink, underlined in the primary: a mark under the word. */
-.mzizi-header__link.is-current {
+.mzizi-header__link.is-current,
+.mzizi-header__link[aria-current='page'] {
   color: var(--ink);
   text-decoration-color: var(--brand);
 }
@@ -1264,7 +1320,7 @@ body:lang(zh) {
 }
 
 /*
- * The phone row. Hidden on desktop; below 56rem it holds the navigation,
+ * The phone row. Hidden on desktop; below 68rem it holds the navigation,
  * scrolled sideways rather than folded into a menu. The links are pills so a
  * thumb has a 44px target, and the row's own scrollbar is hidden — the link
  * cut off at the edge is what says there is more.
@@ -1290,13 +1346,13 @@ body:lang(zh) {
   padding-inline: var(--space-3);
   border-radius: var(--radius-full);
   font-family: var(--sans);
-  font-size: 1rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   white-space: nowrap;
   color: var(--ink-soft);
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
 }
 
 .mzizi-header__chip:hover {
@@ -1304,7 +1360,8 @@ body:lang(zh) {
   background: var(--sheet-raised);
 }
 
-.mzizi-header__chip.is-current {
+.mzizi-header__chip.is-current,
+.mzizi-header__chip[aria-current='page'] {
   color: var(--ink);
   background: var(--sheet-wash-light);
 }
@@ -1329,7 +1386,12 @@ body:lang(zh) {
   }
 }
 
-@media (max-width: 56rem) {
+/*
+ * 68rem, not 56rem. Measured on the live site: between about 900px and 1090px the single
+ * bar had the brand name running into the first link and the last link into the language
+ * switcher. The two-row layout takes over wherever the one-row bar no longer fits.
+ */
+@media (max-width: 68rem) {
   .mzizi-header__nav,
   .mzizi-header__lang {
     display: none;
@@ -1356,7 +1418,7 @@ body:lang(zh) {
   .mzizi-header__row ul {
     width: max-content;
     min-width: min(67.5rem, 100% - 2rem);
-    margin-inline: 1rem;
+    margin-inline: var(--space-4);
   }
 }
 
@@ -1371,7 +1433,7 @@ body:lang(zh) {
   }
 
   .mzizi-header__name {
-    font-size: 1.0625rem;
+    font-size: var(--text-body);
   }
 
   .mzizi-header__actions {
@@ -1398,7 +1460,7 @@ body:lang(zh) {
   flex-shrink: 0;
   white-space: nowrap;
   min-height: 44px;
-  padding-inline: 0.875rem;
+  padding-inline: var(--space-3-5);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -1409,8 +1471,8 @@ body:lang(zh) {
   border-radius: var(--radius-full);
   padding-inline: var(--space-5);
   transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
+    color var(--motion-normal) ease,
+    border-color var(--motion-normal) ease;
 }
 
 /*
@@ -1437,13 +1499,13 @@ body:lang(zh) {
 
 .hero {
   position: relative;
-  padding-block: 2.125rem 3.5rem;
+  padding-block: var(--space-7) 3.5rem;
   text-align: center;
 }
 
 .hero__eyebrow {
   justify-content: center;
-  margin-block-end: 1.875rem;
+  margin-block-end: var(--space-6-5);
 }
 
 .stack {
@@ -1453,7 +1515,7 @@ body:lang(zh) {
   line-height: 0.92;
   letter-spacing: 0.01em;
   /* Noto Serif runs wider than the Cormorant this was sized for. */
-  font-size: clamp(2.75rem, 10vw, 6.5rem);
+  font-size: var(--text-fluid-display);
 }
 
 .stack__solid {
@@ -1499,8 +1561,8 @@ body:lang(zh) {
 
 .hero__sub {
   max-width: var(--measure);
-  margin: 1.625rem auto 0;
-  font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
+  margin: var(--space-6) auto 0;
+  font-size: var(--text-fluid-sub);
   font-style: italic;
   line-height: 1.5;
   color: var(--ink-soft);
@@ -1516,13 +1578,13 @@ body:lang(zh) {
   inset-block-start: 26%;
   max-width: 9.375rem;
   text-align: start;
-  font-size: 1.375rem;
+  font-size: var(--text-h3);
   transform: rotate(-4deg);
 }
 
 .hero__arrow {
   display: block;
-  font-size: 1.625rem;
+  font-size: var(--text-title);
   transform: rotate(20deg);
 }
 
@@ -1547,14 +1609,14 @@ body:lang(zh) {
 }
 
 .page-header__top .margin-note {
-  font-size: 1.3125rem;
+  font-size: var(--text-h3);
   transform: rotate(-2deg);
 }
 
 .page-header__title {
   font-family: var(--display);
   margin-block: var(--space-4) var(--space-4);
-  font-size: clamp(2.5rem, 1.6rem + 5vw, 4.5rem);
+  font-size: var(--text-fluid-page);
   font-weight: 700;
   text-transform: uppercase;
   line-height: 0.95;
@@ -1572,7 +1634,7 @@ body:lang(zh) {
 .portrait {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: var(--space-2-5);
   width: max-content;
   max-width: 100%;
 }
@@ -1618,7 +1680,7 @@ figcaption {
 }
 
 .card__name {
-  font-size: 1.75rem;
+  font-size: var(--text-title);
   font-weight: 700;
   line-height: 1.1;
 }
@@ -1634,7 +1696,7 @@ figcaption {
 }
 
 .card__roles {
-  margin-block-start: 1.125rem;
+  margin-block-start: var(--space-4);
   padding: 0;
   list-style: none;
   display: flex;
@@ -1649,7 +1711,7 @@ figcaption {
 
 .card__role {
   display: block;
-  font-size: 1rem;
+  font-size: var(--text-sm);
   color: var(--ink);
 }
 
@@ -1670,7 +1732,7 @@ figcaption {
   margin-block-start: var(--space-3);
   border-block-end: 1.5px dashed var(--ink-soft);
   font-family: var(--mono);
-  font-size: 0.9375rem;
+  font-size: var(--label);
   font-weight: 600;
   letter-spacing: 0.06em;
 }
@@ -1680,7 +1742,7 @@ figcaption {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.625rem;
+  gap: var(--space-2-5);
 }
 
 /*
@@ -1690,7 +1752,7 @@ figcaption {
  */
 .card__qr {
   width: 11rem;
-  padding: 0.625rem;
+  padding: var(--space-2-5);
   background: var(--color-cobalt-container);
   border: 1px solid var(--ink-faint);
   border-radius: var(--radius-md);
@@ -1747,7 +1809,7 @@ figcaption {
 .strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
+  gap: var(--space-6-5);
 }
 
 @media (max-width: 51rem) {
@@ -1758,7 +1820,7 @@ figcaption {
 
 /* Pinned by hand, so no two sit quite square to the sheet. */
 .strip .panel {
-  padding: 1.375rem 1.375rem 1.125rem;
+  padding: var(--space-5) var(--space-5) var(--space-4);
   color: var(--ink);
   transform: rotate(-0.4deg);
 }
@@ -1775,7 +1837,7 @@ figcaption {
   display: block;
   width: 100%;
   height: auto;
-  margin-block-end: 0.875rem;
+  margin-block-end: var(--space-3-5);
 }
 
 .caption {
@@ -1797,7 +1859,7 @@ figcaption {
  */
 .mzizi-footer {
   position: relative;
-  z-index: 3;
+  z-index: var(--z-content);
   margin-block-start: var(--space-9);
   background: var(--sheet-wash);
   border-block-start: 1px solid var(--ink-hair);
@@ -1843,7 +1905,7 @@ figcaption {
 
 .mzizi-footer__wordmark {
   font-family: var(--display);
-  font-size: 1.375rem;
+  font-size: var(--text-h3);
   font-weight: 600;
   color: var(--ink);
 }
@@ -1851,7 +1913,7 @@ figcaption {
 .mzizi-footer__tagline {
   max-width: 22rem;
   margin-block-start: var(--space-3);
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   font-style: italic;
   line-height: 1.6;
   color: var(--ink-soft);
@@ -1877,14 +1939,23 @@ figcaption {
   display: flex;
   align-items: center;
   min-height: 44px;
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   color: var(--ink-soft);
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 0.25em;
   transition:
-    color 0.15s ease,
-    text-decoration-color 0.15s ease;
+    color var(--motion-fast) ease,
+    text-decoration-color var(--motion-fast) ease;
+}
+
+/* The current page, marked as the header marks it: ink, underlined in the primary. */
+.mzizi-footer__link[aria-current='page'] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--brand);
+  text-decoration-thickness: var(--mineral-weight);
+  text-underline-offset: 0.25em;
 }
 
 .mzizi-footer__link:hover {
@@ -1904,7 +1975,7 @@ figcaption {
 }
 
 .mzizi-footer__copy {
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   color: var(--ink-soft);
 }
 
@@ -1918,7 +1989,7 @@ figcaption {
 
 .mzizi-footer__dots {
   display: flex;
-  gap: 0.375rem;
+  gap: var(--space-1-5);
 }
 
 .mzizi-footer__dots span {
@@ -1943,11 +2014,11 @@ figcaption {
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
-  margin-block-end: 2.125rem;
+  margin-block-end: var(--space-7);
 }
 
 .section-head .margin-note {
-  font-size: 1.3125rem;
+  font-size: var(--text-h3);
   transform: rotate(-2deg);
 }
 
@@ -1955,7 +2026,7 @@ figcaption {
   display: grid;
   /* minmax(0, …): a plain 1fr will not shrink below its content at 320px. */
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1.75rem;
+  gap: var(--space-6-5);
 }
 
 .board--tight {
@@ -1963,17 +2034,17 @@ figcaption {
   margin-block: var(--space-5) var(--space-9);
 }
 
-.w6 {
+.col-6 {
   grid-column: span 6;
 }
 
-.w4 {
+.col-4 {
   grid-column: span 4;
 }
 
 @media (max-width: 51rem) {
-  .w6,
-  .w4 {
+  .col-6,
+  .col-4 {
     grid-column: span 12;
   }
 }
@@ -2007,7 +2078,7 @@ figcaption {
 }
 
 .quote blockquote {
-  font-size: clamp(1.375rem, 3.6vw, 2.0625rem);
+  font-size: var(--text-fluid-big);
   font-weight: 500;
   font-style: italic;
   line-height: 1.22;
@@ -2025,7 +2096,7 @@ figcaption {
 .quote__sig {
   display: inline-block;
   margin-block-start: var(--space-5);
-  font-size: 2.125rem;
+  font-size: var(--text-section);
   transform: rotate(-3deg);
 }
 
@@ -2033,7 +2104,7 @@ figcaption {
 @media (max-width: 51rem) {
   .quote {
     flex-direction: column;
-    gap: 1.75rem;
+    gap: var(--space-6-5);
     text-align: center;
   }
 
@@ -2048,7 +2119,7 @@ figcaption {
 .link-panel {
   display: block;
   padding: 1.75rem var(--space-6) 1.375rem;
-  transition: background-color 0.25s ease;
+  transition: background-color var(--motion-normal) ease;
 }
 
 /* The corner brackets carry the hover; the wash only deepens under it. */
@@ -2064,7 +2135,7 @@ figcaption {
   height: var(--mineral-weight);
   margin-block-start: var(--space-2);
   background: var(--mineral);
-  transition: width 0.25s ease;
+  transition: width var(--motion-normal) ease;
 }
 
 /*
@@ -2122,7 +2193,7 @@ figcaption {
 .systems {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: var(--space-6-5);
 }
 
 .system,
@@ -2177,13 +2248,13 @@ figcaption {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  padding-block-start: 0.3rem;
+  padding-block-start: var(--space-1);
 }
 
 .system__spec dd {
   margin: 0;
   max-width: var(--measure);
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   line-height: 1.62;
   color: var(--ink-body);
 }
@@ -2235,8 +2306,8 @@ figcaption {
   white-space: nowrap;
   color: var(--ink);
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
 }
 
 /* At 320px a no-wrap pill is wider than the column; let it wrap there. */
@@ -2267,12 +2338,12 @@ figcaption {
 }
 
 .connect h2 {
-  font-size: 2.125rem;
+  font-size: var(--text-section);
 }
 
 .connect__lede {
   max-width: var(--measure);
-  margin: 0.625rem auto 0;
+  margin: var(--space-2-5) auto 0;
 }
 
 .connect .connect__card {
@@ -2305,8 +2376,8 @@ figcaption {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
 }
 
 .socials a:hover {
@@ -2315,7 +2386,7 @@ figcaption {
 }
 
 .connect .btn {
-  margin-block-start: 1.625rem;
+  margin-block-start: var(--space-6);
 }
 
 /* --- ecosystem clusters --- */
@@ -2331,8 +2402,8 @@ figcaption {
 .cluster__label {
   display: flex;
   align-items: baseline;
-  gap: 0.875rem;
-  margin-block-start: 1.75rem;
+  gap: var(--space-3-5);
+  margin-block-start: var(--space-6-5);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -2384,7 +2455,7 @@ figcaption {
   display: grid;
   grid-template-columns: 13rem 1fr;
   gap: var(--space-6);
-  padding-block: 1.75rem;
+  padding-block: var(--space-6-5);
   border-block-end: 1px solid var(--ink-faint);
 }
 
@@ -2403,7 +2474,7 @@ figcaption {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.375rem;
+  gap: var(--space-1-5);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -2418,7 +2489,7 @@ figcaption {
  * carries the row's colour now, and the bullet markers below still do.
  */
 .schedule__ref {
-  font-size: 1.5rem;
+  font-size: var(--text-title);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -2428,13 +2499,13 @@ figcaption {
 }
 
 .schedule__title {
-  font-size: 1.4375rem;
+  font-size: var(--text-h3);
   font-weight: 600;
 }
 
 .schedule__company {
-  margin-block-start: 0.125rem;
-  font-size: 1.0625rem;
+  margin-block-start: var(--space-1);
+  font-size: var(--text-body);
   font-style: italic;
   color: var(--ink-soft);
 }
@@ -2445,9 +2516,9 @@ figcaption {
  * for, and they are the densest text on the page.
  */
 .schedule__points {
-  margin-block-start: 0.875rem;
-  padding-inline-start: 1.1rem;
-  font-size: 1.0625rem;
+  margin-block-start: var(--space-3-5);
+  padding-inline-start: var(--space-4);
+  font-size: var(--text-body);
   color: var(--ink-body);
 }
 
@@ -2475,7 +2546,7 @@ figcaption {
 }
 
 .credential h3 {
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
 }
 
 .credential__issuer {
@@ -2484,7 +2555,7 @@ figcaption {
 }
 
 .credential__period {
-  margin-block-start: 0.375rem;
+  margin-block-start: var(--space-1-5);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -2528,11 +2599,11 @@ figcaption {
 
 .prose {
   max-width: var(--measure);
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   line-height: 1.62;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: var(--space-4);
   color: var(--ink-body);
 }
 
@@ -2553,7 +2624,7 @@ figcaption {
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
   font-family: var(--display);
-  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+  font-size: var(--text-fluid-pull);
   /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
   font-weight: 400;
   color: var(--ink);
@@ -2586,7 +2657,7 @@ figcaption {
   inset-block-start: 0.35rem;
   width: 9px;
   height: 9px;
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   background: var(--mineral);
 }
 
@@ -2601,14 +2672,14 @@ figcaption {
 
 .journey__title {
   margin-block: 0.35rem var(--space-2);
-  font-size: 1.3125rem;
+  font-size: var(--text-h3);
   /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
   font-weight: 400;
 }
 
 .journey__body {
   max-width: var(--measure);
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   line-height: 1.58;
   color: var(--ink-body);
 }
@@ -2655,7 +2726,7 @@ figcaption {
   max-width: var(--measure);
   margin-block-start: var(--space-7);
   padding: var(--space-5) var(--space-6);
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   line-height: 1.58;
   color: var(--ink-body);
 }
@@ -2683,9 +2754,9 @@ figcaption {
 .questions h3,
 .work-list h3 {
   font-family: var(--display);
-  font-size: 1.125rem;
+  font-size: var(--text-card);
   font-weight: 500;
-  margin-block-end: 0.35rem;
+  margin-block-end: var(--space-1-5);
 }
 
 /*
@@ -2701,14 +2772,14 @@ figcaption {
 .questions h3,
 .work-list h3 {
   color: var(--ink);
-  padding-block-end: 0.3rem;
+  padding-block-end: var(--space-1);
   border-block-end: var(--mineral-weight) solid var(--mineral);
 }
 
 .aptitudes p,
 .questions p,
 .work-list p {
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   line-height: 1.55;
   color: var(--ink-body);
 }
@@ -2793,7 +2864,7 @@ figcaption {
   font-weight: var(--label-weight);
   letter-spacing: 0.16em;
   color: var(--ink-soft);
-  padding-block-start: 0.35rem;
+  padding-block-start: var(--space-1-5);
 }
 
 /* The segment itself, lifted off the rail and stood on end. */
@@ -2812,7 +2883,7 @@ figcaption {
  * whose subject is contrast cannot print its own key illegibly.
  */
 .key__body h3 {
-  font-size: 1.375rem;
+  font-size: var(--text-h3);
   text-transform: capitalize;
   color: var(--ink);
 }
@@ -2821,7 +2892,7 @@ figcaption {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--space-1) var(--space-4);
-  margin-block-start: 0.625rem;
+  margin-block-start: var(--space-2-5);
 }
 
 .key__body dt {
@@ -2831,12 +2902,12 @@ figcaption {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  padding-block-start: 0.3rem;
+  padding-block-start: var(--space-1);
 }
 
 .key__body dd {
   margin: 0;
-  font-size: 1.0625rem;
+  font-size: var(--text-body);
   color: var(--ink-body);
 }
 
@@ -2844,7 +2915,7 @@ figcaption {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.375rem;
+  gap: var(--space-1-5);
   font-family: var(--mono);
   font-size: var(--label);
   font-weight: var(--label-weight);
@@ -3020,8 +3091,8 @@ code {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 0 0 1.375rem;
-  transition: background-color 0.25s ease;
+  padding: 0 0 var(--space-5);
+  transition: background-color var(--motion-normal) ease;
 }
 
 .adventure-card:hover {
@@ -3039,7 +3110,7 @@ code {
   /* Same halved desaturation the portrait gets, so photographs belong to
      the drawing without the colour going out of them entirely. */
   filter: grayscale(0.45) contrast(1.04);
-  margin-block-end: 1.375rem;
+  margin-block-end: var(--space-5);
 }
 
 .adventure-card__body {
@@ -3068,7 +3139,7 @@ code {
 
 .adventure-card__title {
   margin-block-start: var(--space-2);
-  font-size: 1.375rem;
+  font-size: var(--text-h3);
 }
 
 /* The mineral bar, drawn out on hover — the same move the project panels make. */
@@ -3079,7 +3150,7 @@ code {
   height: var(--mineral-weight);
   margin-block-start: var(--space-2);
   background: var(--mineral);
-  transition: width 0.25s ease;
+  transition: width var(--motion-normal) ease;
 }
 
 .adventure-card:hover .adventure-card__title::after,
@@ -3088,7 +3159,7 @@ code {
 }
 
 .adventure-card__excerpt {
-  margin-block-start: 0.625rem;
+  margin-block-start: var(--space-2-5);
   color: var(--ink-body);
 }
 
@@ -3185,20 +3256,20 @@ code {
 .adventure__body p,
 .adventure__body ul,
 .adventure__body ol {
-  margin-block-end: 1.125rem;
-  font-size: 1.125rem;
+  margin-block-end: var(--space-4);
+  font-size: var(--text-card);
   line-height: 1.62;
   color: var(--ink-body);
 }
 
 .adventure__body h2 {
   margin-block: 2.25rem var(--space-3);
-  font-size: 1.5rem;
+  font-size: var(--text-title);
 }
 
 .adventure__body h3 {
   margin-block: 1.75rem var(--space-2);
-  font-size: 1.1875rem;
+  font-size: var(--text-lede);
 }
 
 .adventure__body ul,
@@ -3207,7 +3278,7 @@ code {
 }
 
 .adventure__body li {
-  margin-block-end: 0.375rem;
+  margin-block-end: var(--space-1-5);
 }
 
 /*
@@ -3222,7 +3293,7 @@ code {
   padding-inline-start: var(--space-6);
   border-inline-start: var(--mineral-weight) solid var(--mineral);
   font-family: var(--display);
-  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+  font-size: var(--text-fluid-pull);
   /* Noto Serif is vendored at 400 and up; Mzizi's lightest display weight. */
   font-weight: 400;
   line-height: 1.4;
@@ -3268,7 +3339,7 @@ code {
 }
 
 .adventure__body figcaption {
-  margin-block-start: 0.625rem;
+  margin-block-start: var(--space-2-5);
   padding-block-start: var(--space-2);
   border-block-start: 1px solid var(--ink-hair);
   font-family: var(--mono);
@@ -3330,11 +3401,86 @@ code {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: 0.875rem;
+  padding-inline: var(--space-3-5);
   border: 1px solid var(--ink-hair);
   color: var(--ink);
 }
 
 .options__zh a:hover {
   border-color: var(--ink-faint);
+}
+
+/* ==================== accessibility preferences ==================== */
+
+/*
+ * More contrast, when the reader asks for it.
+ *
+ * The contrast gate measures the default rendering, which already clears APCA; this is for a
+ * reader whose system says more. Hairlines become the stronger line, secondary text becomes
+ * ink, links underline heavier, and the focus ring thickens.
+ */
+@media (prefers-contrast: more) {
+  .panel,
+  .key .panel {
+    border-color: var(--ink-faint);
+  }
+
+  .btn.is-ghost {
+    border-color: var(--ink);
+  }
+
+  .eyebrow,
+  .caption,
+  .fig,
+  .link-panel__path,
+  .key__index,
+  .key__body dt,
+  .controls__count {
+    color: var(--ink);
+  }
+
+  a {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/*
+ * Forced colours (Windows High Contrast). The system replaces colour, so shape has to carry
+ * everything: every control and surface gets a real border, the focus ring is the system's
+ * Highlight, disabled is GrayText, and the mineral marks (decorative swatches, the footer
+ * strip and dots) keep their own colour because there is nothing else to tell them apart.
+ */
+@media (forced-colors: active) {
+  .panel,
+  .btn,
+  .lang,
+  .skip-link,
+  .mzizi-header__chip {
+    border: 1px solid CanvasText;
+  }
+
+  .btn {
+    border-color: ButtonText;
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  :focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .key__swatch,
+  .mzizi-footer__strip span,
+  .mzizi-footer__dots span {
+    forced-color-adjust: none;
+  }
 }

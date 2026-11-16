@@ -73,7 +73,7 @@ const book = localizePath('/book', lang);
     <div class="board">
       {
         audiences(lang).map((audience) => (
-          <Panel class="w4 audience" mineral={audience.mineral}>
+          <Panel class="col-4 audience" mineral={audience.mineral}>
             <h3>{audience.title}</h3>
             <p>{audience.body}</p>
           </Panel>
@@ -130,7 +130,7 @@ const book = localizePath('/book', lang);
     <ol class="board steps">
       {
         steps(lang).map((step, i) => (
-          <Panel as="li" class="w6" fig={`${t('home.steps_fig')} ${ref(i)}`}>
+          <Panel as="li" class="col-6" fig={`${t('home.steps_fig')} ${ref(i)}`}>
             <h3>{step.title}</h3>
             <p>{step.body}</p>
           </Panel>

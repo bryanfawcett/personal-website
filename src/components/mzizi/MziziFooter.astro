@@ -16,16 +16,25 @@
  */
 import { MINERALS } from '../../brand/minerals.js';
 import { NAV, PROFILE, socialsInLang } from '../../data/profile.js';
-import { localizePath } from '../../i18n/routing.js';
+import { localizePath, stripLang } from '../../i18n/routing.js';
 import { useTranslations, type Lang } from '../../i18n/ui.js';
 
 interface Props {
   lang: Lang;
   /** The drawing's sheet number, carried in the bottom bar as a title block would. */
   sheet?: string;
+  /** The current route, so the footer's own navigation marks where the reader is. */
+  path?: string;
 }
 
-const { lang, sheet = '01 / 06' } = Astro.props;
+const { lang, sheet = '01 / 06', path = '' } = Astro.props;
+const here = path ? stripLang(path) : '';
+
+/** `/` matches only itself; every other route also matches its children (as the header does). */
+function isCurrent(href: string): boolean {
+  if (!here) return false;
+  return href === '/' ? here === '/' : here === href || here.startsWith(`${href}/`);
+}
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 
@@ -33,12 +42,17 @@ interface FooterLink {
   label: string;
   href: string;
   external?: boolean;
+  current?: boolean;
 }
 
 const sections: { title: string; links: FooterLink[] }[] = [
   {
     title: t('footer.site'),
-    links: NAV.map((item) => ({ label: t(item.labelKey), href: localizePath(item.href, lang) })),
+    links: NAV.map((item) => ({
+      label: t(item.labelKey),
+      href: localizePath(item.href, lang),
+      current: isCurrent(item.href),
+    })),
   },
   {
     title: t('footer.ecosystem'),
@@ -92,6 +106,7 @@ const sections: { title: string; links: FooterLink[] }[] = [
                     <a
                       class="mzizi-footer__link"
                       href={link.href}
+                      aria-current={link.current ? 'page' : undefined}
                       target={link.external ? '_blank' : undefined}
                       rel={link.external ? 'noopener noreferrer' : undefined}
                       download={link.href.endsWith('.vcf') ? '' : undefined}

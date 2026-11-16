@@ -56,6 +56,10 @@ jobs:
       - name: Verify the stylesheet
         run: pnpm exec vp run verify:stylesheet
 
+      # The installable skill is generated from the site; fail if it has drifted.
+      - name: Design-system skill is current
+        run: pnpm exec vp run design-system:check
+
   contrast:
     name: APCA contrast
     runs-on: ubuntu-latest
