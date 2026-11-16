@@ -7,8 +7,8 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "vp exec astro dev",
-    "build": "vp exec astro build",
+    "dev": "vp run tokens && vp exec astro dev",
+    "build": "vp run tokens && vp exec astro build",
     "preview": "cf dev",
     "check": "vp exec astro check",
     "lint": "vp lint",
@@ -19,7 +19,10 @@
     "verify:stylesheet": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-stylesheet.mjs",
     "nav-portrait": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-nav-portrait.mjs",
     "cjk": "node scripts/build-cjk-subset.mjs",
-    "fmt": "vp fmt"
+    "fmt": "vp fmt",
+    "verify:images:rs": "cargo run -q --manifest-path tools/Cargo.toml -p verify-image-urls",
+    "verify:stylesheet:rs": "cargo run -q --manifest-path tools/Cargo.toml -p verify-stylesheet",
+    "tokens": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-tokens.mjs"
   },
   "dependencies": {
     "@bundu/ui": "0.14.0",

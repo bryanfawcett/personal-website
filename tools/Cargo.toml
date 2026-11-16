@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = ["verify-stylesheet", "verify-image-urls"]
+
+[workspace.package]
+edition = "2024"
+publish = false
+
+[workspace.dependencies]
+regex = "1"

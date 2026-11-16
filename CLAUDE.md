@@ -87,6 +87,9 @@ pnpm nav-portrait   # re-render the masthead portrait (same — only after it ch
 pnpm verify:images  # pin the hand-rolled Sanity image URL format
 pnpm verify:contrast # APCA: every text block, every route, desktop and phone
 pnpm verify:stylesheet # every var() resolves; no base rule outranks a class
+pnpm verify:images:rs     # Rust port of verify:images (needs `rustup`; see tools/)
+pnpm tokens         # regenerate src/styles/tokens.css from src/brand/tokens.ts
+pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stricter than the JS one
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
@@ -161,7 +164,7 @@ src/
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
   pages/          Thin wrappers: one per route per language, `zh/` for Chinese
   views/          The sheets themselves — one per route, both languages
-  styles/         fonts.css (generated), global.css
+  styles/         fonts.css and tokens.css (both generated), global.css
 bryans-adventures/  The blog's Sanity Studio. React, and NOT part of the build
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
@@ -173,8 +176,9 @@ Almost every route is prerendered and served straight from static assets. The fo
 blog routes under `/adventures` are not: they read Sanity per request, so publishing
 a post is live without a rebuild. That one exception is why `cloudflare.config.ts` has an
 `entrypoint` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
-a file in this repo. `@astrojs/cloudflare` emits the static tree to `dist/client` and
-the server bundle to `dist/server`.
+a file in this repo. `@astrojs/cloudflare` emits the static tree and the server bundle. With
+`cloudflare.config.ts` in place that is `.cloudflare/output/v0/workers/default/`
+(`assets/` and `bundle/`), not `dist/`.
 
 Three things about that split bite, and all three cost real debugging time:
 
@@ -849,3 +853,16 @@ For context, the broader ecosystem uses:
 - **Payments:** Stripe
 - **Deployment:** Cloudflare Workers
 - **Brand system:** Mzizi (mzizi.dev)
+
+### Tokens are a generated file
+
+`src/styles/tokens.css` is written by `pnpm tokens` from `src/brand/tokens.ts` and
+inlined by `BaseLayout` (`?raw`). `dev` and `build` regenerate it, and CI fails if
+the committed copy is stale (`pnpm tokens --check`). It exists so tools that are not
+TypeScript, the Rust verifiers, can read the same CSS the page ships. Edit
+`tokens.ts`, never `tokens.css`.
+
+`verify:stylesheet:rs` parses the CSS rather than matching lines, and is stricter
+than the JS script: that one only checks the last selector of a multi-line selector
+list, so `.panel a,` followed by `.other {` slipped past its base-rule check. The JS
+script stays until the Rust one has run in CI for a while.

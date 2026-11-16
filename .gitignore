@@ -34,3 +34,6 @@ yarn-error.log*
 
 # cf generated output
 .cloudflare/
+
+# rust tools
+tools/target/

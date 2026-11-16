@@ -9,7 +9,8 @@ import '@bundu/ui/styles/color-scheme.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
-import { SHEET, SHEET_LIGHT, tokensToCss } from '../brand/tokens.js';
+import { SHEET, SHEET_LIGHT } from '../brand/tokens.js';
+import tokensCss from '../styles/tokens.css?raw';
 import { unroll } from '../brand/transitions.js';
 import MineralStrip from '@bundu/ui/MineralStrip.astro';
 import Schematics from '../components/Schematics.astro';
@@ -243,8 +244,8 @@ const jsonLd = {
       crossorigin
     />
 
-    {/* Design tokens, generated from src/brand/tokens.ts at build time. */}
-    <style is:global set:html={tokensToCss()}></style>
+    {/* Design tokens: src/styles/tokens.css, generated from src/brand/tokens.ts by `pnpm tokens`. */}
+    <style is:global set:html={tokensCss}></style>
 
     <script is:inline>
       // Flip off the no-JS fallback before first paint so revealed sections
