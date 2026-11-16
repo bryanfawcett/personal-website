@@ -13,6 +13,12 @@ use components::{
     footer::footer,
     lang_switcher::language_switcher,
     page_header::page_header,
+    contact_card::ContactCard,
+    header::header,
+    hero::Hero,
+    portrait::Portrait,
+    schematics::schematics,
+    workshop_strip::workshop_strip,
     panel::{Panel, Tag},
     site::{Lang, Site},
 };
@@ -173,6 +179,80 @@ fn main() {
             if a == b { println!("✓ panel {name}"); } else {
                 failures += 1; println!("✗ panel {name}"); for d in diff(&a, &b, 4) { println!("{d}"); }
             }
+        }
+
+        // The six remaining components, each rebuilt from what its shipped markup carries.
+        let attr = |e: &scraper::ElementRef, a: &str| e.value().attr(a).map(str::to_string);
+        let sub = |e: &scraper::ElementRef, css: &str| Selector::parse(css).ok().and_then(|s| e.select(&s).next().map(|x| x.html()));
+        let one = |css: &str| Selector::parse(css).unwrap();
+        let report = |what: &str, a: String, b: String, extra: &mut i32, failures: &mut i32| {
+            let (a, b) = (normalize(&a), normalize(&b));
+            *extra += 1;
+            if a == b { println!("✓ {what} {name}"); } else {
+                *failures += 1; println!("✗ {what} {name}"); for d in diff(&a, &b, 4) { println!("{d}"); }
+            }
+        };
+
+        for el in doc.select(&one("div.schematics")) { report("schematics", el.html(), schematics().into_string(), &mut extra, &mut failures); }
+        for el in doc.select(&one("section.strip")) { report("workshop strip", el.html(), workshop_strip(&site, lang).into_string(), &mut extra, &mut failures); }
+
+        let portrait_of = |fig: &scraper::ElementRef| -> Option<(String, String, u32, u32, Option<String>, bool, String)> {
+            let img = fig.select(&one("img")).next()?;
+            let cap = fig.select(&one("figcaption")).next().map(|c| c.text().collect::<String>());
+            let class = fig.value().classes().filter(|c| *c != "portrait").collect::<Vec<_>>().join(" ");
+            Some((
+                attr(&img, "src")?, attr(&img, "srcset")?,
+                attr(&img, "width")?.parse().ok()?, attr(&img, "height")?.parse().ok()?,
+                cap, attr(&img, "loading").as_deref() == Some("eager"), class,
+            ))
+        };
+        let build_portrait = |t: &(String, String, u32, u32, Option<String>, bool, String)| Portrait {
+            src: &t.0, srcset: &t.1, width: t.2, height: t.3, caption: t.4.as_deref(), eager: t.5,
+            class: Some(&t.6), lang,
+        }.render(&site).into_string();
+
+        for fig in doc.select(&one("figure.portrait")) {
+            if let Some(t) = portrait_of(&fig) { report("portrait", fig.html(), build_portrait(&t), &mut extra, &mut failures); }
+        }
+        for card in doc.select(&one("div.card")) {
+            let Some(fig) = card.select(&one("figure.portrait")).next() else { continue };
+            let Some(t) = portrait_of(&fig) else { continue };
+            let class = card.value().classes().filter(|c| *c != "card").collect::<Vec<_>>().join(" ");
+            let qr = |css: &str| card.select(&one(css)).next().map(|e| e.inner_html()).unwrap_or_default();
+            let (dark, light) = (qr(".card__qr--dark"), qr(".card__qr--light"));
+            let rust = ContactCard {
+                portrait: Portrait { src: &t.0, srcset: &t.1, width: t.2, height: t.3, caption: t.4.as_deref(), eager: t.5, class: Some(&t.6), lang },
+                class: Some(&class), qr_dark: &dark, qr_light: &light, lang,
+            }.render(&site).into_string();
+            report("contact card", card.html(), rust, &mut extra, &mut failures);
+        }
+
+        for el in doc.select(&one("header.hero")) {
+            let text = |css: &str| el.select(&one(css)).next().map(|e| e.text().collect::<String>());
+            let spans: Vec<String> = el.select(&one("h1.stack span")).map(|e| e.text().collect()).collect();
+            let note = el.select(&one(".hero__note")).next().map(|n| {
+                n.inner_html().replace("<span class=\"hero__arrow\">↴</span>", "").replace("<br>", "\n")
+            });
+            let actions = sub(&el, ".hero__actions").map(|_| {
+                maud::PreEscaped(el.select(&one(".hero__actions")).next().map(|a| a.inner_html()).unwrap_or_default())
+            });
+            let rust = Hero {
+                solid: spans.first().map(String::as_str).unwrap_or(""), drafted: spans.get(1).map(String::as_str).unwrap_or(""),
+                eyebrow: &text(".hero__eyebrow").unwrap_or_default(),
+                sub: text(".hero__sub").as_deref(), note: note.as_deref(),
+                dimension: &text(".dimension__label").unwrap_or_default(),
+                show_byline: el.select(&one(".hero__byline")).next().is_some(), lang,
+            }.render(&site, actions).into_string();
+            report("hero", el.html(), rust, &mut extra, &mut failures);
+        }
+
+        for el in doc.select(&one("header[data-slot=\"mzizi-header\"]")) {
+            let href = el.select(&one("a.lang")).next().and_then(|a| attr(&a, "href")).unwrap_or_default();
+            let path = components::site::strip_lang(&href);
+            // The route the page passed: whichever link the header marked current.
+            let here = el.select(&one("a[aria-current=\"page\"]")).next().and_then(|a| attr(&a, "href")).unwrap_or(path);
+            let rust = header(&site, lang, &here, Some(&href)).into_string();
+            report("header", el.html(), rust, &mut extra, &mut failures);
         }
     }
     println!("{extra} further components compared");
