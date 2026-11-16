@@ -37,3 +37,4 @@ yarn-error.log*
 
 # rust tools
 tools/target/
+.playwright-mcp/

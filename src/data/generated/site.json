@@ -1,0 +1,57 @@
+{
+  "_generated": "by scripts/export-site-data.mjs from src/data and src/brand. Do not edit.",
+  "profile": {
+    "name": "Bryan Fawcett",
+    "title": "Digital Craftsman",
+    "email": "bryan@nyuchi.com",
+    "location": "Singapore",
+    "tagline": "I craft dynamic ecosystems that unite and empower communities.",
+    "roles": [
+      {
+        "title": "Founder & CEO",
+        "org": "Nyuchi Africa"
+      },
+      {
+        "title": "Founder",
+        "org": "The Bundu Foundation"
+      },
+      {
+        "title": "Associate Technology & Innovation Coordinator",
+        "org": "Singapore American School"
+      }
+    ],
+    "socials": [
+      {
+        "name": "LinkedIn",
+        "handle": "bryandavidfawcett",
+        "href": "https://www.linkedin.com/in/bryandavidfawcett/"
+      },
+      {
+        "name": "GitHub",
+        "handle": "bryanfawcett",
+        "href": "https://github.com/bryanfawcett/"
+      },
+      {
+        "name": "Twitter",
+        "handle": "@bryanfawcett",
+        "href": "https://x.com/bryanfawcett"
+      },
+      {
+        "name": "Email",
+        "handle": "bryan@nyuchi.com",
+        "href": "mailto:bryan@nyuchi.com"
+      }
+    ]
+  },
+  "booking_url": "https://cal.com/bryanfawcett/book-a-call",
+  "qr": {
+    "dark": {
+      "dark": "#F0EFE9",
+      "light": "#001F3F"
+    },
+    "light": {
+      "dark": "#1A1A17",
+      "light": "#FFFFFF"
+    }
+  }
+}

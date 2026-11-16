@@ -32,6 +32,9 @@ jobs:
       - name: Generated tokens are committed
         run: pnpm tokens --check
 
+      - name: Generated site data is committed
+        run: pnpm site-data --check
+
       - name: Type check
         run: pnpm exec vp run check
 
