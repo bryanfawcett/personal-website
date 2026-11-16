@@ -147,17 +147,19 @@ export const MARKS = {
 } as const;
 
 /**
- * Line-length caps.
+ * Line length: text fills its container.
  *
- * Measured, not guessed. Cormorant is an unusually narrow face — about 6.8px
- * per character at 18px — so a 37rem column runs to 87 characters, well past
- * the 45-85 that stays comfortable to track. Anything holding running prose
- * takes `--measure`; larger type takes `--measure-wide`, which is the same
- * character count at a bigger size.
+ * These were caps once (33rem and 28rem, from a readability pass that held a line to
+ * 45-85 characters), and every lede, paragraph, pull quote and aside stopped about
+ * halfway across the column, leaving the right half of each section empty. The
+ * owner's call is that text spans the full width of its container, so both tokens are
+ * `100%`. They stay tokens rather than being deleted: everything that holds running
+ * prose still reads `--measure` (and larger type `--measure-wide`), so a cap, if one
+ * is ever wanted again, is one edit here and not a hunt through the stylesheet.
  */
 export const MEASURE = {
-  base: '33rem',
-  wide: '28rem',
+  base: '100%',
+  wide: '100%',
 } as const;
 
 /**

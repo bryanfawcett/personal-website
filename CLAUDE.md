@@ -409,6 +409,12 @@ read as a card floating over the sheet instead of part of it.
 
 ### Measure is a token, not a guess
 
+> **Current decision (16 November 2026): text fills its container.** `--measure` and
+> `--measure-wide` are both `100%`. The owner found every lede, paragraph and pull quote
+> stopping halfway across its column. The reasoning below is the readability case for a
+> cap and is kept because the tokens are still how a cap would be reintroduced: one edit
+> to `MEASURE` in `tokens.ts`. Expect 100+ characters per line at desktop width.
+
 A column that *looks* right is routinely wrong, and by a different amount for
 each face: Cormorant ran about 6.8px per character at 18px and IBM Plex Serif
 about 8.9px (both since replaced by Noto), so the same 33rem holds 77 characters of the one and 58 of the

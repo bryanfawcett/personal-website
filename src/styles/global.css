@@ -1498,7 +1498,7 @@ body:lang(zh) {
 }
 
 .hero__sub {
-  max-width: 35rem;
+  max-width: var(--measure);
   margin: 1.625rem auto 0;
   font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
   font-style: italic;
@@ -2262,7 +2262,7 @@ figcaption {
 }
 
 .connect__lede {
-  max-width: 32.5rem;
+  max-width: var(--measure);
   margin: 0.625rem auto 0;
 }
 

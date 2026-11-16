@@ -257,9 +257,9 @@ export const ui = {
     'minerals.why_p2':
       'That provenance is the point. Cobalt out of Katanga is in the phone you are reading this on. Naming the link colour after it is a small refusal to treat the material as abstract.',
     'minerals.why_p3_before': 'Mzizi is a ',
-    'minerals.why_p3_nyuchi': 'nyuchi',
+    'minerals.why_p3_bundu': 'Bundu',
     'minerals.why_p3_mid':
-      ' project in the Bundu ecosystem, built on the Ubuntu principle that gives the whole thing its shape — ',
+      ' project: a research programming language, and the brand system the whole ecosystem is built on, resting on the Ubuntu principle that gives it its shape — ',
     'minerals.why_p3_ubuntu': 'I am because we are',
     'minerals.why_p3_after': '. Its brand system, tokens and accessibility toolkit are at ',
     'minerals.why_p3_end': '.',
@@ -554,9 +554,9 @@ export const ui = {
       '以整片非洲大陆所产的矿物为色彩命名，并保留其来处：这块石头产自哪里、代表什么、在界面中派什么用场。',
     'minerals.why_p2':
       '这份来处正是关键所在。产自加丹加的钴，就在你此刻阅读本文的手机里。以它命名链接的颜色，是一种小小的拒绝——拒绝把材料当作抽象之物。',
-    'minerals.why_p3_before': 'Mzizi 是 Bundu 生态中的一个 ',
-    'minerals.why_p3_nyuchi': 'nyuchi',
-    'minerals.why_p3_mid': ' 项目，建立在赋予这一切形态的乌班图（Ubuntu）原则之上——',
+    'minerals.why_p3_before': 'Mzizi 是一个 ',
+    'minerals.why_p3_bundu': 'Bundu',
+    'minerals.why_p3_mid': ' 项目——一门研究型编程语言，也是整个生态所依托的品牌系统，建立在赋予这一切形态的乌班图（Ubuntu）原则之上——',
     'minerals.why_p3_ubuntu': '我在，因为我们在',
     'minerals.why_p3_after': '。它的品牌系统、设计令牌与无障碍工具包，都在 ',
     'minerals.why_p3_end': '。',
