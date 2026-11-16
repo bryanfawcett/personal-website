@@ -37,14 +37,30 @@ pub struct Socials {
     pub zh: Vec<Social>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+pub struct Role {
+    pub title: String,
+    pub org: String,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ProfileName {
     pub name: String,
+    pub title: String,
+    pub email: String,
+    pub roles: Vec<Role>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProfileZh {
+    pub title: String,
+    pub roles: Vec<Role>,
 }
 
 #[derive(Debug, Deserialize)]
 struct SiteFile {
     profile: ProfileName,
+    profile_zh: ProfileZh,
     nav: Vec<NavItem>,
     socials: Socials,
     minerals: Vec<String>,
@@ -55,6 +71,11 @@ type Dict = HashMap<String, String>;
 /// Everything a component needs from the site, loaded once.
 pub struct Site {
     pub name: String,
+    pub email: String,
+    title_en: String,
+    title_zh: String,
+    roles_en: Vec<Role>,
+    roles_zh: Vec<Role>,
     pub nav: Vec<NavItem>,
     pub socials: Socials,
     pub minerals: Vec<String>,
@@ -76,6 +97,11 @@ impl Site {
         let ui: HashMap<String, Dict> = serde_json::from_str(&generated("ui.json")).expect("ui.json shape");
         Site {
             name: site.profile.name,
+            email: site.profile.email,
+            title_en: site.profile.title,
+            title_zh: site.profile_zh.title,
+            roles_en: site.profile.roles,
+            roles_zh: site.profile_zh.roles,
             nav: site.nav,
             socials: site.socials,
             minerals: site.minerals,
@@ -94,6 +120,22 @@ impl Site {
         dict.get(key)
             .or_else(|| self.en.get(key))
             .unwrap_or_else(|| panic!("no UI string for key `{key}`"))
+    }
+
+    /// `profileInLang(lang).title`.
+    pub fn title(&self, lang: Lang) -> &str {
+        match lang {
+            Lang::En => &self.title_en,
+            Lang::Zh => &self.title_zh,
+        }
+    }
+
+    /// `profileInLang(lang).roles`.
+    pub fn roles(&self, lang: Lang) -> &[Role] {
+        match lang {
+            Lang::En => &self.roles_en,
+            Lang::Zh => &self.roles_zh,
+        }
     }
 
     pub fn socials(&self, lang: Lang) -> &[Social] {

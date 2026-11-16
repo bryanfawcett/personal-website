@@ -901,7 +901,7 @@ finds the component as Astro shipped it in the built pages, reads the render's i
 compares both as canonical HTML (attribute and class order and whitespace are ignored;
 elements, attribute values and text must match). It exits non-zero on any difference and
 prints the first differing lines. A port is not done until it passes on every page in both
-languages. Ported so far: `MziziFooter`, `LanguageSwitcher`, `PageHeader` and the `Panel` primitive (a typed `Tag` enum and the `data-mineral` contract). Mzizi's own Rust primitives are Dioxus with Tailwind class strings, which this site does not run; we port against the contract (see mzizi-dev/mzizi-registry#702).
+languages. Ported so far, all ten components: `MziziFooter`, `MziziHeader`, `LanguageSwitcher`, `PageHeader`, `Hero`, `Portrait`, `ContactCard`, `WorkshopStrip`, `Schematics` and the `Panel` primitive (a typed `Tag` enum and the `data-mineral` contract). Mzizi's own Rust primitives are Dioxus with Tailwind class strings, which this site does not run; we port against the contract (see mzizi-dev/mzizi-registry#702).
 
 ### The design system is a skill, generated from the site
 

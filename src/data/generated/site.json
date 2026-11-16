@@ -43,6 +43,23 @@
       }
     ]
   },
+  "profile_zh": {
+    "title": "数字工匠",
+    "roles": [
+      {
+        "title": "创始人兼首席执行官",
+        "org": "Nyuchi Africa"
+      },
+      {
+        "title": "创始人",
+        "org": "The Bundu Foundation"
+      },
+      {
+        "title": "技术与创新协调员（副职）",
+        "org": "Singapore American School"
+      }
+    ]
+  },
   "origins_work": {
     "heading": "What I’m working on",
     "lede": "Three strands of the same question — one inside a school, one in research, one across a continent.",

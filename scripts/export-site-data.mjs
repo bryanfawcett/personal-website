@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { BOOKING_URL } from '../src/data/booking.ts';
 import { bunduWork, nyuchiWork, schoolWork } from '../src/data/origins.ts';
-import { NAV, PROFILE, socialsInLang } from '../src/data/profile.ts';
+import { NAV, PROFILE, profileInLang, socialsInLang } from '../src/data/profile.ts';
 import { ui as UI, useTranslations } from '../src/i18n/ui.ts';
 import { MINERALS, mineral } from '../src/brand/minerals.ts';
 import { INK, INK_LIGHT, SHEET_LIGHT } from '../src/brand/tokens.ts';
@@ -35,6 +35,11 @@ const site = {
     roles: PROFILE.roles.map(({ title, org }) => ({ title, org })),
     socials: PROFILE.socials.map(({ name, handle, href }) => ({ name, handle, href })),
   },
+  // The localised descriptive lines, for the Rust components (name, email and socials do not change).
+  profile_zh: (() => {
+    const p = profileInLang('zh');
+    return { title: p.title, roles: p.roles.map(({ title, org }) => ({ title, org })) };
+  })(),
   // The Origins page's "What I'm working on", in English, so the deck's work slide
   // is built from the same records and strings and the two cannot drift.
   origins_work: {
