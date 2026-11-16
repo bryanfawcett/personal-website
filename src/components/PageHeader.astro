@@ -1,4 +1,6 @@
 ---
+import { fill, fragment, splitSlot } from './fragments.js';
+
 interface Props {
   eyebrow: string;
   title: string;
@@ -14,15 +16,17 @@ interface Props {
 }
 
 const { eyebrow, title, lede, note } = Astro.props;
+
+/* Rust renders the header (`tools/components/src/page_header.rs`): one fragment per
+   combination of lede and note, with the page's own children slotted at `%SLOT%`. */
+const [head, tail] = splitSlot(
+  fill(fragment(`page-header.${lede ? 'l' : ''}${note ? 'n' : ''}`), {
+    EYEBROW: eyebrow,
+    TITLE: title,
+    LEDE: lede ?? '',
+    NOTE: note ?? '',
+  }),
+);
 ---
 
-<header class="page-header">
-  <div class="page-header__top">
-    <p class="eyebrow is-open">{eyebrow}</p>
-    {note && <span class="margin-note">{note}</span>}
-  </div>
-  <h1 class="page-header__title">{title}</h1>
-  {lede && <p class="lede">{lede}</p>}
-  <slot />
-</header>
-
+<Fragment set:html={head} /><slot /><Fragment set:html={tail} />

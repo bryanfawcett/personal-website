@@ -54,7 +54,7 @@ const site = {
   },
   // What the shared chrome (header, footer) reads, so the Rust components render
   // it from data rather than from a copy of the TypeScript.
-  nav: NAV.map(({ labelKey, href }) => ({ labelKey, href })),
+  nav: NAV.map(({ labelKey, href, header }) => ({ labelKey, href, header })),
   socials: {
     en: socialsInLang('en').map(({ name, href }) => ({ name, href })),
     zh: socialsInLang('zh').map(({ name, href }) => ({ name, href })),
