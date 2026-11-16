@@ -11,9 +11,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
 import { MINERALS } from '../brand/minerals.js';
+import { EXPERIMENTAL, HERITAGE, colorVar } from '../brand/palette.js';
 import { SHEET } from '../brand/tokens.js';
 import { rating, ratio } from '../brand/contrast.js';
-import { MINERALS_ZH } from '../data/minerals-i18n.js';
+import { EXPERIMENTAL_ZH, HERITAGE_ZH, MINERALS_ZH } from '../data/minerals-i18n.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -45,6 +46,86 @@ const rows = MINERALS.map((m) => {
     grade: rating(Number.parseFloat(ratio(m.hex, SHEET.base))),
   };
 });
+
+/**
+ * The sets after the minerals, as data.
+ *
+ * A set is a heading, a lede and its families; what a family carries (an
+ * origin, a meaning, a use) is optional, because the sets do not all have the
+ * same provenance and the page should not pretend they do. Adding a set is an
+ * entry here and its strings in `ui.ts`, not new markup.
+ *
+ * Swatches read the `--color-<name>` token, never a hex, and every figure is
+ * measured on the sheet exactly as the minerals' are.
+ */
+interface Family {
+  name: string;
+  label: string;
+  token: string;
+  hex: string;
+  fields: { term: string; value: string }[];
+  onSheet: string;
+  grade: string;
+}
+
+interface PaletteSet {
+  id: string;
+  eyebrow: string;
+  note: string;
+  heading: string;
+  lede: string;
+  /** A compact grid for sets that carry colour and nothing else. */
+  compact: boolean;
+  families: Family[];
+}
+
+const measured = (hex: string) => ({
+  onSheet: ratio(hex, SHEET.base),
+  grade: rating(Number.parseFloat(ratio(hex, SHEET.base))),
+});
+
+const SETS: PaletteSet[] = [
+  {
+    id: 'heritage',
+    eyebrow: t('minerals.heritage_eyebrow'),
+    note: t('minerals.heritage_note'),
+    heading: t('minerals.heritage_heading'),
+    lede: t('minerals.heritage_lede'),
+    compact: false,
+    families: HERITAGE.map((h) => {
+      const gloss = HERITAGE_ZH[h.name];
+      const zh = lang === 'zh';
+      return {
+        name: h.name,
+        label: zh ? gloss.label : h.name,
+        token: colorVar(h.name),
+        hex: h.darkHex,
+        fields: [
+          { term: t('minerals.key_means'), value: zh ? gloss.symbolism : h.symbolism },
+          { term: t('minerals.key_named'), value: zh ? gloss.origin : h.origin },
+          { term: t('minerals.key_used'), value: zh ? gloss.usage : h.usage },
+        ],
+        ...measured(h.darkHex),
+      };
+    }),
+  },
+  {
+    id: 'experimental',
+    eyebrow: t('minerals.experimental_eyebrow'),
+    note: t('minerals.experimental_note'),
+    heading: t('minerals.experimental_heading'),
+    lede: t('minerals.experimental_lede'),
+    compact: true,
+    families: EXPERIMENTAL.map((e) => ({
+      name: e.name,
+      label: lang === 'zh' ? EXPERIMENTAL_ZH[e.name] : e.name,
+      token: colorVar(e.name),
+      hex: e.darkHex,
+      fields: [],
+      ...measured(e.darkHex),
+    })),
+  },
+];
 ---
 
 <BaseLayout
@@ -134,6 +215,58 @@ const rows = MINERALS.map((m) => {
       }
     </ol>
   </section>
+
+  {
+    SETS.map((set) => (
+      <section class="section reveal" aria-labelledby={`${set.id}-heading`}>
+        <div class="section-head">
+          <p class="eyebrow is-open">{set.eyebrow}</p>
+          <span class="margin-note">{set.note}</span>
+        </div>
+        <h2 class="section-title sheet-h2" id={`${set.id}-heading`}>{set.heading}</h2>
+        <p class="lede">{set.lede}</p>
+
+        <ol class:list={['key', set.compact && 'key--compact']}>
+          {set.families.map((f, i) => (
+            <li>
+              <Panel as="article" class="key__item" style={`--mineral: ${f.token}`}>
+                {!set.compact && <span class="key__index">{String(i + 1).padStart(2, '0')}</span>}
+                <span class="key__swatch" aria-hidden="true" />
+
+                <div class="key__body">
+                  <h3>
+                    {f.label}
+                    {f.label !== f.name && (
+                      <span class="key__token" lang="en">
+                        {f.name}
+                      </span>
+                    )}
+                  </h3>
+                  {f.fields.length > 0 && (
+                    <dl>
+                      {f.fields.map((field) => (
+                        <>
+                          <dt>{field.term}</dt>
+                          <dd>{field.value}</dd>
+                        </>
+                      ))}
+                    </dl>
+                  )}
+                </div>
+
+                <div class="key__figures">
+                  <span class="key__hex">{f.hex}</span>
+                  <span class="key__ratio">
+                    {f.onSheet} <span class="key__grade">{f.grade}</span>
+                  </span>
+                </div>
+              </Panel>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
 
   <section class="section reveal" aria-labelledby="a11y-heading">
     <Panel fig={t('minerals.a11y_fig')}>

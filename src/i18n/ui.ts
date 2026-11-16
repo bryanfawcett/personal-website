@@ -235,11 +235,11 @@ export const ui = {
 
     // --- minerals ---
     'minerals.eyebrow': 'Sheet 05 · Legend',
-    'minerals.title': 'The mineral rail',
+    'minerals.title': 'The palette',
     'minerals.description':
-      'Seven minerals from across Africa, one per segment of the rail down the edge of every page — what each stands for, where it is mined, and how it is used. Drawn from Mzizi’s brand system.',
+      'The Mzizi palette this site draws with: seven minerals from across Africa on the rail down every page, seven heritage tones named for the landscape, and seven experimental families — what each stands for and how it is used.',
     'minerals.lede':
-      'Seven segments run down the binding edge of every page on this site. Each is a mineral mined in Africa, and each carries a meaning the interface actually uses. This is the key.',
+      'Seven segments run down the binding edge of every page on this site: the minerals. They head a longer palette of 21 families, with seven heritage tones named for the African landscape and seven experimental ones still being tried. This is the key to all three.',
     'minerals.note': 'read the edge',
     'minerals.why_fig': 'Fig. 01 — Why stones',
     'minerals.why_heading': 'Why stones, and not a palette',
@@ -270,6 +270,17 @@ export const ui = {
     'minerals.key_means': 'Means',
     'minerals.key_mined': 'Mined in',
     'minerals.key_used': 'Used for',
+    'minerals.key_named': 'Named for',
+    'minerals.heritage_eyebrow': 'Sheet 05 · The heritage seven',
+    'minerals.heritage_note': 'the landscape',
+    'minerals.heritage_heading': 'The seven heritage tones',
+    'minerals.heritage_lede':
+      'Named for the land and its crafts rather than for a stone. Heritage tones set the mood of a surface, and this site’s own primary colour, river, is one of them.',
+    'minerals.experimental_eyebrow': 'Sheet 05 · The experimental seven',
+    'minerals.experimental_note': 'still being tried',
+    'minerals.experimental_heading': 'The seven experimental families',
+    'minerals.experimental_lede':
+      'Seven further families, spaced evenly around the colour wheel. Each has a value for both themes, but not yet the origin and meaning the minerals and heritage tones carry, so this page gives their colour and nothing it cannot back.',
 
     'minerals.a11y_fig': 'Fig. 02 — Accessibility',
     'minerals.a11y_heading': 'Every one of them, measured',
@@ -524,11 +535,10 @@ export const ui = {
 
     // --- minerals ---
     'minerals.eyebrow': '图 05 · 图例',
-    'minerals.title': '矿物色带',
-    'minerals.description':
-      '来自非洲各地的七种矿物，对应每一页边缘色带上的一段——各自代表什么、产自何处、如何使用。取自 Mzizi 的品牌系统。',
+    'minerals.title': '色彩',
+    'minerals.description': '本站所用的 Mzizi 色彩：每一页边缘色带上的七种非洲矿物，七种以大地命名的传统色调，以及七个试验色族——它们各自象征什么、如何使用。',
     'minerals.lede':
-      '本站每一页的装订边都有七段色带。每一段都是一种产自非洲的矿物，也都承载着界面真正会用到的含义。这里是它的图例。',
+      '本站每一页的装订边上，都有七个色段：矿物色。它们是一套更长调色板的开头，共 21 个色族——另有七种以非洲大地命名的传统色调，以及七种仍在试验的色族。这就是这三组的图例。',
     'minerals.note': '读一读边缘',
     'minerals.why_fig': '图 01 — 为什么用矿石',
     'minerals.why_heading': '为什么是矿石，而不是一套色板',
@@ -557,6 +567,17 @@ export const ui = {
     'minerals.key_means': '寓意',
     'minerals.key_mined': '产地',
     'minerals.key_used': '用途',
+    'minerals.key_named': '得名于',
+    'minerals.heritage_eyebrow': '图 05 · 七种传统色调',
+    'minerals.heritage_note': '大地',
+    'minerals.heritage_heading': '七种传统色调',
+    'minerals.heritage_lede':
+      '以土地与手艺命名，而不是以某种石头命名。传统色调决定一个表面的情绪；本站自己的主色“河流”（river）就是其中之一。',
+    'minerals.experimental_eyebrow': '图 05 · 七种试验色族',
+    'minerals.experimental_note': '仍在试验',
+    'minerals.experimental_heading': '七个试验色族',
+    'minerals.experimental_lede':
+      '另外七个色族，沿色轮均匀分布。它们各有对应两种主题的取值，但还没有矿物和传统色调那样的来历与寓意，所以本页只给出它们的颜色，不说无法佐证的话。',
 
     'minerals.a11y_fig': '图 02 — 无障碍',
     'minerals.a11y_heading': '七种，逐一实测',
