@@ -24,7 +24,7 @@ impl Hero<'_> {
         html! {
             header class="hero" {
                 p class="eyebrow hero__eyebrow" { (self.eyebrow) }
-                h1 class="stack" { span class="stack__solid" { (self.solid) } " " span class="drafted" { (self.drafted) } }
+                h1 class="stack" { span class="stack__solid" { (self.solid) } span class="drafted" { (self.drafted) } }
                 @if self.show_byline {
                     p class="hero__byline" {
                         @for (i, role) in site.roles(self.lang).iter().enumerate() {

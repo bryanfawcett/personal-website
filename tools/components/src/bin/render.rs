@@ -10,11 +10,14 @@
 //! committed fragment does not go stale in January). Cloudflare's build image has no Rust, so
 //! the fragments are committed, as the deck's `prebuilt/` is.
 
+use maud::PreEscaped;
 use std::{collections::BTreeMap, env, fs, path::PathBuf, process::exit};
 
 use components::{
     footer::footer,
     header::header,
+    hero::Hero,
+    page_header::page_header,
     schematics::schematics,
     site::{Lang, Site},
 };
@@ -38,6 +41,28 @@ fn main() {
 
     let mut out: BTreeMap<String, String> = BTreeMap::new();
     out.insert("schematics.html".into(), schematics().into_string());
+
+    // PageHeader: one fragment per combination of lede and note. `%SLOT%` marks where the
+    // page's own children go; Astro splits the fragment there and renders its slot between.
+    for (lede, note) in [(false, false), (true, false), (false, true), (true, true)] {
+        let name = format!("page-header.{}{}.html", if lede { "l" } else { "" }, if note { "n" } else { "" });
+        let html = page_header("%EYEBROW%", "%TITLE%", lede.then_some("%LEDE%"), note.then_some("%NOTE%"), PreEscaped("%SLOT%".into()));
+        out.insert(name, html.into_string());
+    }
+    // Hero: one per language and combination of byline, sub, note and actions slot.
+    for lang in [Lang::En, Lang::Zh] {
+        for flags in 0..16u8 {
+            let (byline, sub, note, slot) = (flags & 1 != 0, flags & 2 != 0, flags & 4 != 0, flags & 8 != 0);
+            let hero = Hero {
+                solid: "%SOLID%", drafted: "%DRAFTED%", eyebrow: "%EYEBROW%",
+                sub: sub.then_some("%SUB%"), note: note.then_some("%NOTE%"),
+                dimension: "%DIMENSION%", show_byline: byline, lang,
+            };
+            let html = hero.render(&site, slot.then(|| PreEscaped("%SLOT%".to_string()))).into_string();
+            let key = format!("{}{}{}{}", if byline { "b" } else { "" }, if sub { "s" } else { "" }, if note { "n" } else { "" }, if slot { "a" } else { "" });
+            out.insert(format!("hero.{}.{key}.html", lang.code()), html);
+        }
+    }
     for lang in [Lang::En, Lang::Zh] {
         for (key, path) in ROUTES {
             let code = lang.code();
