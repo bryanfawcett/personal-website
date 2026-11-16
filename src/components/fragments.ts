@@ -43,3 +43,10 @@ export function fill(html: string, values: Record<string, string>): string {
   }
   return out;
 }
+
+/** Like `fill`, for values that are already markup (the QR SVGs). Not for anything from a URL. */
+export function fillRaw(html: string, values: Record<string, string>): string {
+  let out = html;
+  for (const [key, value] of Object.entries(values)) out = out.replaceAll(`%${key}%`, () => value);
+  return out;
+}

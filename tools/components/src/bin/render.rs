@@ -14,7 +14,9 @@ use std::{collections::BTreeMap, env, fs, path::PathBuf, process::exit};
 
 use components::{
     footer::footer,
+    contact_card::ContactCard,
     header::header,
+    portrait::Portrait,
     schematics::schematics,
     site::{Lang, Site},
 };
@@ -39,6 +41,22 @@ fn main() {
     let mut out: BTreeMap<String, String> = BTreeMap::new();
     out.insert("schematics.html".into(), schematics().into_string());
     for lang in [Lang::En, Lang::Zh] {
+        // Portrait and contact card: the image URLs are content-hashed by astro:assets and the
+        // QR SVGs come from `src/brand/qr.ts`, so they stay placeholders (`%SRC%`, `%SRCSET%`,
+        // `%QR_DARK%`, `%QR_LIGHT%`) that the .astro wrapper fills. Width and height are fixed
+        // per variant; the wrapper checks the requested width matches.
+        let code = lang.code();
+        let fig = site.t(lang, "card.fig").to_string();
+        let portrait = |width, height, eager, class| Portrait {
+            src: "%SRC%", srcset: "%SRCSET%", width, height, caption: Some(&fig), eager, class, lang,
+        };
+        out.insert(format!("portrait.{code}.quote.html"), portrait(176, 222, true, Some("quote__portrait")).render(&site).into_string());
+        out.insert(
+            format!("contact-card.{code}.connect.html"),
+            ContactCard { portrait: portrait(152, 192, false, None), class: Some("connect__card"), qr_dark: "%QR_DARK%", qr_light: "%QR_LIGHT%", lang }
+                .render(&site)
+                .into_string(),
+        );
         for (key, path) in ROUTES {
             let code = lang.code();
             out.insert(format!("header.{code}.{key}.html"), header(&site, lang, path, Some("%SWITCH%")).into_string());
