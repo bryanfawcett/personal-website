@@ -1,0 +1,6 @@
+# One Rust for every machine and for CI. Bump deliberately, with a PR.
+[toolchain]
+channel = "1.100.0"
+profile = "minimal"
+components = ["clippy", "rustfmt"]
+targets = ["wasm32-unknown-unknown"]

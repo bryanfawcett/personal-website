@@ -28,6 +28,8 @@
     "verify:contact:rs": "scripts/verify-contact-parity.sh",
     "fragments": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render",
     "fragments:check": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render -- --check",
+    "rust:wasm": "node scripts/build-rust-wasm.mjs",
+    "rust:wasm:check": "node scripts/build-rust-wasm.mjs --check",
     "verify:components:rs": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin parity",
     "design-system": "python3 scripts/build-design-system.py",
     "design-system:check": "python3 scripts/build-design-system.py --check"
