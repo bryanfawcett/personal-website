@@ -911,3 +911,13 @@ for other repos. `design-system:check` runs in CI. Tokens added for it: `--text-
 `--motion-*` (`fast/normal/slow/page`), `--z-*`, `--radius-xs`, half-step spacing. The
 grid columns are `.col-4`/`.col-6`; `prefers-contrast: more` and `forced-colors` are
 handled at the end of `global.css`. Edit the site, then regenerate; never edit the skill.
+
+### The chrome is Rust, Astro inserts it
+
+`MziziHeader`, `MziziFooter` and `Schematics` are Rust (`tools/components`). `pnpm fragments`
+renders them to `src/data/generated/fragments/` (one file per language and top-level route,
+with `%SWITCH%`, `%SHEET%` and `%YEAR%` placeholders), and the `.astro` files only insert the
+fragment (`src/components/fragments.ts`). The fragments are committed because Cloudflare's
+build image has no Rust; CI runs `fragments:check` and the parity check. Edit the Rust, then
+`pnpm fragments`; never the fragment. Still Astro: `Hero`, `Portrait`, `ContactCard`,
+`WorkshopStrip` and `PageHeader` (their inputs are per-page or content-hashed), and the router.

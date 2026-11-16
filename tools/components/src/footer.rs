@@ -73,7 +73,7 @@ fn sections(site: &Site, lang: Lang, here: &str) -> Vec<Section> {
 /// `sheet`, `year` and `path` are inputs, as in the original: the page passes the sheet
 /// number and its route (so the navigation marks where the reader is), and the year is
 /// the build's. `path` may be empty: no link is then marked.
-pub fn footer(site: &Site, lang: Lang, sheet: &str, year: i32, path: &str) -> Markup {
+pub fn footer(site: &Site, lang: Lang, sheet: &str, year: &str, path: &str) -> Markup {
     let t = |key: &str| site.t(lang, key);
     let here = if path.is_empty() { String::new() } else { strip_lang(path) };
 

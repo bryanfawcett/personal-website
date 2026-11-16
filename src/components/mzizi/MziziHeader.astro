@@ -1,35 +1,12 @@
 ---
 /**
- * mzizi Header — the Mzizi registry's `mzizi-header` (N7 shell), built for
- * Astro against its contract.
- *
- * The registry ships this component for React only (a `"use client"` app
- * header with a sidebar trigger and the Nyuchi logo), and says to write the
- * missing target "against the contract": same `data-slot`, same
- * `data-portal`, same anatomy. So here it is with no client framework:
- *
- *   - sticky, 64px tall (80px from 64rem), on the page's own surface with a
- *     hairline under it;
- *   - left: the brand link — the portrait and the name as a serif wordmark;
- *   - desktop: the navigation, as plain text links in the middle;
- *   - right: the actions — the language switcher, a ghost theme toggle, and
- *     the one primary action, booking a call.
- *
- * On a phone the bar keeps the brand, the toggle and the pill, and the
- * navigation drops to a second row under it: the same links, scrolled
- * sideways rather than folded into a menu. That is Nyuchi Learning's header
- * (learning.nyuchi.com), and the reason is the same: every destination stays
- * one tap away and visible, and a row needs no script to be accessible where a
- * disclosure would. The language switcher closes the row.
- *
- * The theme toggle is the contract's ThemeToggle. The page follows the
- * device's theme until the reader chooses; the choice is kept in
- * localStorage and applied by the inline script in BaseLayout's head.
+ * The header is Rust: `tools/components/src/header.rs`, rendered per language and route
+ * to a fragment (see `components/fragments.ts`). This file inserts it and carries the one
+ * script the header needs, the theme toggle's.
  */
-import LanguageSwitcher from '../LanguageSwitcher.astro';
-import { NAV, PROFILE, profileInLang } from '../../data/profile.js';
-import { localizePath, stripLang } from '../../i18n/routing.js';
-import { useTranslations, type Lang } from '../../i18n/ui.js';
+import { alternatePath } from '../../i18n/routing.js';
+import type { Lang } from '../../i18n/ui.js';
+import { fill, fragment, routeKey } from '../fragments.js';
 
 interface Props {
   /** Language-neutral path, e.g. `/experience`. */
@@ -40,128 +17,12 @@ interface Props {
 }
 
 const { path, lang, switchHref } = Astro.props;
-const t = useTranslations(lang);
-const profile = profileInLang(lang);
-const here = stripLang(path);
-
-/** `/` matches only itself; every other route also matches its children. */
-function isCurrent(href: string): boolean {
-  return href === '/' ? here === '/' : here === href || here.startsWith(`${href}/`);
-}
-
-/* The one action is pulled out of the list and set as the primary pill. */
-const links = NAV.filter((item) => item.href !== '/book');
-const book = NAV.find((item) => item.href === '/book');
+const html = fill(fragment(`header.${lang}.${routeKey(path)}`), {
+  SWITCH: switchHref ?? alternatePath(path, lang),
+});
 ---
 
-<header
-  class="mzizi-header"
-  data-slot="mzizi-header"
-  data-portal="https://mzizi.dev/components/mzizi-header"
->
-  <div class="mzizi-header__inner">
-    <a class="mzizi-header__brand" href={localizePath('/', lang)} aria-label={t('nav.home')}>
-      {/*
-        A plain <img> at a fixed path, not astro:assets: the header renders on
-        on-demand routes too (/adventures), where `imageService: 'compile'`
-        emits a `/_image?…` URL with no service behind it. `pnpm nav-portrait`
-        renders public/nav-portrait.webp.
-      */}
-      <img
-        class="mzizi-header__portrait"
-        src="/nav-portrait.webp"
-        alt=""
-        width="36"
-        height="36"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
-      <span class="mzizi-header__id">
-        <span class="mzizi-header__name">{PROFILE.name}</span>
-        <span class="mzizi-header__role">{profile.title}</span>
-      </span>
-    </a>
-
-    <nav class="mzizi-header__nav" aria-label={t('nav.label')}>
-      <ul>
-        {
-          links.map((item) => (
-            <li>
-              <a
-                class:list={['mzizi-header__link', { 'is-current': isCurrent(item.href) }]}
-                href={localizePath(item.href, lang)}
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
-              >
-                {t(item.labelKey)}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <div class="mzizi-header__actions">
-      <div class="mzizi-header__lang">
-        <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
-      </div>
-
-      <button
-        class="mzizi-header__icon theme-toggle"
-        type="button"
-        data-theme-toggle
-        aria-label={t('theme.toggle')}
-        data-label-light={t('theme.to_light')}
-        data-label-dark={t('theme.to_dark')}
-      >
-        {/* Sun when dark (switch to light), moon when light; CSS picks one. */}
-        <svg class="theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path
-            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-          ></path>
-        </svg>
-        <svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-
-      {
-        book && (
-          <a
-            class:list={['btn', 'mzizi-header__cta', { 'is-current': isCurrent(book.href) }]}
-            href={localizePath(book.href, lang)}
-            aria-current={isCurrent(book.href) ? 'page' : undefined}
-          >
-            {t(book.labelKey)}
-          </a>
-        )
-      }
-    </div>
-  </div>
-
-  {/* The phone row: the same links, scrolled sideways; the switcher closes it. */}
-  <nav class="mzizi-header__row" aria-label={t('nav.label')}>
-    <ul>
-      {
-        links.map((item) => (
-          <li>
-            <a
-              class:list={['mzizi-header__chip', { 'is-current': isCurrent(item.href) }]}
-              href={localizePath(item.href, lang)}
-              aria-current={isCurrent(item.href) ? 'page' : undefined}
-            >
-              {t(item.labelKey)}
-            </a>
-          </li>
-        ))
-      }
-      <li class="mzizi-header__row-lang">
-        <LanguageSwitcher lang={lang} path={path} switchHref={switchHref} />
-      </li>
-    </ul>
-  </nav>
-</header>
+<Fragment set:html={html} />
 
 <script>
   /*

@@ -1,23 +1,11 @@
 ---
 /**
- * mzizi Footer — the Mzizi registry's `mzizi-footer` (N7 shell), built for
- * Astro against its contract. The registry ships it in Rust (Dioxus, in
- * `mzizi-shell`) and React; this is the same anatomy with no framework:
- *
- *   - `data-slot="mzizi-footer"`, `data-portal`, `role="contentinfo"`, on
- *     the card surface with a hairline above;
- *   - a 3px seven-mineral strip along the top edge;
- *   - a brand column (wordmark and tagline) and titled link sections — here
- *     the site's canonical navigation, the ecosystem, and ways to connect;
- *   - a bottom bar: "© year name. All rights reserved." and the mineral dots.
- *
- * As the Rust build does, the year is computed once, here at build time,
- * rather than in a client render.
+ * The footer is Rust: `tools/components/src/footer.rs`, rendered per language and route to
+ * a fragment (see `components/fragments.ts`). The sheet number and the year are the two
+ * things filled in here; the year is computed at build time, as it always was.
  */
-import { MINERALS } from '../../brand/minerals.js';
-import { NAV, PROFILE, socialsInLang } from '../../data/profile.js';
-import { localizePath, stripLang } from '../../i18n/routing.js';
-import { useTranslations, type Lang } from '../../i18n/ui.js';
+import type { Lang } from '../../i18n/ui.js';
+import { fill, fragment, routeKey } from '../fragments.js';
 
 interface Props {
   lang: Lang;
@@ -28,108 +16,10 @@ interface Props {
 }
 
 const { lang, sheet = '01 / 06', path = '' } = Astro.props;
-const here = path ? stripLang(path) : '';
-
-/** `/` matches only itself; every other route also matches its children (as the header does). */
-function isCurrent(href: string): boolean {
-  if (!here) return false;
-  return href === '/' ? here === '/' : here === href || here.startsWith(`${href}/`);
-}
-const t = useTranslations(lang);
-const year = new Date().getFullYear();
-
-interface FooterLink {
-  label: string;
-  href: string;
-  external?: boolean;
-  current?: boolean;
-}
-
-const sections: { title: string; links: FooterLink[] }[] = [
-  {
-    title: t('footer.site'),
-    links: NAV.map((item) => ({
-      label: t(item.labelKey),
-      href: localizePath(item.href, lang),
-      current: isCurrent(item.href),
-    })),
-  },
-  {
-    title: t('footer.ecosystem'),
-    links: [
-      { label: 'The Bundu Foundation', href: 'https://bundu.org', external: true },
-      { label: 'Nyuchi Africa', href: 'https://www.nyuchi.com', external: true },
-      { label: 'Mukoko', href: 'https://mukoko.com', external: true },
-      { label: 'Mzizi', href: 'https://mzizi.dev', external: true },
-    ],
-  },
-  {
-    title: t('footer.connect'),
-    links: [
-      ...socialsInLang(lang).map((social) => ({
-        label: social.name,
-        href: social.href,
-        external: social.href.startsWith('http'),
-      })),
-      { label: t('footer.vcf'), href: '/bryan-fawcett.vcf' },
-    ],
-  },
-];
+const html = fill(fragment(`footer.${lang}.${routeKey(path)}`), {
+  SHEET: sheet,
+  YEAR: String(new Date().getFullYear()),
+});
 ---
 
-<footer
-  class="mzizi-footer"
-  data-slot="mzizi-footer"
-  data-portal="https://mzizi.dev/components/mzizi-footer"
-  role="contentinfo"
-  aria-label={t('footer.label')}
->
-  <div class="mzizi-footer__strip" aria-hidden="true">
-    {MINERALS.map((m) => <span data-mineral={m.name}></span>)}
-  </div>
-
-  <div class="mzizi-footer__inner">
-    <div class="mzizi-footer__grid">
-      <div class="mzizi-footer__brand">
-        <p class="mzizi-footer__wordmark">{PROFILE.name}</p>
-        <p class="mzizi-footer__tagline">{t('footer.tagline')}</p>
-      </div>
-
-      {
-        sections.map((section) => (
-          <div class="mzizi-footer__section">
-            <h2 class="mzizi-footer__title">{section.title}</h2>
-            <nav aria-label={section.title}>
-              <ul>
-                {section.links.map((link) => (
-                  <li>
-                    <a
-                      class="mzizi-footer__link"
-                      href={link.href}
-                      aria-current={link.current ? 'page' : undefined}
-                      target={link.external ? '_blank' : undefined}
-                      rel={link.external ? 'noopener noreferrer' : undefined}
-                      download={link.href.endsWith('.vcf') ? '' : undefined}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        ))
-      }
-    </div>
-
-    <div class="mzizi-footer__bar">
-      <p class="mzizi-footer__copy">© {year} {PROFILE.name}. {t('footer.rights')}</p>
-      <p class="mzizi-footer__sheet">
-        {t('tb.drawn_by')} B.D.F. · {t('tb.sheet')} {sheet} · {t('tb.rev')} A — {year}
-      </p>
-      <div class="mzizi-footer__dots" aria-hidden="true">
-        {MINERALS.map((m) => <span data-mineral={m.name}></span>)}
-      </div>
-    </div>
-  </div>
-</footer>
+<Fragment set:html={html} />
