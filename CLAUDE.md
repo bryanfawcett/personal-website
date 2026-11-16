@@ -269,7 +269,7 @@ before adding a colour, a radius or a face, and prefer its names:
 - **Panels take `--radius-lg` (14px).** The corner brackets follow the curve.
 - **Focus is a 2px cobalt ring, 2px offset** (`--ring`).
 - **Theme a surface in its brand's mineral.** The system and audience cards sit
-  on their mineral's dark container (`keyedTo()` sets `--mineral-container`
+  on their mineral's dark container (`data-mineral` sets `--mineral-container`
   and `--mineral-on` alongside `--mineral`); Nyuchi is gold, Bundu copper,
   Mukoko tanzanite, Shamwari sodalite.
 
@@ -280,8 +280,8 @@ The **mineral rail** is still the signature — seven segments, one per mineral,
 running vertically down the binding edge of the sheet.
 
 **One mineral property, one weight.** Everything keyed to a mineral reads
-`--mineral`, set by the `mineral` prop on `<Panel>` or by `keyedTo()` for plain
-elements, and every mineral mark is `--mineral-weight` thick. It used to be
+`--mineral`, set by a `data-mineral="gold"` attribute (the `mineral` prop on
+`<Panel>` writes it; on a plain element write it yourself), and every mineral mark is `--mineral-weight` thick. It used to be
 eight property names for one idea — `--panel-mineral`, `--row-mineral`,
 `--stop-mineral`, `--m` and four more — so changing how a mineral is expressed
 meant finding all eight.
@@ -866,3 +866,21 @@ TypeScript, the Rust verifiers, can read the same CSS the page ships. Edit
 than the JS script: that one only checks the last selector of a multi-line selector
 list, so `.panel a,` followed by `.other {` slipped past its base-rule check. The JS
 script stays until the Rust one has run in CI for a while.
+
+### Markup names things, the stylesheet colours them
+
+No component writes an inline `style` to colour something. A mineral is keyed with
+`data-mineral="<name>"`, and the rules that turn the name into `--mineral` (plus the
+container and on-container for the seven minerals) are generated into `tokens.css`
+from `minerals.ts` and `palette.ts`: all 21 Mzizi families, so a heritage tone or an
+experimental family keys a surface the same way a mineral does. The Panel's `mineral`
+prop is typed `ToneName`, so a typo fails `astro check`.
+
+Positioning that used to be inline lives in classes too (`.schematics__1`–`3`), and the
+footer's mineral dots are `<span data-mineral>` coloured by `var(--mineral)`. This is the
+same pattern `@bundu/ui`'s own mineral strip uses, and it means a page can keep
+`style-src 'self'` with no inline-style allowance. Do not reintroduce `keyedTo()` or a
+`style={}` for colour.
+
+**Corner brackets are opt-in.** `<Panel frame>` draws them, for something that frames
+something larger (the deck embed). A card is a hairline at `--radius-lg` and nothing else.

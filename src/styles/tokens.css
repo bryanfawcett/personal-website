@@ -216,3 +216,25 @@
   --show-dark-only: block;
   --show-light-only: none;
 }
+/* mineral keying */
+[data-mineral="cobalt"] { --mineral: var(--mineral-cobalt); --mineral-container: var(--mineral-cobalt-container); --mineral-on: var(--mineral-cobalt-on-container); }
+[data-mineral="tanzanite"] { --mineral: var(--mineral-tanzanite); --mineral-container: var(--mineral-tanzanite-container); --mineral-on: var(--mineral-tanzanite-on-container); }
+[data-mineral="malachite"] { --mineral: var(--mineral-malachite); --mineral-container: var(--mineral-malachite-container); --mineral-on: var(--mineral-malachite-on-container); }
+[data-mineral="gold"] { --mineral: var(--mineral-gold); --mineral-container: var(--mineral-gold-container); --mineral-on: var(--mineral-gold-on-container); }
+[data-mineral="terracotta"] { --mineral: var(--mineral-terracotta); --mineral-container: var(--mineral-terracotta-container); --mineral-on: var(--mineral-terracotta-on-container); }
+[data-mineral="sodalite"] { --mineral: var(--mineral-sodalite); --mineral-container: var(--mineral-sodalite-container); --mineral-on: var(--mineral-sodalite-on-container); }
+[data-mineral="copper"] { --mineral: var(--mineral-copper); --mineral-container: var(--mineral-copper-container); --mineral-on: var(--mineral-copper-on-container); }
+[data-mineral="indigo"] { --mineral: var(--color-indigo); }
+[data-mineral="savanna"] { --mineral: var(--color-savanna); }
+[data-mineral="baobab"] { --mineral: var(--color-baobab); }
+[data-mineral="sunset"] { --mineral: var(--color-sunset); }
+[data-mineral="river"] { --mineral: var(--color-river); }
+[data-mineral="hematite"] { --mineral: var(--color-hematite); }
+[data-mineral="kalahari"] { --mineral: var(--color-kalahari); }
+[data-mineral="ember"] { --mineral: var(--color-ember); }
+[data-mineral="acacia"] { --mineral: var(--color-acacia); }
+[data-mineral="fern"] { --mineral: var(--color-fern); }
+[data-mineral="lagoon"] { --mineral: var(--color-lagoon); }
+[data-mineral="storm"] { --mineral: var(--color-storm); }
+[data-mineral="dusk"] { --mineral: var(--color-dusk); }
+[data-mineral="protea"] { --mineral: var(--color-protea); }

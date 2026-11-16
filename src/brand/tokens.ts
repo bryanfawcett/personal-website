@@ -10,6 +10,7 @@
  */
 
 import { MINERALS } from './minerals.js';
+import { EXPERIMENTAL, HERITAGE } from './palette.js';
 
 /**
  * The sheet, with wells cut into it.
@@ -485,6 +486,23 @@ export function tokensToCss(): string {
   lines.push(':root:where([data-theme="dark"], .dark) {');
   lines.push(...themed('dark', '  '));
   lines.push('}');
+
+  // Mineral keying. `data-mineral="gold"` on any element sets the one property
+  // every mineral mark reads, `--mineral`, and for the seven minerals the
+  // container and on-container that theme a surface in its colour. It used to be
+  // an inline style written by `keyedTo()` on every element; as an attribute the
+  // markup carries a name and the stylesheet carries the colour, which also lets a
+  // page keep `style-src 'self'` with no inline-style allowance.
+  lines.push('/* mineral keying */');
+  for (const m of MINERALS) {
+    lines.push(
+      `[data-mineral="${m.name}"] { --mineral: var(--mineral-${m.name}); --mineral-container: var(--mineral-${m.name}-container); --mineral-on: var(--mineral-${m.name}-on-container); }`,
+    );
+  }
+  // The other fourteen families have a colour and no container pairing.
+  for (const f of [...HERITAGE, ...EXPERIMENTAL]) {
+    lines.push(`[data-mineral="${f.name}"] { --mineral: var(--color-${f.name}); }`);
+  }
   return lines.join('\n');
 }
 

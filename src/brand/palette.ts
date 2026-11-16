@@ -147,10 +147,10 @@ export const EXPERIMENTAL = [
   },
 ] as const satisfies readonly ExperimentalColor[];
 
+import type { MineralName } from './minerals.js';
+
 export type HeritageName = (typeof HERITAGE)[number]['name'];
 export type ExperimentalName = (typeof EXPERIMENTAL)[number]['name'];
 
-/** `var(--color-river)`: the token @bundu/ui defines for every family. */
-export function colorVar(name: HeritageName | ExperimentalName): string {
-  return `var(--color-${name})`;
-}
+/** Any family of the 21 that can key a surface with `data-mineral`. */
+export type ToneName = MineralName | HeritageName | ExperimentalName;

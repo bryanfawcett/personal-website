@@ -5,7 +5,7 @@ import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
 import { coreSkills, credentials, roles } from '../data/experience.js';
 import { nyuchiProjectsByGroup, sasProjects } from '../data/work.js';
-import { MINERALS, keyedTo } from '../brand/minerals.js';
+import { MINERALS } from '../brand/minerals.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -41,7 +41,7 @@ const sas = sasProjects(lang);
         roles(lang).map((role, index) => (
           <li
             class="schedule__row"
-            style={keyedTo(MINERALS[index % MINERALS.length]!.name)}
+            data-mineral={MINERALS[index % MINERALS.length]!.name}
           >
             <div class="schedule__meta">
               <span class="schedule__ref">{String(index + 1).padStart(2, '0')}</span>

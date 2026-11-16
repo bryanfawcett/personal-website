@@ -13,7 +13,6 @@ import {
 } from '../data/origins.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
-import { keyedTo } from '../brand/minerals.js';
 
 interface Props {
   lang: Lang;
@@ -87,7 +86,7 @@ const PINK_URL = 'https://www.danpink.com/books/whole-new-mind/';
     <ol class="journey">
       {
         journey(lang).map((stop) => (
-          <li class="journey__item" style={keyedTo(stop.mineral)}>
+          <li class="journey__item" data-mineral={stop.mineral}>
             <p class="journey__meta">
               {stop.period} &middot; {stop.place}
             </p>

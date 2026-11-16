@@ -11,7 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
 import { MINERALS } from '../brand/minerals.js';
-import { EXPERIMENTAL, HERITAGE, colorVar } from '../brand/palette.js';
+import { EXPERIMENTAL, HERITAGE, type ExperimentalName, type HeritageName } from '../brand/palette.js';
 import { SHEET } from '../brand/tokens.js';
 import { rating, ratio } from '../brand/contrast.js';
 import { EXPERIMENTAL_ZH, HERITAGE_ZH, MINERALS_ZH } from '../data/minerals-i18n.js';
@@ -55,13 +55,13 @@ const rows = MINERALS.map((m) => {
  * same provenance and the page should not pretend they do. Adding a set is an
  * entry here and its strings in `ui.ts`, not new markup.
  *
- * Swatches read the `--color-<name>` token, never a hex, and every figure is
- * measured on the sheet exactly as the minerals' are.
+ * Each row keys itself by name (`data-mineral`) and the stylesheet supplies the
+ * colour, never a hex or an inline style; every figure is measured on the sheet
+ * exactly as the minerals' are.
  */
 interface Family {
-  name: string;
+  name: HeritageName | ExperimentalName;
   label: string;
-  token: string;
   hex: string;
   fields: { term: string; value: string }[];
   onSheet: string;
@@ -98,7 +98,6 @@ const SETS: PaletteSet[] = [
       return {
         name: h.name,
         label: zh ? gloss.label : h.name,
-        token: colorVar(h.name),
         hex: h.darkHex,
         fields: [
           { term: t('minerals.key_means'), value: zh ? gloss.symbolism : h.symbolism },
@@ -119,7 +118,6 @@ const SETS: PaletteSet[] = [
     families: EXPERIMENTAL.map((e) => ({
       name: e.name,
       label: lang === 'zh' ? EXPERIMENTAL_ZH[e.name] : e.name,
-      token: colorVar(e.name),
       hex: e.darkHex,
       fields: [],
       ...measured(e.darkHex),
@@ -229,7 +227,7 @@ const SETS: PaletteSet[] = [
         <ol class:list={['key', set.compact && 'key--compact']}>
           {set.families.map((f, i) => (
             <li>
-              <Panel as="article" class="key__item" style={`--mineral: ${f.token}`}>
+              <Panel as="article" class="key__item" mineral={f.name}>
                 {!set.compact && <span class="key__index">{String(i + 1).padStart(2, '0')}</span>}
                 <span class="key__swatch" aria-hidden="true" />
 

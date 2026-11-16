@@ -234,6 +234,28 @@ button {
   position: absolute;
 }
 
+/* Where each decorative drawing sits, and how faintly. */
+.schematics__1 {
+  top: 5%;
+  right: 3%;
+  width: 190px;
+  opacity: 0.13;
+}
+
+.schematics__2 {
+  bottom: 7%;
+  left: 2%;
+  width: 170px;
+  opacity: 0.11;
+}
+
+.schematics__3 {
+  top: 36%;
+  left: -40px;
+  width: 220px;
+  opacity: 0.09;
+}
+
 /* ============================== layout ============================== */
 
 .page {
@@ -1788,6 +1810,7 @@ figcaption {
 
 .mzizi-footer__strip span {
   flex: 1;
+  background: var(--mineral);
 }
 
 .mzizi-footer__inner {
@@ -1902,6 +1925,7 @@ figcaption {
   width: 6px;
   height: 6px;
   border-radius: var(--radius-full);
+  background: var(--mineral);
 }
 
 .mzizi-footer__title:lang(zh),
