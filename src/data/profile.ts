@@ -85,9 +85,9 @@ export const PROFILE = {
   employer: 'Singapore American School',
   location: 'Singapore',
   email: 'bryan@nyuchi.com',
-  tagline: 'I craft dynamic ecosystems that unite and empower communities.',
+  tagline: 'I craft digital ecosystems that unite and empower communities.',
   summary:
-    'Digital craftsman and builder of communities. Founder & CEO of Nyuchi Africa, which builds software for organisations whose people work offline, outdoors and in more than one language.',
+    'A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.',
   knowsAbout: [
     'Education Technology',
     'Systems Architecture',
@@ -130,9 +130,9 @@ const PROFILE_ZH = {
   title: '数字工匠',
   role: '技术与创新协调员（副职）',
   location: '新加坡',
-  tagline: '我打造充满活力的生态系统，让社区彼此联结、各得其力。',
+  tagline: '我打造数字生态系统，让社区彼此联结、各得其力。',
   summary:
-    '数字工匠，社区的建造者。Nyuchi Africa 创始人兼首席执行官——为在离线、户外、多语言环境中工作的机构构建软件。',
+    '系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。',
 } as const;
 
 export interface LocalizedProfile {
