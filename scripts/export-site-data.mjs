@@ -12,12 +12,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { BOOKING_URL } from '../src/data/booking.ts';
 import { bunduWork, nyuchiWork, schoolWork } from '../src/data/origins.ts';
-import { PROFILE } from '../src/data/profile.ts';
-import { useTranslations } from '../src/i18n/ui.ts';
-import { mineral } from '../src/brand/minerals.ts';
+import { NAV, PROFILE, socialsInLang } from '../src/data/profile.ts';
+import { ui as UI, useTranslations } from '../src/i18n/ui.ts';
+import { MINERALS, mineral } from '../src/brand/minerals.ts';
 import { INK, INK_LIGHT, SHEET_LIGHT } from '../src/brand/tokens.ts';
 
 const OUT = new URL('../src/data/generated/site.json', import.meta.url);
+const UI_OUT = new URL('../src/data/generated/ui.json', import.meta.url);
 
 const ui = useTranslations('en');
 const workItems = (items) =>
@@ -46,6 +47,14 @@ const site = {
     ],
     note: ui('origins.now_aside'),
   },
+  // What the shared chrome (header, footer) reads, so the Rust components render
+  // it from data rather than from a copy of the TypeScript.
+  nav: NAV.map(({ labelKey, href }) => ({ labelKey, href })),
+  socials: {
+    en: socialsInLang('en').map(({ name, href }) => ({ name, href })),
+    zh: socialsInLang('zh').map(({ name, href }) => ({ name, href })),
+  },
+  minerals: MINERALS.map((m) => m.name),
   booking_url: BOOKING_URL,
   qr: {
     dark: { dark: INK.base, light: mineral('cobalt').container },
@@ -53,18 +62,28 @@ const site = {
   },
 };
 const json = JSON.stringify(site, null, 2) + '\n';
+const uiJson = JSON.stringify(UI, null, 2) + '\n';
+
+const files = [
+  [OUT, json, 'src/data/generated/site.json'],
+  [UI_OUT, uiJson, 'src/data/generated/ui.json'],
+];
 
 if (process.argv.includes('--check')) {
-  let current = '';
-  try {
-    current = readFileSync(OUT, 'utf8');
-  } catch {}
-  if (current !== json) {
-    console.error('src/data/generated/site.json is stale. Run `pnpm site-data` and commit the result.');
-    process.exit(1);
+  let stale = false;
+  for (const [url, text, label] of files) {
+    let current = '';
+    try {
+      current = readFileSync(url, 'utf8');
+    } catch {}
+    if (current !== text) {
+      console.error(`${label} is stale. Run \`pnpm site-data\` and commit the result.`);
+      stale = true;
+    }
   }
-  console.log('site.json is up to date');
+  if (stale) process.exit(1);
+  console.log('site.json and ui.json are up to date');
 } else {
-  writeFileSync(OUT, json);
-  console.log('wrote src/data/generated/site.json');
+  for (const [url, text, label] of files) writeFileSync(url, text);
+  console.log('wrote src/data/generated/site.json and ui.json');
 }

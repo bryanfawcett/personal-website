@@ -884,3 +884,15 @@ same pattern `@bundu/ui`'s own mineral strip uses, and it means a page can keep
 
 **Corner brackets are opt-in.** `<Panel frame>` draws them, for something that frames
 something larger (the deck embed). A card is a hairline at `--radius-lg` and nothing else.
+
+### Components in Rust are proven against Astro, not eyeballed
+
+`tools/components` is the Rust port of the site's components. Each one renders the same
+HTML as its Astro original from the exported data (`src/data/generated/site.json` and
+`ui.json`, written by `pnpm site-data`), and `pnpm verify:components:rs` proves it: it
+finds the component as Astro shipped it in the built pages, reads the render's inputs
+(language, sheet, year) back out of that markup, renders the Rust version from them, and
+compares both as canonical HTML (attribute and class order and whitespace are ignored;
+elements, attribute values and text must match). It exits non-zero on any difference and
+prints the first differing lines. A port is not done until it passes on every page in both
+languages. Ported so far: `MziziFooter`.
