@@ -22,6 +22,7 @@ use components::{
     portrait::Portrait,
     schematics::schematics,
     site::{Lang, Site},
+    workshop_strip::workshop_strip,
 };
 
 /// The route a fragment is keyed by, and the path it is rendered for.
@@ -82,6 +83,7 @@ fn main() {
                 .render(&site)
                 .into_string(),
         );
+        out.insert(format!("workshop.{}.html", lang.code()), workshop_strip(&site, lang).into_string());
         for (key, path) in ROUTES {
             let code = lang.code();
             out.insert(format!("header.{code}.{key}.html"), header(&site, lang, path, Some("%SWITCH%")).into_string());
