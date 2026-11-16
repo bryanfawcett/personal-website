@@ -43,3 +43,10 @@ export function fill(html: string, values: Record<string, string>): string {
   }
   return out;
 }
+
+/** Split a fragment at its `%SLOT%`, so Astro can render a slot between the halves. */
+export function splitSlot(html: string): [string, string] {
+  const at = html.indexOf('%SLOT%');
+  if (at < 0) return [html, ''];
+  return [html.slice(0, at), html.slice(at + '%SLOT%'.length)];
+}
