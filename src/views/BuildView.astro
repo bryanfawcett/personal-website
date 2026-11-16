@@ -1,0 +1,73 @@
+---
+/** How the site was built, in whichever language it is asked for. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Panel from '../components/Panel.astro';
+import { storySections } from '../data/build-story.js';
+import { useTranslations, type Lang } from '../i18n/ui.js';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const SOURCE_URL =
+  'https://github.com/bryanfawcett/personal-website/blob/main/docs/how-we-built-this.md';
+---
+
+<BaseLayout
+  title={t('build.title')}
+  description={t('build.description')}
+  path="/how-this-was-built"
+  lang={lang}
+  sheet="Notes"
+  ogType="article"
+>
+  <PageHeader
+    eyebrow={t('build.eyebrow')}
+    title={t('build.title')}
+    lede={t('build.lede')}
+    note={t('build.note')}
+  />
+
+  {
+    storySections(lang).map((section) => (
+      <section class="section reveal" aria-labelledby={`${section.id}-heading`}>
+        <p class="eyebrow is-open">{section.eyebrow}</p>
+        <h2 class="section-title sheet-h2" id={`${section.id}-heading`}>
+          {section.heading}
+        </h2>
+
+        {section.paragraphs.length > 0 && (
+          <div class="prose">
+            {section.paragraphs.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        )}
+
+        {section.items.length > 0 && (
+          <ul class="work-list">
+            {section.items.map((item) => (
+              <Panel as="li" mineral={item.mineral}>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </Panel>
+            ))}
+          </ul>
+        )}
+      </section>
+    ))
+  }
+
+  <section class="section reveal" aria-labelledby="source-heading">
+    <h2 class="section-title sheet-h2" id="source-heading">{t('build.source_link')}</h2>
+    <div class="prose">
+      <p>
+        {t('build.source')}
+        <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">{t('build.source_link')}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
