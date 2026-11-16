@@ -1,11 +1,10 @@
 # Bryan Fawcett
 
-> I craft digital ecosystems that unite and empower communities. A systems thinker: he designs for the whole. Founder & CEO of Nyuchi Africa, Founder of
-> The Bundu Foundation, and Associate Technology & Innovation Coordinator at Singapore
-> American School. He designs for how people, data, tools and constraints connect, and
-> through the Foundation and Nyuchi researches and builds for informal and formal
-> markets: organisations whose people work offline, outdoors and in more than one
-> language.
+> Bryan Fawcett crafts digital ecosystems that unite and empower communities. A systems
+> thinker, he designs for the whole: how people, data, tools and the constraints they live
+> under connect. Founder & CEO of Nyuchi Africa, Founder of The Bundu Foundation, and
+> Associate Technology & Innovation Coordinator at Singapore American School. He grew up in
+> Zimbabwe, where doing more with less is how things get built.
 
 This is the personal site of Bryan Fawcett (bryanfawcett.com). It is a portfolio and
 writing site, written for organisations considering hiring Nyuchi Africa: there is no
@@ -28,7 +27,7 @@ Chinese versions live at the same paths under `/zh` (for example
 
 ## Current roles
 
-- **Associate Technology & Innovation Coordinator**, Singapore American School — integrating technology within educational practice and operational efficiency. Previously Privacy & Governance Manager, IT Infrastructure Manager and Application System Engineer at the same school.
+- **Associate Technology & Innovation Coordinator**, Singapore American School — integrating technology within educational practice and operational efficiency; replacing ad-hoc tools with a consistent digital toolkit and a knowledge base that survives staff turnover. Previously Privacy & Governance Manager, IT Infrastructure Manager and Application System Engineer at the same school.
 - **Founder & CEO**, Nyuchi Africa
 - **Founder**, The Bundu Foundation
 
@@ -45,6 +44,7 @@ emerging markets, and it governs four pillars and its own open-source projects
 of how this site describes the Foundation.
 
 - [The Bundu Foundation](https://bundu.org): research, open standards, and the open data commons
+- **Offline-first** is part of the Foundation's research, not a Nyuchi product feature: infrastructure for the way the internet actually reaches people (offline-first, multilingual, designed for a phone shared by five people). It sits closely with SiafuDB, one of the Foundation's open-source projects. The Foundation publishes what it learns, including results that do not go its way
 - [Mzizi](https://mzizi.dev): a programming-language research project, at Phase 0, that publishes every benchmark run including the ones showing no advantage. Not a design system: its brand system and components support the language
 
 ### Pillars

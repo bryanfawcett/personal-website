@@ -3,6 +3,32 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
+/*
+ * The blog is rendered per request, so its posts are not prerendered routes and the
+ * sitemap integration cannot see them. Ask Sanity for the slugs at build time instead.
+ * If Sanity is unreachable the sitemap is built without them rather than failing the build.
+ */
+const SANITY = 'https://zsx9erk1.apicdn.sanity.io/v2025-02-19/data/query/production';
+const SITE = 'https://bryanfawcett.com';
+/** @type {Map<string, string>} url -> ISO last-modified */
+const postDates = new Map();
+try {
+  const q = '*[_type == "adventure" && defined(slug.current)]{language, "slug": slug.current, _updatedAt}';
+  const res = await fetch(`${SANITY}?perspective=published&query=${encodeURIComponent(q)}`, {
+    signal: AbortSignal.timeout(8000),
+  });
+  if (res.ok) {
+    const { result } = await res.json();
+    for (const post of result ?? []) {
+      const prefix = post.language === 'zh' ? '/zh' : '';
+      postDates.set(`${SITE}${prefix}/adventures/${post.slug}`, post._updatedAt);
+    }
+  }
+} catch {
+  // Sitemap without posts is better than no build.
+}
+const buildDate = new Date().toISOString();
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://bryanfawcett.com',
@@ -69,6 +95,11 @@ export default defineConfig({
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', zh: 'zh-Hans' },
+      },
+      customPages: [...postDates.keys()],
+      serialize(item) {
+        item.lastmod = postDates.get(item.url) ?? buildDate;
+        return item;
       },
     }),
   ],
