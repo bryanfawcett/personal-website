@@ -3,7 +3,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
-import { journey, nyuchiWork, openQuestions, pinkAptitudes, schoolWork } from '../data/origins.js';
+import {
+  bunduWork,
+  journey,
+  nyuchiWork,
+  openQuestions,
+  pinkAptitudes,
+  schoolWork,
+} from '../data/origins.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 import { keyedTo } from '../brand/minerals.js';
@@ -118,6 +125,28 @@ const PINK_URL = 'https://www.danpink.com/books/whole-new-mind/';
         <ul class="work-list">
           {
             nyuchiWork(lang).map((item) => (
+              <Panel as="li" mineral={item.mineral}>
+                <h3>
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      {item.title}
+                    </a>
+                  ) : (
+                    item.title
+                  )}
+                </h3>
+                <p>{item.detail}</p>
+              </Panel>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow is-open">{t('origins.now_bundu')}</p>
+        <ul class="work-list">
+          {
+            bunduWork(lang).map((item) => (
               <Panel as="li" mineral={item.mineral}>
                 <h3>
                   {item.href ? (

@@ -2575,10 +2575,12 @@ figcaption {
 
 /* --- columns --- */
 
+/* Three strands (school, Nyuchi, the Foundation): 17rem is the narrowest a card
+ * reads comfortably, which lets all three sit abreast from about 960px. */
 .columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
-  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  gap: var(--space-7);
   margin-block-start: var(--space-8);
 }
 
