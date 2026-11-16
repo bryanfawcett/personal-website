@@ -2,23 +2,22 @@
 /**
  * The draughtsman, as a plate on the sheet.
  *
- * The photograph is the one raster on the site, so it gets the same treatment
- * every other container does — a hairline, corner brackets, a ruled caption —
- * rather than sitting on the sheet as a snapshot. Desaturated only part of the
- * way: enough to belong to the drawing, not so far that the face goes muddy.
+ * The markup is Rust (`tools/components/src/portrait.rs`, rendered by `pnpm fragments`).
+ * Astro keeps the image pipeline: `astro:assets` resizes the one raster with sharp at build
+ * time and content-hashes the URLs, which is why the source lives in src/assets rather than
+ * public/. Those hashed values fill the fragment's `%SRC%` and `%SRCSET%`.
  *
- * `astro:assets` resizes it with sharp at build time (see `imageService` in
- * astro.config.mjs), which is why the source lives in src/assets rather than
- * public/.
+ * Fragments exist per variant (see render.rs); a new use needs one.
  */
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import source from '../assets/bryan-fawcett.png';
-import { defaultLang, useTranslations, type Lang } from '../i18n/ui.js';
+import { defaultLang, type Lang } from '../i18n/ui.js';
+import { fill, fragment } from './fragments.js';
 
 interface Props {
   /** Rendered width in px. Height follows the source's 835×1052. */
   width?: number;
-  /** Ruled caption beneath the plate. */
+  /** Ruled caption beneath the plate (baked into the fragment). */
   caption?: string | undefined;
   /** Above the fold — skip lazy loading. */
   eager?: boolean;
@@ -26,24 +25,17 @@ interface Props {
   lang?: Lang;
 }
 
-const { width = 200, caption, eager = false, class: className, lang = defaultLang } = Astro.props;
-const t = useTranslations(lang);
+const { width = 200, eager = false, class: className, lang = defaultLang } = Astro.props;
 const height = Math.round((width * source.height) / source.width);
+
+if (className !== 'quote__portrait' || !eager || width !== 176) {
+  throw new Error('Portrait: no Rust fragment for this variant; add one in tools/components/src/bin/render.rs');
+}
+const img = await getImage({ src: source, width, height, densities: [1, 2] });
+const html = fill(fragment(`portrait.${lang}.quote`), {
+  SRC: img.src,
+  SRCSET: img.srcSet.attribute,
+});
 ---
 
-<figure class:list={['portrait', className]}>
-  <span class="portrait__plate">
-    <span class="panel__rule" aria-hidden="true"></span>
-    <Image
-      src={source}
-      alt={t('nav.portrait_alt')}
-      width={width}
-      height={height}
-      densities={[1, 2]}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchpriority={eager ? 'high' : 'auto'}
-    />
-  </span>
-  {caption && <figcaption>{caption}</figcaption>}
-</figure>
-
+<Fragment set:html={html} />
