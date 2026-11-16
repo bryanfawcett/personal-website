@@ -2,9 +2,11 @@
 /**
  * A surface drafted onto the sheet.
  *
- * Carries the span that draws the four corner brackets, and an optional figure
- * tag notched into the top rule. Use this rather than applying `.panel` by hand
- * so every container gets its corners.
+ * A hairline-bordered card at the `--radius-lg` token, with an optional figure
+ * tag notched into the top rule. Use this rather than applying `.panel` by hand.
+ *
+ * Corner brackets are opt-in (`frame`): a card is a plain hairline, and the
+ * brackets are kept for things that frame something larger, such as the deck.
  *
  * Any extra attribute (href, target, style, …) passes through to the element.
  */
@@ -33,18 +35,20 @@ export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
    * `MineralName` is a union off the mineral list, so a typo fails astro check.
    */
   mineral?: MineralName | undefined;
+  /** Draw the corner brackets. Off for cards; on for a frame around something larger. */
+  frame?: boolean | undefined;
   /** Element to render as. Defaults to `article`. */
   as?: T | undefined;
 };
 
-const { fig, mineral, as: Element = 'article', class: className, style, ...rest } = Astro.props;
+const { fig, mineral, frame = false, as: Element = 'article', class: className, style, ...rest } = Astro.props;
 
 const keyed = mineral ? `${keyedTo(mineral)};` : '';
 const styles = [keyed, style].filter(Boolean).join(' ');
 ---
 
 <Element class:list={['panel', className]} style={styles || undefined} {...rest}>
-  <span class="panel__rule" aria-hidden="true"></span>
+  {frame && <span class="panel__rule" aria-hidden="true"></span>}
   {fig && <span class="fig">{fig}</span>}
   <slot />
 </Element>
