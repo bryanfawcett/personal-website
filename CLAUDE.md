@@ -134,7 +134,7 @@ bryanfawcett.com, built with:
   framework. The header is laid out as Nyuchi Learning's (learning.nyuchi.com):
   sticky, 64px (80px from 64rem); portrait and serif name, text links in the
   middle, the language switcher, a ghost theme toggle and the "Book a Call"
-  pill. **On a phone (below 56rem) the links drop to a second row that scrolls
+  pill. **On a phone (below 68rem) the links drop to a second row that scrolls
   sideways, ending in the language switcher — never a hamburger.** Every
   destination stays visible and one tap away, and a row needs no script to be
   accessible where a disclosure would. The bar keeps brand, toggle and pill;
@@ -902,3 +902,12 @@ compares both as canonical HTML (attribute and class order and whitespace are ig
 elements, attribute values and text must match). It exits non-zero on any difference and
 prints the first differing lines. A port is not done until it passes on every page in both
 languages. Ported so far: `MziziFooter`.
+
+### The design system is a skill, generated from the site
+
+`pnpm design-system` (after `pnpm build`) writes `.claude/skills/fawcett-design-system/`:
+tokens, fonts, components.css, 18 documented components with previews, and `adopt.sh`
+for other repos. `design-system:check` runs in CI. Tokens added for it: `--text-*`,
+`--motion-*` (`fast/normal/slow/page`), `--z-*`, `--radius-xs`, half-step spacing. The
+grid columns are `.col-4`/`.col-6`; `prefers-contrast: more` and `forced-colors` are
+handled at the end of `global.css`. Edit the site, then regenerate; never edit the skill.

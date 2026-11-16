@@ -73,12 +73,18 @@ fn main() {
             .and_then(|s| s.split_once(' ').map(|(_, rest)| rest.trim().to_string()))
             .unwrap_or_default();
 
-        let rust = footer(&site, lang, &sheet, year).into_string();
+        // The route the page passed: read back from whichever link the footer marked current.
+        let path = Selector::parse("a[aria-current=\"page\"]")
+            .ok()
+            .and_then(|sel| Html::parse_fragment(&astro).select(&sel).next().and_then(|e| e.value().attr("href").map(str::to_string)))
+            .unwrap_or_default();
+
+        let rust = footer(&site, lang, &sheet, year, &path).into_string();
         let (a, b) = (normalize(&astro), normalize(&rust));
         checked += 1;
         let name = page.strip_prefix(&dir).unwrap_or(page).display();
         if a == b {
-            println!("✓ footer {name} ({}, sheet {sheet}, {year})", lang.code());
+            println!("✓ footer {name} ({}, sheet {sheet}, {year}, current {})", lang.code(), if path.is_empty() { "none" } else { &path });
         } else {
             failures += 1;
             println!("✗ footer {name} ({}, sheet {sheet}, {year})", lang.code());

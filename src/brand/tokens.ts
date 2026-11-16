@@ -199,15 +199,77 @@ export const LABEL = {
  */
 export const SPACE = {
   1: '0.25rem',
+  /*
+   * The half steps. 0.375, 0.625, 0.875 and 1.75rem each appeared six to eight times as a
+   * literal: real values the whole-number scale had no name for.
+   */
+  '1-5': '0.375rem',
   2: '0.5rem',
+  '2-5': '0.625rem',
   3: '0.75rem',
+  '3-5': '0.875rem',
   4: '1rem',
   5: '1.25rem',
   6: '1.5rem',
+  '6-5': '1.75rem',
   7: '2rem',
   8: '2.5rem',
   9: '3rem',
   10: '4rem',
+} as const;
+
+/**
+ * The type scale.
+ *
+ * Fourteen font sizes had been written as literals (1.0625rem, 1.1875rem, 1.3125rem,
+ * 1.4375rem ...), most of them one pixel apart and none meaning anything different. They
+ * collapse to these steps; `--label` (0.9375rem) is the step below, and the fluid sizes
+ * that were inline `clamp()`s are named here so a page title is one edit, not a hunt.
+ *
+ * Nothing sits below `--label`: APCA's minimum size for the ink these labels use at weight
+ * 600 is 14.6px, so the scale starts where the contrast gate says it may.
+ */
+export const TEXT = {
+  sm: '1rem',
+  body: '1.0625rem',
+  card: '1.125rem',
+  lede: '1.1875rem',
+  h3: '1.375rem',
+  title: '1.625rem',
+  section: '2.125rem',
+  'fluid-section': 'clamp(1.625rem, 1.2rem + 1.8vw, 2.125rem)',
+  'fluid-display': 'clamp(2.75rem, 10vw, 6.5rem)',
+  'fluid-page': 'clamp(2.5rem, 1.6rem + 5vw, 4.5rem)',
+  'fluid-sub': 'clamp(1.0625rem, 2.2vw, 1.3125rem)',
+  'fluid-big': 'clamp(1.375rem, 3.6vw, 2.0625rem)',
+  'fluid-pull': 'clamp(1.25rem, 1rem + 1.2vw, 1.625rem)',
+} as const;
+
+/**
+ * How long things take.
+ *
+ * Five durations (0.15, 0.2, 0.25, 0.45 and 0.6s) had been written inline. A hover is
+ * `fast`, a state change `normal`, a hairline drawing itself `slow`, a page unrolling
+ * `page`. Everything still stops under `prefers-reduced-motion`.
+ */
+export const MOTION = {
+  fast: '0.15s',
+  normal: '0.25s',
+  slow: '0.45s',
+  page: '0.6s',
+} as const;
+
+/** What sits over what. The loose values 1, 3, 40 and 100 each had a meaning; these name it. */
+export const LAYER = {
+  raised: '1',
+  content: '3',
+  header: '40',
+  overlay: '100',
+} as const;
+
+/** The one radius the Bundu scale lacks: inline code and small chips. */
+export const RADIUS = {
+  xs: '4px',
 } as const;
 
 /**
@@ -423,6 +485,10 @@ const INVARIANT: ReadonlyArray<readonly [string, string, Group]> = [
   ['Measure', 'measure', MEASURE],
   ['Label', 'label', LABEL],
   ['Space', 'space', SPACE],
+  ['Text', 'text', TEXT],
+  ['Motion', 'motion', MOTION],
+  ['Layer', 'z', LAYER],
+  ['Radius', 'radius', RADIUS],
   ['Mineral', 'mineral', MINERAL],
   ['Grid', 'grid', GRID],
   ['Type', '', TYPE],
