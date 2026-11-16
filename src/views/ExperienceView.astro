@@ -6,6 +6,7 @@ import Panel from '../components/Panel.astro';
 import { coreSkills, credentials, roles } from '../data/experience.js';
 import { nyuchiProjectsByGroup, sasProjects } from '../data/work.js';
 import { MINERALS } from '../brand/minerals.js';
+import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
 interface Props {
@@ -165,5 +166,9 @@ const sas = sasProjects(lang);
         )
       }
     </div>
+
+    <p class="prose">
+      <a href={localizePath('/how-this-was-built', lang)}>{t('build.page_link')}</a>
+    </p>
   </section>
 </BaseLayout>

@@ -234,6 +234,18 @@ export const ui = {
       'If you work in education, assessment, or anywhere the gap between capability and credentials shows up — I’d like to hear how it looks from where you sit.',
     'origins.cta_book': 'Book a call',
 
+    // --- how this was built ---
+    'build.eyebrow': 'Notes · How it was made',
+    'build.title': 'How this website was built',
+    'build.description':
+      'How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, a Sanity blog, and the move from TypeScript to Rust, including what broke along the way.',
+    'build.lede':
+      'The build story: what the site is made of, why each piece is there, what broke, and where it is going.',
+    'build.note': 'show the work',
+    'build.source': 'The longer version, with the commands, is in the repository.',
+    'build.source_link': 'Read it on GitHub',
+    'build.page_link': 'How this site was built',
+
     // --- minerals ---
     'minerals.eyebrow': 'Sheet 05 · Legend',
     'minerals.title': 'The palette',
@@ -533,6 +545,17 @@ export const ui = {
     'origins.cta_lede':
       '如果你从事教育、评估，或身处任何能力与文凭之间的落差会显现的地方——我很想听听在你那里，它是什么样子。',
     'origins.cta_book': '预约通话',
+
+    // --- how this was built ---
+    'build.eyebrow': '笔记 · 如何做成',
+    'build.title': '这个网站是怎么建成的',
+    'build.description':
+      'bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、Sanity 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。',
+    'build.lede': '构建的故事：网站由什么组成、每一部分为何存在、哪里出过问题，以及接下来去向何处。',
+    'build.note': '展示过程',
+    'build.source': '带有命令的更完整版本在代码仓库中。',
+    'build.source_link': '在 GitHub 上阅读',
+    'build.page_link': '这个网站是怎么建成的',
 
     // --- minerals ---
     'minerals.eyebrow': '图 05 · 图例',

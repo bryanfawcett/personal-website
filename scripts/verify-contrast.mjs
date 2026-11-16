@@ -44,8 +44,8 @@ const WIDTHS = (process.argv[3] || '1280,390').split(',').map(Number);
  */
 const SCHEMES = (process.argv[4] || 'light,dark').split(',');
 const ROUTES = [
-  '/', '/experience', '/adventures', '/origins-with-perspective', '/minerals', '/book', '/nope',
-  '/zh', '/zh/experience', '/zh/adventures', '/zh/origins-with-perspective', '/zh/minerals', '/zh/book',
+  '/', '/experience', '/adventures', '/origins-with-perspective', '/minerals', '/how-this-was-built', '/book', '/nope',
+  '/zh', '/zh/experience', '/zh/adventures', '/zh/origins-with-perspective', '/zh/minerals', '/zh/how-this-was-built', '/zh/book',
 ];
 
 /*
