@@ -509,8 +509,15 @@ button {
   transition: --corner 0.45s ease-out;
 }
 
+.panel {
+  transition: border-color 0.2s ease-out;
+}
+
+/* A card answers the pointer with a stronger hairline; a framed panel also
+ * closes its brackets into the full rule. */
 .panel:hover {
   --corner: 50%;
+  border-color: var(--ink-faint);
 }
 
 /* Light catching the top edge, as it does on a sheet lifted off the board. */
