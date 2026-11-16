@@ -2,14 +2,16 @@
 /**
  * A surface drafted onto the sheet.
  *
- * Carries the span that draws the four corner brackets, and an optional figure
- * tag notched into the top rule. Use this rather than applying `.panel` by hand
- * so every container gets its corners.
+ * A hairline-bordered card at the `--radius-lg` token, with an optional figure
+ * tag notched into the top rule. Use this rather than applying `.panel` by hand.
+ *
+ * Corner brackets are opt-in (`frame`): a card is a plain hairline, and the
+ * brackets are kept for things that frame something larger, such as the deck.
  *
  * Any extra attribute (href, target, style, …) passes through to the element.
  */
 import type { HTMLAttributes } from 'astro/types';
-import { keyedTo, type MineralName } from '../brand/minerals.js';
+import type { ToneName } from '../brand/palette.js';
 
 type Tag = 'section' | 'article' | 'div' | 'li' | 'a';
 
@@ -30,21 +32,22 @@ export type Props<T extends Tag = 'article'> = HTMLAttributes<T> & {
    * property and `--mineral-weight` rather than naming a colour or a thickness
    * of its own. One property, not the eight this replaced.
    *
-   * `MineralName` is a union off the mineral list, so a typo fails astro check.
+   * Rendered as `data-mineral`; the stylesheet (generated into tokens.css) turns the
+   * name into the property. `ToneName` is a union off the palette, so a typo fails
+   * astro check.
    */
-  mineral?: MineralName | undefined;
+  mineral?: ToneName | undefined;
+  /** Draw the corner brackets. Off for cards; on for a frame around something larger. */
+  frame?: boolean | undefined;
   /** Element to render as. Defaults to `article`. */
   as?: T | undefined;
 };
 
-const { fig, mineral, as: Element = 'article', class: className, style, ...rest } = Astro.props;
-
-const keyed = mineral ? `${keyedTo(mineral)};` : '';
-const styles = [keyed, style].filter(Boolean).join(' ');
+const { fig, mineral, frame = false, as: Element = 'article', class: className, ...rest } = Astro.props;
 ---
 
-<Element class:list={['panel', className]} style={styles || undefined} {...rest}>
-  <span class="panel__rule" aria-hidden="true"></span>
+<Element class:list={['panel', className]} data-mineral={mineral} {...rest}>
+  {frame && <span class="panel__rule" aria-hidden="true"></span>}
   {fig && <span class="fig">{fig}</span>}
   <slot />
 </Element>

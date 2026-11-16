@@ -16,7 +16,6 @@ import { renderBody } from '../sanity/portable-text.js';
 import { DEFAULT_MINERAL, type Adventure } from '../sanity/types.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
-import { keyedTo } from '../brand/minerals.js';
 
 interface Props {
   lang: Lang;
@@ -101,7 +100,7 @@ const body = adventure ? renderBody(adventure.body) : '';
 
         <article
           class="section reveal adventure"
-          style={keyedTo(adventure.mineral ?? DEFAULT_MINERAL)}
+          data-mineral={adventure.mineral ?? DEFAULT_MINERAL}
         >
           <span class="adventure__bar" aria-hidden="true" />
 

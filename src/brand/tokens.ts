@@ -10,6 +10,7 @@
  */
 
 import { MINERALS } from './minerals.js';
+import { EXPERIMENTAL, HERITAGE } from './palette.js';
 
 /**
  * The sheet, with wells cut into it.
@@ -146,17 +147,19 @@ export const MARKS = {
 } as const;
 
 /**
- * Line-length caps.
+ * Line length: text fills its container.
  *
- * Measured, not guessed. Cormorant is an unusually narrow face — about 6.8px
- * per character at 18px — so a 37rem column runs to 87 characters, well past
- * the 45-85 that stays comfortable to track. Anything holding running prose
- * takes `--measure`; larger type takes `--measure-wide`, which is the same
- * character count at a bigger size.
+ * These were caps once (33rem and 28rem, from a readability pass that held a line to
+ * 45-85 characters), and every lede, paragraph, pull quote and aside stopped about
+ * halfway across the column, leaving the right half of each section empty. The
+ * owner's call is that text spans the full width of its container, so both tokens are
+ * `100%`. They stay tokens rather than being deleted: everything that holds running
+ * prose still reads `--measure` (and larger type `--measure-wide`), so a cap, if one
+ * is ever wanted again, is one edit here and not a hunt through the stylesheet.
  */
 export const MEASURE = {
-  base: '33rem',
-  wide: '28rem',
+  base: '100%',
+  wide: '100%',
 } as const;
 
 /**
@@ -485,6 +488,23 @@ export function tokensToCss(): string {
   lines.push(':root:where([data-theme="dark"], .dark) {');
   lines.push(...themed('dark', '  '));
   lines.push('}');
+
+  // Mineral keying. `data-mineral="gold"` on any element sets the one property
+  // every mineral mark reads, `--mineral`, and for the seven minerals the
+  // container and on-container that theme a surface in its colour. It used to be
+  // an inline style written by `keyedTo()` on every element; as an attribute the
+  // markup carries a name and the stylesheet carries the colour, which also lets a
+  // page keep `style-src 'self'` with no inline-style allowance.
+  lines.push('/* mineral keying */');
+  for (const m of MINERALS) {
+    lines.push(
+      `[data-mineral="${m.name}"] { --mineral: var(--mineral-${m.name}); --mineral-container: var(--mineral-${m.name}-container); --mineral-on: var(--mineral-${m.name}-on-container); }`,
+    );
+  }
+  // The other fourteen families have a colour and no container pairing.
+  for (const f of [...HERITAGE, ...EXPERIMENTAL]) {
+    lines.push(`[data-mineral="${f.name}"] { --mineral: var(--color-${f.name}); }`);
+  }
   return lines.join('\n');
 }
 

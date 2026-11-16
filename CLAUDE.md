@@ -72,17 +72,24 @@ home page as proof of how the work is done: measured, and published either way.
 
 ## Quick Reference
 
+All scripts run through Vite+ (`vp run <script>`, or `pnpm <script>`, which calls the same
+thing). `vp build` itself cannot build Astro (it fails with `Cannot resolve entry module
+index.html`), so `build`, `dev` and `check` call `vp exec astro …`.
+
 ```bash
 pnpm dev        # dev server at localhost:4321
 pnpm check      # astro check (TypeScript under `strictest`) — must stay at 0 errors
 pnpm build      # production build to dist/
-pnpm preview    # run the built site in workerd via wrangler
+pnpm preview    # cf dev (delegates to astro dev; no asset layer)
 pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
 pnpm verify:images  # pin the hand-rolled Sanity image URL format
 pnpm verify:contrast # APCA: every text block, every route, desktop and phone
 pnpm verify:stylesheet # every var() resolves; no base rule outranks a class
+pnpm verify:images:rs     # Rust port of verify:images (needs `rustup`; see tools/)
+pnpm tokens         # regenerate src/styles/tokens.css from src/brand/tokens.ts
+pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stricter than the JS one
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
@@ -157,7 +164,7 @@ src/
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
   pages/          Thin wrappers: one per route per language, `zh/` for Chinese
   views/          The sheets themselves — one per route, both languages
-  styles/         fonts.css (generated), global.css
+  styles/         fonts.css and tokens.css (both generated), global.css
 bryans-adventures/  The blog's Sanity Studio. React, and NOT part of the build
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
@@ -167,10 +174,11 @@ public/fonts/     Self-hosted woff2, Latin + Latin Extended
 
 Almost every route is prerendered and served straight from static assets. The four
 blog routes under `/adventures` are not: they read Sanity per request, so publishing
-a post is live without a rebuild. That one exception is why `wrangler.jsonc` has a
-`main` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
-a file in this repo. `@astrojs/cloudflare` emits the static tree to `dist/client` and
-the server bundle to `dist/server`.
+a post is live without a rebuild. That one exception is why `cloudflare.config.ts` has an
+`entrypoint` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
+a file in this repo. `@astrojs/cloudflare` emits the static tree and the server bundle. With
+`cloudflare.config.ts` in place that is `.cloudflare/output/v0/workers/default/`
+(`assets/` and `bundle/`), not `dist/`.
 
 Three things about that split bite, and all three cost real debugging time:
 
@@ -180,9 +188,10 @@ Three things about that split bite, and all three cost real debugging time:
   routes listed in `assets.run_worker_first`, `/adventures` 404s for every real
   visitor while `curl` returns a clean 200 from the same URL. Always test navigation
   with the header set.
-- **The adapter bakes the assets config into `dist/server/wrangler.json` at build
-  time,** and that is what takes effect. Editing `wrangler.jsonc` alone changes
-  nothing until `pnpm build` runs again — including under `wrangler dev`.
+- **The assets config is baked in at build time.** `cloudflare.config.ts`
+  (`worker.assets`) is the Cloudflare CLI (`cf`) config and replaces
+  `wrangler.jsonc`; `cf build` writes it to `.cloudflare/output/`. Editing it
+  changes nothing until the build runs again.
 - **`session: false`** in `astro.config.mjs`. With a server entrypoint the adapter
   otherwise declares a KV binding for Astro's session store, which then has to exist
   in Cloudflare before a deploy goes through. Nothing here has a session.
@@ -260,7 +269,7 @@ before adding a colour, a radius or a face, and prefer its names:
 - **Panels take `--radius-lg` (14px).** The corner brackets follow the curve.
 - **Focus is a 2px cobalt ring, 2px offset** (`--ring`).
 - **Theme a surface in its brand's mineral.** The system and audience cards sit
-  on their mineral's dark container (`keyedTo()` sets `--mineral-container`
+  on their mineral's dark container (`data-mineral` sets `--mineral-container`
   and `--mineral-on` alongside `--mineral`); Nyuchi is gold, Bundu copper,
   Mukoko tanzanite, Shamwari sodalite.
 
@@ -271,8 +280,8 @@ The **mineral rail** is still the signature — seven segments, one per mineral,
 running vertically down the binding edge of the sheet.
 
 **One mineral property, one weight.** Everything keyed to a mineral reads
-`--mineral`, set by the `mineral` prop on `<Panel>` or by `keyedTo()` for plain
-elements, and every mineral mark is `--mineral-weight` thick. It used to be
+`--mineral`, set by a `data-mineral="gold"` attribute (the `mineral` prop on
+`<Panel>` writes it; on a plain element write it yourself), and every mineral mark is `--mineral-weight` thick. It used to be
 eight property names for one idea — `--panel-mineral`, `--row-mineral`,
 `--stop-mineral`, `--m` and four more — so changing how a mineral is expressed
 meant finding all eight.
@@ -399,6 +408,12 @@ borders on panels. That was the earlier treatment and it made every container
 read as a card floating over the sheet instead of part of it.
 
 ### Measure is a token, not a guess
+
+> **Current decision (16 November 2026): text fills its container.** `--measure` and
+> `--measure-wide` are both `100%`. The owner found every lede, paragraph and pull quote
+> stopping halfway across its column. The reasoning below is the readability case for a
+> cap and is kept because the tokens are still how a cap would be reintroduced: one edit
+> to `MEASURE` in `tokens.ts`. Expect 100+ characters per line at desktop width.
 
 A column that *looks* right is routinely wrong, and by a different amount for
 each face: Cormorant ran about 6.8px per character at 18px and IBM Plex Serif
@@ -705,11 +720,11 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
     answers differently. This hid a blog that 404'd for every real visitor.
 15. **`<Image>` in anything the blog pages render.** See *The portrait* — it
     resolves to a `/_image` endpoint that does not exist on on-demand routes.
-16. **Editing `wrangler.jsonc` and re-running `wrangler dev`.** The adapter
-    baked the old assets config into `dist/server/wrangler.json`. Rebuild.
-17. **Auditing against `wrangler dev` after editing source.** It serves
-    `dist/`, so an un-rebuilt change measures the previous build and reports
-    the previous numbers. `astro dev` is the one that reflects an edit.
+16. **Editing `cloudflare.config.ts` without rebuilding.** The assets config is
+    baked into the build output. Rebuild.
+17. **`cf` rewrites `tsconfig.json`.** `cf build` adds
+    `.cloudflare/types/index.d.ts` to `include`, which breaks `pnpm check` with
+    three `ImageMetadata` errors in `Portrait.astro`. Revert that line.
 18. **Painting the blueprint grid in `--ink-*`.** See *Colour comes from
     `src/brand/`* — the ruling gets `--rule-*`, and re-coupling them is the
     site's worst contrast regression, not a tint.
@@ -730,8 +745,8 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 
 Cloudflare's GitHub app deploys the Worker; the repo has no deploy workflow of
 its own, and adding one back would mean two things racing for the same Worker.
-To push a build by hand, `npx wrangler deploy` with `CLOUDFLARE_API_TOKEN` in
-the environment.
+To push a build by hand, `cf deploy` (or `pnpm deploy`) with `CLOUDFLARE_API_TOKEN`
+in the environment.
 
 ### CI (every push and PR)
 
@@ -759,7 +774,7 @@ touch, or a single antialiased pixel of a button's rim decides the button's
 score.
 
 It runs against `astro dev`, not the built Worker: it reads rendered pixels, so
-nothing it measures depends on the Workers asset layer, and `wrangler dev` does
+nothing it measures depends on the Workers asset layer, and a built-Worker server does
 not reliably survive a couple of minutes of browser-driven load. A server that
 dies mid-run is the one failure mode a gate must not have, which is why a
 navigation error is fatal there while a 5xx from an unreachable Sanity only
@@ -844,3 +859,46 @@ For context, the broader ecosystem uses:
 - **Payments:** Stripe
 - **Deployment:** Cloudflare Workers
 - **Brand system:** Mzizi (mzizi.dev)
+
+### Tokens are a generated file
+
+`src/styles/tokens.css` is written by `pnpm tokens` from `src/brand/tokens.ts` and
+inlined by `BaseLayout` (`?raw`). `dev` and `build` regenerate it, and CI fails if
+the committed copy is stale (`pnpm tokens --check`). It exists so tools that are not
+TypeScript, the Rust verifiers, can read the same CSS the page ships. Edit
+`tokens.ts`, never `tokens.css`.
+
+`verify:stylesheet:rs` parses the CSS rather than matching lines, and is stricter
+than the JS script: that one only checks the last selector of a multi-line selector
+list, so `.panel a,` followed by `.other {` slipped past its base-rule check. The JS
+script stays until the Rust one has run in CI for a while.
+
+### Markup names things, the stylesheet colours them
+
+No component writes an inline `style` to colour something. A mineral is keyed with
+`data-mineral="<name>"`, and the rules that turn the name into `--mineral` (plus the
+container and on-container for the seven minerals) are generated into `tokens.css`
+from `minerals.ts` and `palette.ts`: all 21 Mzizi families, so a heritage tone or an
+experimental family keys a surface the same way a mineral does. The Panel's `mineral`
+prop is typed `ToneName`, so a typo fails `astro check`.
+
+Positioning that used to be inline lives in classes too (`.schematics__1`–`3`), and the
+footer's mineral dots are `<span data-mineral>` coloured by `var(--mineral)`. This is the
+same pattern `@bundu/ui`'s own mineral strip uses, and it means a page can keep
+`style-src 'self'` with no inline-style allowance. Do not reintroduce `keyedTo()` or a
+`style={}` for colour.
+
+**Corner brackets are opt-in.** `<Panel frame>` draws them, for something that frames
+something larger (the deck embed). A card is a hairline at `--radius-lg` and nothing else.
+
+### Components in Rust are proven against Astro, not eyeballed
+
+`tools/components` is the Rust port of the site's components. Each one renders the same
+HTML as its Astro original from the exported data (`src/data/generated/site.json` and
+`ui.json`, written by `pnpm site-data`), and `pnpm verify:components:rs` proves it: it
+finds the component as Astro shipped it in the built pages, reads the render's inputs
+(language, sheet, year) back out of that markup, renders the Rust version from them, and
+compares both as canonical HTML (attribute and class order and whitespace are ignored;
+elements, attribute values and text must match). It exits non-zero on any difference and
+prints the first differing lines. A port is not done until it passes on every page in both
+languages. Ported so far: `MziziFooter`.

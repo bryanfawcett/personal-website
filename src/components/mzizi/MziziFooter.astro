@@ -14,7 +14,7 @@
  * As the Rust build does, the year is computed once, here at build time,
  * rather than in a client render.
  */
-import { MINERALS, mineralVar } from '../../brand/minerals.js';
+import { MINERALS } from '../../brand/minerals.js';
 import { NAV, PROFILE, socialsInLang } from '../../data/profile.js';
 import { localizePath } from '../../i18n/routing.js';
 import { useTranslations, type Lang } from '../../i18n/ui.js';
@@ -71,7 +71,7 @@ const sections: { title: string; links: FooterLink[] }[] = [
   aria-label={t('footer.label')}
 >
   <div class="mzizi-footer__strip" aria-hidden="true">
-    {MINERALS.map((m) => <span style={`background: ${mineralVar(m.name)}`}></span>)}
+    {MINERALS.map((m) => <span data-mineral={m.name}></span>)}
   </div>
 
   <div class="mzizi-footer__inner">
@@ -113,7 +113,7 @@ const sections: { title: string; links: FooterLink[] }[] = [
         {t('tb.drawn_by')} B.D.F. · {t('tb.sheet')} {sheet} · {t('tb.rev')} A — {year}
       </p>
       <div class="mzizi-footer__dots" aria-hidden="true">
-        {MINERALS.map((m) => <span style={`background: ${mineralVar(m.name)}`}></span>)}
+        {MINERALS.map((m) => <span data-mineral={m.name}></span>)}
       </div>
     </div>
   </div>

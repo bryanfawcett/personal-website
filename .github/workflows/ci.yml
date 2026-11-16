@@ -16,8 +16,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       # Astro 7 requires Node >= 22.12.
       - name: Setup Node.js
@@ -29,11 +27,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generated tokens are committed
+        run: pnpm tokens --check
+
+      - name: Generated site data is committed
+        run: pnpm site-data --check
+
       - name: Type check
-        run: pnpm check
+        run: pnpm exec vp run check
 
       - name: Build
-        run: pnpm build
+        run: pnpm exec vp run build
 
       - name: Verify every self-hosted font resolves
         run: python3 scripts/verify-fonts.py
@@ -43,14 +47,14 @@ jobs:
       # a broken image on a live page, not as a build error, so the format is
       # pinned here — same reason verify-fonts.py exists.
       - name: Verify the Sanity image URL format
-        run: pnpm verify:images
+        run: pnpm exec vp run verify:images
 
       # Two things the rendered-pixel contrast gate structurally cannot see: a
       # var() that resolves to nothing (it falls back to `unset` and inherits,
       # so there is nothing to measure), and a base rule that outranks a class
       # on specificity. The second shipped a white-on-white call to action.
       - name: Verify the stylesheet
-        run: pnpm verify:stylesheet
+        run: pnpm exec vp run verify:stylesheet
 
   contrast:
     name: APCA contrast
@@ -61,8 +65,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,7 +81,7 @@ jobs:
       # Served by `astro dev`, not the built Worker. This check reads rendered
       # pixels — the same components, the same CSS, the same per-request blog
       # routes — and nothing it measures depends on the Workers asset layer.
-      # `wrangler dev` does not survive a couple of minutes of browser-driven
+      # a built-Worker server does not survive a couple of minutes of browser-driven
       # load reliably, and a server that dies mid-run is the one failure mode a
       # gate must not have.
       #
@@ -88,7 +90,7 @@ jobs:
       # says it is ready, and every IPv4 request to the same port is refused.
       - name: Serve the site
         run: |
-          pnpm dev --port 4321 --host 127.0.0.1 &
+          pnpm exec vp run dev --port 4321 --host 127.0.0.1 &
           npx --yes wait-on --timeout 120000 http://127.0.0.1:4321/
 
       # Every text block on every route, at desktop and phone width, scored
@@ -96,7 +98,7 @@ jobs:
       # background-color, and held to APCA's minimum size for that contrast at
       # that weight.
       - name: Verify APCA contrast
-        run: pnpm verify:contrast
+        run: pnpm exec vp run verify:contrast
 
   audit:
     name: Security audit
@@ -107,8 +109,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

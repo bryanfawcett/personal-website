@@ -141,24 +141,3 @@ export function mineral(name: MineralName): Mineral {
 export function mineralVar(name: MineralName): string {
   return `var(--mineral-${name})`;
 }
-
-/**
- * Key an element to a mineral: `style={keyedTo('cobalt')}`.
- *
- * Everything that carries a mineral reads one property, `--mineral`, and this
- * is the only place the declaration is written. It used to be eight — panels
- * set `--panel-mineral`, schedule rows `--row-mineral`, journey stops
- * `--stop-mineral`, the mineral key just `--m` — eight names for one idea, so
- * changing how a mineral is expressed meant finding all eight. Prefer the
- * `mineral` prop on `<Panel>`; use this for the plain elements that are not
- * panels.
- */
-export function keyedTo(name: MineralName): string {
-  // The container and on-container ride along, so a surface can be themed in
-  // its mineral (Mzizi's rule) without a second prop.
-  return [
-    `--mineral: ${mineralVar(name)}`,
-    `--mineral-container: var(--mineral-${name}-container)`,
-    `--mineral-on: var(--mineral-${name}-on-container)`,
-  ].join('; ');
-}

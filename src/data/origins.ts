@@ -194,6 +194,17 @@ const NYUCHI_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
     },
   },
   {
+    title: 'Mukoko Weather',
+    detail:
+      "Forecasts and frost alerts for farming, mining, border posts and travel, built on the Foundation's open Weather Commons.",
+    mineral: 'tanzanite',
+    href: 'https://weather.mukoko.com',
+    zh: {
+      title: 'Mukoko Weather',
+      detail: '面向农业、采矿、边境口岸和出行的天气预报与霜冻预警，建立在基金会的开放天气数据库（Weather Commons）之上。',
+    },
+  },
+  {
     title: 'Mukoko Events',
     detail:
       'Community events and gatherings — grown out of nhimbe, the Shona tradition of working a field together.',
@@ -206,12 +217,59 @@ const NYUCHI_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
   },
 ];
 
+/**
+ * The Foundation's strand. Worded from www.bundu.org (home, /research and
+ * /projects, read 16 November 2026): a Zimbabwe company limited by guarantee whose
+ * main activity is research. No counts here: the live site's figures move, and
+ * CLAUDE.md allows a number only where a live site states it today.
+ */
+const BUNDU_WORK_SOURCE: readonly Bilingual<WorkItem, 'title' | 'detail'>[] = [
+  {
+    title: 'The Bundu Foundation',
+    detail:
+      'A Zimbabwean research foundation. Its main work is mapping infrastructure gaps in African and emerging markets and publishing the answers in the open.',
+    mineral: 'copper',
+    href: 'https://www.bundu.org',
+    zh: {
+      title: 'The Bundu Foundation（本都基金会）',
+      detail: '一家津巴布韦研究基金会，主要工作是研究非洲及新兴市场的基础设施缺口，并把答案公开发布。',
+    },
+  },
+  {
+    title: 'Open standards and research',
+    detail:
+      'Standards, frameworks and benchmarks that schools, builders and governments can adopt for free, including Mzizi: the design system this ecosystem is built with, and a research programming language still in Phase 0.',
+    mineral: 'copper',
+    href: 'https://www.bundu.org/research',
+    zh: {
+      title: '开放标准与研究',
+      detail:
+        '学校、开发者和政府都可以免费采用的标准、框架与基准测试，其中包括 Mzizi——整个生态所用的设计系统，同时也是一门仍处于第 0 阶段的研究型编程语言。',
+    },
+  },
+  {
+    title: 'Bundu Weather Commons',
+    detail:
+      'Open weather and agricultural data for Africa, held by the Foundation: ground readings, blended forecasts, climate normals and farm datasets, every record attributed.',
+    mineral: 'copper',
+    href: 'https://www.bundu.org/projects',
+    zh: {
+      title: 'Bundu Weather Commons',
+      detail: '由基金会持有的非洲开放天气与农业数据：地面观测、融合预报、气候常年值和农业数据集，每条记录都注明来源。',
+    },
+  },
+];
+
 export function schoolWork(lang: Lang): WorkItem[] {
   return listInLang(SCHOOL_WORK_SOURCE, lang);
 }
 
 export function nyuchiWork(lang: Lang): WorkItem[] {
   return listInLang(NYUCHI_WORK_SOURCE, lang);
+}
+
+export function bunduWork(lang: Lang): WorkItem[] {
+  return listInLang(BUNDU_WORK_SOURCE, lang);
 }
 
 export interface Aptitude {

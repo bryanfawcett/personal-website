@@ -199,9 +199,11 @@ export const ui = {
     'origins.now_eyebrow': 'Now',
     'origins.now_heading': 'What I’m working on',
     'origins.now_lede':
-      'Two halves of the same question — one inside a school, one across a continent.',
+      'Three strands of the same question — one inside a school, one in research, one across a continent.',
     'origins.now_sas': 'Singapore American School',
-    'origins.now_nyuchi': 'Nyuchi Africa',
+    // Mukoko is its own Bundu pillar; Nyuchi Africa operates the platforms.
+    'origins.now_nyuchi': 'Nyuchi Africa and Mukoko',
+    'origins.now_bundu': 'The Bundu Foundation',
     'origins.now_aside':
       'The Nyuchi work was built for places where credentials were never the thing that got you through. That is the same instinct I bring to the work at school.',
 
@@ -234,11 +236,11 @@ export const ui = {
 
     // --- minerals ---
     'minerals.eyebrow': 'Sheet 05 · Legend',
-    'minerals.title': 'The mineral rail',
+    'minerals.title': 'The palette',
     'minerals.description':
-      'Seven minerals from across Africa, one per segment of the rail down the edge of every page — what each stands for, where it is mined, and how it is used. Drawn from Mzizi’s brand system.',
+      'The Mzizi palette this site draws with: seven minerals from across Africa on the rail down every page, seven heritage tones named for the landscape, and seven experimental families — what each stands for and how it is used.',
     'minerals.lede':
-      'Seven segments run down the binding edge of every page on this site. Each is a mineral mined in Africa, and each carries a meaning the interface actually uses. This is the key.',
+      'Seven segments run down the binding edge of every page on this site: the minerals. They head a longer palette of 21 families, with seven heritage tones named for the African landscape and seven experimental ones still being tried. This is the key to all three.',
     'minerals.note': 'read the edge',
     'minerals.why_fig': 'Fig. 01 — Why stones',
     'minerals.why_heading': 'Why stones, and not a palette',
@@ -256,9 +258,9 @@ export const ui = {
     'minerals.why_p2':
       'That provenance is the point. Cobalt out of Katanga is in the phone you are reading this on. Naming the link colour after it is a small refusal to treat the material as abstract.',
     'minerals.why_p3_before': 'Mzizi is a ',
-    'minerals.why_p3_nyuchi': 'nyuchi',
+    'minerals.why_p3_bundu': 'Bundu',
     'minerals.why_p3_mid':
-      ' project in the Bundu ecosystem, built on the Ubuntu principle that gives the whole thing its shape — ',
+      ' project: a research programming language, and the brand system the whole ecosystem is built on, resting on the Ubuntu principle that gives it its shape — ',
     'minerals.why_p3_ubuntu': 'I am because we are',
     'minerals.why_p3_after': '. Its brand system, tokens and accessibility toolkit are at ',
     'minerals.why_p3_end': '.',
@@ -269,6 +271,17 @@ export const ui = {
     'minerals.key_means': 'Means',
     'minerals.key_mined': 'Mined in',
     'minerals.key_used': 'Used for',
+    'minerals.key_named': 'Named for',
+    'minerals.heritage_eyebrow': 'Sheet 05 · The heritage seven',
+    'minerals.heritage_note': 'the landscape',
+    'minerals.heritage_heading': 'The seven heritage tones',
+    'minerals.heritage_lede':
+      'Named for the land and its crafts rather than for a stone. Heritage tones set the mood of a surface, and this site’s own primary colour, river, is one of them.',
+    'minerals.experimental_eyebrow': 'Sheet 05 · The experimental seven',
+    'minerals.experimental_note': 'still being tried',
+    'minerals.experimental_heading': 'The seven experimental families',
+    'minerals.experimental_lede':
+      'Seven further families, spaced evenly around the colour wheel. Each has a value for both themes, but not yet the origin and meaning the minerals and heritage tones carry, so this page gives their colour and nothing it cannot back.',
 
     'minerals.a11y_fig': 'Fig. 02 — Accessibility',
     'minerals.a11y_heading': 'Every one of them, measured',
@@ -488,9 +501,10 @@ export const ui = {
 
     'origins.now_eyebrow': '当下',
     'origins.now_heading': '我正在做的事',
-    'origins.now_lede': '同一个问题的两半——一半在一所学校之内，一半横跨一整片大陆。',
+    'origins.now_lede': '同一个问题的三条线——一条在一所学校之内，一条在研究之中，一条横跨一整片大陆。',
     'origins.now_sas': 'Singapore American School（新加坡美国学校）',
-    'origins.now_nyuchi': 'Nyuchi Africa',
+    'origins.now_nyuchi': 'Nyuchi Africa 与 Mukoko',
+    'origins.now_bundu': 'The Bundu Foundation（本都基金会）',
     'origins.now_aside':
       'Nyuchi 的工作，是为那些文凭从来不是通行证的地方而建的。我带到学校工作里的，是同一种直觉。',
 
@@ -522,11 +536,10 @@ export const ui = {
 
     // --- minerals ---
     'minerals.eyebrow': '图 05 · 图例',
-    'minerals.title': '矿物色带',
-    'minerals.description':
-      '来自非洲各地的七种矿物，对应每一页边缘色带上的一段——各自代表什么、产自何处、如何使用。取自 Mzizi 的品牌系统。',
+    'minerals.title': '色彩',
+    'minerals.description': '本站所用的 Mzizi 色彩：每一页边缘色带上的七种非洲矿物，七种以大地命名的传统色调，以及七个试验色族——它们各自象征什么、如何使用。',
     'minerals.lede':
-      '本站每一页的装订边都有七段色带。每一段都是一种产自非洲的矿物，也都承载着界面真正会用到的含义。这里是它的图例。',
+      '本站每一页的装订边上，都有七个色段：矿物色。它们是一套更长调色板的开头，共 21 个色族——另有七种以非洲大地命名的传统色调，以及七种仍在试验的色族。这就是这三组的图例。',
     'minerals.note': '读一读边缘',
     'minerals.why_fig': '图 01 — 为什么用矿石',
     'minerals.why_heading': '为什么是矿石，而不是一套色板',
@@ -542,9 +555,9 @@ export const ui = {
       '以整片非洲大陆所产的矿物为色彩命名，并保留其来处：这块石头产自哪里、代表什么、在界面中派什么用场。',
     'minerals.why_p2':
       '这份来处正是关键所在。产自加丹加的钴，就在你此刻阅读本文的手机里。以它命名链接的颜色，是一种小小的拒绝——拒绝把材料当作抽象之物。',
-    'minerals.why_p3_before': 'Mzizi 是 Bundu 生态中的一个 ',
-    'minerals.why_p3_nyuchi': 'nyuchi',
-    'minerals.why_p3_mid': ' 项目，建立在赋予这一切形态的乌班图（Ubuntu）原则之上——',
+    'minerals.why_p3_before': 'Mzizi 是一个 ',
+    'minerals.why_p3_bundu': 'Bundu',
+    'minerals.why_p3_mid': ' 项目——一门研究型编程语言，也是整个生态所依托的品牌系统，建立在赋予这一切形态的乌班图（Ubuntu）原则之上——',
     'minerals.why_p3_ubuntu': '我在，因为我们在',
     'minerals.why_p3_after': '。它的品牌系统、设计令牌与无障碍工具包，都在 ',
     'minerals.why_p3_end': '。',
@@ -555,6 +568,17 @@ export const ui = {
     'minerals.key_means': '寓意',
     'minerals.key_mined': '产地',
     'minerals.key_used': '用途',
+    'minerals.key_named': '得名于',
+    'minerals.heritage_eyebrow': '图 05 · 七种传统色调',
+    'minerals.heritage_note': '大地',
+    'minerals.heritage_heading': '七种传统色调',
+    'minerals.heritage_lede':
+      '以土地与手艺命名，而不是以某种石头命名。传统色调决定一个表面的情绪；本站自己的主色“河流”（river）就是其中之一。',
+    'minerals.experimental_eyebrow': '图 05 · 七种试验色族',
+    'minerals.experimental_note': '仍在试验',
+    'minerals.experimental_heading': '七个试验色族',
+    'minerals.experimental_lede':
+      '另外七个色族，沿色轮均匀分布。它们各有对应两种主题的取值，但还没有矿物和传统色调那样的来历与寓意，所以本页只给出它们的颜色，不说无法佐证的话。',
 
     'minerals.a11y_fig': '图 02 — 无障碍',
     'minerals.a11y_heading': '七种，逐一实测',
