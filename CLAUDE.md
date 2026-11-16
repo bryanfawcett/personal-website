@@ -72,6 +72,10 @@ home page as proof of how the work is done: measured, and published either way.
 
 ## Quick Reference
 
+All scripts run through Vite+ (`vp run <script>`, or `pnpm <script>`, which calls the same
+thing). `vp build` itself cannot build Astro (it fails with `Cannot resolve entry module
+index.html`), so `build`, `dev` and `check` call `vp exec astro …`.
+
 ```bash
 pnpm dev        # dev server at localhost:4321
 pnpm check      # astro check (TypeScript under `strictest`) — must stay at 0 errors

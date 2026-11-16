@@ -7,11 +7,11 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "vp exec astro dev",
+    "build": "vp exec astro build",
     "preview": "cf dev",
-    "check": "astro check",
-    "lint": "astro check",
+    "check": "vp exec astro check",
+    "lint": "vp lint",
     "deploy": "cf deploy",
     "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
     "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
@@ -19,7 +19,7 @@
     "verify:stylesheet": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-stylesheet.mjs",
     "nav-portrait": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-nav-portrait.mjs",
     "cjk": "node scripts/build-cjk-subset.mjs",
-    "generate-types": "cf workers types"
+    "fmt": "vp fmt"
   },
   "dependencies": {
     "@bundu/ui": "0.14.0",
