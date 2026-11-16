@@ -11,11 +11,17 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { BOOKING_URL } from '../src/data/booking.ts';
+import { bunduWork, nyuchiWork, schoolWork } from '../src/data/origins.ts';
 import { PROFILE } from '../src/data/profile.ts';
+import { useTranslations } from '../src/i18n/ui.ts';
 import { mineral } from '../src/brand/minerals.ts';
 import { INK, INK_LIGHT, SHEET_LIGHT } from '../src/brand/tokens.ts';
 
 const OUT = new URL('../src/data/generated/site.json', import.meta.url);
+
+const ui = useTranslations('en');
+const workItems = (items) =>
+  items.map(({ title, detail, href }) => ({ title, detail, ...(href ? { href } : {}) }));
 
 const site = {
   _generated: 'by scripts/export-site-data.mjs from src/data and src/brand. Do not edit.',
@@ -27,6 +33,18 @@ const site = {
     tagline: PROFILE.tagline,
     roles: PROFILE.roles.map(({ title, org }) => ({ title, org })),
     socials: PROFILE.socials.map(({ name, handle, href }) => ({ name, handle, href })),
+  },
+  // The Origins page's "What I'm working on", in English, so the deck's work slide
+  // is built from the same records and strings and the two cannot drift.
+  origins_work: {
+    heading: ui('origins.now_heading'),
+    lede: ui('origins.now_lede'),
+    columns: [
+      { heading: ui('origins.now_sas'), items: workItems(schoolWork('en')) },
+      { heading: ui('origins.now_nyuchi'), items: workItems(nyuchiWork('en')) },
+      { heading: ui('origins.now_bundu'), items: workItems(bunduWork('en')) },
+    ],
+    note: ui('origins.now_aside'),
   },
   booking_url: BOOKING_URL,
   qr: {
