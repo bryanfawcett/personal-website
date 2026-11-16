@@ -43,3 +43,17 @@ export function fill(html: string, values: Record<string, string>): string {
   }
   return out;
 }
+
+/** Split a fragment at its `%SLOT%`, so Astro can render a slot between the halves. */
+export function splitSlot(html: string): [string, string] {
+  const at = html.indexOf('%SLOT%');
+  if (at < 0) return [html, ''];
+  return [html.slice(0, at), html.slice(at + '%SLOT%'.length)];
+}
+
+/** Like `fill`, for values that are already markup (the QR SVGs). Not for anything from a URL. */
+export function fillRaw(html: string, values: Record<string, string>): string {
+  let out = html;
+  for (const [key, value] of Object.entries(values)) out = out.replaceAll(`%${key}%`, () => value);
+  return out;
+}

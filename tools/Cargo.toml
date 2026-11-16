@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["verify-stylesheet", "verify-image-urls", "contact-card", "components"]
+members = ["verify-stylesheet", "verify-image-urls", "contact-card", "components", "nav-portrait"]
 
 [workspace.package]
 edition = "2024"

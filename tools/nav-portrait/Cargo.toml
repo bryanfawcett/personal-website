@@ -1,0 +1,9 @@
+[package]
+name = "nav-portrait"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+image = { version = "0.25", default-features = false, features = ["png"] }
+webp = { version = "0.3", default-features = false }
