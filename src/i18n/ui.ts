@@ -201,7 +201,8 @@ export const ui = {
     'origins.now_lede':
       'Three strands of the same question — one inside a school, one in research, one across a continent.',
     'origins.now_sas': 'Singapore American School',
-    'origins.now_nyuchi': 'Nyuchi Africa',
+    // Mukoko is its own Bundu pillar; Nyuchi Africa operates the platforms.
+    'origins.now_nyuchi': 'Nyuchi Africa and Mukoko',
     'origins.now_bundu': 'The Bundu Foundation',
     'origins.now_aside':
       'The Nyuchi work was built for places where credentials were never the thing that got you through. That is the same instinct I bring to the work at school.',
@@ -502,7 +503,7 @@ export const ui = {
     'origins.now_heading': '我正在做的事',
     'origins.now_lede': '同一个问题的三条线——一条在一所学校之内，一条在研究之中，一条横跨一整片大陆。',
     'origins.now_sas': 'Singapore American School（新加坡美国学校）',
-    'origins.now_nyuchi': 'Nyuchi Africa',
+    'origins.now_nyuchi': 'Nyuchi Africa 与 Mukoko',
     'origins.now_bundu': 'The Bundu Foundation（本都基金会）',
     'origins.now_aside':
       'Nyuchi 的工作，是为那些文凭从来不是通行证的地方而建的。我带到学校工作里的，是同一种直觉。',
