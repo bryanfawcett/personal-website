@@ -61,7 +61,7 @@ home page as proof of how the work is done: measured, and published either way.
 
 - **Personal:** [github.com/bryanfawcett](https://github.com/bryanfawcett)
 - **Nyuchitech:** [github.com/nyuchitech](https://github.com/nyuchitech) - 13+ public repos
-- **SAS Tech Innovation:** [github.com/SAS-Technology-Innovation](https://github.com/SAS-Technology-Innovation) - 5 public repos
+- **SAS Technology:** [github.com/sas-technology](https://github.com/sas-technology) - renamed from SAS-Technology-Innovation; most repos are private (4 public: knowledge, sas-knowledge, sas-default-app, .github). Link only to a public repo. Educator Eval is now Educator Compass.
 
 ### Social Links (Canonical)
 

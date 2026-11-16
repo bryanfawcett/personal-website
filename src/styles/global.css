@@ -2077,6 +2077,15 @@ figcaption {
   width: 3.5rem;
 }
 
+/* A tile with nothing public to visit does not answer the pointer like a link. */
+.link-panel--static:hover {
+  background: var(--sheet-wash);
+}
+
+.link-panel--static:hover h3::after {
+  width: 2rem;
+}
+
 .link-panel__path {
   display: block;
   margin-block-start: var(--space-4);
