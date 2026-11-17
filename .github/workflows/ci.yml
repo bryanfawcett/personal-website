@@ -64,6 +64,10 @@ jobs:
       - name: Rust fragments are current
         run: pnpm exec vp run fragments:check
 
+      # The theme toggle is Rust compiled to wasm and committed under src/theme/.
+      - name: Theme wasm is current
+        run: pnpm exec vp run theme:check
+
       - name: Rust components match the built pages
         run: pnpm exec vp run verify:components:rs
 
