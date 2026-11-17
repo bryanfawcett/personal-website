@@ -701,7 +701,7 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
    `minmax(20rem, 1fr)` forces horizontal scroll on a 390px screen.
 4. **Hard-coded colours.** Use the custom properties.
 5. **Adding a client framework.** Don't; this is a content site. The one exception is the EmDash admin (see "Everything is Astro and TypeScript"): React lives there and nowhere public.
-6. **Node < 22.16** will not run EmDash (and < 22.12 will not run Astro 7). `package.json` `engines`, `.node-version` and CI agree: change all three together.
+6. **Node < 22.16** will not run EmDash (and < 22.12 will not run Astro 7). `package.json` `engines` and CI agree. Cloudflare's build image takes its Node version from the dashboard (a `NODE_VERSION` build variable), not from the repo: a `.node-version` file made the Workers Build fail on 17 November 2026, so there isn't one. Set `NODE_VERSION` to 22.16 or later there before EmDash lands.
 7. **`mix-blend-mode: multiply` on the sheet layers.** On a cyanotype the ruling
    is lighter than the ground, so the grid needs `plus-lighter` and the grain
    needs `soft-light`. Multiply makes both vanish.

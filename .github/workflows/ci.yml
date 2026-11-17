@@ -17,7 +17,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      # EmDash requires Node >= 22.16 (Astro 7's own floor is 22.12); keep in step with package.json and .node-version.
+      # EmDash requires Node >= 22.16 (Astro 7's own floor is 22.12); keep in step with package.json (Cloudflare's own Node comes from the dashboard NODE_VERSION).
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
