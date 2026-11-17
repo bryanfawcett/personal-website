@@ -31,6 +31,7 @@
     "fragments:check": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin render -- --check",
     "rust:wasm": "node scripts/build-rust-wasm.mjs",
     "rust:wasm:check": "node scripts/build-rust-wasm.mjs --check",
+    "verify:seo": "node scripts/verify-seo-head.mjs",
     "verify:components:rs": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin parity",
     "theme": "scripts/build-theme.sh",
     "theme:check": "scripts/build-theme.sh --check",

@@ -75,6 +75,10 @@ jobs:
       - name: Rust components match the built pages
         run: pnpm exec vp run verify:components:rs
 
+      # The SEO head is rendered by mzizi-discovery in Rust; it must match what shipped before.
+      - name: SEO head matches the pre-Rust head
+        run: pnpm exec vp run verify:seo
+
   contrast:
     name: APCA contrast
     runs-on: ubuntu-latest

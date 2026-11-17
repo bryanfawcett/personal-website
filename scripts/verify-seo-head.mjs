@@ -1,0 +1,203 @@
+/**
+ * The SEO head moved from BaseLayout.astro to `rust:seo-head` (mzizi-discovery). This proves the
+ * move changed nothing a crawler or a share card reads. Two comparisons, both semantic (tag set,
+ * attribute values, JSON-LD after parsing; never string order):
+ *
+ *   1. REFERENCE: a frozen copy of the head BaseLayout used to build, run for every route in both
+ *      languages plus the cases only a blog post produces (translated, untranslated, Chinese-first
+ *      adventures, article og:type), against the new path: seoHeadProps() -> the wasm component.
+ *   2. SHIPPED: `scripts/fixtures/seo-head.baseline.json` is the head of every prerendered page as
+ *      built before the move. The current build output (`dist` is wherever `@astrojs/cloudflare`
+ *      puts it, see DIST) must match it.
+ *
+ *   node scripts/verify-seo-head.mjs              both checks (the second needs a build)
+ *   node scripts/verify-seo-head.mjs --snapshot   print the snapshot of the build output
+ *
+ * The new head may ADD tags only from ADDITIONS below (the crate emits twitter:title,
+ * twitter:description and twitter:image, which the site never wrote; X falls back to og:* so they
+ * agree with it). Anything else added, changed or missing fails.
+ */
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { register } from 'node:module';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const DIST = join(root, '.cloudflare/output/v0/workers/default/assets');
+const FIXTURE = join(root, 'scripts/fixtures/seo-head.baseline.json');
+const ADDITIONS = new Set(['meta name=twitter:title', 'meta name=twitter:description', 'meta name=twitter:image']);
+
+/* ------------------------------------------------------------------ parsing */
+
+const decode = (s) =>
+  s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+function attrs(tag) {
+  const out = {};
+  for (const m of tag.matchAll(/([a-zA-Z][\w:-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)) {
+    if (m.index === 0) continue; // the tag name
+    out[m[1]] = decode(m[2] ?? m[3] ?? m[4] ?? '');
+  }
+  return out;
+}
+
+/** The SEO-relevant part of a head, as `{ tags: Map(key -> sorted values[]), ld: parsed JSON[] }`. */
+export function parseHead(html) {
+  const head = /<head[^>]*>([\s\S]*?)<\/head>/i.exec(html)?.[1] ?? html;
+  const tags = new Map();
+  const add = (key, value) => tags.set(key, [...(tags.get(key) ?? []), value].sort());
+  const title = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(head);
+  if (title) add('title', decode(title[1]));
+  for (const m of head.matchAll(/<meta\s(?:[^>"']|"[^"]*"|'[^']*')*>/gi)) {
+    const a = attrs(m[0]);
+    if (a.property?.startsWith('og:')) add(`meta property=${a.property}`, a.content ?? '');
+    else if (a.name === 'description' || a.name === 'robots' || a.name?.startsWith('twitter:')) add(`meta name=${a.name}`, a.content ?? '');
+  }
+  for (const m of head.matchAll(/<link\s(?:[^>"']|"[^"]*"|'[^']*')*>/gi)) {
+    const a = attrs(m[0]);
+    if (a.rel === 'canonical') add('link rel=canonical', a.href ?? '');
+    else if (a.rel === 'alternate' && a.hreflang) add(`link rel=alternate hreflang=${a.hreflang}`, a.href ?? '');
+  }
+  const ld = [...head.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => JSON.parse(m[1]));
+  return { tags: Object.fromEntries([...tags].sort(([a], [b]) => (a < b ? -1 : 1))), ld };
+}
+
+/* --------------------------------------------------------------- comparison */
+
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+/** Differences between the old head and the new one. Additions are only those in ADDITIONS. */
+export function diffHeads(oldHead, newHead) {
+  const problems = [];
+  for (const [k, v] of Object.entries(oldHead.tags)) {
+    if (!(k in newHead.tags)) problems.push(`MISSING  ${k} = ${JSON.stringify(v)}`);
+    else if (!same(v, newHead.tags[k])) problems.push(`CHANGED  ${k}: ${JSON.stringify(v)} -> ${JSON.stringify(newHead.tags[k])}`);
+  }
+  for (const k of Object.keys(newHead.tags)) {
+    if (!(k in oldHead.tags) && !ADDITIONS.has(k)) problems.push(`ADDED    ${k} = ${JSON.stringify(newHead.tags[k])}`);
+  }
+  if (!same(oldHead.ld, newHead.ld)) problems.push(`JSON-LD differs:\n  old ${JSON.stringify(oldHead.ld)}\n  new ${JSON.stringify(newHead.ld)}`);
+  return problems;
+}
+
+/* ------------------------------------------------------- build-output walk */
+
+function pages(dir) {
+  const out = [];
+  const walk = (d) => {
+    for (const e of readdirSync(d)) {
+      const p = join(d, e);
+      if (statSync(p).isDirectory()) { if (e !== '_astro' && e !== 'fonts') walk(p); }
+      else if (e.endsWith('.html')) out.push(p);
+    }
+  };
+  walk(dir);
+  return out.sort();
+}
+
+function snapshot(dir) {
+  const snap = {};
+  for (const p of pages(dir)) snap[relative(dir, p)] = parseHead(readFileSync(p, 'utf8'));
+  return snap;
+}
+
+if (process.argv.includes('--snapshot')) {
+  console.log(JSON.stringify(snapshot(DIST), null, 1));
+  process.exit(0);
+}
+
+/* ---------------------------------------- 1. reference vs the new component */
+
+register(pathToFileURL(join(root, 'scripts/ts-resolve-hook.mjs')));
+const { initSync, render } = await import(pathToFileURL(join(root, 'src/integrations/rust/pkg/components_wasm.js')));
+initSync({ module: readFileSync(join(root, 'src/integrations/rust/pkg/components_wasm_bg.wasm')) });
+const { seoHeadProps } = await import(pathToFileURL(join(root, 'src/layouts/seo-head.ts')));
+const { PROFILE, profileInLang } = await import(pathToFileURL(join(root, 'src/data/profile.ts')));
+const { allPaths, localizePath } = await import(pathToFileURL(join(root, 'src/i18n/routing.ts')));
+const { bcp47, defaultLang, ogLocale } = await import(pathToFileURL(join(root, 'src/i18n/ui.ts')));
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+/** BaseLayout.astro's SEO head exactly as it was before the move, frozen. */
+function referenceHtml({ title, description, path, lang, alternates, ogType, site }) {
+  const localized = alternates
+    ? Object.entries(alternates).map(([entryLang, entryPath]) => ({ lang: entryLang, path: entryPath }))
+    : allPaths(path);
+  const here = localized.find((entry) => entry.lang === lang)?.path ?? localizePath(path, lang);
+  const canonical = new URL(here, site).href;
+  const fullTitle = here === '/' || here === '/zh' ? title : `${title} | ${PROFILE.name}`;
+  const profile = profileInLang(lang);
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Person', '@id': 'https://bryanfawcett.com/#person', name: PROFILE.name, givenName: 'Bryan', familyName: 'Fawcett',
+        jobTitle: profile.roles.map((r) => r.title), description: profile.summary, url: 'https://bryanfawcett.com',
+        email: `mailto:${PROFILE.email}`, image: 'https://bryanfawcett.com/og-bryan-fawcett.jpg',
+        sameAs: PROFILE.socials.map((s) => s.href),
+        worksFor: profile.roles.map((r) => ({ '@type': 'Organization', name: r.org })),
+        founder: [
+          { '@type': 'Organization', name: 'Nyuchi Africa', url: 'https://nyuchi.com' },
+          { '@type': 'Organization', name: 'The Bundu Foundation', url: 'https://www.bundu.org' },
+        ],
+        knowsAbout: PROFILE.knowsAbout,
+      },
+      { '@type': 'WebSite', '@id': 'https://bryanfawcett.com/#website', url: 'https://bryanfawcett.com', name: `${PROFILE.name} — ${profile.title}`, publisher: { '@id': 'https://bryanfawcett.com/#person' }, inLanguage: bcp47[lang] },
+    ],
+  };
+  const m = (attr, k, v) => `<meta ${attr}="${k}" content="${esc(v)}" />`;
+  return `<head><title>${esc(fullTitle)}</title>${m('name', 'description', description)}<link rel="canonical" href="${canonical}" />
+${localized.map((e) => `<link rel="alternate" hreflang="${bcp47[e.lang]}" href="${new URL(e.path, site).href}" />`).join('')}
+<link rel="alternate" hreflang="x-default" href="${new URL(localized.find((e) => e.lang === defaultLang)?.path ?? here, site).href}" />
+${m('property', 'og:type', ogType)}${m('property', 'og:url', canonical)}${m('property', 'og:site_name', PROFILE.name)}${m('property', 'og:title', fullTitle)}${m('property', 'og:description', description)}${m('property', 'og:locale', ogLocale[lang])}
+${localized.filter((e) => e.lang !== lang).map((e) => m('property', 'og:locale:alternate', ogLocale[e.lang])).join('')}
+${m('property', 'og:image', 'https://bryanfawcett.com/og-bryan-fawcett.jpg')}${m('property', 'og:image:width', 1200)}${m('property', 'og:image:height', 630)}${m('property', 'og:image:alt', 'Bryan Fawcett — Digital Craftsman')}
+${m('name', 'twitter:card', 'summary_large_image')}${m('name', 'twitter:creator', '@bryanfawcett')}
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script></head>`;
+}
+
+const site = new URL('https://bryanfawcett.com');
+const routes = ['/', '/experience', '/book', '/how-this-was-built', '/minerals', '/origins-with-perspective', '/adventures'];
+const cases = [];
+for (const path of routes)
+  for (const lang of ['en', 'zh']) {
+    cases.push({ name: `${path} ${lang}`, title: 'Test page', description: 'A "quoted" <b>description</b> & more', path, lang, ogType: path === '/' ? 'profile' : 'website', site });
+  }
+// What only a blog post produces: its own slug per language, or English alone, and og:type article.
+cases.push(
+  { name: 'adventure en, translated', title: "Fire & Ice: a day's trek", description: "It's </script><b>x</b>", path: '/adventures', lang: 'en', alternates: { en: '/adventures/fire-ice', zh: '/zh/adventures/huo-yu-bing' }, ogType: 'article', site },
+  { name: 'adventure zh, translated', title: '火与冰', description: '一段旅程', path: '/adventures', lang: 'zh', alternates: { zh: '/zh/adventures/huo-yu-bing', en: '/adventures/fire-ice' }, ogType: 'article', site },
+  { name: 'adventure en, untranslated', title: 'Only English', description: 'No Chinese version', path: '/adventures', lang: 'en', alternates: { en: '/adventures/only-english' }, ogType: 'article', site },
+  { name: 'adventure zh, no original', title: '只有中文', description: '没有英文版', path: '/adventures', lang: 'zh', alternates: { zh: '/zh/adventures/zhi-you' }, ogType: 'article', site },
+  { name: 'adventure list, no alternates', title: 'Adventures', description: 'The list', path: '/adventures', lang: 'en', alternates: undefined, ogType: 'article', site },
+);
+
+let failures = 0;
+for (const c of cases) {
+  const rust = render('seo-head', JSON.stringify(seoHeadProps(c)));
+  const problems = diffHeads(parseHead(referenceHtml(c)), parseHead(`<head>${rust}</head>`));
+  if (problems.length) { failures++; console.error(`FAIL ${c.name}\n  ${problems.join('\n  ')}`); }
+}
+console.log(`reference: ${cases.length - failures} of ${cases.length} cases match`);
+
+/* --------------------------------------------- 2. the shipped pages, before */
+
+if (existsSync(DIST) && existsSync(FIXTURE)) {
+  const baseline = JSON.parse(readFileSync(FIXTURE, 'utf8'));
+  const now = snapshot(DIST);
+  let n = 0;
+  for (const [file, old] of Object.entries(baseline)) {
+    n++;
+    if (!now[file]) { failures++; console.error(`FAIL ${file}: page no longer built`); continue; }
+    const problems = diffHeads(old, now[file]);
+    if (problems.length) { failures++; console.error(`FAIL ${file}\n  ${problems.join('\n  ')}`); }
+  }
+  console.log(`shipped: ${n} prerendered pages compared with the pre-move baseline`);
+} else {
+  console.log('shipped: skipped (needs a build and the baseline fixture)');
+}
+
+process.exit(failures ? 1 : 0);
