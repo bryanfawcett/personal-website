@@ -13,7 +13,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
-import { BLOG_CACHE_CONTROL, listAdventures } from '../blog/emdash.js';
+import { listAdventures } from '../blog/emdash.js';
+import { applyOutcome } from '../blog/http.js';
 import { DEFAULT_MINERAL, type AdventureCard } from '../blog/types.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
@@ -33,13 +34,7 @@ const adventures = result.ok ? result.data : [];
  * "unavailable" copy let the edge hold the failure for a minute and tell search engines the
  * list was a page of no adventures.
  */
-if (result.ok) {
-  Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
-} else {
-  Astro.response.status = 503;
-  Astro.response.headers.set('Cache-Control', 'no-store');
-  Astro.response.headers.set('Retry-After', '120');
-}
+applyOutcome(Astro.response, result.ok ? 'found' : 'unavailable');
 
 /** Dates render in the reader's own convention, from the reader's own locale. */
 const dateFormat = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hans-CN' : 'en-GB', {

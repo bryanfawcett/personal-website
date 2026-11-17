@@ -27,7 +27,7 @@
           "label": "Mineral",
           "type": "select",
           "translatable": false,
-          "validation": { "options": ["cobalt", "tanzanite", "malachite", "gold", "terracotta", "sodalite", "copper"] }
+          "validation": { "options": ["cobalt", "tanzanite", "malachite", "gold", "terracotta", "sodalite", "copper", "indigo", "savanna", "baobab", "sunset", "river", "hematite", "kalahari", "ember", "acacia", "fern", "lagoon", "storm", "dusk", "protea"] }
         },
         { "slug": "body", "label": "Body", "type": "portableText", "searchable": true }
       ]

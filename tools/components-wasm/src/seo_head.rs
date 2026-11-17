@@ -14,7 +14,7 @@
 
 use maud::{Markup, PreEscaped, html};
 use mzizi_discovery::mzizi_seo::{
-    Alternate, Json, OgType, SchemaOrg, SeoConfig, generate_metadata, generate_schema_ld,
+    Alternate, Json, OgType, SchemaOrg, SeoConfig, article, generate_metadata, generate_schema_ld,
 };
 use serde::Deserialize;
 use ts_rs::TS;
@@ -74,6 +74,30 @@ pub struct WebSiteProp {
     pub in_language: String,
 }
 
+/// What only a post has: Open Graph `article:*` tags and an `Article` node in the JSON-LD.
+/// Built from the CMS entry by `src/layouts/seo-head.ts`; every value is escaped on the way out.
+#[derive(Debug, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct ArticleProp {
+    /// The headline, without the site suffix the `<title>` carries.
+    pub headline: String,
+    /// ISO 8601. `article:published_time` and `datePublished`.
+    pub published_time: String,
+    #[serde(default)]
+    #[ts(optional)]
+    pub modified_time: Option<String>,
+    /// The author's name, and the profile URL `article:author` takes.
+    pub author: String,
+    pub author_url: String,
+    #[serde(default)]
+    #[ts(optional)]
+    pub section: Option<String>,
+    #[serde(default)]
+    pub tags: Vec<String>,
+    /// A BCP 47 tag, `inLanguage`.
+    pub in_language: String,
+}
+
 #[derive(Debug, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct SeoHeadProps {
@@ -93,6 +117,18 @@ pub struct SeoHeadProps {
     /// Absolute image URL.
     pub image: String,
     pub image_alt: String,
+    /// Pixel size of `image`. Absent means unknown, and the `og:image:width`/`height` tags are
+    /// left out: the crate's fixed 1200x630 would be a false claim about a photograph.
+    #[serde(default)]
+    #[ts(optional)]
+    pub image_width: Option<u32>,
+    #[serde(default)]
+    #[ts(optional)]
+    pub image_height: Option<u32>,
+    /// Present only for a post.
+    #[serde(default)]
+    #[ts(optional)]
+    pub article: Option<ArticleProp>,
     /// e.g. `@bryanfawcett`.
     pub twitter_creator: String,
     pub person: PersonProp,
@@ -147,11 +183,23 @@ pub fn render(call: Call) -> Result<String, String> {
     meta.image = p.image.clone();
     meta.image_alt = p.image_alt.clone(); // the crate uses the title
 
+    // A known size is the image's own; an unknown one is left out below rather than guessed.
+    if let (Some(w), Some(h)) = (p.image_width, p.image_height) {
+        meta.image_width = w;
+        meta.image_height = h;
+    }
+    let sized = p.image_width.is_some() && p.image_height.is_some();
+
     let head = meta.to_head_html();
     // The crate hard-codes og:site_name to "Mukoko"; drop that line, the site's follows.
     let head: String = head
         .lines()
         .filter(|l| !l.starts_with("<meta property=\"og:site_name\""))
+        .filter(|l| {
+            sized
+                || !(l.starts_with("<meta property=\"og:image:width\"")
+                    || l.starts_with("<meta property=\"og:image:height\""))
+        })
         .map(|l| format!("{l}\n"))
         .collect();
 
@@ -175,13 +223,40 @@ pub fn render(call: Call) -> Result<String, String> {
         .with("name", Json::s(&p.web_site.name))
         .with("publisher", Json::obj([("@id", Json::s(&p.person.id))]))
         .with("inLanguage", Json::s(&p.web_site.in_language));
-    let ld = generate_schema_ld(&[person, site]);
+    let mut nodes = vec![person, site];
+    if let Some(a) = &p.article {
+        // `article()` covers headline, author, datePublished and image. The rest is added with
+        // `with`, so nothing the crate offers is dropped: dateModified, inLanguage, the page it
+        // is the main entity of, and the person as publisher (the WebSite node does the same).
+        let mut node = article(&a.headline, &a.author, &a.published_time, Some(&p.image))
+            .with("inLanguage", Json::s(&a.in_language))
+            .with("mainEntityOfPage", Json::s(&p.canonical))
+            .with("publisher", Json::obj([("@id", Json::s(&p.person.id))]));
+        if let Some(m) = &a.modified_time {
+            node = node.with("dateModified", Json::s(m));
+        }
+        nodes.push(node);
+    }
+    let ld = generate_schema_ld(&nodes);
 
     let out: Markup = html! {
         (PreEscaped(head))
         meta property="og:site_name" content=(p.site_name);
         @for l in &p.og_locale_alternates {
             meta property="og:locale:alternate" content=(l);
+        }
+        @if let Some(a) = &p.article {
+            meta property="article:published_time" content=(a.published_time);
+            @if let Some(m) = &a.modified_time {
+                meta property="article:modified_time" content=(m);
+            }
+            meta property="article:author" content=(a.author_url);
+            @if let Some(sec) = &a.section {
+                meta property="article:section" content=(sec);
+            }
+            @for t in &a.tags {
+                meta property="article:tag" content=(t);
+            }
         }
         meta name="twitter:creator" content=(p.twitter_creator);
         // generate_schema_ld escapes < > & as \u escapes, so it is inert inside a script.

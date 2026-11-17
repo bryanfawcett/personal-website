@@ -99,9 +99,8 @@ run, which is listed.
    `<Image>` is forbidden on on-demand routes in this repo (`/_image` does not exist there). Uploaded
    images should be resized and compressed before upload. This is a visible regression for a
    photo-led blog.
-8. **Mineral picker.** The Sanity schema offered the seven minerals; the `mineral` select in
-   `seed/seed.json` keeps those seven. The brief mentions 21 families; widening is a list change
-   (ideally generated from `src/brand/mzizi-palette.generated.ts`).
+8. **Mineral picker.** Resolved: the select now lists all 21 families, generated from the palette
+   (see "Mineral field: 7 to 21"); no picker was built.
 9. **Date.** The Sanity `publishedAt` (date of the adventure) is a custom `adventure_date` field;
    EmDash's own `publishedAt` is a separate system field. Two dates is a small authoring trap.
 10. **Security headers differ on blog routes.** EmDash middleware adds `X-Frame-Options`,
@@ -110,7 +109,8 @@ run, which is listed.
 11. **Two sitemaps and two robots surfaces.** EmDash injects `/sitemap.xml`, `/sitemap-<collection>.xml`
     and `/robots.txt`. The static `robots.txt` and the Astro `sitemap-index.xml` win for
     prerendered paths; the index lists `sitemap-adventures.xml` through `customSitemaps`. EmDash's
-    child sitemap emits `hreflang="zh"`, the site uses `zh-Hans`; align one of them.
+    child sitemap emitted `hreflang="zh"`, the site uses `zh-Hans`. Fixed with our own route
+    (see "SEO and discovery").
 12. **Rust workspace.** Removing `tools/verify-image-urls` changed `tools/Cargo.lock`, which changes
     the wasm source hash, so `src/integrations/rust/pkg` was rebuilt (`pnpm rust:wasm`). The Rust
     blog Worker prototype (PR #54, `crates/site-worker`) was not touched.
@@ -185,6 +185,20 @@ install step now pulls EmDash and wrangler.
 12. `astro preview` serves only static assets for this setup (no Worker), so the built Worker cannot be
     tried without hand-writing a wrangler config; a documented local run of the built output would help.
 13. Dev server listens on `localhost` (IPv6) only; tools that use `127.0.0.1` fail with a timeout.
+14. A seed's select options apply only to an empty database, and nothing says so where the field is
+    edited; changing options for an existing collection is a separate schema call (tested above). The
+    admin's select shows raw option values, with no label or swatch per option.
+15. A route in `src/pages` silently replaces an injected EmDash route of the same path (useful for the
+    sitemap, surprising otherwise). In dev, a pages endpoint that fails to compile is not reported: the
+    request falls through to the next matching route (a 404 from `[slug].astro`) with nothing in the
+    log.
+16. `@astrojs/cloudflare/entrypoints/server` has no `scheduled()`, so the documented setup for
+    scheduled publishing and backups needs a different worker entry that `cf`'s config documentation
+    does not mention (see "Backup").
+17. The built-in sitemap lists entries of every locale, including ones with no counterpart, and always
+    writes bare `zh`; there is no option for the hreflang code.
+18. Backup archives are stored beside the media they protect and are off by default; the docs could say
+    plainly that this is not an off-site copy.
 
 ## Plugins we need
 
@@ -216,9 +230,9 @@ Ranking, with kind and format. "Gate" means needed before the blog goes live.
 | 1b | Link policy at render (defence in depth) | site code, **done** (`src/blog/portable-text.ts`, `verify:links`) | n/a | Gate, done | done |
 | 2 | Accessibility policy at publish | plugin | sandboxed | **Gate**: nothing in CI can see CMS content, so alt text and link text are only enforced if this hook does it | low-medium |
 | 3 | Translation policy | mostly site code (done); optional hook | sandboxed if built | Nice to have | low |
-| 4 | Mineral field | **no plugin**; a `select` field already works (done) | n/a | Nice to have (21 families, swatch picker) | low / medium |
-| 5 | SEO and discovery | site code, not a plugin | n/a | Gate for article OG/JSON-LD wiring; sitemap done | low |
-| 6 | N4 sanitise on publish and at render | covered by 1, 1b, 2; no separate plugin | n/a | covered | none |
+| 4 | Mineral field | **no plugin**; a `select` field already works (done) | n/a | 21 families **done**; swatch picker judged not worth building | done |
+| 5 | SEO and discovery | site code, not a plugin | n/a | **Done** (cover og:image, article tags and JSON-LD, generated llms.txt section, zh-Hans sitemap) | done |
+| 6 | N4 sanitise on publish and at render | site code, **done** (`sanitizeBody`, `pnpm test:blog`); publish half is items 1 and 2 | n/a | covered | done |
 | 7 | Scheduled D1 export to R2 | **reject as a plugin**: core backups already do it | n/a | Needs the Cron Trigger (decision 4) | none |
 
 Details and reasoning:
@@ -258,6 +272,176 @@ Details and reasoning:
 
 Order of work: (2) accessibility policy, then (1) link policy as a native local plugin, then site code
 for OG image and article metadata, then the 21-family select. Nothing else needs a plugin.
+
+## The seven, triaged
+
+The owner asked for seven things to be built as EmDash plugins, for Nyuchi to adopt on Mzizi later.
+Only some are plugin-shaped. Evidence is in the plugin API (`hooks.content-policy:register`,
+the capability list in `emdash`'s code, `@emdash-cms/cloudflare/worker`) and in the code on the
+branches named below.
+
+| # | Item | Kind | Where it lives | Why |
+|---|---|---|---|---|
+| 1 | Link policy | **plugin** (native, local) | `packages/emdash-plugins/` (other branch), rule shared with `src/blog/portable-text.ts` | `content:beforePublish`/`beforeSave` can refuse a draft with a bad link; the render path already drops it, so this only improves the editor's message. Native so it imports the one `classifyLink`. |
+| 2 | Accessibility policy | **plugin** (sandboxed) | `packages/emdash-plugins/` (other branch) | A pure check over `content.data` at publish. Nothing in CI can see CMS content, so only a hook can enforce alt text. |
+| 3 | Safe rich text | **site code**, plus the plugins above as the editor-facing half | `src/blog/portable-text.ts` (`sanitizeBody`, `renderBody`), `src/blog/normalize.ts`, tests in `scripts/tests/blog-untrusted.test.mjs` | A plugin runs when an editor publishes; render runs on every read of whatever is in D1, including content that never passed a hook (an import, a revision restore, a compromised account). Treat the render path as the control (N4). |
+| 4 | Translation policy | **site code**, optional hook | `src/blog/emdash.ts`, `src/views/AdventureView.astro` | hreflang and the switcher already come only from a real published sibling. A hook that refuses a zh entry with no en sibling is a courtesy (other branch). |
+| 5 | Mineral field | **not a plugin**: a `select` suffices | `seed/seed.json` (generated), `scripts/build-seed-minerals.mjs`, `src/blog/normalize.ts` | See "Mineral field: 7 to 21". |
+| 6 | SEO and discovery | **site code**; a plugin cannot do it | `src/layouts/seo-head.ts`, `tools/components-wasm/src/seo_head.rs`, `src/blog/discovery.ts`, `src/pages/sitemap-adventures.xml.ts`, `src/pages/adventures/llms.txt.ts` | `page:metadata` only reaches EmDash's own head component, which would emit a second head next to `rust:seo-head`. |
+| 7 | Backup | **core feature**, not a plugin, and **not possible** as a sandboxed D1-to-R2 plugin | EmDash core; needs the Cron Trigger and the EmDash worker entry | See "Backup". |
+
+## Mineral field: 7 to 21
+
+Done. The adventure `mineral` select now offers the 21 Mzizi families, generated rather than typed:
+
+- `scripts/build-seed-minerals.mjs` (`pnpm seed:minerals`) writes the keys of
+  `src/brand/mzizi-palette.generated.ts` (the `mzizi-tokens` output) into the options of the `mineral`
+  field in `seed/seed.json`, in palette order, editing only that array. `pnpm seed:minerals:check` is a
+  CI step beside `palette:check`: it fails if the seed differs from the palette, and also if any family
+  has no `[data-mineral="..."]` rule in `src/styles/tokens.css` (an option with no rule would look
+  chosen and draw the fallback). All 21 have one.
+- The site maps the stored name through `mineralOf` (`src/blog/normalize.ts`): a value is accepted only
+  if it is a palette key, and is then written as `data-mineral="<name>"`. A hex, a wrong case or anything
+  else is ignored and the entry gets the default (cobalt). The CMS never stores a colour.
+- **Select or swatch picker? Select suffices; no picker was built.** The server already validates the
+  field (below, a `river` entry is refused with a 400 until the option exists), the value is a name that
+  is its own display label, and the choice is made once per post. A picker would be a native plugin with
+  a React field widget for the admin, to put 21 small squares where a dropdown of 21 words already
+  works. The one thing a picker would add (seeing the colour while choosing) is not worth a widget to
+  maintain through EmDash upgrades. Revisit if editors ask.
+- **An existing database does not pick up a changed seed.** A seed applies only to an empty database;
+  the schema lives in D1. The path for a collection that already exists, tested locally
+  (`scripts/emdash-mineral-migrate.mjs`, localhost only):
+
+  ```
+  before: field has 7 options (river absent)
+    create with mineral=river: HTTP 400 VALIDATION_ERROR  mineral: Invalid option: expected one of "cobalt"|...
+  PUT field: HTTP 200
+  after: field has 21 options (river present)
+    create with mineral=river: HTTP 201
+  ```
+
+  That is `PUT /_emdash/api/schema/collections/adventures/fields/mineral` with
+  `{ "validation": { "options": [...] } }`, the call the admin's content-type editor makes
+  (requires `schema:manage`). For production the owner either edits the field's options in the admin
+  (Content Types, Adventures, Mineral) or calls that endpoint with an admin token; the list to paste is
+  `pnpm seed:minerals` output (`seed/seed.json`). A fresh database gets all 21 from the seed. After the
+  change, a post saved with `river` rendered `data-mineral="river"` on its article.
+
+## SEO and discovery (site code)
+
+- **Cover as `og:image`, and article metadata.** `src/views/AdventureView.astro` passes the cover and the
+  post's dates to `BaseLayout`, through `seoHeadProps` to the Rust `seo-head` component (new optional
+  props: `imageWidth`, `imageHeight`, `article`). The cover URL is made absolute against the site and
+  must be http(s) (a `javascript:` URL falls back to the default card). Width and height are the cover's
+  own, or omitted when unknown: the crate hard-codes 1200x630, which would be a false claim about a
+  photograph, so `og:image:width`/`height` are dropped rather than guessed. Alt is the cover's alt, else
+  the post title. A post emits `article:published_time`, `article:modified_time`, `article:author`
+  (the site URL, the profile URL the tag asks for). **Published time is the adventure's own date**,
+  the one the page shows, not EmDash's `publishedAt`; modified is EmDash's `updatedAt`. There is no
+  tags or section field in the schema, so `article:tag`/`article:section` are supported by the component
+  but not filled; adding a `tags` field would be a schema change.
+- **Article JSON-LD** is added, a deliberate change (the previous head had none): `mzizi-discovery`'s
+  `article()` provides headline, author, datePublished and image; `dateModified`, `inLanguage`,
+  `mainEntityOfPage` and `publisher` are added on top with `with()`, so nothing the crate offers is
+  dropped. Not a post: no article tags, no Article node.
+- **`verify:seo`** now runs 25 cases (was 19): the six new ones cover a cover with a size, a cover
+  without one, no cover, a `javascript:` cover, Chinese with no modified time, and a hostile title,
+  and assert the article tags, the Article node, that no `<script>` leaves the JSON-LD, and that
+  pages that are not posts carry none of it. Reverting the cover wiring fails it.
+- **llms.txt.** `public/llms.txt` is static and never reaches the Worker, and posts are in D1, so the
+  list cannot be a build step. `/adventures/llms.txt` (`src/pages/adventures/llms.txt.ts`) is generated
+  from the same list the blog reads: newest first, the Chinese version beside its English post, titles
+  and excerpts escaped and flattened to one line. `public/llms.txt` links to it. It sits under
+  `/adventures/` because that path is already routed to the Worker first; making `/llms.txt` itself
+  dynamic needs `'/llms.txt'` added to `runWorkerFirst` in `cloudflare.config.ts` and the static file
+  removed. That file was not touched here.
+- **Sitemap hreflang.** Confirmed: EmDash's `/sitemap-adventures.xml` writes `hreflang="zh"`; the pages
+  and the main sitemap use `zh-Hans`. Fixed with a route of our own
+  (`src/pages/sitemap-adventures.xml.ts`); a route in `src/pages` wins over the integration's injected
+  one (verified: the response changed from `http://localhost` URLs with `zh` to the site's URLs with
+  `zh-Hans`). It is built from the English records, like the blog list, so an untranslated post lists
+  English and `x-default` only; a Chinese entry with no English original (possible in EmDash, absent from
+  our list too) is not in it, where EmDash's own sitemap would include it.
+
+## Sanitise at render (N4)
+
+`src/blog/portable-text.ts` was escaping correctly (text and attributes are escaped, links are checked,
+the `javascript:`, `data:`, backslash and tab cases were already handled by `classifyLink`) but it was
+not hardened as an untrusted-input path. Probing it with hostile Portable Text found:
+
+| Input | Before | Now |
+|---|---|---|
+| a span with 5000 marks, or a list item at level 5000 | `RangeError: Maximum call stack size exceeded`, thrown from `renderBody`, which the view does not catch: a 500 for the whole document | marks capped at 16 distinct (the Rust prototype's `MAX_MARKS_PER_SPAN`), list level 1 to 6, and `renderBody` fails closed to an empty body |
+| a 20 MB span, 200,000 blocks | rendered in full (20 MB of HTML from one field) | 20,000 characters per span, 400,000 per body, 2,000 blocks, 500 spans per block |
+| an unknown mark name | `<span class="unknown__pt__mark__<attacker text>">` (escaped, but attacker-chosen) | the words, no span |
+| `underline` | an inline `style` attribute, dropped by `style-src 'self'` | `<u>` |
+| unknown block types, styles, list kinds, non-string `text`, non-array `children`, `null` entries | tolerated, but each wrote a `console.warn` per block to the Worker log | dropped by an allow-list (`sanitizeBody`); no log line from input |
+| an image `src` from the cover field | any non-empty string was passed on | on-site path or https only, no whitespace or backslash (`isSafeImageSrc`); size must be a finite number up to 20,000 |
+| a slug of any length or content | looked up | over 200 characters, or with a control character or a separator, is a 404 without asking the CMS |
+| the three response states | inline in two views | `src/blog/http.ts`: a missing adventure is `404` and `no-store`, an outage `503`, `Retry-After`, `no-store`; only a found page is cacheable |
+
+Ported from the Rust Worker prototype (PR #54): the mark cap, list-depth bound, a date path that cannot
+throw on hostile input (`isoDate` accepts only a Date, a number or a string of up to 40 characters), and
+"never cache a not-found answer" (here: `responseFor('missing')` is `no-store`; this path has no
+in-process cache to poison, unlike the prototype's last-good map).
+
+Not changed, and why: the body cut is silent (a post over the caps loses its tail, not the page). The
+limits are far above any post a person writes; the accessibility plugin could report a body that hits
+them.
+
+`pnpm test:blog` (25 tests, `scripts/tests/blog-untrusted.test.mjs`, CI step) pins each row, plus the
+21-family mapping, the sitemap and llms.txt escaping. **Each fix was reverted in turn and the tests
+re-run** (`mutate.py`-style, one revert per run): all 18 fixes that have a test failed their test
+without the fix; bypassing `sanitizeBody` fails five. Two guards turned out to be redundant behind
+`toHTML`'s own `unknownType` (the block-type allow-list in `sanitizeBody`, and the `unknownMark`
+override once marks are filtered) and no test can tell them apart from the sanitiser; they stay as
+defence in depth.
+
+## Backup
+
+**It cannot be a sandboxed plugin, and EmDash already has it as a core feature.** Evidence from the
+installed `emdash` 1.5.0 and `@emdash-cms/cloudflare` 1.5.0:
+
+- A sandboxed plugin's storage capabilities are `content:*`, `media:*`, `users:read`, `network:request`
+  and `email:*`. `media:write` writes entries in the media library, not an arbitrary R2 object; there is
+  no capability that reads D1 as a whole (schema, users, options, revisions) or writes to an R2 bucket.
+  A plugin that read `content:read` and `PUT` the JSON to an external HTTPS endpoint would back up only
+  content, not the schema or settings, and would hold the credential in plugin settings (which need
+  `EMDASH_ENCRYPTION_KEY`). Not recommended.
+- Core has it: `maybeRunScheduledBackup` (in `emdash/dist/backup-*.mjs`) writes a full JSON archive
+  (`schema` and every table, drafts and trashed included, with an allow-list of options that excludes
+  secrets) to the media storage under `backups/emdash-backup-<timestamp>-<id>.json`, retention 1 to 30
+  (7 by default), at most once per 23 hours. It is **off by default** (`emdash:backups`,
+  `enabled: false`) and is driven only from the maintenance tick, "never from a request".
+- The tick comes from the Worker's `scheduled()` handler. That handler is in
+  `@emdash-cms/cloudflare/worker`'s default export, which wraps the Astro server handler. This repo's
+  `cloudflare.config.ts` uses the adapter's own entrypoint
+  (`@astrojs/cloudflare/entrypoints/server`), which has **no `scheduled()`**, so even with a Cron
+  Trigger nothing would run: no backups, and no scheduled publishing either.
+- The same file warns: the archive is built in memory ("truly huge databases should use
+  `wrangler d1 export`"), and the archive goes into the **same R2 bucket** as the media, so it is not an
+  independent copy: losing the bucket or the account loses both. It also contains no media files.
+
+**Decision for the owner** (nothing implemented, `cloudflare.config.ts` untouched):
+
+1. Use core backups, with the worker entry and a Cron Trigger. This needs, in order:
+   a. Point `worker.entrypoint` in `cloudflare.config.ts` at `@emdash-cms/cloudflare/worker` instead of
+      the adapter's entrypoint. Untested with `cf` (EmDash's docs assume `wrangler.jsonc` and a `main`;
+      listed under the gaps above).
+   b. Add a Cron Trigger (for example every 5 minutes: scheduled publishing wants a short interval,
+      backups gate themselves to daily). `cf`'s config field for crons is unverified here; the `cf`
+      bundle contains the string `crons`, so `triggers.crons` is likely.
+   c. Build, deploy, then in the admin enable scheduled backups and choose a retention.
+   d. Copy the archive out of the bucket on a schedule you control (an `rclone`/`wrangler r2` job or a
+      second bucket in another account), because a backup beside the data it protects is half a backup.
+2. Whichever you choose, also rely on D1's point-in-time restore (Time Travel; Cloudflare documents
+   30 days on the Paid plan, not verified in this spike) and run a manual `wrangler d1 export` before
+   risky changes.
+3. Do **not** build a plugin for this.
+
+What this changes if deferred: with the adapter entrypoint, a post scheduled for the future will not
+publish by itself either. If scheduling is not wanted, the cost of deferring is only the missing backup.
 
 ## Deno
 

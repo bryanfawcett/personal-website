@@ -52,6 +52,15 @@ ogLocaleAlternates: Array<string>,
  */
 image: string, imageAlt: string, 
 /**
+ * Pixel size of `image`. Absent means unknown, and the `og:image:width`/`height` tags are
+ * left out: the crate's fixed 1200x630 would be a false claim about a photograph.
+ */
+imageWidth?: number, imageHeight?: number, 
+/**
+ * Present only for a post.
+ */
+article?: ArticleProp, 
+/**
  * e.g. `@bryanfawcett`.
  */
 twitterCreator: string, person: PersonProp, webSite: WebSiteProp, };

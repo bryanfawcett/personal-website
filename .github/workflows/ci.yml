@@ -46,6 +46,14 @@ jobs:
       - name: Verify post links are safe
         run: pnpm exec vp run verify:links
 
+      # The CMS offers exactly the palette's 21 families, generated from mzizi-tokens like the palette itself.
+      - name: Adventure mineral options match the palette
+        run: pnpm exec vp run seed:minerals:check
+
+      # The blog's read path as hostile input: hostile Portable Text, dates, images, the discovery files.
+      - name: Blog untrusted-input tests
+        run: pnpm exec vp run test:blog
+
       # Two things the rendered-pixel contrast gate structurally cannot see: a
       # var() that resolves to nothing (it falls back to `unset` and inherits,
       # so there is nothing to measure), and a base rule that outranks a class

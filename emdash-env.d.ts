@@ -14,7 +14,7 @@ export interface Adventure {
   adventure_date: string;
   excerpt?: string;
   cover?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
-  mineral?: "cobalt" | "tanzanite" | "malachite" | "gold" | "terracotta" | "sodalite" | "copper";
+  mineral?: "cobalt" | "tanzanite" | "malachite" | "gold" | "terracotta" | "sodalite" | "copper" | "indigo" | "savanna" | "baobab" | "sunset" | "river" | "hematite" | "kalahari" | "ember" | "acacia" | "fern" | "lagoon" | "storm" | "dusk" | "protea";
   body?: PortableTextBlock[];
   createdAt: Date;
   updatedAt: Date;
