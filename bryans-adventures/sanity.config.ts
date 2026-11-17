@@ -47,23 +47,32 @@ export default defineConfig({
       schemaTypes: TRANSLATED_TYPES,
     }),
 
+    /*
+     * Every structure node carries an explicit id. A node's id otherwise comes from its title, and
+     * the Chinese title (中文) generates an empty one, which Sanity 6 rejects when the Studio deploys.
+     */
     structureTool({
       structure: (S) =>
         S.list()
+          .id('adventures')
           .title('Adventures')
           .items([
             S.listItem()
+              .id('adventures-en')
               .title('English')
               .child(
                 S.documentList()
+                  .id('adventures-en-list')
                   .title('English')
                   .filter('_type == "adventure" && language == "en"')
                   .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
               ),
             S.listItem()
+              .id('adventures-zh')
               .title('中文')
               .child(
                 S.documentList()
+                  .id('adventures-zh-list')
                   .title('中文')
                   .filter('_type == "adventure" && language == "zh"')
                   .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
