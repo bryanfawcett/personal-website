@@ -93,7 +93,7 @@ pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stric
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
-**Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
+**Requirements:** Node.js 22.16+ (EmDash's floor; Astro 7's own is 22.12), pnpm 10+.
 
 ## Project Overview
 
@@ -202,6 +202,12 @@ repos, sharing the branding layer rather than this codebase.
 ## Conventions
 
 ### Everything is Astro and TypeScript
+
+> **Decision (17 November 2026): React is allowed for the EmDash admin only.** EmDash's admin
+> (`/_emdash/admin`) is built on React, so `react`, `react-dom` and `@astrojs/react` come in as
+> dependencies of the CMS. The public site still ships no framework JavaScript: no React island on
+> any public page, and the admin bundle must never reach one. Check the page weight of `/` and
+> `/experience` after any change to the integration list. The rest of this section stands.
 
 No React, no client framework. The one UI package is `@bundu/ui`, used for its
 tokens and its Astro `MineralStrip` — no client JavaScript and no Tailwind. The only client JavaScript is the
@@ -694,8 +700,8 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
 3. **Cap grid track minimums with `min()`** — `minmax(min(20rem, 100%), 1fr)`. A bare
    `minmax(20rem, 1fr)` forces horizontal scroll on a 390px screen.
 4. **Hard-coded colours.** Use the custom properties.
-5. **Adding a client framework.** Don't; this is a content site.
-6. **Node < 22.12** will not run Astro 7.
+5. **Adding a client framework.** Don't; this is a content site. The one exception is the EmDash admin (see "Everything is Astro and TypeScript"): React lives there and nowhere public.
+6. **Node < 22.16** will not run EmDash (and < 22.12 will not run Astro 7). `package.json` `engines` and CI agree. Cloudflare's build image takes its Node version from the dashboard (a `NODE_VERSION` build variable), not from the repo: a `.node-version` file made the Workers Build fail on 17 November 2026, so there isn't one. Set `NODE_VERSION` to 22.16 or later there before EmDash lands.
 7. **`mix-blend-mode: multiply` on the sheet layers.** On a cyanotype the ruling
    is lighter than the ground, so the grid needs `plus-lighter` and the grain
    needs `soft-light`. Multiply makes both vanish.
