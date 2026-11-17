@@ -65,11 +65,8 @@ jobs:
         run: pnpm exec vp run fragments:check
 
       # The theme toggle is Rust compiled to wasm and committed under src/theme/.
-      - name: Theme wasm glue is current
-        run: |
-          rustup target add wasm32-unknown-unknown
-          cargo install wasm-bindgen-cli --version 0.2.130 --locked
-          pnpm exec vp run theme:check
+      - name: Theme wasm is current
+        run: pnpm exec vp run theme:check
 
       - name: Rust components match the built pages
         run: pnpm exec vp run verify:components:rs

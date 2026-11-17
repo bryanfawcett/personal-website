@@ -4,22 +4,36 @@
 # Cloudflare's build image has no Rust, so the compiled module and its JS glue are
 # committed and served as static assets. Run after any change to tools/theme-client.
 #
-#   scripts/build-theme.sh            # rebuild src/theme/
-#   scripts/build-theme.sh --check    # fail if src/theme/ is stale (CI)
+#   scripts/build-theme.sh            # rebuild src/theme/ and record the source stamp
+#   scripts/build-theme.sh --check    # fail if the Rust source changed since the last build (CI)
+#
+# The check does not rebuild: compiled bytes depend on the host's rustc, wasm-bindgen and
+# binaryen, so a laptop and a CI runner never agree byte for byte. Instead the build records
+# a hash of the Rust source (src/theme/SOURCE.sha256) and CI recomputes it. That proves the
+# output was rebuilt after the last source change, with no Rust toolchain needed in CI.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 out=src/theme
-if [ "${1:-}" = "--check" ]; then out="$(mktemp -d)"; fi
+
+source_hash() {
+  { find tools/theme-client -type f -not -path '*/target/*' | LC_ALL=C sort; echo rust-toolchain.toml; } \
+    | while read -r f; do printf '%s\n' "$f"; cat "$f"; done | shasum -a 256 | cut -d' ' -f1
+}
+
+if [ "${1:-}" = "--check" ]; then
+  if [ -s "$out/theme_client_bg.wasm" ] && [ "$(cat "$out/SOURCE.sha256" 2>/dev/null)" = "$(source_hash)" ]; then
+    echo "src/theme/ is up to date"
+  else
+    echo "src/theme/ is stale: the Rust source changed since it was built. Run pnpm theme and commit." >&2
+    exit 1
+  fi
+  exit 0
+fi
+
 cargo build -q --manifest-path tools/Cargo.toml -p theme-client --target wasm32-unknown-unknown --release
 wasm-bindgen --target web --out-dir "$out" tools/target/wasm32-unknown-unknown/release/theme_client.wasm
 if command -v wasm-opt >/dev/null; then
   wasm-opt -Oz --all-features --disable-compact-imports -o "$out/theme_client_bg.wasm" "$out/theme_client_bg.wasm"
 fi
-if [ "${1:-}" = "--check" ]; then
-  # The glue is generated from the module's imports and exports, so it changes whenever
-  # the Rust's browser surface does. The .wasm itself is not compared byte for byte: its
-  # bytes depend on the host's rustc and binaryen, which differ between a laptop and CI.
-  if diff -q "$out/theme_client.js" src/theme/theme_client.js >/dev/null && [ -s src/theme/theme_client_bg.wasm ]; then echo "src/theme/ is up to date"; else echo "src/theme/ is stale; run pnpm theme" >&2; exit 1; fi
-else
-  echo "src/theme/: theme_client_bg.wasm $(wc -c < "$out/theme_client_bg.wasm" | tr -d ' ') bytes"
-fi
+source_hash > "$out/SOURCE.sha256"
+echo "src/theme/: theme_client_bg.wasm $(wc -c < "$out/theme_client_bg.wasm" | tr -d ' ') bytes"
