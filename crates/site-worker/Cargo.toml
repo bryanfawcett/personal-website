@@ -1,0 +1,34 @@
+[package]
+name = "site-worker"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "PROTOTYPE: the four on-demand blog routes of bryanfawcett.com as a Rust Worker. Not wired into deployment; see docs/rust-blog-worker.md."
+
+# A workspace of its own: the Worker pulls in `worker`/wasm-bindgen, which the tools
+# workspace (parity, fragments, wasm components) must never have to compile or lock.
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# The site's chrome, reused rather than re-written. No `canon` (scraper) on wasm.
+components = { path = "../../tools/components", default-features = false }
+maud = "0.27"
+# The Mzizi research, used for real. Exact pins: a registry bump is a deliberate change.
+mzizi-resilience = "=0.7.0"
+mzizi-discovery = "=0.7.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+worker = "0.9.0"
+futures-util = { version = "0.3", default-features = false }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"

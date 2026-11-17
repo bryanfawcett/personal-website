@@ -1,0 +1,83 @@
+{
+  "_comment": "FIXTURES, NOT CONTENT. The production dataset (zsx9erk1/production) has zero published adventures as of 2026-11-17, so every title here is labelled [FIXTURE] and nothing below was written by Bryan. The shapes follow src/sanity/queries.ts exactly. Used by fixtures/server.mjs; never deployed.",
+  "en": [
+    {
+      "_id": "fixture-en-1",
+      "title": "[FIXTURE] Crossing the Zambezi Escarpment",
+      "slug": "fixture-zambezi",
+      "publishedAt": "2026-05-01T08:30:00.000Z",
+      "place": "Mana Pools, Zimbabwe",
+      "mineral": "malachite",
+      "excerpt": "A fixture excerpt: two sentences about a long drive. The second one has an ampersand & a quote \".",
+      "cover": { "asset": { "_ref": "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x1333-jpg" }, "alt": "A flooded track (fixture)" },
+      "language": "en",
+      "body": [
+        { "_type": "block", "_key": "a", "style": "h2", "markDefs": [], "children": [{ "_type": "span", "_key": "a1", "text": "The road in", "marks": [] }] },
+        { "_type": "block", "_key": "b", "style": "normal", "markDefs": [{ "_key": "l1", "_type": "link", "href": "https://example.org/map?a=1&b=2" }, { "_key": "l2", "_type": "link", "href": "/adventures" }],
+          "children": [
+            { "_type": "span", "_key": "b1", "text": "We left before dawn, ", "marks": [] },
+            { "_type": "span", "_key": "b2", "text": "with the map ", "marks": ["strong"] },
+            { "_type": "span", "_key": "b3", "text": "upside down", "marks": ["strong", "em"] },
+            { "_type": "span", "_key": "b4", "text": " and a ", "marks": [] },
+            { "_type": "span", "_key": "b5", "text": "link out", "marks": ["l1"] },
+            { "_type": "span", "_key": "b6", "text": " and ", "marks": [] },
+            { "_type": "span", "_key": "b7", "text": "a link home", "marks": ["l2"] },
+            { "_type": "span", "_key": "b8", "text": ".", "marks": [] }
+          ] },
+        { "_type": "block", "_key": "c", "style": "h3", "markDefs": [], "children": [{ "_type": "span", "_key": "c1", "text": "What we carried", "marks": [] }] },
+        { "_type": "block", "_key": "d1", "style": "normal", "listItem": "bullet", "level": 1, "markDefs": [], "children": [{ "_type": "span", "_key": "d11", "text": "water", "marks": [] }] },
+        { "_type": "block", "_key": "d2", "style": "normal", "listItem": "bullet", "level": 2, "markDefs": [], "children": [{ "_type": "span", "_key": "d21", "text": "more water", "marks": [] }] },
+        { "_type": "block", "_key": "d3", "style": "normal", "listItem": "bullet", "level": 1, "markDefs": [], "children": [{ "_type": "span", "_key": "d31", "text": "a spare tyre", "marks": [] }] },
+        { "_type": "block", "_key": "e", "style": "blockquote", "markDefs": [], "children": [{ "_type": "span", "_key": "e1", "text": "The road ends where the river begins.", "marks": [] }] },
+        { "_type": "image", "_key": "f", "asset": { "_ref": "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x1333-jpg" }, "alt": "River at dusk (fixture)", "caption": "Dusk, fixture caption" }
+      ],
+      "translation": { "slug": "fixture-zambezi-zh" }
+    },
+    {
+      "_id": "fixture-en-2",
+      "title": "[FIXTURE] An English-only adventure",
+      "slug": "fixture-english-only",
+      "publishedAt": "2026-03-10",
+      "place": "Gonarezhou, Zimbabwe",
+      "excerpt": "Has no Chinese translation, so the Chinese list marks it.",
+      "language": "en",
+      "body": [
+        { "_type": "block", "_key": "a", "style": "normal", "markDefs": [], "children": [{ "_type": "span", "_key": "a1", "text": "Only English here.", "marks": [] }] }
+      ],
+      "translation": null
+    },
+    {
+      "_id": "fixture-en-3",
+      "title": "[FIXTURE] Hostile content",
+      "slug": "fixture-hostile",
+      "publishedAt": "2026-02-01T00:00:00Z",
+      "place": "<script>alert('place')</script>",
+      "mineral": "cobalt",
+      "excerpt": "\"><img src=x onerror=alert('excerpt')>",
+      "language": "en",
+      "body": [
+        { "_type": "block", "_key": "a", "style": "normal", "markDefs": [{ "_key": "j", "_type": "link", "href": "javascript:alert('link')" }],
+          "children": [{ "_type": "span", "_key": "a1", "text": "<script>alert('text')</script> and ", "marks": [] }, { "_type": "span", "_key": "a2", "text": "a javascript link", "marks": ["j"] }] }
+      ],
+      "translation": null
+    }
+  ],
+  "zh": [
+    {
+      "_id": "fixture-zh-1",
+      "title": "[FIXTURE] 穿越赞比西断崖",
+      "slug": "fixture-zambezi-zh",
+      "publishedAt": "2026-05-01T08:30:00.000Z",
+      "place": "津巴布韦 马纳波尔斯",
+      "mineral": "malachite",
+      "excerpt": "示例摘要：一次长途驾驶。",
+      "cover": { "asset": { "_ref": "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x1333-jpg" }, "alt": "被淹的小路（示例）" },
+      "language": "zh",
+      "body": [
+        { "_type": "block", "_key": "a", "style": "h2", "markDefs": [], "children": [{ "_type": "span", "_key": "a1", "text": "进山的路", "marks": [] }] },
+        { "_type": "block", "_key": "b", "style": "normal", "markDefs": [], "children": [{ "_type": "span", "_key": "b1", "text": "天亮前出发。", "marks": ["strong"] }] }
+      ],
+      "original": { "slug": "fixture-zambezi" }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# PROTOTYPE CONFIG, for local runs only. The deployed site is configured by
+# `cloudflare.config.ts` at the repo root, which this file does not touch and is not read by.
+# Run it with `crates/site-worker/scripts/dev.sh` (see docs/rust-blog-worker.md).
+name = "bryanfawcett-site-rust-blog-prototype"
+main = "build/worker/shim.mjs"
+compatibility_date = "2026-08-26"
+
+[build]
+command = "worker-build --release"
+
+# The prerendered site, from `pnpm build`. The Worker reads the build's stylesheet and
+# script URLs out of `/404` through this binding, and delegates anything that is not a blog
+# route to it.
+[assets]
+directory = "../../.cloudflare/output/v0/workers/default/assets"
+binding = "ASSETS"
+not_found_handling = "404-page"
+# Same list as cloudflare.config.ts: without it a browser navigation to /adventures is
+# answered from the asset tree and never reaches the Worker.
+run_worker_first = ["/adventures", "/adventures/*", "/zh/adventures", "/zh/adventures/*"]
+
+[observability]
+enabled = true

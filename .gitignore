@@ -37,4 +37,7 @@ yarn-error.log*
 
 # rust tools
 tools/target/
+# the prototype blog Worker: its own workspace, its own build output
+crates/site-worker/target/
+crates/site-worker/build/
 .playwright-mcp/
