@@ -23,7 +23,7 @@ pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 ```
 
-**Requirements:** Node.js 22.12+ (Astro 7's floor), pnpm 10+.
+**Requirements:** Node.js 22.16+ (EmDash's floor; Astro 7's own is 22.12), pnpm 10+.
 
 ## Architecture
 
