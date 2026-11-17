@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
+  "emdash": {
+    "label": "Bryan Fawcett",
+    "seed": "seed/seed.json"
+  },
   "packageManager": "pnpm@12.21.0",
   "engines": {
     "node": ">=22.12.0"
@@ -15,7 +19,6 @@
     "lint": "vp lint",
     "deploy": "cf deploy",
     "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
-    "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
     "verify:links": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-link-safety.mjs",
     "verify:overlap": "node scripts/verify-overlap.mjs",
     "verify:contrast": "node scripts/verify-contrast.mjs",
@@ -23,7 +26,6 @@
     "nav-portrait": "cargo run -q --manifest-path tools/Cargo.toml -p nav-portrait",
     "cjk": "node scripts/build-cjk-subset.mjs",
     "fmt": "vp fmt",
-    "verify:images:rs": "cargo run -q --manifest-path tools/Cargo.toml -p verify-image-urls",
     "palette": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette --bin generate",
     "palette:check": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette --bin generate -- --check",
     "verify:palette": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette",
@@ -39,13 +41,21 @@
     "verify:components:rs": "cargo run -q --manifest-path tools/Cargo.toml -p components --bin parity",
     "theme": "scripts/build-theme.sh",
     "theme:check": "scripts/build-theme.sh --check",
-    "design-system":"python3 scripts/build-design-system.py",
+    "design-system": "python3 scripts/build-design-system.py",
     "design-system:check": "python3 scripts/build-design-system.py --check"
   },
   "dependencies": {
+    "@astrojs/react": "^7.1.9",
     "@bundu/ui": "0.14.0",
+    "@emdash-cms/auth-atproto": "^0.2.51",
+    "@emdash-cms/cloudflare": "^1.5.0",
     "@portabletext/to-html": "^6.0.0",
-    "astro": "^7.4.12"
+    "astro": "^7.4.12",
+    "emdash": "^1.5.0",
+    "kysely": "^0.29.9",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "wrangler": "^4.162.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",

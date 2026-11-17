@@ -422,7 +422,7 @@
     "https://bryanfawcett.com/how-this-was-built"
    ],
    "meta name=description": [
-    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, a Sanity blog, and the move from TypeScript to Rust, including what broke along the way."
+    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, an EmDash blog, and the move from TypeScript to Rust, including what broke along the way."
    ],
    "meta name=twitter:card": [
     "summary_large_image"
@@ -431,7 +431,7 @@
     "@bryanfawcett"
    ],
    "meta property=og:description": [
-    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, a Sanity blog, and the move from TypeScript to Rust, including what broke along the way."
+    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, an EmDash blog, and the move from TypeScript to Rust, including what broke along the way."
    ],
    "meta property=og:image": [
     "https://bryanfawcett.com/og-bryan-fawcett.jpg"
@@ -1374,7 +1374,7 @@
     "https://bryanfawcett.com/zh/how-this-was-built"
    ],
    "meta name=description": [
-    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、Sanity 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
+    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、EmDash 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
    ],
    "meta name=twitter:card": [
     "summary_large_image"
@@ -1383,7 +1383,7 @@
     "@bryanfawcett"
    ],
    "meta property=og:description": [
-    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、Sanity 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
+    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、EmDash 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
    ],
    "meta property=og:image": [
     "https://bryanfawcett.com/og-bryan-fawcett.jpg"

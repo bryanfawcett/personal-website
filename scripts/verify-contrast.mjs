@@ -108,7 +108,7 @@ for (const route of ROUTES) {
   /*
    * A 5xx is skipped; a navigation error is fatal.
    *
-   * The four blog routes render from Sanity per request, and an unreachable CMS
+   * The four blog routes render from EmDash (D1) per request, and an unreachable data layer
    * is a different problem with its own three states (see CLAUDE.md) — not this
    * check's to fail on. But a server that is not answering at all is not a
    * skippable route: without the distinction, a Worker that fell over mid-run
@@ -124,7 +124,7 @@ for (const route of ROUTES) {
     process.exit(2);
   }
   /*
-   * 503 is the blog saying Sanity is unreachable, which is a different problem
+   * 503 is the blog saying its data layer is unreachable, which is a different problem
    * with its own three states (see CLAUDE.md) and not this gate's to fail on.
    * Every other 5xx is a broken page, and skipping those was the same hole in
    * a different shape: thirteen routes could 500 and the run would still find

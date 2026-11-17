@@ -1,10 +1,10 @@
 /**
- * Links in a Sanity post body: only web, mail, phone and on-site paths survive, and "this site"
- * means this exact host. Sanity text is untrusted input however trusted its editor is, and the
+ * Links in an adventure body: only web, mail, phone and on-site paths survive, and "this site"
+ * means this exact host. CMS text is untrusted input however trusted its editor is, and the
  * previous rule (a prefix test on the URL) let `javascript:` through and counted
  * `https://bryanfawcett.com.evil.example` as internal.
  */
-import { classifyLink, renderBody } from '../src/sanity/portable-text.ts';
+import { classifyLink, renderBody } from '../src/blog/portable-text.ts';
 
 const cases = [
   // [href, expected]: null = dropped, otherwise { external }

@@ -1,30 +1,31 @@
 import type { MineralName } from '../brand/minerals.js';
 
-/** A Sanity image reference, as it comes back from a projection. */
-export interface SanityImage {
-  readonly asset?: { readonly _ref?: string } | undefined;
-  readonly alt?: string | undefined;
+/** A resolved image: what an `<img>` needs and nothing about where it came from. */
+export interface BlogImage {
+  readonly src: string;
+  readonly alt: string;
+  readonly width?: number | undefined;
+  readonly height?: number | undefined;
   readonly caption?: string | undefined;
 }
 
 /** One entry in the list — enough to draw a card, not the whole body. */
 export interface AdventureCard {
-  readonly _id: string;
+  readonly id: string;
   readonly title: string;
   readonly slug: string;
-  readonly publishedAt: string;
+  /** ISO date of the adventure (not of the writing). */
+  readonly date: string;
   readonly place?: string | undefined;
   readonly excerpt?: string | undefined;
   readonly mineral?: MineralName | undefined;
-  readonly cover?: SanityImage | undefined;
+  readonly cover?: BlogImage | undefined;
   /**
    * The Chinese translation, when one exists.
    *
-   * Resolved through the `translation.metadata` document rather than stored on
-   * either adventure. Attached to the English record here because the Chinese
-   * list is built from the English one: every adventure appears there, and
-   * this is what decides whether it shows translated or carries the
-   * ENGLISH ONLY mark.
+   * The Chinese list is built from the English entries, so every adventure
+   * appears there: translated where this is set, marked ENGLISH ONLY where it
+   * is not.
    */
   readonly zh?: {
     readonly title: string;

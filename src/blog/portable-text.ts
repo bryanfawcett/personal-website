@@ -1,8 +1,8 @@
 /**
  * Portable Text → HTML, in the sheet's own vocabulary.
  *
- * `@portabletext/to-html` is the one Sanity dependency the site takes. Portable
- * Text is a nested, mark-annotated document format — overlapping marks, list
+ * `@portabletext/to-html` is a generic Portable Text renderer (EmDash stores rich text as Portable
+ * Text too), not a Sanity client. Portable Text is a nested, mark-annotated document format — overlapping marks, list
  * nesting, custom block types — and hand-rolling a renderer for it is the kind
  * of job that looks finished long before it is correct.
  *
@@ -12,8 +12,6 @@
  */
 import { toHTML, type PortableTextHtmlComponents } from '@portabletext/to-html';
 
-import { resolveImage } from './image.js';
-import type { SanityImage } from './types.js';
 
 /** Escape text that gets interpolated into the HTML string. */
 function escape(value: string): string {
@@ -59,6 +57,12 @@ const components: Partial<PortableTextHtmlComponents> = {
     // axe flags as heading-order: a level may not be jumped, only descended.
     h2: ({ children }) => `<h2>${children}</h2>`,
     h3: ({ children }) => `<h3>${children}</h3>`,
+    // EmDash's editor also offers h1 and h4-h6. The sheet allows only h2 and h3 in a body, so the
+    // extra levels are folded in rather than rendered: h1 would be a second h1 on the page.
+    h1: ({ children }) => `<h2>${children}</h2>`,
+    h4: ({ children }) => `<h3>${children}</h3>`,
+    h5: ({ children }) => `<h3>${children}</h3>`,
+    h6: ({ children }) => `<h3>${children}</h3>`,
     // No class: `.pull` is scoped to the origins sheet, so borrowing the
     // name here rendered a pull quote as plain body copy. The adventure
     // stylesheet styles the element directly instead.
@@ -70,7 +74,7 @@ const components: Partial<PortableTextHtmlComponents> = {
       const href = typeof value?.['href'] === 'string' ? value['href'].trim() : '';
       const link = classifyLink(href);
       // A scheme outside the allow-list (javascript:, data:, vbscript:) is dropped: the words
-      // stay, the link does not. Sanity text is untrusted input however trusted its editor is.
+      // stay, the link does not. CMS text is untrusted input however trusted its editor is.
       if (!link) return children;
       const attrs = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
       return `<a href="${escape(href)}"${attrs}>${children}</a>`;
@@ -79,19 +83,33 @@ const components: Partial<PortableTextHtmlComponents> = {
 
   types: {
     image: ({ value }) => {
-      const image = value as SanityImage;
-      // The body column is --measure wide; 720 covers it at 2x on a laptop.
-      const resolved = resolveImage(image, { width: 720 });
-      if (!resolved) return '';
+      // EmDash's image block: `asset._ref` is a media id and `asset.url` its public URL, hydrated
+      // by the loader. Without a URL there is nothing to draw, so the block is dropped.
+      const block = value as {
+        asset?: { url?: unknown; _ref?: unknown };
+        alt?: unknown;
+        caption?: unknown;
+        width?: unknown;
+        height?: unknown;
+      };
+      const ref = typeof block.asset?._ref === 'string' && /^[A-Za-z0-9]+$/.test(block.asset._ref) ? block.asset._ref : '';
+      const src =
+        typeof block.asset?.url === 'string' && block.asset.url
+          ? block.asset.url
+          : ref
+            ? `/_emdash/api/media/file/${ref}`
+            : '';
+      if (!src || !/^(\/(?!\/)|https:\/\/)/.test(src) || /[\\\u0000-\u0020]/.test(src)) return '';
 
-      const caption = typeof image.caption === 'string' ? image.caption : '';
+      const alt = typeof block.alt === 'string' ? block.alt : '';
+      const caption = typeof block.caption === 'string' ? block.caption : '';
+      const w = typeof block.width === 'number' ? ` width="${Math.round(block.width)}"` : '';
+      const h = typeof block.height === 'number' ? ` height="${Math.round(block.height)}"` : '';
 
       return [
         '<figure class="adventure__figure">',
         '<span class="panel__rule" aria-hidden="true"></span>',
-        `<img src="${escape(resolved.src)}" srcset="${escape(resolved.srcset)}"`,
-        ` width="${resolved.width}" height="${resolved.height}"`,
-        ` alt="${escape(resolved.alt)}" loading="lazy" decoding="async">`,
+        `<img src="${escape(src)}"${w}${h} alt="${escape(alt)}" loading="lazy" decoding="async">`,
         caption ? `<figcaption>${escape(caption)}</figcaption>` : '',
         '</figure>',
       ].join('');

@@ -2,18 +2,16 @@
 /**
  * One adventure, in whichever language it was asked for.
  *
- * Server-rendered, like the list. The body arrives as Portable Text and is
- * turned into the site's own markup by `src/sanity/portable-text.ts` — nothing
+ * Server-rendered, like the list. The body arrives as Portable Text (EmDash's rich-text format) and is
+ * turned into the site's own markup by `src/blog/portable-text.ts` — nothing
  * here invents a visual treatment the templates do not already have.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
-import { BLOG_CACHE_CONTROL, groq } from '../sanity/client.js';
-import { ADVENTURE_EN, ADVENTURE_ZH } from '../sanity/queries.js';
-import { resolveImage } from '../sanity/image.js';
-import { renderBody } from '../sanity/portable-text.js';
-import { DEFAULT_MINERAL, type Adventure } from '../sanity/types.js';
+import { BLOG_CACHE_CONTROL, getAdventure } from '../blog/emdash.js';
+import { renderBody } from '../blog/portable-text.js';
+import { DEFAULT_MINERAL } from '../blog/types.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
@@ -25,13 +23,13 @@ interface Props {
 const { lang, slug } = Astro.props;
 const t = useTranslations(lang);
 
-const result = await groq<Adventure | null>(lang === 'zh' ? ADVENTURE_ZH : ADVENTURE_EN, { slug });
+const result = await getAdventure(lang, slug);
 const adventure = result.ok ? result.data : null;
 
 /*
  * Three outcomes, three status codes.
  *
- * A missing adventure is a real 404. An unreachable Sanity is a 503 with
+ * A missing adventure is a real 404. An unreachable data layer is a 503 with
  * Retry-After — telling a crawler "gone" when the content service is merely
  * down is how a blog quietly drops out of an index. Only a found adventure is
  * cacheable; the other two must not be held at the edge.
@@ -75,7 +73,7 @@ const dateFormat = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hans-CN' : 'en-GB
   timeZone: 'UTC',
 });
 
-const cover = adventure ? resolveImage(adventure.cover, { width: 900, aspect: 16 / 9 }) : null;
+const cover = adventure?.cover ?? null;
 const body = adventure ? renderBody(adventure.body) : '';
 ---
 
@@ -92,7 +90,7 @@ const body = adventure ? renderBody(adventure.body) : '';
     adventure ? (
       <>
         <PageHeader
-          eyebrow={dateFormat.format(new Date(adventure.publishedAt))}
+          eyebrow={dateFormat.format(new Date(adventure.date))}
           title={adventure.title}
           lede={adventure.excerpt}
           note={adventure.place}
@@ -109,7 +107,6 @@ const body = adventure ? renderBody(adventure.body) : '';
               <span class="panel__rule" aria-hidden="true" />
               <img
                 src={cover.src}
-                srcset={cover.srcset}
                 width={cover.width}
                 height={cover.height}
                 alt={cover.alt}
@@ -120,7 +117,7 @@ const body = adventure ? renderBody(adventure.body) : '';
             </figure>
           )}
 
-          {/* Sanitised at the source: the body is authored in the Studio, and
+          {/* Sanitised at the source: the body is authored in the EmDash admin, and
               Portable Text carries structure rather than markup, so nothing a
               writer types can reach this as raw HTML. */}
           <div class="adventure__body prose" set:html={body} />

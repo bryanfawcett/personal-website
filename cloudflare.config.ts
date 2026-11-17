@@ -13,9 +13,16 @@ export default defineConfig({
 			// Without this the blog 404s for every real visitor: assets are matched
 			// before the Worker, and a browser navigation (Sec-Fetch-Mode: navigate)
 			// is answered from the asset tree or 404.html. curl hides it.
-			runWorkerFirst: ['/adventures', '/adventures/*', '/zh/adventures', '/zh/adventures/*'],
+			runWorkerFirst: ['/adventures', '/adventures/*', '/zh/adventures', '/zh/adventures/*', '/_emdash/*', '/sitemap-adventures*'],
 		},
-		env: { ASSETS: bindings.assets() },
+		env: {
+			ASSETS: bindings.assets(),
+			// EmDash: content (D1) and media (R2). Names must match astro.config.mjs.
+			DB: bindings.d1(),
+			MEDIA: bindings.r2(),
+			// Astro session store; EmDash keeps the signed-in admin user in it.
+			SESSION: bindings.kv(),
+		},
 		observability: { enabled: true },
 	},
 });

@@ -42,13 +42,6 @@ jobs:
       - name: Verify every self-hosted font resolves
         run: python3 scripts/verify-fonts.py
 
-      # src/sanity/image.ts assembles Sanity CDN URLs by hand rather than
-      # pulling @sanity/image-url into the Worker bundle. A wrong URL fails as
-      # a broken image on a live page, not as a build error, so the format is
-      # pinned here — same reason verify-fonts.py exists.
-      - name: Verify the Sanity image URL format
-        run: pnpm exec vp run verify:images
-
       # Links in a post body: only web, mail, phone and on-site paths; an exact own-host test.
       - name: Verify post links are safe
         run: pnpm exec vp run verify:links

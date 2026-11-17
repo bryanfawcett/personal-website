@@ -52,16 +52,15 @@ src/
     ui.ts           Chrome strings, en and zh, checked against each other.
     routing.ts      /experience ⇄ /zh/experience, and the hreflang set.
     localize.ts     Bilingual<T, K> — a record plus its translated fields.
-  sanity/           The blog's read side.
-    client.ts       Unauthenticated GROQ against the public dataset.
-    queries.ts      Every query the blog runs, in one place.
-    image.ts        Sanity CDN URLs, hand-rolled and pinned by a check.
-    portable-text.ts  Body → the site's own markup.
+  blog/             The blog's read side, on EmDash.
+    emdash.ts       Reads the adventures collection; never throws, returns a Result.
+    types.ts        The shapes the views draw.
+    portable-text.ts  Body → the site's own markup, with the link allow-list.
   layouts/          BaseLayout — head, JSON-LD, nav, title block, scroll reveal.
   pages/            Wrappers: one per route per language. zh/ holds the Chinese.
                     Plus bryan-fawcett.vcf.ts.
   views/            The sheets themselves. One per route, rendering either language.
-bryans-adventures/  The blog's Sanity Studio. React — and not part of this build.
+seed/               EmDash's schema seed (the adventures collection) — no content.
   styles/
     fonts.css       Generated. Self-hosted @font-face rules.
     global.css      Reset, layout primitives, shared utilities.
@@ -185,21 +184,20 @@ separating its strokes a size before Latin caps do.
 
 ## The blog
 
-`/adventures` is *Bryan's Adventures*, written in Sanity and rendered on demand
+`/adventures` is *Bryan's Adventures*, written in the EmDash admin and rendered on demand
 rather than at build time. Publishing a post puts it live without a rebuild,
 which matters because Cloudflare's Workers Builds only triggers on a git push —
 there is no deploy hook a CMS webhook could pull.
 
-The dataset is public-read, so the Worker queries it with no token: the project
-id and dataset are constants, not environment variables, and there is nothing
-about the blog to configure in Cloudflare. Everything else on the site is still
-prerendered and served straight from static assets.
+Content lives in EmDash: D1 for entries, R2 for media, KV for the admin session,
+all bound to the Worker (`cloudflare.config.ts`). The admin is at
+`/_emdash/admin` and is React; no public page loads any of it. Everything else
+on the site is still prerendered and served straight from static assets.
 
-Translations are document-level, handled by
-`@sanity/document-internationalization`. A Chinese adventure is its own
-document, and the pairing lives in a `translation.metadata` document rather
-than a field on either side — so a post can exist in English alone, which is
-the normal case, and the Studio gets a Translations menu for making the other.
+Translations are entry-level, through EmDash's i18n (`getTranslations`). A Chinese
+adventure is its own entry in the same translation group, so a post can exist in
+English alone, which is the normal case, and the admin gets a Translations panel
+for making the other.
 The Chinese list shows every adventure either way, translated where a
 translation exists and marked `仅有英文` where it does not.
 

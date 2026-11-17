@@ -33,7 +33,7 @@ const SECTIONS: readonly Bilingual<Section, 'eyebrow' | 'heading' | 'paragraphs'
     heading: 'One visitor, one action',
     paragraphs: [
       'A content site with one owner and one job: an organisation decides whether to hire Nyuchi, and books a call. Everything else is in service of that, and of showing the Mzizi standard working in public.',
-      'It is Astro with no client framework. Almost every route is prerendered and served as static files from Cloudflare. The blog is the exception: it reads Sanity per request, so publishing a post is live without a rebuild. There are two languages, English at the root and Chinese under /zh, and each page is written once and wrapped twice.',
+      'It is Astro with no client framework. Almost every route is prerendered and served as static files from Cloudflare. The blog is the exception: it reads EmDash per request, so publishing a post is live without a rebuild. There are two languages, English at the root and Chinese under /zh, and each page is written once and wrapped twice.',
     ],
     items: [],
     zh: {
@@ -41,7 +41,7 @@ const SECTIONS: readonly Bilingual<Section, 'eyebrow' | 'heading' | 'paragraphs'
       heading: '一位访客，一个行动',
       paragraphs: [
         '这是一个只有一位作者、只有一项任务的内容网站：让一个机构判断是否聘用 Nyuchi，并预约一次通话。其余一切都服务于此，也服务于把 Mzizi 标准公开地用起来。',
-        '它是不带客户端框架的 Astro。几乎所有页面都在构建时预渲染，并由 Cloudflare 作为静态文件提供。博客是例外：它在每次请求时读取 Sanity，所以发布文章无需重新构建即可上线。网站有两种语言，英文在根路径，中文在 /zh 下，每个页面只写一次、套用两次。',
+        '它是不带客户端框架的 Astro。几乎所有页面都在构建时预渲染，并由 Cloudflare 作为静态文件提供。博客是例外：它在每次请求时读取 EmDash，所以发布文章无需重新构建即可上线。网站有两种语言，英文在根路径，中文在 /zh 下，每个页面只写一次、套用两次。',
       ],
     },
   },
@@ -107,18 +107,18 @@ const SECTIONS: readonly Bilingual<Section, 'eyebrow' | 'heading' | 'paragraphs'
   {
     id: 'blog',
     eyebrow: 'The blog',
-    heading: 'Why Sanity stays Sanity',
+    heading: 'Why the blog stays TypeScript',
     paragraphs: [
-      'Bryan’s Adventures is written in Sanity and rendered on demand. A missing post is a real 404. An unreachable Sanity is a 503 with a retry hint. An empty blog says so. Collapsing those three would tell a reader the writing is gone when the service is merely down.',
-      'This is the one part that keeps its JavaScript: the Sanity client, the Studio and the portable-text pipeline belong to Sanity’s own ecosystem, and porting them gains nothing. Everything else is moving to Rust.',
+      'Bryan’s Adventures is written in EmDash, an Astro CMS, and rendered on demand. A missing post is a real 404. An unreachable data layer is a 503 with a retry hint. An empty blog says so. Collapsing those three would tell a reader the writing is gone when the service is merely down.',
+      'This is the one part that keeps its JavaScript: EmDash, its admin and the portable-text pipeline belong to that ecosystem, and porting them gains nothing. Everything else is moving to Rust.',
     ],
     items: [],
     zh: {
       eyebrow: '博客',
-      heading: '为什么 Sanity 仍然是 Sanity',
+      heading: '为什么博客仍然是 TypeScript',
       paragraphs: [
-        '「Bryan 的冒险」用 Sanity 撰写，并按需渲染。文章不存在是真正的 404；Sanity 无法访问则是带重试提示的 503；博客为空就如实说明。把这三种情况混为一谈，会让读者以为文章消失了，而实际上只是服务暂时不可用。',
-        '这是唯一保留 JavaScript 的部分：Sanity 客户端、Studio 与富文本管线属于 Sanity 自己的生态，移植它们没有收益。其余一切正在迁往 Rust。',
+        '「Bryan 的冒险」用 EmDash（一个 Astro 内容管理系统）撰写，并按需渲染。文章不存在是真正的 404；数据层无法访问则是带重试提示的 503；博客为空就如实说明。把这三种情况混为一谈，会让读者以为文章消失了，而实际上只是服务暂时不可用。',
+        '这是唯一保留 JavaScript 的部分：EmDash、其管理后台与富文本管线属于它自己的生态，移植它们没有收益。其余一切正在迁往 Rust。',
       ],
     },
   },
