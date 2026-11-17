@@ -76,7 +76,7 @@ export const MINERALS = [
   {
     name: 'gold',
     hex: '#FFD740',
-    onLight: '#9A6F00',
+    onLight: '#5D4037', // the registry's gold on light (mzizi-tokens GOLD_LIGHT); was #9A6F00 until 2026-11-17
     container: '#332200',
     containerLight: '#FFF8E1',
     onContainer: '#FFECB3',

@@ -231,6 +231,113 @@
     "sodalite",
     "copper"
   ],
+  "palette": [
+    {
+      "family": "cobalt",
+      "dark": "#00B0FF",
+      "light": "#0047AB"
+    },
+    {
+      "family": "tanzanite",
+      "dark": "#B388FF",
+      "light": "#4B0082"
+    },
+    {
+      "family": "malachite",
+      "dark": "#64FFDA",
+      "light": "#004D40"
+    },
+    {
+      "family": "gold",
+      "dark": "#FFD740",
+      "light": "#5D4037"
+    },
+    {
+      "family": "terracotta",
+      "dark": "#E1B07E",
+      "light": "#A0522D"
+    },
+    {
+      "family": "sodalite",
+      "dark": "#3D5AFE",
+      "light": "#283593"
+    },
+    {
+      "family": "copper",
+      "dark": "#FF8A65",
+      "light": "#BF5A36"
+    },
+    {
+      "family": "indigo",
+      "dark": "#7986CB",
+      "light": "#4527A0"
+    },
+    {
+      "family": "savanna",
+      "dark": "#E5C158",
+      "light": "#8D6E1A"
+    },
+    {
+      "family": "baobab",
+      "dark": "#A1887F",
+      "light": "#4E342E"
+    },
+    {
+      "family": "sunset",
+      "dark": "#FF7043",
+      "light": "#D84315"
+    },
+    {
+      "family": "river",
+      "dark": "#4DD0E1",
+      "light": "#006064"
+    },
+    {
+      "family": "hematite",
+      "dark": "#90A4AE",
+      "light": "#546E7A"
+    },
+    {
+      "family": "kalahari",
+      "dark": "#E8D9B5",
+      "light": "#C9B589"
+    },
+    {
+      "family": "ember",
+      "dark": "#DA8766",
+      "light": "#843D20"
+    },
+    {
+      "family": "acacia",
+      "dark": "#93A528",
+      "light": "#4D5615"
+    },
+    {
+      "family": "fern",
+      "dark": "#2CB42B",
+      "light": "#175E17"
+    },
+    {
+      "family": "lagoon",
+      "dark": "#2AAE9B",
+      "light": "#165B51"
+    },
+    {
+      "family": "storm",
+      "dark": "#7E9BE0",
+      "light": "#284CA6"
+    },
+    {
+      "family": "dusk",
+      "dark": "#BA87E2",
+      "light": "#742AAD"
+    },
+    {
+      "family": "protea",
+      "dark": "#DF7BB4",
+      "light": "#932464"
+    }
+  ],
   "booking_url": "https://cal.com/bryanfawcett/book-a-call",
   "qr": {
     "dark": {
