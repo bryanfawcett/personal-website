@@ -19,7 +19,7 @@ const MOON: &str = r#"<svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-h
 pub fn header(site: &Site, lang: Lang, path: &str, switch_href: Option<&str>) -> Markup {
     let t = |k: &str| site.t(lang, k).to_string();
     let here = strip_lang(path);
-    let links: Vec<_> = site.nav.iter().filter(|n| n.href != "/book").collect();
+    let links: Vec<_> = site.nav.iter().filter(|n| n.header && n.href != "/book").collect();
     let book = site.nav.iter().find(|n| n.href == "/book");
     let cur = |href: &str| is_current(href, &here);
     let link_class = |base: &str, href: &str| if cur(href) { format!("{base} is-current") } else { base.to_string() };

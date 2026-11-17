@@ -10,22 +10,28 @@
 //! committed fragment does not go stale in January). Cloudflare's build image has no Rust, so
 //! the fragments are committed, as the deck's `prebuilt/` is.
 
+use maud::PreEscaped;
 use std::{collections::BTreeMap, env, fs, path::PathBuf, process::exit};
 
 use components::{
     footer::footer,
+    contact_card::ContactCard,
     header::header,
+    page_header::page_header,
+    portrait::Portrait,
     schematics::schematics,
     site::{Lang, Site},
+    workshop_strip::workshop_strip,
 };
 
 /// The route a fragment is keyed by, and the path it is rendered for.
-const ROUTES: [(&str, &str); 7] = [
+const ROUTES: [(&str, &str); 8] = [
     ("home", "/"),
     ("experience", "/experience"),
     ("adventures", "/adventures"),
     ("origins-with-perspective", "/origins-with-perspective"),
     ("minerals", "/minerals"),
+    ("how-this-was-built", "/how-this-was-built"),
     ("book", "/book"),
     // Any page that is none of the above (the 404): nothing is current.
     ("none", "/__none__"),
@@ -38,7 +44,32 @@ fn main() {
 
     let mut out: BTreeMap<String, String> = BTreeMap::new();
     out.insert("schematics.html".into(), schematics().into_string());
+
+    // PageHeader: one fragment per combination of lede and note. `%SLOT%` marks where the
+    // page's own children go; Astro splits the fragment there and renders its slot between.
+    for (lede, note) in [(false, false), (true, false), (false, true), (true, true)] {
+        let name = format!("page-header.{}{}.html", if lede { "l" } else { "" }, if note { "n" } else { "" });
+        let html = page_header("%EYEBROW%", "%TITLE%", lede.then_some("%LEDE%"), note.then_some("%NOTE%"), PreEscaped("%SLOT%".into()));
+        out.insert(name, html.into_string());
+    }
     for lang in [Lang::En, Lang::Zh] {
+        // Portrait and contact card: the image URLs are content-hashed by astro:assets and the
+        // QR SVGs come from `src/brand/qr.ts`, so they stay placeholders (`%SRC%`, `%SRCSET%`,
+        // `%QR_DARK%`, `%QR_LIGHT%`) that the .astro wrapper fills. Width and height are fixed
+        // per variant; the wrapper checks the requested width matches.
+        let code = lang.code();
+        let fig = site.t(lang, "card.fig").to_string();
+        let portrait = |width, height, eager, class| Portrait {
+            src: "%SRC%", srcset: "%SRCSET%", width, height, caption: Some(&fig), eager, class, lang,
+        };
+        out.insert(format!("portrait.{code}.quote.html"), portrait(176, 222, true, Some("quote__portrait")).render(&site).into_string());
+        out.insert(
+            format!("contact-card.{code}.connect.html"),
+            ContactCard { portrait: portrait(152, 192, false, None), class: Some("connect__card"), qr_dark: "%QR_DARK%", qr_light: "%QR_LIGHT%", lang }
+                .render(&site)
+                .into_string(),
+        );
+        out.insert(format!("workshop.{}.html", lang.code()), workshop_strip(&site, lang).into_string());
         for (key, path) in ROUTES {
             let code = lang.code();
             out.insert(format!("header.{code}.{key}.html"), header(&site, lang, path, Some("%SWITCH%")).into_string());

@@ -25,6 +25,8 @@ pub struct NavItem {
     #[serde(rename = "labelKey")]
     pub label_key: String,
     pub href: String,
+    /// In the slim header menu; every item is in the footer.
+    pub header: bool,
 }
 
 #[derive(Debug, Deserialize)]
