@@ -59,6 +59,9 @@ const ROUTES = [
 const FREEZE = `
   html{scroll-behavior:auto!important}
   *,*::before,*::after{transition:none!important;animation:none!important}
+  /* Astro's dev toolbar is a dark pill fixed to the bottom of every page under \`astro dev\`. It is
+     not the site, and a paragraph scrolled under it was scored against its ground. */
+  astro-dev-toolbar{display:none!important}
 `;
 
 /* Every letterform on the page off at once. Borders, rules and bars stay —
