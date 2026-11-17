@@ -46,14 +46,23 @@ decl = lambda s: {m.group(1): m.group(2).strip() for m in re.finditer(r'--([a-z0
 R, D = decl(root_block), decl(dark_block)
 is_plain = lambda v: bool(re.fullmatch(r'#[0-9a-fA-F]{3,8}', v) or re.fullmatch(r'rgba?\([0-9 ,./%]+\)', v))
 
+# --- the 21 families' hex are generated from mzizi-tokens (src/brand/mzizi-palette.generated.ts);
+# minerals.ts and palette.ts reference them as MZIZI_PALETTE.<family>.<dark|light>. Expand those back
+# to literals so the parsing below is unchanged.
+_gen = read('src/brand/mzizi-palette.generated.ts')
+GEN = {m.group(1): (m.group(2), m.group(3)) for m in re.finditer(r"(\w+): \{ dark: '(#\w+)', light: '(#\w+)' \}", _gen)}
+def expand(text, q):
+    return re.sub(r'MZIZI_PALETTE\.(\w+)\.(dark|light)',
+                  lambda m: f"{q}{GEN[m.group(1)][0 if m.group(2) == 'dark' else 1]}{q}", text)
+
 # --- the seven minerals, read from minerals.ts (origin, meaning, use are the site's own words)
-mts = read('src/brand/minerals.ts')
+mts = expand(read('src/brand/minerals.ts'), "'")
 MIN = {}
 for m in re.finditer(r"\{\s*name: '(\w+)',\s*hex: '(#\w+)',\s*onLight: '(#\w+)'.*?origin: '([^']*)',\s*(?:\n\s*)?symbolism: '([^']*)',\s*(?:\n\s*)?usage: '([^']*)'", mts, re.S):
     MIN[m.group(1)] = dict(hex=m.group(2), onLight=m.group(3), origin=m.group(4), means=m.group(5), usage=m.group(6))
 assert len(MIN) == 7, MIN.keys()
 
-pal = read('src/brand/palette.ts')
+pal = expand(read('src/brand/palette.ts'), '"')
 def pal_block(name):
     body = re.search(rf'export const {name} = \[(.*?)\n\] as const', pal, re.S).group(1)
     return [dict(re.findall(r'(\w+): "([^"]*)"', o)) for o in re.findall(r'\{(.*?)\n  \}', body, re.S)]
