@@ -1,0 +1,433 @@
+{
+  "description": "checkLinks(body) -> findings for each unsafe link address in a Portable Text body.",
+  "cases": [
+    {
+      "name": "clean",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "guide",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "https://example.org"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "site",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "javascript",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "javascript:alert(1)"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.scheme",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: the link address \"javascript:alert(1)\" is not allowed (only web, mail and phone links are). Use an https:// or http:// address, mailto: or tel:, a path starting with a single \"/\", or a \"#section\" anchor."
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "a",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "data:text/html,<b>"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.scheme",
+            "severity": "error",
+            "path": "body[1].markDefs[0]",
+            "message": "Block 2: the link address \"data:text/html,<b>\" is not allowed (only web, mail and phone links are). Use an https:// or http:// address, mailto: or tel:, a path starting with a single \"/\", or a \"#section\" anchor."
+          }
+        ]
+      }
+    },
+    {
+      "name": "protocol-relative",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "//evil.example"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.protocol-relative",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: the link address \"//evil.example\" starts with \"//\", which can point to another site. Write the full https:// address instead."
+          }
+        ]
+      }
+    },
+    {
+      "name": "backslash",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/\\evil.example"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.whitespace",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: the link address \"/\\evil.example\" contains a space, backslash or hidden character. Remove it and paste the address again."
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty href",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": ""
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.empty",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: a link has no address. Add the address or remove the link."
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing href",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k",
+                "_type": "link"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.empty",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: a link has no address. Add the address or remove the link."
+          }
+        ]
+      }
+    },
+    {
+      "name": "non-link markDefs ignored",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k",
+                "_type": "comment",
+                "href": "javascript:1"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": [
+                  "k"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "two bad links",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "javascript:1"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "a",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "vbscript:1"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "b",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "link.scheme",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: the link address \"javascript:1\" is not allowed (only web, mail and phone links are). Use an https:// or http:// address, mailto: or tel:, a path starting with a single \"/\", or a \"#section\" anchor."
+          },
+          {
+            "rule": "link.scheme",
+            "severity": "error",
+            "path": "body[1].markDefs[0]",
+            "message": "Block 2: the link address \"vbscript:1\" is not allowed (only web, mail and phone links are). Use an https:// or http:// address, mailto: or tel:, a path starting with a single \"/\", or a \"#section\" anchor."
+          }
+        ]
+      }
+    },
+    {
+      "name": "no body",
+      "input": {},
+      "expected": {
+        "findings": []
+      }
+    }
+  ]
+}
