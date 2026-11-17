@@ -12,7 +12,7 @@ of showing the Mzizi standard working in public.
 
 - **Astro 7**, no client framework. Almost every route is prerendered and served as
   static assets. The four blog routes under `/adventures` are the exception: they
-  read Sanity per request, so publishing a post is live without a rebuild.
+  read EmDash (D1) per request, so publishing a post is live without a rebuild.
 - **Cloudflare Workers**, driven by the `cf` CLI and `cloudflare.config.ts`
   (not wrangler). The Worker exists for the blog; `run_worker_first` makes sure a
   browser navigation to `/adventures` reaches it instead of the asset 404.
@@ -56,20 +56,20 @@ Rules that came from getting it wrong:
 
 ## The blog (and why it stays in TypeScript)
 
-Content lives in Sanity (`zsx9erk1`, public-read, no token). `groq()` returns a
-`Result` and never throws, because an uncaught throw on an on-demand route takes
-down the whole document. Three states are kept distinct: empty, missing (404) and
-unreachable (503 with `Retry-After`). Translations are document-level through
-`@sanity/document-internationalization`.
+Content lives in EmDash (D1 for entries, R2 for media). The read side in
+`src/blog/emdash.ts` returns a `Result` and never throws, because an uncaught throw
+on an on-demand route takes down the whole document. Three states are kept
+distinct: empty, missing (404) and unreachable (503 with `Retry-After`).
+Translations are entry-level through EmDash's i18n.
 
-Sanity is the one part that keeps its JavaScript: its client, the Studio
-(`bryans-adventures/`) and the portable-text pipeline are the ecosystem's own, and
-porting them gains nothing. Everything else is moving.
+The blog is the one part that keeps its JavaScript: EmDash, its admin (React) and
+the portable-text pipeline are the ecosystem's own, and porting them gains
+nothing. Everything else is moving.
 
 ## Moving to Rust
 
 The goal: **Rust renders and runs; Astro is only the router, the static prerenderer
-and the image pipeline; Sanity stays Sanity.**
+and the image pipeline; the CMS stays the CMS.**
 
 What is done:
 
@@ -97,8 +97,8 @@ What is next, in order:
    `data-theme` stays synchronous and inline, because an async load would flash the
    wrong theme.
 3. The nav portrait and social card renderers.
-4. The site Worker. Anything that is not Sanity moves to a workers-rs Worker; the
-   Sanity read side stays in TypeScript behind it. Changing the Cloudflare build
+4. The site Worker. Anything that is not the CMS moves to a workers-rs Worker; the
+   EmDash read side stays in TypeScript behind it. Changing the Cloudflare build
    command is a dashboard decision and is made deliberately, not as a side effect.
 
 ## What cost real debugging time

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "Bryan Fawcett",
+    "description": "Schema for the Adventures blog. Deliberately holds no content: a seed is applied on the first request of an empty database, so fixtures here would reach production."
+  },
+  "settings": {
+    "title": "Bryan Fawcett",
+    "tagline": "Digital Craftsman, builder of communities"
+  },
+  "collections": [
+    {
+      "slug": "adventures",
+      "label": "Adventures",
+      "labelSingular": "Adventure",
+      "urlPattern": "/adventures/{slug}",
+      "supports": ["drafts", "revisions", "preview", "search", "seo"],
+      "fields": [
+        { "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true, "validation": { "maxLength": 120 } },
+        { "slug": "place", "label": "Place", "type": "string", "validation": { "maxLength": 80 } },
+        { "slug": "adventure_date", "label": "Date of the adventure", "type": "datetime", "required": true },
+        { "slug": "excerpt", "label": "Excerpt", "type": "text", "searchable": true, "validation": { "maxLength": 300 } },
+        { "slug": "cover", "label": "Cover image", "type": "image" },
+        {
+          "slug": "mineral",
+          "label": "Mineral",
+          "type": "select",
+          "translatable": false,
+          "validation": { "options": ["cobalt", "tanzanite", "malachite", "gold", "terracotta", "sodalite", "copper", "indigo", "savanna", "baobab", "sunset", "river", "hematite", "kalahari", "ember", "acacia", "fern", "lagoon", "storm", "dusk", "protea"] }
+        },
+        { "slug": "body", "label": "Body", "type": "portableText", "searchable": true }
+      ]
+    }
+  ]
+}

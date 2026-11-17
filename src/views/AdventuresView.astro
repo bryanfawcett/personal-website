@@ -2,9 +2,8 @@
 /**
  * Bryan's Adventures — the list, in whichever language it is asked for.
  *
- * Server-rendered rather than prerendered: publishing in Sanity puts a post
- * live without a build, and Workers Builds has no deploy hook a CMS webhook
- * could pull. See `BLOG_CACHE_CONTROL` for what the edge is allowed to reuse.
+ * Server-rendered rather than prerendered: publishing in the EmDash admin puts a
+ * post live without a build. See `BLOG_CACHE_CONTROL` for what the edge is allowed to reuse.
  *
  * The Chinese list is built from the *English* records, not from Chinese ones.
  * That is what lets every adventure appear to a Chinese reader: translated
@@ -14,10 +13,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
-import { BLOG_CACHE_CONTROL, groq } from '../sanity/client.js';
-import { ADVENTURE_LIST } from '../sanity/queries.js';
-import { resolveImage } from '../sanity/image.js';
-import { DEFAULT_MINERAL, type AdventureCard } from '../sanity/types.js';
+import { listAdventures } from '../blog/emdash.js';
+import { applyOutcome } from '../blog/http.js';
+import { DEFAULT_MINERAL, type AdventureCard } from '../blog/types.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
@@ -28,21 +26,15 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const result = await groq<AdventureCard[]>(ADVENTURE_LIST);
+const result = await listAdventures();
 const adventures = result.ok ? result.data : [];
 
 /*
- * An unreachable Sanity is a 503 that nothing may cache, like the post page: a 200 with the
+ * An unreachable data layer is a 503 that nothing may cache, like the post page: a 200 with the
  * "unavailable" copy let the edge hold the failure for a minute and tell search engines the
  * list was a page of no adventures.
  */
-if (result.ok) {
-  Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
-} else {
-  Astro.response.status = 503;
-  Astro.response.headers.set('Cache-Control', 'no-store');
-  Astro.response.headers.set('Retry-After', '120');
-}
+applyOutcome(Astro.response, result.ok ? 'found' : 'unavailable');
 
 /** Dates render in the reader's own convention, from the reader's own locale. */
 const dateFormat = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hans-CN' : 'en-GB', {
@@ -129,7 +121,7 @@ function present(adventure: AdventureCard) {
       {
         adventures.map((adventure) => {
           const shown = present(adventure);
-          const cover = resolveImage(adventure.cover, { width: 420, aspect: 3 / 2 });
+          const cover = adventure.cover;
 
           return (
             <li>
@@ -143,7 +135,6 @@ function present(adventure: AdventureCard) {
                   <img
                     class="adventure-card__cover"
                     src={cover.src}
-                    srcset={cover.srcset}
                     width={cover.width}
                     height={cover.height}
                     alt={cover.alt}
@@ -154,8 +145,8 @@ function present(adventure: AdventureCard) {
 
                 <div class="adventure-card__body">
                   <p class="adventure-card__meta">
-                    <time datetime={adventure.publishedAt}>
-                      {dateFormat.format(new Date(adventure.publishedAt))}
+                    <time datetime={adventure.date}>
+                      {dateFormat.format(new Date(adventure.date))}
                     </time>
                     {shown.place && (
                       <>

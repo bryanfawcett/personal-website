@@ -21,12 +21,36 @@ export interface SeoHeadInput {
   alternates?: Partial<Record<Lang, string>> | undefined;
   ogType: 'website' | 'profile' | 'article';
   site: URL;
+  /** A page's own share image (an adventure's cover). `url` may be a path; it is made absolute. */
+  image?: { url: string; width?: number | undefined; height?: number | undefined; alt?: string | undefined } | undefined;
+  /** A post: its dates and the headline, for `article:*` tags and the Article JSON-LD. */
+  article?:
+    | {
+        headline: string;
+        /** ISO 8601. The adventure's own date, the one the page shows. */
+        publishedTime: string;
+        modifiedTime?: string | undefined;
+        section?: string | undefined;
+        tags?: readonly string[] | undefined;
+      }
+    | undefined;
 }
 
 const IMAGE = 'https://bryanfawcett.com/og-bryan-fawcett.jpg';
 
+/** An absolute http(s) URL for a share image, or null (a `javascript:` or `data:` URL is never one). */
+export function absoluteImage(url: string, site: URL): string | null {
+  try {
+    const abs = new URL(url, site);
+    return abs.protocol === 'https:' || abs.protocol === 'http:' ? abs.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
-  const { title, description, path, lang, alternates, ogType, site } = input;
+  const { title, description, path, lang, alternates, ogType, site, image, article } = input;
+  const cover = image ? absoluteImage(image.url, site) : null;
 
   /*
    * Which languages this page genuinely exists in. For a hand-authored route that is both,
@@ -61,8 +85,28 @@ export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
     siteName: PROFILE.name,
     ogLocale: ogLocale[lang],
     ogLocaleAlternates: localized.filter((e) => e.lang !== lang).map((e) => ogLocale[e.lang]),
-    image: IMAGE,
-    imageAlt: 'Bryan Fawcett — Digital Craftsman',
+    // A page's own image keeps its own size (or none, when unknown); the default card is 1200x630.
+    image: cover ?? IMAGE,
+    imageAlt: cover ? (image?.alt || title) : 'Bryan Fawcett — Digital Craftsman',
+    ...(cover
+      ? image?.width && image.height
+        ? { imageWidth: image.width, imageHeight: image.height }
+        : {}
+      : { imageWidth: 1200, imageHeight: 630 }),
+    ...(article
+      ? {
+          article: {
+            headline: article.headline,
+            publishedTime: article.publishedTime,
+            ...(article.modifiedTime ? { modifiedTime: article.modifiedTime } : {}),
+            author: PROFILE.name,
+            authorUrl: 'https://bryanfawcett.com',
+            ...(article.section ? { section: article.section } : {}),
+            tags: [...(article.tags ?? [])],
+            inLanguage: bcp47[lang],
+          },
+        }
+      : {}),
     twitterCreator: '@bryanfawcett',
     person: {
       id: 'https://bryanfawcett.com/#person',

@@ -1,0 +1,172 @@
+{
+  "description": "formatReason(findings) -> the single message EmDash shows when a publish is refused (<= 500 code points).",
+  "cases": [
+    {
+      "name": "no findings",
+      "input": {
+        "findings": []
+      },
+      "expected": {
+        "reason": ""
+      }
+    },
+    {
+      "name": "warnings never block",
+      "input": {
+        "findings": [
+          {
+            "rule": "x.y",
+            "severity": "warning",
+            "path": "p",
+            "message": "careful"
+          }
+        ]
+      },
+      "expected": {
+        "reason": ""
+      }
+    },
+    {
+      "name": "one error",
+      "input": {
+        "findings": [
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Fix the thing."
+          }
+        ]
+      },
+      "expected": {
+        "reason": "Not published: 1 problem needs fixing.\n1. Fix the thing."
+      }
+    },
+    {
+      "name": "two errors, warning skipped",
+      "input": {
+        "findings": [
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "A."
+          },
+          {
+            "rule": "x.y",
+            "severity": "warning",
+            "path": "p",
+            "message": "w"
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "B."
+          }
+        ]
+      },
+      "expected": {
+        "reason": "Not published: 2 problems need fixing.\n1. A.\n2. B."
+      }
+    },
+    {
+      "name": "cut to 500 characters with an honest count",
+      "input": {
+        "findings": [
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 1 is described at some length so that the list overflows. Problem number 1 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 2 is described at some length so that the list overflows. Problem number 2 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 3 is described at some length so that the list overflows. Problem number 3 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 4 is described at some length so that the list overflows. Problem number 4 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 5 is described at some length so that the list overflows. Problem number 5 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 6 is described at some length so that the list overflows. Problem number 6 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 7 is described at some length so that the list overflows. Problem number 7 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 8 is described at some length so that the list overflows. Problem number 8 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 9 is described at some length so that the list overflows. Problem number 9 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 10 is described at some length so that the list overflows. Problem number 10 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 11 is described at some length so that the list overflows. Problem number 11 is described at some length so that the list overflows."
+          },
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "Problem number 12 is described at some length so that the list overflows. Problem number 12 is described at some length so that the list overflows."
+          }
+        ]
+      },
+      "expected": {
+        "reason": "Not published: 12 problems need fixing.\n1. Problem number 1 is described at some length so that the list overflows. Problem number 1 is described at some length so that the list overflows.\n2. Problem number 2 is described at some length so that the list overflows. Problem number 2 is described at some length so that the list overflows.\n...and 10 more."
+      }
+    },
+    {
+      "name": "one message longer than the limit is cut, not dropped",
+      "input": {
+        "findings": [
+          {
+            "rule": "x.y",
+            "severity": "error",
+            "path": "p",
+            "message": "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+          }
+        ]
+      },
+      "expected": {
+        "reason": "Not published: 1 problem needs fixing.\n1. ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ…"
+      }
+    }
+  ]
+}

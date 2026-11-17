@@ -2,32 +2,20 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
+import emdash from 'emdash/astro';
+import { d1, r2 } from '@emdash-cms/cloudflare';
 import rust from './src/integrations/rust/index.ts';
+import { a11yPolicy } from './packages/emdash-plugins/a11y-policy/src/index.ts';
+import { linkPolicy } from './packages/emdash-plugins/link-policy/src/index.ts';
+import { translationPolicy } from './packages/emdash-plugins/translation-policy/src/index.ts';
 
 /*
- * The blog is rendered per request, so its posts are not prerendered routes and the
- * sitemap integration cannot see them. Ask Sanity for the slugs at build time instead.
- * If Sanity is unreachable the sitemap is built without them rather than failing the build.
+ * The blog is rendered per request out of EmDash (D1), so its posts are not prerendered routes and
+ * the sitemap integration cannot see them. EmDash serves its own child sitemap for the collection
+ * at /sitemap-adventures.xml; the index lists it through `customSitemaps` below.
  */
-const SANITY = 'https://zsx9erk1.apicdn.sanity.io/v2025-02-19/data/query/production';
 const SITE = 'https://bryanfawcett.com';
-/** @type {Map<string, string>} url -> ISO last-modified */
-const postDates = new Map();
-try {
-  const q = '*[_type == "adventure" && defined(slug.current)]{language, "slug": slug.current, _updatedAt}';
-  const res = await fetch(`${SANITY}?perspective=published&query=${encodeURIComponent(q)}`, {
-    signal: AbortSignal.timeout(8000),
-  });
-  if (res.ok) {
-    const { result } = await res.json();
-    for (const post of result ?? []) {
-      const prefix = post.language === 'zh' ? '/zh' : '';
-      postDates.set(`${SITE}${prefix}/adventures/${post.slug}`, post._updatedAt);
-    }
-  }
-} catch {
-  // Sitemap without posts is better than no build.
-}
 const buildDate = new Date().toISOString();
 
 // https://astro.build/config
@@ -49,7 +37,9 @@ export default defineConfig({
    * binding for Astro's session store, which then has to exist in Cloudflare
    * before a deploy will go through. Nothing on this site has a session.
    */
-  session: false,
+  // SPIKE: was `session: false`. EmDash keeps the signed-in admin user in the Astro
+  // session, so the adapter's default KV session driver (binding SESSION) is needed.
+  // Listed as a DECISION in docs/emdash-migration.md.
 
   /*
    * Two languages: English unprefixed at the root, Chinese under /zh.
@@ -92,6 +82,19 @@ export default defineConfig({
    * hreflang code the head already uses, rather than a bare `zh`.
    */
   integrations: [
+    // React is for the EmDash admin only; public pages ship no framework JS.
+    react(),
+    emdash({
+      database: d1({ binding: 'DB', session: 'auto', coalesce: true }),
+      storage: r2({ binding: 'MEDIA' }),
+      /*
+       * Publish-time policy, from packages/emdash-plugins. They are "standard" (sandbox-format) plugins
+       * with their shared rules bundled in, registered in `plugins` so they run in-process: moving them
+       * to `sandboxed` needs `sandboxRunner: sandbox()` and a Worker Loader binding, a Cloudflare
+       * resource nobody has created yet. Their capabilities are enforced either way.
+       */
+      plugins: [a11yPolicy(), linkPolicy(), translationPolicy()],
+    }),
     rust({
       glue: 'src/integrations/rust/pkg/components_wasm.js',
       wasm: 'src/integrations/rust/pkg/components_wasm_bg.wasm',
@@ -101,9 +104,9 @@ export default defineConfig({
         defaultLocale: 'en',
         locales: { en: 'en', zh: 'zh-Hans' },
       },
-      customPages: [...postDates.keys()],
+      customSitemaps: [`${SITE}/sitemap-adventures.xml`],
       serialize(item) {
-        item.lastmod = postDates.get(item.url) ?? buildDate;
+        item.lastmod = buildDate;
         return item;
       },
     }),

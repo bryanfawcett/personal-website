@@ -42,16 +42,24 @@ jobs:
       - name: Verify every self-hosted font resolves
         run: python3 scripts/verify-fonts.py
 
-      # src/sanity/image.ts assembles Sanity CDN URLs by hand rather than
-      # pulling @sanity/image-url into the Worker bundle. A wrong URL fails as
-      # a broken image on a live page, not as a build error, so the format is
-      # pinned here — same reason verify-fonts.py exists.
-      - name: Verify the Sanity image URL format
-        run: pnpm exec vp run verify:images
-
       # Links in a post body: only web, mail, phone and on-site paths; an exact own-host test.
       - name: Verify post links are safe
         run: pnpm exec vp run verify:links
+
+      # The CMS offers exactly the palette's 21 families, generated from mzizi-tokens like the palette itself.
+      - name: Adventure mineral options match the palette
+        run: pnpm exec vp run seed:minerals:check
+
+      # The blog's read path as hostile input: hostile Portable Text, dates, images, the discovery files.
+      - name: Blog untrusted-input tests
+        run: pnpm exec vp run test:blog
+      # The EmDash publish-policy plugins: committed bundles are current (shared core compiled in), and
+      # the built plugins agree with core on every language-neutral vector.
+      - name: Policy plugin bundles are committed
+        run: pnpm plugins:check
+
+      - name: Policy plugin tests
+        run: pnpm test:plugins
 
       # Two things the rendered-pixel contrast gate structurally cannot see: a
       # var() that resolves to nothing (it falls back to `unset` and inherits,

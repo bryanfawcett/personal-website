@@ -53,7 +53,7 @@ export function parseHead(html) {
   if (title) add('title', decode(title[1]));
   for (const m of head.matchAll(/<meta\s(?:[^>"']|"[^"]*"|'[^']*')*>/gi)) {
     const a = attrs(m[0]);
-    if (a.property?.startsWith('og:')) add(`meta property=${a.property}`, a.content ?? '');
+    if (a.property?.startsWith('og:') || a.property?.startsWith('article:')) add(`meta property=${a.property}`, a.content ?? '');
     else if (a.name === 'description' || a.name === 'robots' || a.name?.startsWith('twitter:')) add(`meta name=${a.name}`, a.content ?? '');
   }
   for (const m of head.matchAll(/<link\s(?:[^>"']|"[^"]*"|'[^']*')*>/gi)) {
@@ -70,14 +70,14 @@ export function parseHead(html) {
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Differences between the old head and the new one. Additions are only those in ADDITIONS. */
-export function diffHeads(oldHead, newHead) {
+export function diffHeads(oldHead, newHead, extraAdditions = []) {
   const problems = [];
   for (const [k, v] of Object.entries(oldHead.tags)) {
     if (!(k in newHead.tags)) problems.push(`MISSING  ${k} = ${JSON.stringify(v)}`);
     else if (!same(v, newHead.tags[k])) problems.push(`CHANGED  ${k}: ${JSON.stringify(v)} -> ${JSON.stringify(newHead.tags[k])}`);
   }
   for (const k of Object.keys(newHead.tags)) {
-    if (!(k in oldHead.tags) && !ADDITIONS.has(k)) problems.push(`ADDED    ${k} = ${JSON.stringify(newHead.tags[k])}`);
+    if (!(k in oldHead.tags) && !ADDITIONS.has(k) && !extraAdditions.includes(k)) problems.push(`ADDED    ${k} = ${JSON.stringify(newHead.tags[k])}`);
   }
   if (!same(oldHead.ld, newHead.ld)) problems.push(`JSON-LD differs:\n  old ${JSON.stringify(oldHead.ld)}\n  new ${JSON.stringify(newHead.ld)}`);
   return problems;
@@ -121,8 +121,24 @@ const { bcp47, defaultLang, ogLocale } = await import(pathToFileURL(join(root, '
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
+/**
+ * The og:image tags. No image given: the frozen default card, exactly as before. A page's own image
+ * (an adventure cover) is absolute, keeps its own size or none when unknown, and is alt-texted by
+ * its alt or else the page title. A URL that is not http(s) never becomes a share image.
+ */
+function imageTags(image, title) {
+  let abs = null;
+  try {
+    const u = image ? new URL(image.url, 'https://bryanfawcett.com') : null;
+    if (u && (u.protocol === 'https:' || u.protocol === 'http:')) abs = u.href;
+  } catch {}
+  const m = (k, v) => `<meta property="${k}" content="${esc(v)}" />`;
+  if (!abs) return [m('og:image', 'https://bryanfawcett.com/og-bryan-fawcett.jpg'), m('og:image:width', 1200), m('og:image:height', 630), m('og:image:alt', 'Bryan Fawcett — Digital Craftsman')].join('');
+  return [m('og:image', abs), ...(image.width && image.height ? [m('og:image:width', image.width), m('og:image:height', image.height)] : []), m('og:image:alt', image.alt || title)].join('');
+}
+
 /** BaseLayout.astro's SEO head exactly as it was before the move, frozen. */
-function referenceHtml({ title, description, path, lang, alternates, ogType, site }) {
+function referenceHtml({ title, description, path, lang, alternates, ogType, site, image }) {
   const localized = alternates
     ? Object.entries(alternates).map(([entryLang, entryPath]) => ({ lang: entryLang, path: entryPath }))
     : allPaths(path);
@@ -154,7 +170,7 @@ ${localized.map((e) => `<link rel="alternate" hreflang="${bcp47[e.lang]}" href="
 <link rel="alternate" hreflang="x-default" href="${new URL(localized.find((e) => e.lang === defaultLang)?.path ?? here, site).href}" />
 ${m('property', 'og:type', ogType)}${m('property', 'og:url', canonical)}${m('property', 'og:site_name', PROFILE.name)}${m('property', 'og:title', fullTitle)}${m('property', 'og:description', description)}${m('property', 'og:locale', ogLocale[lang])}
 ${localized.filter((e) => e.lang !== lang).map((e) => m('property', 'og:locale:alternate', ogLocale[e.lang])).join('')}
-${m('property', 'og:image', 'https://bryanfawcett.com/og-bryan-fawcett.jpg')}${m('property', 'og:image:width', 1200)}${m('property', 'og:image:height', 630)}${m('property', 'og:image:alt', 'Bryan Fawcett — Digital Craftsman')}
+${imageTags(image, title)}
 ${m('name', 'twitter:card', 'summary_large_image')}${m('name', 'twitter:creator', '@bryanfawcett')}
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script></head>`;
 }
@@ -175,10 +191,52 @@ cases.push(
   { name: 'adventure list, no alternates', title: 'Adventures', description: 'The list', path: '/adventures', lang: 'en', alternates: undefined, ogType: 'article', site },
 );
 
+// Posts with their own image and article metadata. The old head had neither: these are deliberate
+// additions (og:image from the cover, article:* tags, an Article JSON-LD node), checked below.
+const ART = { headline: 'Fire & Ice', publishedTime: '2026-06-01T00:00:00.000Z', modifiedTime: '2026-06-02T10:00:00.000Z' };
+const post = (name, extra) => ({ name, title: 'Fire & Ice', description: 'A "day" <trek>', path: '/adventures', lang: 'en', alternates: { en: '/adventures/fire-ice', zh: '/zh/adventures/huo-yu-bing' }, ogType: 'article', site, article: ART, ...extra });
+cases.push(
+  post('post, cover with size', { image: { url: '/_emdash/api/media/file/abc.webp', width: 1600, height: 900, alt: 'A "ridge" at <dawn>' } }),
+  post('post, cover without size', { image: { url: 'https://media.example/cover.jpg' } }),
+  post('post, no cover', {}),
+  post('post, hostile cover url falls back to the default', { image: { url: 'javascript:alert(1)', width: 10, height: 10 } }),
+  post('post, zh, no modified time', { lang: 'zh', title: '火与冰', article: { headline: '火与冰', publishedTime: '2026-06-01T00:00:00.000Z' } }),
+  post('post, hostile title', { title: '"><script>alert(1)</script>', article: { headline: '"><script>alert(1)</script>', publishedTime: '2026-06-01T00:00:00.000Z' } }),
+);
+
+/** Article node out of the JSON-LD graph, so the rest can be compared with the frozen reference. */
+function withoutArticle(head) {
+  const ld = head.ld.map((doc) => ({ ...doc, '@graph': doc['@graph']?.filter((n) => n['@type'] !== 'Article') }));
+  return { ...head, ld };
+}
+
 let failures = 0;
 for (const c of cases) {
   const rust = render('seo-head', JSON.stringify(seoHeadProps(c)));
-  const problems = diffHeads(parseHead(referenceHtml(c)), parseHead(`<head>${rust}</head>`));
+  const got = parseHead(`<head>${rust}</head>`);
+  const problems = c.article
+    ? diffHeads(parseHead(referenceHtml(c)), withoutArticle(got), ['meta property=article:published_time', 'meta property=article:modified_time', 'meta property=article:author'])
+    : diffHeads(parseHead(referenceHtml(c)), got);
+  if (c.article) {
+    const t = (k) => got.tags[k]?.[0];
+    const node = got.ld[0]?.['@graph']?.find((n) => n['@type'] === 'Article');
+    const expect = (cond, msg) => { if (!cond) problems.push(msg); };
+    expect(t('meta property=article:published_time') === c.article.publishedTime, 'article:published_time wrong');
+    expect(t('meta property=article:modified_time') === c.article.modifiedTime, 'article:modified_time wrong');
+    expect(t('meta property=article:author') === 'https://bryanfawcett.com', 'article:author wrong');
+    expect(node && node.headline === c.article.headline && node.datePublished === c.article.publishedTime, 'Article JSON-LD missing or wrong');
+    expect(node && node.dateModified === c.article.modifiedTime, 'Article dateModified wrong');
+    expect(node && node.mainEntityOfPage === got.tags['link rel=canonical'][0], 'Article mainEntityOfPage is not the canonical URL');
+    expect(node && node.inLanguage === bcp47[c.lang], 'Article inLanguage wrong');
+    expect(node && node.image === got.tags['meta property=og:image'][0], 'Article image differs from og:image');
+    expect(!rust.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '').includes('<script'), 'a <script> got out of the JSON-LD');
+    expect(!/<\/script>[^]*<\/script>/.test(rust) || (rust.match(/<\/script>/g) ?? []).length === 1, 'the JSON-LD script was closed early');
+    if (!c.image || !/^https?:/.test(new URL(c.image.url, 'https://bryanfawcett.com').protocol)) expect(t('meta property=og:image') === 'https://bryanfawcett.com/og-bryan-fawcett.jpg', 'default image not used');
+    if (c.image && !(c.image.width && c.image.height) && !/^javascript/.test(c.image.url)) expect(!('meta property=og:image:width' in got.tags) && !('meta property=og:image:height' in got.tags), 'an unknown image size was invented');
+  } else {
+    const leaked = Object.keys(got.tags).filter((k) => k.startsWith('meta property=article:'));
+    if (leaked.length || got.ld[0]?.['@graph']?.some((n) => n['@type'] === 'Article')) problems.push('a page that is not a post carries article metadata');
+  }
   if (problems.length) { failures++; console.error(`FAIL ${c.name}\n  ${problems.join('\n  ')}`); }
 }
 console.log(`reference: ${cases.length - failures} of ${cases.length} cases match`);

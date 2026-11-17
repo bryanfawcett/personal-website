@@ -84,10 +84,8 @@ pnpm preview    # cf dev (delegates to astro dev; no asset layer)
 pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 pnpm nav-portrait   # re-render the masthead portrait (same — only after it changes)
-pnpm verify:images  # pin the hand-rolled Sanity image URL format
 pnpm verify:contrast # APCA: every text block, every route, desktop and phone
 pnpm verify:stylesheet # every var() resolves; no base rule outranks a class
-pnpm verify:images:rs     # Rust port of verify:images (needs `rustup`; see tools/)
 pnpm tokens         # regenerate src/styles/tokens.css from src/brand/tokens.ts
 pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stricter than the JS one
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
@@ -99,7 +97,8 @@ pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 
 bryanfawcett.com, built with:
 
-- **Astro 7** — no client framework, no React
+- **Astro 7** — no client framework on any public page. React exists only inside
+  EmDash's admin (`/_emdash/admin`), which no public page loads
 - **TypeScript 6** under `astro/tsconfigs/strictest`
 - **Cloudflare Workers** via `@astrojs/cloudflare`
 - **The Mzizi standard** for colour, type, radius and semantics, from the Mzizi
@@ -160,12 +159,12 @@ src/
   components/     Astro components
   data/           Content as typed TypeScript, English with its Chinese beside it
   i18n/           ui.ts (chrome strings), routing.ts (paths), localize.ts
-  sanity/         The blog's read side — client, queries, image URLs, body
+  blog/           The blog's read side on EmDash — data, types, body renderer
   layouts/        BaseLayout — head, JSON-LD, nav, footer, scroll reveal
   pages/          Thin wrappers: one per route per language, `zh/` for Chinese
   views/          The sheets themselves — one per route, both languages
   styles/         fonts.css and tokens.css (both generated), global.css
-bryans-adventures/  The blog's Sanity Studio. React, and NOT part of the build
+seed/           EmDash schema seed (the `adventures` collection). No content, ever
 scripts/          fetch-fonts.py, verify-fonts.py, build-og-card.mjs
 public/fonts/     Self-hosted woff2, Latin + Latin Extended
 ```
@@ -173,7 +172,7 @@ public/fonts/     Self-hosted woff2, Latin + Latin Extended
 ## Architecture
 
 Almost every route is prerendered and served straight from static assets. The four
-blog routes under `/adventures` are not: they read Sanity per request, so publishing
+blog routes under `/adventures` are not: they read EmDash (D1) per request, so publishing
 a post is live without a rebuild. That one exception is why `cloudflare.config.ts` has an
 `entrypoint` — `@astrojs/cloudflare/entrypoints/server`, the adapter's own entrypoint, not
 a file in this repo. `@astrojs/cloudflare` emits the static tree and the server bundle. With
@@ -192,9 +191,11 @@ Three things about that split bite, and all three cost real debugging time:
   (`worker.assets`) is the Cloudflare CLI (`cf`) config and replaces
   `wrangler.jsonc`; `cf build` writes it to `.cloudflare/output/`. Editing it
   changes nothing until the build runs again.
-- **`session: false`** in `astro.config.mjs`. With a server entrypoint the adapter
-  otherwise declares a KV binding for Astro's session store, which then has to exist
-  in Cloudflare before a deploy goes through. Nothing here has a session.
+- **Sessions are on, for the EmDash admin only.** EmDash keeps the signed-in user in
+  the Astro session, so `session: false` is gone and `cloudflare.config.ts` binds a KV
+  namespace as `SESSION`. Public pages still touch no session. The other bindings are
+  `DB` (D1: entries) and `MEDIA` (R2: uploads). `run_worker_first` also lists
+  `/_emdash/*` and `/sitemap-adventures*`, or the asset layer 404s the admin.
 
 This repo is the main site. Satellite properties are their own Workers in their own
 repos, sharing the branding layer rather than this codebase.
@@ -533,7 +534,7 @@ a `/zh` page costs no font download.
 covers ~99.9% of running modern Chinese; the rare tail falls through to the
 system face, which is where all of it used to land. An exact subset of the text
 the site sets today would be 149 kB per weight instead of 690 — and wrong: the
-blog renders from Sanity per request, so a post published without a rebuild
+blog renders from EmDash per request, so a post published without a rebuild
 would reach characters the last build never saw and fall back mid-sentence.
 
 Two things about the `unicode-range` on those faces, and both cost real bytes
@@ -566,63 +567,54 @@ Two things that follow, and that new work has to keep:
   label scales and the Latin beside it does not. Add labels normally; they
   inherit the floor.
 
-### The blog: Bryan's Adventures, out of Sanity
+### The blog: Bryan's Adventures, out of EmDash
 
-`/adventures` and `/zh/adventures`, plus a page per post in each language. The
-content lives in the Sanity project `zsx9erk1`, dataset `production`, and the
-Studio that edits it is in `bryans-adventures/`.
+`/adventures` and `/zh/adventures`, plus a page per post in each language. Content
+is the `adventures` collection in EmDash (MIT, an Astro integration): D1 for
+entries, R2 for media, KV for the admin session. Authoring is at
+`/_emdash/admin`. The schema is `seed/seed.json` and holds **no content**: a seed is
+applied on the first request of an empty database, so a fixture there would reach
+production. `scripts/emdash-fixtures.mjs` writes FIXTURE entries to a *local* dev
+server only (it uses EmDash's dev-only auth bypass, which a production build
+refuses with 403).
 
-- **Server-rendered, not prerendered.** Publishing in Sanity is live without a
-  build, because Workers Builds only triggers on a git push and has no deploy
-  hook a CMS webhook could pull. The trade is documented in `BLOG_CACHE_CONTROL`:
-  the edge holds a render for 60s and will serve it stale for ten minutes if
-  Sanity is unreachable.
-- **No token, anywhere.** The dataset is public-read, so `src/sanity/client.ts`
-  fetches `apicdn.sanity.io` unauthenticated and the project id and dataset are
-  constants rather than environment variables. There is nothing to configure in
-  Cloudflare and nothing that can differ between preview and production. Keep it
-  that way: the moment a query needs a token, the deploy needs a secret.
-- **Three states, not two.** An empty blog and an unreachable Sanity are
-  different things and the pages say different things about each — collapsing
-  them tells a reader the writing is gone when the service is merely down. A
-  missing post is a real 404; an unreachable Sanity is a 503 with `Retry-After`,
-  and neither is cacheable.
-- **`groq()` never throws.** On an on-demand route an uncaught throw is a 500
-  for the whole document, masthead and all. It returns a `Result` instead.
-- **Translations are document-level, via `@sanity/document-internationalization`.**
-  A Chinese adventure is its own document. Neither side points at the other:
-  the pairing lives in a `translation.metadata` document the plugin maintains,
-  which is what gives the Studio its Translations menu and keeps an
-  English-only adventure an ordinary document rather than one with an empty
-  field. Queries join through it with `references(^._id)` — an indexed filter.
-- **The language is on `translations[].language`, not `_key`.** Plugin v6 moved
-  it, because `_key` is what Sanity uses for array identity and diffing.
-  Filtering `translations[_key == "zh"]` matches nothing, silently.
-- **`language` is written by the plugin, not by hand** — `readOnly` and
-  `hidden` on the schema, as the plugin asks. `sanity.config.ts` also replaces
-  the auto-generated "New document" entry with a base-language template: a new
-  adventure created without `language` would match neither list and read as
-  lost.
-- **The Chinese list is built from the *English* records** so every adventure
+- **Server-rendered, not prerendered.** Publishing in the admin is live without a
+  build. The trade is documented in `BLOG_CACHE_CONTROL` (`src/blog/emdash.ts`): the
+  edge holds a render for 60s and will serve it stale for ten minutes if the data
+  layer is unreachable.
+- **Three states, not two.** An empty blog and an unreachable data layer are
+  different things and the pages say different things about each. A missing post is
+  a real 404; an unreachable layer is a 503 with `Retry-After`; neither is cacheable.
+- **The read functions never throw.** `listAdventures` and `getAdventure` return a
+  `Result`; an uncaught throw on an on-demand route is a 500 for the whole document.
+- **Translations are entry-level** (EmDash i18n, from Astro's `i18n` config). A
+  Chinese adventure is its own entry in a translation group, with its own slug.
+  Three EmDash quirks the code guards: `entry.id` is `zh/<slug>` for non-default
+  locales (use `data.slug`); a lookup in a locale with no entry silently falls back to
+  the default-locale entry of that slug, so `getAdventure` checks `data.locale ===
+  lang` or a `/zh/` URL would serve English; and a draft sibling must not count as a
+  translation.
+- **The Chinese list is built from the *English* entries** so every adventure
   appears to a Chinese reader — translated where a translation exists, marked
-  `仅有英文` where it does not, linking to the English page. An untranslated
-  post lists no `hreflang="zh-Hans"` alternate, because pointing one at a page
-  that is not a translation is a lie told to a search engine; its switcher
-  falls back to the Chinese list.
-- **Pages with a language-specific slug pass `alternates` to `BaseLayout`.** The
-  derived-from-path default cannot know that a translation has its own slug.
-- **The image URL builder is hand-rolled** and therefore pinned by
-  `pnpm verify:images`. A wrong URL fails as a broken image on a live page, not
-  as a build error — same reason `verify-fonts.py` exists.
-- **Body headings start at `h2`.** The adventure title is the page's only `h1`,
-  so the editor's "Heading" renders `h2` and "Subheading" `h3`. Jumping straight
-  to `h3` is a heading-order violation, and axe catches it.
-- **`bryans-adventures/` is not part of the build.** It is a Sanity Studio, which means
-  React. It has its own `package.json` and `package-lock.json`, the root
-  `tsconfig.json` excludes it, and there is no pnpm workspace file — so
-  `pnpm install` and `pnpm build` at the root never see it, and neither does
-  Cloudflare. It runs npm and Sanity 6; the site runs pnpm and Astro 7, and the
-  two never meet.
+  `仅有英文` where it does not, linking to the English page. An untranslated post
+  lists no `hreflang="zh-Hans"` alternate; its switcher falls back to the list.
+- **Pages with a language-specific slug pass `alternates` to `BaseLayout`.**
+- **The body is Portable Text** (EmDash stores rich text as it), rendered by
+  `src/blog/portable-text.ts` with `@portabletext/to-html` — a generic renderer, not
+  a Sanity client. Links go through `classifyLink` (web, mail, phone, on-site paths;
+  exact own-host test; no `javascript:`/`data:`, backslash or whitespace),
+  pinned by `pnpm verify:links`. HTML, iframe and other EmDash block types render as
+  nothing. Treat every read as untrusted however trusted the editor is.
+- **Body headings start at `h2`.** The title is the page's only `h1`. EmDash's editor
+  also offers h1 and h4-h6, so the renderer folds h1 to h2 and h4-h6 to h3.
+- **Images** are served by EmDash's file route (`/_emdash/api/media/file/<key>`),
+  unresized. Do not use `<Image>`: see *The portrait*.
+- **The admin is React and ships no JS to a public page.** Its bundle sits in
+  `/_astro/` as static files that only `/_emdash/admin` references; the prerendered
+  pages are byte-identical to before. The Worker bundle is far larger (see
+  `docs/emdash-migration.md`).
+- **Protect the admin before the first deploy.** On an empty database anyone who
+  reaches `/_emdash/admin/setup` first becomes administrator. See the migration doc.
 
 ### Type identity
 
@@ -759,9 +751,8 @@ in the environment.
 1. `pnpm check` — TypeScript under `strictest`
 2. `pnpm build` — production build
 3. `scripts/verify-fonts.py` — every font reference resolves
-4. `pnpm verify:images` — the hand-rolled Sanity image URL format still holds
-5. `pnpm verify:contrast` — APCA over the rendered page (its own job)
-6. `pnpm audit --audit-level high`
+4. `pnpm verify:contrast` — APCA over the rendered page (its own job)
+5. `pnpm audit --audit-level high`
 
 `scripts/verify-contrast.mjs` is the contrast gate, and it is worth knowing how
 it decides what the ground is, because two obvious approaches are both wrong:
@@ -783,7 +774,7 @@ It runs against `astro dev`, not the built Worker: it reads rendered pixels, so
 nothing it measures depends on the Workers asset layer, and a built-Worker server does
 not reliably survive a couple of minutes of browser-driven load. A server that
 dies mid-run is the one failure mode a gate must not have, which is why a
-navigation error is fatal there while a 5xx from an unreachable Sanity only
+navigation error is fatal there while a 503 from an unreachable data layer only
 skips the route.
 
 Two passes are still run by hand and are not gated:

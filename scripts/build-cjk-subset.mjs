@@ -16,7 +16,7 @@
  * ## Why GB2312 Level 1, and not the exact text
  *
  * An exact subset of the ~880 characters the site currently sets is 149 kB per
- * weight — six times lighter, and wrong. The blog renders from Sanity *per
+ * weight — six times lighter, and wrong. The blog renders from EmDash *per
  * request*: publishing a Chinese adventure puts it live without a rebuild, so
  * it would reach characters the last build never saw and fall back mid
  * sentence, one glyph at a time. A frequency set does not depend on today's

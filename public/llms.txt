@@ -17,8 +17,8 @@ in English at the root and in Simplified Chinese under `/zh`.
 - [Experience](https://bryanfawcett.com/experience): roles, credentials, career history, and the full list of ecosystem projects
 - [Origins, with perspective](https://bryanfawcett.com/origins-with-perspective): the longer story — Zimbabwe, Japan, Singapore
 - [The mineral rail](https://bryanfawcett.com/minerals): the seven minerals behind Mzizi's brand system, with their origins and meanings
-- [How this website was built](https://bryanfawcett.com/how-this-was-built): the stack, the design rules, the Sanity blog and the move to Rust, including what broke
-- [Bryan's Adventures](https://bryanfawcett.com/adventures): the blog
+- [How this website was built](https://bryanfawcett.com/how-this-was-built): the stack, the design rules, the EmDash blog and the move to Rust, including what broke
+- [Bryan's Adventures](https://bryanfawcett.com/adventures): the blog. The current list of posts, generated from the CMS, is at https://bryanfawcett.com/adventures/llms.txt
 - [Book a call](https://bryanfawcett.com/book): scoping a build with Nyuchi, or a conversation about EdTech and systems
 - [Contact card](https://bryanfawcett.com/bryan-fawcett.vcf): vCard 3.0
 

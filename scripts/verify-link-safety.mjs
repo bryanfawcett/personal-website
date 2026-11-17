@@ -1,10 +1,10 @@
 /**
- * Links in a Sanity post body: only web, mail, phone and on-site paths survive, and "this site"
- * means this exact host. Sanity text is untrusted input however trusted its editor is, and the
+ * Links in an adventure body: only web, mail, phone and on-site paths survive, and "this site"
+ * means this exact host. CMS text is untrusted input however trusted its editor is, and the
  * previous rule (a prefix test on the URL) let `javascript:` through and counted
  * `https://bryanfawcett.com.evil.example` as internal.
  */
-import { classifyLink, renderBody } from '../src/sanity/portable-text.ts';
+import { classifyLink, renderBody } from '../src/blog/portable-text.ts';
 
 const cases = [
   // [href, expected]: null = dropped, otherwise { external }
@@ -41,6 +41,24 @@ for (const [href, want] of cases) {
   if (!ok) { bad++; console.error(`✗ ${JSON.stringify(href)} -> ${JSON.stringify(got)} (want ${JSON.stringify(want)})`); }
 }
 
+// The shared, language-neutral vectors (also run by packages/emdash-plugins). The site's wrapper must
+// agree with core wherever the vector uses this site's own hosts, which is how the render path and the
+// publish-time plugin are kept to one rule.
+import { readFileSync } from 'node:fs';
+import { classifyLink as classifyCore, linkProblem } from '../packages/emdash-plugins/core/src/index.ts';
+const vectors = JSON.parse(readFileSync(new URL('../packages/emdash-plugins/core/vectors/link.json', import.meta.url), 'utf8'));
+const SITE_HOSTS = ['bryanfawcett.com', 'www.bryanfawcett.com'];
+for (const c of vectors.cases) {
+  const hosts = c.input.ownHosts ?? [];
+  const got = classifyCore(c.input.href, { ownHosts: hosts });
+  if (JSON.stringify(got) !== JSON.stringify(c.expected.classify) || linkProblem(c.input.href) !== c.expected.problem) {
+    bad++; console.error(`✗ vector "${c.name}": ${JSON.stringify(got)}`);
+  }
+  if (hosts.join() === SITE_HOSTS.join() && JSON.stringify(classifyLink(c.input.href)) !== JSON.stringify(c.expected.classify)) {
+    bad++; console.error(`✗ site wrapper disagrees with vector "${c.name}"`);
+  }
+}
+
 // End to end: a hostile link keeps its words and loses its anchor, and an attribute breakout is escaped.
 const html = renderBody([
   { _type: 'block', _key: 'a', style: 'normal', markDefs: [{ _key: 'm', _type: 'link', href: 'javascript:alert(1)' }],
@@ -52,4 +70,4 @@ if (/javascript:/i.test(html) || !html.includes('click me')) { bad++; console.er
 if (/"onmouseover=/.test(html)) { bad++; console.error('✗ attribute breakout:', html); }
 
 if (bad) { console.error(`\n${bad} link-safety failure(s)`); process.exit(1); }
-console.log(`link safety: ${cases.length} cases and the end-to-end render pass`);
+console.log(`link safety: ${cases.length} cases, ${vectors.cases.length} shared vectors and the end-to-end render pass`);
