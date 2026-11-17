@@ -68,6 +68,10 @@ jobs:
       - name: Theme wasm is current
         run: pnpm exec vp run theme:check
 
+      # Hero (and whatever follows it) is called natively from .astro, as WebAssembly.
+      - name: Rust WebAssembly is current
+        run: pnpm exec vp run rust:wasm:check
+
       - name: Rust components match the built pages
         run: pnpm exec vp run verify:components:rs
 

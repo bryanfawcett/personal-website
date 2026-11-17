@@ -4,9 +4,21 @@ version = "0.1.0"
 edition.workspace = true
 publish.workspace = true
 
+[features]
+# `canon` (and the parity binary) read built HTML with scraper. The WebAssembly build turns it off.
+default = ["canon"]
+canon = ["dep:scraper", "dep:ego-tree"]
+
+[[bin]]
+name = "parity"
+required-features = ["canon"]
+
+[[bin]]
+name = "render"
+
 [dependencies]
 maud = "0.27"
-scraper = "0.23"
-ego-tree = "0.10"
+scraper = { version = "0.23", optional = true }
+ego-tree = { version = "0.10", optional = true }
 serde.workspace = true
 serde_json.workspace = true

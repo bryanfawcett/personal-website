@@ -931,3 +931,10 @@ fragment (`src/components/fragments.ts`). The fragments are committed because Cl
 build image has no Rust; CI runs `fragments:check` and the parity check. Edit the Rust, then
 `pnpm fragments`; never the fragment. Still Astro: `Hero`, `Portrait`, `ContactCard`,
 `WorkshopStrip` and `PageHeader` (their inputs are per-page or content-hashed), and the router.
+
+### Rust components can also be called natively (WebAssembly)
+
+`Hero` is no longer a fragment: `import Hero from 'rust:hero'` in an `.astro` file calls the Rust component
+through a committed wasm module (`src/integrations/rust/pkg/`, built by `pnpm rust:wasm`, checked by
+`pnpm rust:wasm:check`), with real props and a real default slot. Edit `tools/components` or
+`tools/components-wasm`, then `pnpm rust:wasm`; never the generated files. See `docs/native-rust-in-astro.md`.

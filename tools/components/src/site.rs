@@ -1,7 +1,9 @@
 //! The exported data the components read, and the two helpers they share.
 
 use serde::Deserialize;
-use std::{collections::HashMap, fs, path::PathBuf};
+use std::collections::HashMap;
+#[cfg(not(target_arch = "wasm32"))]
+use std::{fs, path::PathBuf};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Lang {
@@ -85,6 +87,7 @@ pub struct Site {
     zh: Dict,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn generated(file: &str) -> String {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../src/data/generated").join(file);
     fs::read_to_string(&path).unwrap_or_else(|e| {
@@ -94,9 +97,17 @@ fn generated(file: &str) -> String {
 }
 
 impl Site {
+    /// Read the exported data from `src/data/generated/` (native binaries only).
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn load() -> Site {
-        let site: SiteFile = serde_json::from_str(&generated("site.json")).expect("site.json shape");
-        let ui: HashMap<String, Dict> = serde_json::from_str(&generated("ui.json")).expect("ui.json shape");
+        Site::from_json(&generated("site.json"), &generated("ui.json"))
+    }
+
+    /// Build from the two exported documents' text. The WebAssembly build has no
+    /// filesystem, so it embeds them at compile time and comes through here.
+    pub fn from_json(site_json: &str, ui_json: &str) -> Site {
+        let site: SiteFile = serde_json::from_str(site_json).expect("site.json shape");
+        let ui: HashMap<String, Dict> = serde_json::from_str(ui_json).expect("ui.json shape");
         Site {
             name: site.profile.name,
             email: site.profile.email,

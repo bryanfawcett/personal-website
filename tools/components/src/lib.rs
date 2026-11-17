@@ -7,6 +7,7 @@
 //! is compared, as normalised HTML, with the component as Astro shipped it in a
 //! built page.
 
+#[cfg(feature = "canon")]
 pub mod canon;
 pub mod footer;
 pub mod site;

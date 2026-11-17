@@ -1,0 +1,18 @@
+[package]
+name = "components-wasm"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+description = "The site's Rust components compiled to WebAssembly, for Astro to call natively."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+components = { path = "../components", default-features = false }
+maud = "0.27"
+serde.workspace = true
+serde_json.workspace = true
+ts-rs = "10"
+# Pinned to the CLI that post-processes the module: the two must agree exactly.
+wasm-bindgen = "=0.2.130"

@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
+import rust from './src/integrations/rust/index.ts';
 
 /*
  * The blog is rendered per request, so its posts are not prerendered routes and the
@@ -91,6 +92,10 @@ export default defineConfig({
    * hreflang code the head already uses, rather than a bare `zh`.
    */
   integrations: [
+    rust({
+      glue: 'src/integrations/rust/pkg/components_wasm.js',
+      wasm: 'src/integrations/rust/pkg/components_wasm_bg.wasm',
+    }),
     sitemap({
       i18n: {
         defaultLocale: 'en',
