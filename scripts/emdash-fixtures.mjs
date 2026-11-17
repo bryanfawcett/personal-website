@@ -126,7 +126,14 @@ await create(
   { title: 'FIXTURE: English only', place: 'Singapore', adventure_date: '2026-05-01T00:00:00.000Z', excerpt: 'FIXTURE with no translation.', body: bodyEn.slice(0, 3) },
   { slug: 'fixture-english-only', locale: 'en' },
 );
-await create(
-  { title: 'FIXTURE: hostile links', place: 'Nowhere', adventure_date: '2026-04-01T00:00:00.000Z', excerpt: 'FIXTURE link-safety check.', body: hostile },
-  { slug: 'fixture-hostile-links', locale: 'en' },
-);
+// With the link-policy plugin registered, EmDash refuses to PUBLISH this entry (HTTP 422), which is the
+// point. The draft stays; the render path's own check is covered by `pnpm verify:links`.
+try {
+  await create(
+    { title: 'FIXTURE: hostile links', place: 'Nowhere', adventure_date: '2026-04-01T00:00:00.000Z', excerpt: 'FIXTURE link-safety check.', body: hostile },
+    { slug: 'fixture-hostile-links', locale: 'en' },
+  );
+} catch (error) {
+  if (!/PUBLISH_REJECTED/.test(String(error))) throw error;
+  console.log('hostile-links fixture: publish refused by the policy plugins, as intended (left as a draft)');
+}

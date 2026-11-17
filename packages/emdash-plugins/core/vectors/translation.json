@@ -1,0 +1,310 @@
+{
+  "description": "checkTranslations({entry, siblings, sameLocale, defaultLocale}) -> findings.",
+  "cases": [
+    {
+      "name": "en entry alone is fine",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "draft"
+        },
+        "siblings": [],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "zh paired with a published en",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": "en",
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "zh with no sibling at all",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "draft"
+        },
+        "siblings": [],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.orphan",
+            "severity": "error",
+            "path": "locale",
+            "message": "This is a \"zh\" entry but it is not linked to a \"en\" entry, so readers could never reach it from its original. Create it from the \"en\" entry's Translations panel (Add translation), or move its content into one made that way, then publish."
+          }
+        ]
+      }
+    },
+    {
+      "name": "zh whose only sibling is another zh",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "3",
+            "locale": "zh",
+            "slug": "b-zh",
+            "status": "published"
+          }
+        ],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.orphan",
+            "severity": "error",
+            "path": "locale",
+            "message": "This is a \"zh\" entry but it is not linked to a \"en\" entry, so readers could never reach it from its original. Create it from the \"en\" entry's Translations panel (Add translation), or move its content into one made that way, then publish."
+          }
+        ]
+      }
+    },
+    {
+      "name": "zh whose en is still a draft",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": "en",
+            "slug": "a",
+            "status": "draft"
+          }
+        ],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.source-unpublished",
+            "severity": "error",
+            "path": "locale",
+            "message": "The \"en\" entry this translates is not published yet, so this \"zh\" entry would not appear in any list. Publish the \"en\" entry first, then publish this one."
+          }
+        ]
+      }
+    },
+    {
+      "name": "zh with a null-locale en sibling counts as default",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": null,
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "duplicate slug in the same locale",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "draft"
+        },
+        "siblings": [],
+        "sameLocale": [
+          {
+            "id": "9",
+            "locale": "en",
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.slug-duplicate",
+            "severity": "error",
+            "path": "slug",
+            "message": "Another \"en\" entry already uses the address \"a\". Change this entry's slug to something unique before publishing."
+          }
+        ]
+      }
+    },
+    {
+      "name": "same slug in another locale is fine",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": "en",
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "sameLocale": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "slug clash on a zh entry",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "x",
+          "status": "draft"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": "en",
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "sameLocale": [
+          {
+            "id": "8",
+            "locale": "zh",
+            "slug": "x",
+            "status": "draft"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.slug-duplicate",
+            "severity": "error",
+            "path": "slug",
+            "message": "Another \"zh\" entry already uses the address \"x\". Change this entry's slug to something unique before publishing."
+          }
+        ]
+      }
+    },
+    {
+      "name": "orphan and duplicate together",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "x",
+          "status": "draft"
+        },
+        "siblings": [],
+        "sameLocale": [
+          {
+            "id": "8",
+            "locale": "zh",
+            "slug": "x",
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "translation.orphan",
+            "severity": "error",
+            "path": "locale",
+            "message": "This is a \"zh\" entry but it is not linked to a \"en\" entry, so readers could never reach it from its original. Create it from the \"en\" entry's Translations panel (Add translation), or move its content into one made that way, then publish."
+          },
+          {
+            "rule": "translation.slug-duplicate",
+            "severity": "error",
+            "path": "slug",
+            "message": "Another \"zh\" entry already uses the address \"x\". Change this entry's slug to something unique before publishing."
+          }
+        ]
+      }
+    },
+    {
+      "name": "entry without a slug skips the slug rule",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": null,
+          "status": "draft"
+        },
+        "siblings": [],
+        "sameLocale": [
+          {
+            "id": "9",
+            "locale": "en",
+            "slug": null,
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "findings": []
+      }
+    }
+  ]
+}

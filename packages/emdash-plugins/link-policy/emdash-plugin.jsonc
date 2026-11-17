@@ -1,0 +1,14 @@
+{
+  "$schema": "https://emdashcms.com/schemas/emdash-plugin.schema.json",
+  "slug": "link-policy",
+  "version": "0.1.0",
+  "name": "Link policy",
+  "description": "Blocks publishing when a link is not http(s), mailto, tel, an on-site path or a fragment.",
+  // TODO(owner): choose a licence (SPDX) and the publishing identity before publishing to a registry.
+  "license": "TODO-owner",
+  "publisher": "TODO-owner",
+  // The trust contract. Must match the descriptor in src/index.ts (a test asserts it).
+  "capabilities": ["hooks.content-policy:register"],
+  "allowedHosts": [],
+  "storage": {}
+}

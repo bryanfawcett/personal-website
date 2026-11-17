@@ -442,6 +442,38 @@ installed `emdash` 1.5.0 and `@emdash-cms/cloudflare` 1.5.0:
 
 What this changes if deferred: with the adapter entrypoint, a post scheduled for the future will not
 publish by itself either. If scheduling is not wanted, the cost of deferring is only the missing backup.
+## Plugins: built (packages/emdash-plugins)
+
+Items 1, 2 and 3 above exist as three adoptable plugins plus a shared core; see
+`packages/emdash-plugins/README.md`. Two corrections to the analysis above, found by building them:
+
+- **The link policy is sandboxed, not native.** A bundling step compiles the shared rules into each
+  plugin, so the sandbox's "cannot import repo code" limit no longer forces native. One capability
+  (`hooks.content-policy:register`) instead of site authority. The render check in
+  `src/blog/portable-text.ts` imports the same core, so there is one rule.
+- **Event shape:** a policy hook's `event.content` is the whole content item (`id`, `slug`, `status`,
+  `locale`, `translationGroup`, `data`), and the draft is hydrated first, so the check sees what is being
+  published. Hook errors fail closed.
+
+They are registered in `plugins: []` (format `standard`), not `sandboxed: []`, because the latter needs
+`sandboxRunner: sandbox()` and a Worker Loader binding, which is a Cloudflare resource. Proven against
+the local dev server with `node scripts/emdash-policy-e2e.mjs`. Not proven: the admin UI showing the
+message, scheduled publishing (no cron), a real isolate.
+
+Gaps found (upstream candidates):
+
+1. A policy hook registered without `hooks.content-policy:register` is **skipped with a console warning**,
+   i.e. the policy silently stops applying. It should be a startup error.
+2. `definePlugin()` in `emdash` is the native form (it requires `id`); the sandbox-format default export
+   is a bare `{ hooks }` object, but the docs and the descriptor doc comment both say `definePlugin`.
+3. `content.getTranslations`/`list` are optional methods on `ContentAccess`, so a sandboxed plugin must
+   handle their absence (the translation plugin fails closed).
+4. The policy reason is plain text capped at 500 code points with no structure, so several findings have
+   to be flattened into one string and truncated.
+5. Slug uniqueness is enforced at create (`SLUG_CONFLICT`) but not, as far as tested, at publish.
+6. Seeds apply content and plugins reject content: a fixture that is *meant* to be unsafe (the hostile
+   links) can no longer be published through the API, so render-time defence is tested by `verify:links`
+   rather than by a live post.
 
 ## Deno
 

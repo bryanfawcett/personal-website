@@ -1,0 +1,513 @@
+{
+  "description": "classifyLink(href, {ownHosts}) and linkProblem(href). classify: null (refused) or {external}. problem: why it was refused, or null.",
+  "cases": [
+    {
+      "name": "https external",
+      "input": {
+        "href": "https://example.org/x",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "http external",
+      "input": {
+        "href": "http://example.org",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own host",
+      "input": {
+        "href": "https://bryanfawcett.com/adventures",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own www host",
+      "input": {
+        "href": "https://www.bryanfawcett.com/",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own host, upper case",
+      "input": {
+        "href": "https://BRYANFAWCETT.COM/",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own host as a prefix of a longer host",
+      "input": {
+        "href": "https://bryanfawcett.com.evil.example/",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own host as a suffix of a longer host",
+      "input": {
+        "href": "https://evilbryanfawcett.com/",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "own host as a subdomain of another",
+      "input": {
+        "href": "https://bryanfawcett.com.evil.example:8443/x",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "no own hosts configured",
+      "input": {
+        "href": "https://bryanfawcett.com/"
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "on-site path",
+      "input": {
+        "href": "/adventures/x"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "root path",
+      "input": {
+        "href": "/"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "fragment",
+      "input": {
+        "href": "#section"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "query only",
+      "input": {
+        "href": "?page=2"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "mailto",
+      "input": {
+        "href": "mailto:bryan@nyuchi.com"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "tel",
+      "input": {
+        "href": "tel:+6512345678"
+      },
+      "expected": {
+        "classify": {
+          "external": false
+        },
+        "problem": null
+      }
+    },
+    {
+      "name": "protocol-relative",
+      "input": {
+        "href": "//evil.example/x"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "protocol-relative"
+      }
+    },
+    {
+      "name": "slash backslash",
+      "input": {
+        "href": "/\\evil.example/x"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "slash tab slash",
+      "input": {
+        "href": "/\t/evil.example"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "slash newline slash",
+      "input": {
+        "href": "/\n/evil.example"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "slash carriage return slash",
+      "input": {
+        "href": "/\r/evil.example"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "double backslash",
+      "input": {
+        "href": "\\\\evil.example"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "backslash userinfo trick",
+      "input": {
+        "href": "https://bryanfawcett.com\\@evil.example/"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "space in path",
+      "input": {
+        "href": "/path with space"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "non-breaking space",
+      "input": {
+        "href": "https://example.org/a b"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "NUL byte",
+      "input": {
+        "href": "https://example.org/\u0000"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "DEL character",
+      "input": {
+        "href": "https://example.org/"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "javascript",
+      "input": {
+        "href": "javascript:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "javascript mixed case",
+      "input": {
+        "href": "JaVaScRiPt:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "javascript with tab in scheme",
+      "input": {
+        "href": "java\tscript:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "javascript with newline in scheme",
+      "input": {
+        "href": "java\nscript:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "javascript with leading space",
+      "input": {
+        "href": " javascript:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "javascript with leading control char",
+      "input": {
+        "href": "\u0001javascript:alert(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "whitespace"
+      }
+    },
+    {
+      "name": "data html",
+      "input": {
+        "href": "data:text/html,<script>alert(1)</script>"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "data svg",
+      "input": {
+        "href": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "vbscript",
+      "input": {
+        "href": "vbscript:msgbox(1)"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "file",
+      "input": {
+        "href": "file:///etc/passwd"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "ftp",
+      "input": {
+        "href": "ftp://example.org/x"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "blob",
+      "input": {
+        "href": "blob:https://example.org/uuid"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "intent",
+      "input": {
+        "href": "intent://scan/#Intent;scheme=zxing;end"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "scheme"
+      }
+    },
+    {
+      "name": "empty",
+      "input": {
+        "href": ""
+      },
+      "expected": {
+        "classify": null,
+        "problem": "empty"
+      }
+    },
+    {
+      "name": "bare word",
+      "input": {
+        "href": "example"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "malformed"
+      }
+    },
+    {
+      "name": "bare host without scheme",
+      "input": {
+        "href": "example.org/path"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "malformed"
+      }
+    },
+    {
+      "name": "scheme only",
+      "input": {
+        "href": "https://"
+      },
+      "expected": {
+        "classify": null,
+        "problem": "malformed"
+      }
+    },
+    {
+      "name": "unicode lookalike host is external",
+      "input": {
+        "href": "https://bryanfawcеtt.com/",
+        "ownHosts": [
+          "bryanfawcett.com",
+          "www.bryanfawcett.com"
+        ]
+      },
+      "expected": {
+        "classify": {
+          "external": true
+        },
+        "problem": null
+      }
+    }
+  ]
+}

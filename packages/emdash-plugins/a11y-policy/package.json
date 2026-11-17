@@ -1,0 +1,22 @@
+{
+  "name": "emdash-plugin-a11y-policy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EmDash sandboxed plugin: blocks publishing content with missing alt text, wrong headings or vague link text.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sandbox": "./dist/plugin.mjs"
+  },
+  "files": ["src", "dist", "emdash-plugin.jsonc"],
+  "scripts": {
+    "build": "node ../build.mjs a11y-policy",
+    "test": "node --experimental-strip-types --test ../test/plugins.test.ts"
+  },
+  "peerDependencies": {
+    "emdash": ">=1.5.0"
+  },
+  "engines": {
+    "node": ">=22.16"
+  }
+}

@@ -53,6 +53,13 @@ jobs:
       # The blog's read path as hostile input: hostile Portable Text, dates, images, the discovery files.
       - name: Blog untrusted-input tests
         run: pnpm exec vp run test:blog
+      # The EmDash publish-policy plugins: committed bundles are current (shared core compiled in), and
+      # the built plugins agree with core on every language-neutral vector.
+      - name: Policy plugin bundles are committed
+        run: pnpm plugins:check
+
+      - name: Policy plugin tests
+        run: pnpm test:plugins
 
       # Two things the rendered-pixel contrast gate structurally cannot see: a
       # var() that resolves to nothing (it falls back to `unset` and inherits,
