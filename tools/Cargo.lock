@@ -810,6 +810,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "mzizi-tokens"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c19c251c460c223e4dcd75903d521fa110cf3c162713bcccbb53aa8877703e92"
+
+[[package]]
 name = "nav-portrait"
 version = "0.1.0"
 dependencies = [
@@ -1581,6 +1587,15 @@ name = "verify-image-urls"
 version = "0.1.0"
 dependencies = [
  "regex",
+]
+
+[[package]]
+name = "verify-palette"
+version = "0.1.0"
+dependencies = [
+ "mzizi-tokens",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

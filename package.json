@@ -23,6 +23,7 @@
     "cjk": "node scripts/build-cjk-subset.mjs",
     "fmt": "vp fmt",
     "verify:images:rs": "cargo run -q --manifest-path tools/Cargo.toml -p verify-image-urls",
+    "verify:palette": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette",
     "verify:stylesheet:rs": "cargo run -q --manifest-path tools/Cargo.toml -p verify-stylesheet",
     "tokens": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-tokens.mjs",
     "site-data": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/export-site-data.mjs",

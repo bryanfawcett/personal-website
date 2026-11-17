@@ -53,6 +53,11 @@ jobs:
       # var() that resolves to nothing (it falls back to `unset` and inherits,
       # so there is nothing to measure), and a base rule that outranks a class
       # on specificity. The second shipped a white-on-white call to action.
+      # The site's 21 colour families, dark and light, against the published
+      # mzizi-tokens crate (pinned). A difference prints a table and fails.
+      - name: Verify the palette against mzizi-tokens
+        run: pnpm exec vp run verify:palette
+
       - name: Verify the stylesheet
         run: pnpm exec vp run verify:stylesheet
 

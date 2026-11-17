@@ -15,6 +15,7 @@ import { bunduWork, nyuchiWork, schoolWork } from '../src/data/origins.ts';
 import { NAV, PROFILE, profileInLang, socialsInLang } from '../src/data/profile.ts';
 import { ui as UI, useTranslations } from '../src/i18n/ui.ts';
 import { MINERALS, mineral } from '../src/brand/minerals.ts';
+import { EXPERIMENTAL, HERITAGE } from '../src/brand/palette.ts';
 import { INK, INK_LIGHT, SHEET_LIGHT } from '../src/brand/tokens.ts';
 
 const OUT = new URL('../src/data/generated/site.json', import.meta.url);
@@ -60,6 +61,12 @@ const site = {
     zh: socialsInLang('zh').map(({ name, href }) => ({ name, href })),
   },
   minerals: MINERALS.map((m) => m.name),
+  // The 21 families, dark and light, for `pnpm verify:palette` (Rust) to hold against the mzizi-tokens crate.
+  palette: [
+    ...MINERALS.map((m) => ({ family: m.name, dark: m.hex, light: m.onLight })),
+    ...HERITAGE.map((c) => ({ family: c.name, dark: c.darkHex, light: c.lightHex })),
+    ...EXPERIMENTAL.map((c) => ({ family: c.name, dark: c.darkHex, light: c.lightHex })),
+  ],
   booking_url: BOOKING_URL,
   qr: {
     dark: { dark: INK.base, light: mineral('cobalt').container },
