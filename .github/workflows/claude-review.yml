@@ -12,13 +12,16 @@ on:
 jobs:
   claude-review:
     runs-on: ubuntu-latest
-    # Run on PR events, push events, OR when someone comments @claude on a PR
+    # Run on PR events, push events, OR when someone comments @claude on a PR. On a public repository
+    # anyone can comment, so the comment path also requires the commenter to be the owner, a member
+    # or a collaborator: a stranger must not be able to start a run with this repository's credentials.
     if: |
       github.event_name == 'pull_request' ||
       github.event_name == 'push' ||
       (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request &&
-       contains(github.event.comment.body, '@claude'))
+       contains(github.event.comment.body, '@claude') &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
     permissions:
       contents: read
       pull-requests: write

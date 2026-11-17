@@ -17,11 +17,11 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      # Astro 7 requires Node >= 22.12.
+      # Node 24.22+ here (never 25). package.json engines is >=24.18.0 because that is the Node Cloudflare's build image has.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "^24.22.0"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -113,7 +113,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "^24.22.0"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -161,7 +161,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "^24.22.0"
           cache: "pnpm"
 
       - name: Install dependencies
