@@ -93,7 +93,7 @@ pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stric
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
-**Requirements:** Node.js 24.22+ (`cf` 1.0.0-rc.0 allows 22.23+, 24.22+ or 26.12+, not 25; EmDash needs 22.16+; Astro 7 needs 22.12+), pnpm 10+.
+**Requirements:** Node.js 24.18+ (Cloudflare's build image has 24.18.0; use 24.22+ locally for `cf` 1.0.0-rc.0, not 25), pnpm 10+.
 
 ## Project Overview
 
@@ -701,7 +701,7 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
    `minmax(20rem, 1fr)` forces horizontal scroll on a 390px screen.
 4. **Hard-coded colours.** Use the custom properties.
 5. **Adding a client framework.** Don't; this is a content site. The one exception is the EmDash admin (see "Everything is Astro and TypeScript"): React lives there and nowhere public.
-6. **Node outside 24.22+ (or 22.23+, 26.12+)** will not run `cf` 1.0.0-rc.0, and an odd-numbered Node (25) is outside its range. `package.json` `engines` and CI say 24.22+. Cloudflare's build image takes its Node version from the dashboard (a `NODE_VERSION` build variable), not from the repo (a `.node-version` file made the Workers Build fail on 17 November 2026, so there isn't one): set `NODE_VERSION` to 24 there.
+6. **Node below 24.18** will not build on Cloudflare or run EmDash. Workers Builds defaults to Node 24.18.0 (Cloudflare changelog, 30 July 2026) and preinstalls only 22.23.2 and 24.18.0, so `package.json` `engines` is `>=24.18.0`: a stricter floor (an earlier `>=24.22.0`) failed the Workers Build. `cf` 1.0.0-rc.0 declares `^22.23 || ^24.22 || ^26.12`, but that range is advisory and builds on 24.18; locally and in CI use 24.22 or later, never an odd-numbered Node (25). Do not add a `.node-version` file: an unavailable version (22.16.0) failed the Workers Build, and the default needs no help.
 7. **`mix-blend-mode: multiply` on the sheet layers.** On a cyanotype the ruling
    is lighter than the ground, so the grid needs `plus-lighter` and the grain
    needs `soft-light`. Multiply makes both vanish.

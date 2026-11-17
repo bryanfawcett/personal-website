@@ -23,7 +23,7 @@ pnpm deploy     # build and deploy the Worker
 pnpm og         # re-render the social card (only after the portrait changes)
 ```
 
-**Requirements:** Node.js 24.22+ (`cf` 1.0.0-rc.0 allows 22.23+, 24.22+ or 26.12+, not 25; EmDash needs 22.16+; Astro 7 needs 22.12+), pnpm 10+.
+**Requirements:** Node.js 24.18+ (Cloudflare's build image has 24.18.0; use 24.22+ locally for `cf` 1.0.0-rc.0, not 25), pnpm 10+.
 
 ## Architecture
 
