@@ -422,6 +422,8 @@ mod tests {
         let s = sanity(&t, &c, &g);
         block_on(s.groq("list", &[]));
         for i in 0..(STALE_MAX_ENTRIES * 3) {
+            // Time moves on, so the list is the OLDEST entry and the first one evicted.
+            c.advance(1);
             block_on(s.groq("one", &[("slug", &format!("no-such-post-{i}"))]));
         }
         // Sanity goes down: the list is still served stale.
