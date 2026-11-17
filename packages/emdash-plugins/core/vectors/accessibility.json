@@ -1,0 +1,1250 @@
+{
+  "description": "checkAccessibility({body, cover}) -> findings in document order, cover first.",
+  "cases": [
+    {
+      "name": "clean post",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Intro.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Start",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "More",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/adventures/mana-pools"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "the Mana Pools guide",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          },
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            },
+            "alt": "A herd of elephants at dawn"
+          }
+        ],
+        "cover": {
+          "id": "m1",
+          "alt": "Mana Pools at dawn"
+        }
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "empty input",
+      "input": {},
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "body not an array",
+      "input": {
+        "body": "text",
+        "cover": null
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "no cover is fine",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "cover without alt",
+      "input": {
+        "cover": {
+          "id": "m1"
+        }
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.cover-alt",
+            "severity": "error",
+            "path": "cover",
+            "message": "The cover image has no alt text. Open the cover image and describe what it shows in a short sentence, for people who cannot see it."
+          }
+        ]
+      }
+    },
+    {
+      "name": "cover with blank alt",
+      "input": {
+        "cover": {
+          "id": "m1",
+          "alt": "   "
+        }
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.cover-alt",
+            "severity": "error",
+            "path": "cover",
+            "message": "The cover image has no alt text. Open the cover image and describe what it shows in a short sentence, for people who cannot see it."
+          }
+        ]
+      }
+    },
+    {
+      "name": "cover alt of the wrong type",
+      "input": {
+        "cover": {
+          "id": "m1",
+          "alt": 42
+        }
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.cover-alt",
+            "severity": "error",
+            "path": "cover",
+            "message": "The cover image has no alt text. Open the cover image and describe what it shows in a short sentence, for people who cannot see it."
+          }
+        ]
+      }
+    },
+    {
+      "name": "image without alt",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.image-alt",
+            "severity": "error",
+            "path": "body[1]",
+            "message": "Block 2: this image has no alt text. Select the image and describe what it shows in a short sentence."
+          }
+        ]
+      }
+    },
+    {
+      "name": "image with blank alt",
+      "input": {
+        "body": [
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            },
+            "alt": ""
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.image-alt",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1: this image has no alt text. Select the image and describe what it shows in a short sentence."
+          }
+        ]
+      }
+    },
+    {
+      "name": "image with whitespace alt",
+      "input": {
+        "body": [
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            },
+            "alt": " \n "
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.image-alt",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1: this image has no alt text. Select the image and describe what it shows in a short sentence."
+          }
+        ]
+      }
+    },
+    {
+      "name": "two images, one bad",
+      "input": {
+        "body": [
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            },
+            "alt": "ok"
+          },
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.image-alt",
+            "severity": "error",
+            "path": "body[1]",
+            "message": "Block 2: this image has no alt text. Select the image and describe what it shows in a short sentence."
+          }
+        ]
+      }
+    },
+    {
+      "name": "h1 in body",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h1",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Big",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.heading-h1",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1 (heading \"Big\"): the page title is already the only top-level heading. Change this to Heading (h2)."
+          }
+        ]
+      }
+    },
+    {
+      "name": "h4 in body",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "A",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "B",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h4",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "C",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.heading-deep",
+            "severity": "error",
+            "path": "body[2]",
+            "message": "Block 3 (heading \"C\"): this site uses only Heading (h2) and Subheading (h3) inside a post. Change it to one of those."
+          }
+        ]
+      }
+    },
+    {
+      "name": "h6 in body",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "A",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h6",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "C",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.heading-deep",
+            "severity": "error",
+            "path": "body[1]",
+            "message": "Block 2 (heading \"C\"): this site uses only Heading (h2) and Subheading (h3) inside a post. Change it to one of those."
+          }
+        ]
+      }
+    },
+    {
+      "name": "body starts at h3",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Sub",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Main",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.heading-start",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1 (heading \"Sub\"): the first heading in a post must be Heading (h2), not h3. Change it to h2."
+          }
+        ]
+      }
+    },
+    {
+      "name": "h3 then h3 after a bad start only reports the start",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Sub",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "Sub2",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.heading-start",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1 (heading \"Sub\"): the first heading in a post must be Heading (h2), not h3. Change it to h2."
+          }
+        ]
+      }
+    },
+    {
+      "name": "h2 then h3 then h2 is fine",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "A",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "B",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "C",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "headings in a list context ignored",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "listItem": "bullet",
+            "children": [
+              {
+                "_type": "span",
+                "text": "x",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "vague: click here",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "click here",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"click here\": \"click here\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague: Read more.",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "Read more.",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"Read more.\": \"Read more.\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague: HERE",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "HERE",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"HERE\": \"HERE\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague: link",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "link",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"link\": \"link\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague zh: 点击这里",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "点击这里",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"点击这里\": \"点击这里\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague zh: 阅读更多。",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "阅读更多。",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"阅读更多。\": \"阅读更多。\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "vague zh: 了解更多",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "了解更多",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"了解更多\": \"了解更多\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "a phrase containing a vague word is fine",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "read more about Mana Pools",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "here inside a longer phrase is fine",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "the camp we stayed at here",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "bare url as text",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "https://example.org/a/b"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "https://example.org/a/b",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-url",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"https://example.org/a/b\": a web address is read out letter by letter by screen readers. Replace the link text with words that say where it goes."
+          }
+        ]
+      }
+    },
+    {
+      "name": "www url as text",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "https://www.example.org"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "www.example.org",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-url",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"www.example.org\": a web address is read out letter by letter by screen readers. Replace the link text with words that say where it goes."
+          }
+        ]
+      }
+    },
+    {
+      "name": "link with no text",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "plain",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-empty",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: a link has no visible words. Select the words that describe where it goes and link those."
+          }
+        ]
+      }
+    },
+    {
+      "name": "link covering only spaces",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "   ",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-empty",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1: a link has no visible words. Select the words that describe where it goes and link those."
+          }
+        ]
+      }
+    },
+    {
+      "name": "link text split over two spans",
+      "input": {
+        "body": [
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "click ",
+                "marks": [
+                  "k"
+                ]
+              },
+              {
+                "_type": "span",
+                "text": "here",
+                "marks": [
+                  "k",
+                  "strong"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[0].markDefs[0]",
+            "message": "Block 1, link \"click here\": \"click here\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown block types ignored",
+      "input": {
+        "body": [
+          {
+            "_type": "html",
+            "html": "<b>x</b>"
+          },
+          {
+            "_type": "video"
+          },
+          null,
+          7
+        ]
+      },
+      "expected": {
+        "findings": []
+      }
+    },
+    {
+      "name": "several problems keep document order",
+      "input": {
+        "cover": {
+          "id": "m1"
+        },
+        "body": [
+          {
+            "_type": "block",
+            "style": "h1",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "text": "T",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "image",
+            "asset": {
+              "_ref": "abc"
+            }
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "markDefs": [
+              {
+                "_key": "k1",
+                "_type": "link",
+                "href": "/x"
+              }
+            ],
+            "children": [
+              {
+                "_type": "span",
+                "text": "See ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "text": "here",
+                "marks": [
+                  "k1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "findings": [
+          {
+            "rule": "a11y.cover-alt",
+            "severity": "error",
+            "path": "cover",
+            "message": "The cover image has no alt text. Open the cover image and describe what it shows in a short sentence, for people who cannot see it."
+          },
+          {
+            "rule": "a11y.heading-h1",
+            "severity": "error",
+            "path": "body[0]",
+            "message": "Block 1 (heading \"T\"): the page title is already the only top-level heading. Change this to Heading (h2)."
+          },
+          {
+            "rule": "a11y.image-alt",
+            "severity": "error",
+            "path": "body[1]",
+            "message": "Block 2: this image has no alt text. Select the image and describe what it shows in a short sentence."
+          },
+          {
+            "rule": "a11y.link-text-vague",
+            "severity": "error",
+            "path": "body[2].markDefs[0]",
+            "message": "Block 3, link \"here\": \"here\" does not say where the link goes. Rewrite the link text to name its destination."
+          }
+        ]
+      }
+    }
+  ]
+}

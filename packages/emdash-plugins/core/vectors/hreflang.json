@@ -1,0 +1,154 @@
+{
+  "description": "hreflangAlternates(entry, siblings, defaultLocale) -> alternates (empty unless a published translation exists).",
+  "cases": [
+    {
+      "name": "untranslated entry declares nothing",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "published"
+        },
+        "siblings": [],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": []
+      }
+    },
+    {
+      "name": "draft translation declares nothing",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "published"
+        },
+        "siblings": [
+          {
+            "id": "2",
+            "locale": "zh",
+            "slug": "a-zh",
+            "status": "draft"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": []
+      }
+    },
+    {
+      "name": "published translation: both directions",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "published"
+        },
+        "siblings": [
+          {
+            "id": "2",
+            "locale": "zh",
+            "slug": "a-zh",
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": [
+          {
+            "locale": "en",
+            "slug": "a"
+          },
+          {
+            "locale": "zh",
+            "slug": "a-zh"
+          }
+        ]
+      }
+    },
+    {
+      "name": "from the zh side",
+      "input": {
+        "entry": {
+          "id": "2",
+          "locale": "zh",
+          "slug": "a-zh",
+          "status": "published"
+        },
+        "siblings": [
+          {
+            "id": "1",
+            "locale": "en",
+            "slug": "a",
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": [
+          {
+            "locale": "zh",
+            "slug": "a-zh"
+          },
+          {
+            "locale": "en",
+            "slug": "a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a sibling in the same locale is not a translation",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "published"
+        },
+        "siblings": [
+          {
+            "id": "3",
+            "locale": "en",
+            "slug": "b",
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": []
+      }
+    },
+    {
+      "name": "translation with no slug is ignored",
+      "input": {
+        "entry": {
+          "id": "1",
+          "locale": "en",
+          "slug": "a",
+          "status": "published"
+        },
+        "siblings": [
+          {
+            "id": "2",
+            "locale": "zh",
+            "slug": null,
+            "status": "published"
+          }
+        ],
+        "defaultLocale": "en"
+      },
+      "expected": {
+        "alternates": []
+      }
+    }
+  ]
+}

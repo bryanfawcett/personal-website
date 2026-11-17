@@ -6,6 +6,9 @@ import react from '@astrojs/react';
 import emdash from 'emdash/astro';
 import { d1, r2 } from '@emdash-cms/cloudflare';
 import rust from './src/integrations/rust/index.ts';
+import { a11yPolicy } from './packages/emdash-plugins/a11y-policy/src/index.ts';
+import { linkPolicy } from './packages/emdash-plugins/link-policy/src/index.ts';
+import { translationPolicy } from './packages/emdash-plugins/translation-policy/src/index.ts';
 
 /*
  * The blog is rendered per request out of EmDash (D1), so its posts are not prerendered routes and
@@ -84,6 +87,13 @@ export default defineConfig({
     emdash({
       database: d1({ binding: 'DB', session: 'auto', coalesce: true }),
       storage: r2({ binding: 'MEDIA' }),
+      /*
+       * Publish-time policy, from packages/emdash-plugins. They are "standard" (sandbox-format) plugins
+       * with their shared rules bundled in, registered in `plugins` so they run in-process: moving them
+       * to `sandboxed` needs `sandboxRunner: sandbox()` and a Worker Loader binding, a Cloudflare
+       * resource nobody has created yet. Their capabilities are enforced either way.
+       */
+      plugins: [a11yPolicy(), linkPolicy(), translationPolicy()],
     }),
     rust({
       glue: 'src/integrations/rust/pkg/components_wasm.js',

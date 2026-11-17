@@ -1,0 +1,14 @@
+{
+  "$schema": "https://emdashcms.com/schemas/emdash-plugin.schema.json",
+  "slug": "translation-policy",
+  "version": "0.1.0",
+  "name": "Translation policy",
+  "description": "Blocks publishing a translation without a published source entry, or a slug already used in that language.",
+  // TODO(owner): choose a licence (SPDX) and the publishing identity before publishing to a registry.
+  "license": "TODO-owner",
+  "publisher": "TODO-owner",
+  // The trust contract. Must match the descriptor in src/index.ts (a test asserts it).
+  "capabilities": ["hooks.content-policy:register", "content:read"],
+  "allowedHosts": [],
+  "storage": {}
+}
