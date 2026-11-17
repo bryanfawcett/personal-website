@@ -28,10 +28,21 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
-
 const result = await groq<AdventureCard[]>(ADVENTURE_LIST);
 const adventures = result.ok ? result.data : [];
+
+/*
+ * An unreachable Sanity is a 503 that nothing may cache, like the post page: a 200 with the
+ * "unavailable" copy let the edge hold the failure for a minute and tell search engines the
+ * list was a page of no adventures.
+ */
+if (result.ok) {
+  Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
+} else {
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+  Astro.response.headers.set('Retry-After', '120');
+}
 
 /** Dates render in the reader's own convention, from the reader's own locale. */
 const dateFormat = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hans-CN' : 'en-GB', {

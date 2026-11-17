@@ -16,6 +16,7 @@
     "deploy": "cf deploy",
     "og": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/build-og-card.mjs",
     "verify:images": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-image-urls.mjs",
+    "verify:links": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-link-safety.mjs",
     "verify:overlap": "node scripts/verify-overlap.mjs",
     "verify:contrast": "node scripts/verify-contrast.mjs",
     "verify:stylesheet": "node --experimental-strip-types --import ./scripts/ts-specifier-hook.mjs scripts/verify-stylesheet.mjs",

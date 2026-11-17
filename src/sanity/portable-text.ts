@@ -24,6 +24,28 @@ function escape(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
+/** The hosts that count as this site. Exact match: a prefix test lets bryanfawcett.com.evil.example in. */
+const OWN_HOSTS = new Set(['bryanfawcett.com', 'www.bryanfawcett.com']);
+
+/**
+ * What a link is allowed to be: web, mail, phone, or a path/fragment on this site. Anything else
+ * (javascript:, data:, vbscript:, a tab or newline smuggled into the scheme) returns null.
+ */
+export function classifyLink(href: string): { external: boolean } | null {
+  if (!href) return null;
+  // A relative path or fragment: stays on the site. `//host` is protocol-relative, so it is not one.
+  if (/^(\/(?!\/)|#|\?)/.test(href)) return { external: false };
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  if (url.protocol === 'mailto:' || url.protocol === 'tel:') return { external: false };
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+  return { external: !OWN_HOSTS.has(url.hostname) };
+}
+
 const components: Partial<PortableTextHtmlComponents> = {
   block: {
     normal: ({ children }) => `<p>${children}</p>`,
@@ -40,13 +62,12 @@ const components: Partial<PortableTextHtmlComponents> = {
 
   marks: {
     link: ({ children, value }) => {
-      const href = typeof value?.['href'] === 'string' ? value['href'] : '';
-      if (!href) return children;
-
-      // Anything not pointing back at this site opens away from it and gets
-      // the rel the rest of the site uses on outbound links.
-      const external = /^https?:\/\//.test(href) && !href.startsWith('https://bryanfawcett.com');
-      const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      const href = typeof value?.['href'] === 'string' ? value['href'].trim() : '';
+      const link = classifyLink(href);
+      // A scheme outside the allow-list (javascript:, data:, vbscript:) is dropped: the words
+      // stay, the link does not. Sanity text is untrusted input however trusted its editor is.
+      if (!link) return children;
+      const attrs = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
       return `<a href="${escape(href)}"${attrs}>${children}</a>`;
     },
   },
