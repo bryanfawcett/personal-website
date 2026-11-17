@@ -12,8 +12,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const SOURCE_URL =
-  'https://github.com/bryanfawcett/personal-website/blob/main/docs/how-we-built-this.md';
 ---
 
 <BaseLayout
@@ -60,14 +58,4 @@ const SOURCE_URL =
       </section>
     ))
   }
-
-  <section class="section reveal" aria-labelledby="source-heading">
-    <h2 class="section-title sheet-h2" id="source-heading">{t('build.source_link')}</h2>
-    <div class="prose">
-      <p>
-        {t('build.source')}{' '}
-        <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">{t('build.source_link')}</a>
-      </p>
-    </div>
-  </section>
 </BaseLayout>
