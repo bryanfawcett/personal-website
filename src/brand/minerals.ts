@@ -13,6 +13,8 @@
  * truth.
  */
 
+import { MZIZI_PALETTE } from './mzizi-palette.generated.js';
+
 export interface Mineral {
   /** Token name, used to build the CSS custom property `--mineral-<name>`. */
   readonly name: string;
@@ -39,8 +41,8 @@ export interface Mineral {
 export const MINERALS = [
   {
     name: 'cobalt',
-    hex: '#00B0FF',
-    onLight: '#0047AB',
+    hex: MZIZI_PALETTE.cobalt.dark,
+    onLight: MZIZI_PALETTE.cobalt.light,
     container: '#001F3F',
     containerLight: '#E3F2FD',
     onContainer: '#B3E5FC',
@@ -51,8 +53,8 @@ export const MINERALS = [
   },
   {
     name: 'tanzanite',
-    hex: '#B388FF',
-    onLight: '#4B0082',
+    hex: MZIZI_PALETTE.tanzanite.dark,
+    onLight: MZIZI_PALETTE.tanzanite.light,
     container: '#1A0033',
     containerLight: '#F3E5F5',
     onContainer: '#E1BEE7',
@@ -63,8 +65,8 @@ export const MINERALS = [
   },
   {
     name: 'malachite',
-    hex: '#64FFDA',
-    onLight: '#004D40',
+    hex: MZIZI_PALETTE.malachite.dark,
+    onLight: MZIZI_PALETTE.malachite.light,
     container: '#00251A',
     containerLight: '#E0F2F1',
     onContainer: '#A7FFEB',
@@ -75,8 +77,8 @@ export const MINERALS = [
   },
   {
     name: 'gold',
-    hex: '#FFD740',
-    onLight: '#5D4037', // the registry's gold on light (mzizi-tokens GOLD_LIGHT); was #9A6F00 until 2026-11-17
+    hex: MZIZI_PALETTE.gold.dark,
+    onLight: MZIZI_PALETTE.gold.light,
     container: '#332200',
     containerLight: '#FFF8E1',
     onContainer: '#FFECB3',
@@ -87,8 +89,8 @@ export const MINERALS = [
   },
   {
     name: 'terracotta',
-    hex: '#E1B07E',
-    onLight: '#A0522D',
+    hex: MZIZI_PALETTE.terracotta.dark,
+    onLight: MZIZI_PALETTE.terracotta.light,
     container: '#3E2817',
     containerLight: '#F5E6D3',
     onContainer: '#FFCCBC',
@@ -99,8 +101,8 @@ export const MINERALS = [
   },
   {
     name: 'sodalite',
-    hex: '#3D5AFE',
-    onLight: '#283593',
+    hex: MZIZI_PALETTE.sodalite.dark,
+    onLight: MZIZI_PALETTE.sodalite.light,
     container: '#0D1442',
     containerLight: '#E8EAF6',
     onContainer: '#C5CAE9',
@@ -111,8 +113,8 @@ export const MINERALS = [
   },
   {
     name: 'copper',
-    hex: '#FF8A65',
-    onLight: '#BF5A36',
+    hex: MZIZI_PALETTE.copper.dark,
+    onLight: MZIZI_PALETTE.copper.light,
     container: '#3A1A0E',
     containerLight: '#FBE4DA',
     onContainer: '#FFCCBC',

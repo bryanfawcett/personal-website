@@ -59,6 +59,10 @@ jobs:
       # on specificity. The second shipped a white-on-white call to action.
       # The site's 21 colour families, dark and light, against the published
       # mzizi-tokens crate (pinned). A difference prints a table and fails.
+      # The 21 families' dark and light hex are generated from mzizi-tokens, not hand-copied.
+      - name: Generated palette is current
+        run: pnpm exec vp run palette:check
+
       - name: Verify the palette against mzizi-tokens
         run: pnpm exec vp run verify:palette
 
