@@ -51,11 +51,11 @@ const CRATE: [(&str, &str, &str); 21] = {
 
 /// Known, owner-visible deviations: (family, theme, the site's value). They print on every run and do
 /// not fail the gate, but only while the site still holds exactly that value (a change either way
-/// fails, so the entry cannot go stale). Adding one is a decision, not a fix.
+/// fails, so an entry cannot go stale). Adding one is a decision, not a fix.
 ///
-/// gold/light: the registry and crate say #5D4037 (a brown, "textLight"); the site draws #9A6F00, a
-/// gold that reads as gold on paper. Open question for the Mzizi owner: which is right?
-const ACKNOWLEDGED: [(&str, &str, &str); 1] = [("gold", "light", "#9A6F00")];
+/// Empty since 2026-11-17: the site's light gold was #9A6F00 against the registry's #5D4037, and the
+/// owner chose the registry's value.
+const ACKNOWLEDGED: [(&str, &str, &str); 0] = [];
 
 fn main() {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../src/data/generated/site.json");

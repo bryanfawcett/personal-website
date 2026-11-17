@@ -1,0 +1,1770 @@
+{
+ "404.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/404"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/404"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/404"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/404"
+   ],
+   "meta name=description": [
+    "That page does not exist on bryanfawcett.com."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "That page does not exist on bryanfawcett.com."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Sheet not found | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/404"
+   ],
+   "title": [
+    "Sheet not found | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "book.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/book"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/book"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/book"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/book"
+   ],
+   "meta name=description": [
+    "Book a call with Bryan Fawcett to scope a build with Nyuchi Africa, or to talk about EdTech, systems architecture, and building for African communities."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "Book a call with Bryan Fawcett to scope a build with Nyuchi Africa, or to talk about EdTech, systems architecture, and building for African communities."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Book a call | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/book"
+   ],
+   "title": [
+    "Book a call | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "experience.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/experience"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "meta name=description": [
+    "Over ten years in education technology, systems architecture, and digital product development across Africa and Asia."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "Over ten years in education technology, systems architecture, and digital product development across Africa and Asia."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Experience | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "title": [
+    "Experience | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "how-this-was-built.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/how-this-was-built"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "meta name=description": [
+    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, a Sanity blog, and the move from TypeScript to Rust, including what broke along the way."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "How bryanfawcett.com is made: Astro, Cloudflare Workers, the Mzizi design system, a Sanity blog, and the move from TypeScript to Rust, including what broke along the way."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "How this website was built | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "article"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "title": [
+    "How this website was built | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "index.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/"
+   ],
+   "meta name=description": [
+    "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:type": [
+    "profile"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/"
+   ],
+   "title": [
+    "Bryan Fawcett — Digital Craftsman"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "minerals.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/minerals"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "meta name=description": [
+    "The Mzizi palette this site draws with: seven minerals from across Africa on the rail down every page, seven heritage tones named for the landscape, and seven experimental families — what each stands for and how it is used."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "The Mzizi palette this site draws with: seven minerals from across Africa on the rail down every page, seven heritage tones named for the landscape, and seven experimental families — what each stands for and how it is used."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "The palette | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "title": [
+    "The palette | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "origins-with-perspective.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/origins-with-perspective"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "meta name=description": [
+    "Equity and the assumptions we make in learning — what growing up in Zimbabwe taught me about measuring capability instead of credentials, and how that shapes the technology work I do now."
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "Equity and the assumptions we make in learning — what growing up in Zimbabwe taught me about measuring capability instead of credentials, and how that shapes the technology work I do now."
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "en_US"
+   ],
+   "meta property=og:locale:alternate": [
+    "zh_CN"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Origins with a Perspective on Human Potential | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "article"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "title": [
+    "Origins with a Perspective on Human Potential | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "Founder & CEO",
+       "Founder",
+       "Associate Technology & Innovation Coordinator"
+      ],
+      "description": "A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — Digital Craftsman",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "en"
+     }
+    ]
+   }
+  ]
+ },
+ "zh.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh"
+   ],
+   "meta name=description": [
+    "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "Bryan Fawcett — 数字工匠"
+   ],
+   "meta property=og:type": [
+    "profile"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh"
+   ],
+   "title": [
+    "Bryan Fawcett — 数字工匠"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ },
+ "zh/book.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/book"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/book"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/book"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh/book"
+   ],
+   "meta name=description": [
+    "与 Bryan Fawcett 预约通话：与 Nyuchi Africa 梳理一项构建，或聊聊教育科技、系统架构，以及为非洲社区而建的产品。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "与 Bryan Fawcett 预约通话：与 Nyuchi Africa 梳理一项构建，或聊聊教育科技、系统架构，以及为非洲社区而建的产品。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "预约通话 | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh/book"
+   ],
+   "title": [
+    "预约通话 | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ },
+ "zh/experience.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/experience"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/experience"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh/experience"
+   ],
+   "meta name=description": [
+    "十余年深耕教育科技、系统架构与数字产品开发，足迹遍及非洲与亚洲。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "十余年深耕教育科技、系统架构与数字产品开发，足迹遍及非洲与亚洲。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "项目经验 | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh/experience"
+   ],
+   "title": [
+    "项目经验 | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ },
+ "zh/how-this-was-built.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/how-this-was-built"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/how-this-was-built"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh/how-this-was-built"
+   ],
+   "meta name=description": [
+    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、Sanity 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "bryanfawcett.com 的构建方式：Astro、Cloudflare Workers、Mzizi 设计系统、Sanity 博客，以及从 TypeScript 迁往 Rust 的过程，包括一路上出过的问题。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "这个网站是怎么建成的 | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "article"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh/how-this-was-built"
+   ],
+   "title": [
+    "这个网站是怎么建成的 | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ },
+ "zh/minerals.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/minerals"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/minerals"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh/minerals"
+   ],
+   "meta name=description": [
+    "本站所用的 Mzizi 色彩：每一页边缘色带上的七种非洲矿物，七种以大地命名的传统色调，以及七个试验色族——它们各自象征什么、如何使用。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "本站所用的 Mzizi 色彩：每一页边缘色带上的七种非洲矿物，七种以大地命名的传统色调，以及七个试验色族——它们各自象征什么、如何使用。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "色彩 | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "website"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh/minerals"
+   ],
+   "title": [
+    "色彩 | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ },
+ "zh/origins-with-perspective.html": {
+  "tags": {
+   "link rel=alternate hreflang=en": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "link rel=alternate hreflang=x-default": [
+    "https://bryanfawcett.com/origins-with-perspective"
+   ],
+   "link rel=alternate hreflang=zh-Hans": [
+    "https://bryanfawcett.com/zh/origins-with-perspective"
+   ],
+   "link rel=canonical": [
+    "https://bryanfawcett.com/zh/origins-with-perspective"
+   ],
+   "meta name=description": [
+    "公平，以及我们在学习中所作的假设——在津巴布韦长大教会我衡量能力而非文凭，而这如何塑造了我今天的技术工作。"
+   ],
+   "meta name=twitter:card": [
+    "summary_large_image"
+   ],
+   "meta name=twitter:creator": [
+    "@bryanfawcett"
+   ],
+   "meta property=og:description": [
+    "公平，以及我们在学习中所作的假设——在津巴布韦长大教会我衡量能力而非文凭，而这如何塑造了我今天的技术工作。"
+   ],
+   "meta property=og:image": [
+    "https://bryanfawcett.com/og-bryan-fawcett.jpg"
+   ],
+   "meta property=og:image:alt": [
+    "Bryan Fawcett — Digital Craftsman"
+   ],
+   "meta property=og:image:height": [
+    "630"
+   ],
+   "meta property=og:image:width": [
+    "1200"
+   ],
+   "meta property=og:locale": [
+    "zh_CN"
+   ],
+   "meta property=og:locale:alternate": [
+    "en_US"
+   ],
+   "meta property=og:site_name": [
+    "Bryan Fawcett"
+   ],
+   "meta property=og:title": [
+    "本源：一种关于人的潜能的视角 | Bryan Fawcett"
+   ],
+   "meta property=og:type": [
+    "article"
+   ],
+   "meta property=og:url": [
+    "https://bryanfawcett.com/zh/origins-with-perspective"
+   ],
+   "title": [
+    "本源：一种关于人的潜能的视角 | Bryan Fawcett"
+   ]
+  },
+  "ld": [
+   {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "Person",
+      "@id": "https://bryanfawcett.com/#person",
+      "name": "Bryan Fawcett",
+      "givenName": "Bryan",
+      "familyName": "Fawcett",
+      "jobTitle": [
+       "创始人兼首席执行官",
+       "创始人",
+       "技术与创新协调员（副职）"
+      ],
+      "description": "系统思考者，为整体而设计：人、数据、工具，以及它们所处的约束。Nyuchi Africa 创始人兼首席执行官，The Bundu Foundation 创始人。",
+      "url": "https://bryanfawcett.com",
+      "email": "mailto:bryan@nyuchi.com",
+      "image": "https://bryanfawcett.com/og-bryan-fawcett.jpg",
+      "sameAs": [
+       "https://www.linkedin.com/in/bryandavidfawcett/",
+       "https://github.com/bryanfawcett/",
+       "https://x.com/bryanfawcett",
+       "mailto:bryan@nyuchi.com"
+      ],
+      "worksFor": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation"
+       },
+       {
+        "@type": "Organization",
+        "name": "Singapore American School"
+       }
+      ],
+      "founder": [
+       {
+        "@type": "Organization",
+        "name": "Nyuchi Africa",
+        "url": "https://nyuchi.com"
+       },
+       {
+        "@type": "Organization",
+        "name": "The Bundu Foundation",
+        "url": "https://www.bundu.org"
+       }
+      ],
+      "knowsAbout": [
+       "Education Technology",
+       "Systems Architecture",
+       "Cybersecurity",
+       "Digital Innovation",
+       "IT Governance",
+       "Process Optimization",
+       "Offline-first Software",
+       "Systems Design"
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://bryanfawcett.com/#website",
+      "url": "https://bryanfawcett.com",
+      "name": "Bryan Fawcett — 数字工匠",
+      "publisher": {
+       "@id": "https://bryanfawcett.com/#person"
+      },
+      "inLanguage": "zh-Hans"
+     }
+    ]
+   }
+  ]
+ }
+}

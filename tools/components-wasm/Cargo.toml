@@ -11,6 +11,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 components = { path = "../components", default-features = false }
 maud = "0.27"
+# Pinned: the SEO head (metadata and JSON-LD) is rendered by the published Mzizi N11 crate.
+mzizi-discovery = "=0.7.0"
 serde.workspace = true
 serde_json.workspace = true
 ts-rs = "10"

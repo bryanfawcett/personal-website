@@ -167,6 +167,7 @@ version = "0.1.0"
 dependencies = [
  "components",
  "maud",
+ "mzizi-discovery",
  "serde",
  "serde_json",
  "ts-rs",
@@ -808,6 +809,12 @@ dependencies = [
  "num-traits",
  "pxfm",
 ]
+
+[[package]]
+name = "mzizi-discovery"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee4615aef78b3d06da77a51a3d2ad566c632cd999b85ce34214ef1a6298370d2"
 
 [[package]]
 name = "mzizi-tokens"
@@ -1574,9 +1581,9 @@ checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
 
 [[package]]
 name = "uuid"
-version = "1.29.2"
+version = "1.29.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bed99139f7dac9b5cfe5f17be4d66dc7079a34dee1d74bcc77217119240e267c"
+checksum = "3c14b15dffa2f4bd712103e857140aa04a4f2ff6e955c77d7eb8e53ee02a3b64"
 dependencies = [
  "js-sys",
  "wasm-bindgen",

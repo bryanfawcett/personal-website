@@ -25,3 +25,38 @@ showByline?: boolean, lang?: LangProp, };
   export default Component;
 }
 
+declare module 'rust:seo-head' {
+  export type Props = { 
+/**
+ * The full `<title>`, suffix included.
+ */
+title: string, description: string, 
+/**
+ * Absolute canonical URL.
+ */
+canonical: string, 
+/**
+ * Every `hreflang` alternate, `x-default` last.
+ */
+alternates: Array<AlternateProp>, ogType: OgTypeProp, siteName: string, 
+/**
+ * `og:locale` of this page, e.g. `en_US`.
+ */
+ogLocale: string, 
+/**
+ * `og:locale:alternate`, one per other language the page exists in.
+ */
+ogLocaleAlternates: Array<string>, 
+/**
+ * Absolute image URL.
+ */
+image: string, imageAlt: string, 
+/**
+ * e.g. `@bryanfawcett`.
+ */
+twitterCreator: string, person: PersonProp, webSite: WebSiteProp, };
+  /** Default slot: whatever the page nests inside. */
+  const Component: (props: Props & { children?: unknown }) => unknown;
+  export default Component;
+}
+
