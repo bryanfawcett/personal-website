@@ -11,17 +11,8 @@
 import { getEmDashCollection, getEmDashEntry, getTranslations } from 'emdash';
 
 import type { Lang } from '../i18n/ui.js';
-import { MINERALS } from '../brand/minerals.js';
-import type { Adventure, AdventureCard, BlogImage } from './types.js';
-
-/**
- * How long a rendered blog page may be reused.
- *
- * `max-age=0` so a browser always revalidates; `s-maxage=60` lets Cloudflare absorb the traffic, so
- * publishing is live within a minute; `stale-while-revalidate` keeps the last good render for ten
- * minutes if the data layer is unreachable.
- */
-export const BLOG_CACHE_CONTROL = 'public, max-age=0, s-maxage=60, stale-while-revalidate=600';
+import { imageOf, isPlausibleSlug, isoDate, mineralOf, str } from './normalize.js';
+import type { Adventure, AdventureCard } from './types.js';
 
 /** The data layer was reachable and answered. */
 export interface Ok<T> {
@@ -42,47 +33,19 @@ export interface Failed {
 export type Result<T> = Ok<T> | Failed;
 
 const COLLECTION = 'adventures';
-const MINERAL_NAMES: ReadonlySet<string> = new Set(MINERALS.map((m) => m.name));
-
 function fail(error: unknown): Failed {
   return { ok: false, reason: error instanceof Error ? error.message : String(error) };
-}
-
-function str(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value : undefined;
-}
-
-function isoDate(value: unknown): string {
-  const d = value instanceof Date ? value : new Date(String(value ?? ''));
-  return Number.isNaN(d.getTime()) ? new Date(0).toISOString() : d.toISOString();
-}
-
-function mineralOf(value: unknown): AdventureCard['mineral'] {
-  return typeof value === 'string' && MINERAL_NAMES.has(value) ? (value as AdventureCard['mineral']) : undefined;
-}
-
-/** An EmDash image field, or null when it has no file. Alt is required by the sheet, not by the CMS. */
-function imageOf(value: unknown): BlogImage | undefined {
-  if (!value || typeof value !== 'object') return undefined;
-  const v = value as Record<string, unknown>;
-  // A local-provider image carries no `src`: the file is named by its storage key (or, failing that,
-  // its media id) and served by EmDash's own file route, which the Worker answers first.
-  const meta = (v['meta'] && typeof v['meta'] === 'object' ? v['meta'] : {}) as Record<string, unknown>;
-  const key = str(meta['storageKey']) ?? str(v['id']);
-  const src = str(v['src']) ?? (key && /^[A-Za-z0-9._-]+$/.test(key) ? `/_emdash/api/media/file/${key}` : undefined);
-  if (!src) return undefined;
-  return {
-    src,
-    alt: str(v['alt']) ?? '',
-    width: typeof v['width'] === 'number' ? v['width'] : undefined,
-    height: typeof v['height'] === 'number' ? v['height'] : undefined,
-    caption: str(v['caption']),
-  };
 }
 
 interface Row {
   readonly id: string;
   readonly data: Record<string, unknown>;
+}
+
+/** A real date as ISO, or undefined (unlike `isoDate`, which falls back to the epoch). */
+function optionalDate(value: unknown): string | undefined {
+  const iso = isoDate(value);
+  return iso === new Date(0).toISOString() ? undefined : iso;
 }
 
 function card(row: Row): AdventureCard {
@@ -97,6 +60,8 @@ function card(row: Row): AdventureCard {
     excerpt: str(d['excerpt']),
     mineral: mineralOf(d['mineral']),
     cover: imageOf(d['cover']),
+    publishedAt: optionalDate(d['publishedAt']),
+    updatedAt: optionalDate(d['updatedAt']),
   };
 }
 
@@ -117,7 +82,10 @@ export async function listAdventures(): Promise<Result<AdventureCard[]>> {
       (entries as unknown as Row[]).map(async (row): Promise<AdventureCard> => {
         const base = card(row);
         const zh = await translationOf(base.id, 'zh');
-        return { ...base, zh: zh ? { title: zh.title, slug: zh.slug, excerpt: zh.excerpt, place: zh.place } : null };
+        return {
+          ...base,
+          zh: zh ? { title: zh.title, slug: zh.slug, excerpt: zh.excerpt, place: zh.place, updatedAt: zh.updatedAt } : null,
+        };
       }),
     );
     return { ok: true, data: cards.filter((c) => c.slug && c.title) };
@@ -139,6 +107,8 @@ async function translationOf(id: string, locale: Lang): Promise<AdventureCard | 
 
 /** One adventure in `lang`, or `null` when there is none (which the page turns into a real 404). */
 export async function getAdventure(lang: Lang, slug: string): Promise<Result<Adventure | null>> {
+  // A slug that cannot be one is a 404 without asking the CMS (and without a lookup per junk URL).
+  if (!isPlausibleSlug(slug)) return { ok: true, data: null };
   try {
     const { entry, error } = await getEmDashEntry(COLLECTION, slug, { locale: lang });
     if (error) return fail(error);

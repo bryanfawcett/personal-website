@@ -1,4 +1,4 @@
-import type { MineralName } from '../brand/minerals.js';
+import type { ToneName } from '../brand/palette.js';
 
 /** A resolved image: what an `<img>` needs and nothing about where it came from. */
 export interface BlogImage {
@@ -18,8 +18,11 @@ export interface AdventureCard {
   readonly date: string;
   readonly place?: string | undefined;
   readonly excerpt?: string | undefined;
-  readonly mineral?: MineralName | undefined;
+  readonly mineral?: ToneName | undefined;
   readonly cover?: BlogImage | undefined;
+  /** When EmDash published it (the system field), distinct from `date`, the adventure's own date. */
+  readonly publishedAt?: string | undefined;
+  readonly updatedAt?: string | undefined;
   /**
    * The Chinese translation, when one exists.
    *
@@ -32,6 +35,7 @@ export interface AdventureCard {
     readonly slug: string;
     readonly excerpt?: string | undefined;
     readonly place?: string | undefined;
+    readonly updatedAt?: string | undefined;
   } | null;
 }
 
@@ -45,5 +49,5 @@ export interface Adventure extends Omit<AdventureCard, 'zh'> {
   readonly translation?: { readonly slug: string } | null;
 }
 
-/** Cobalt is the fallback so an entry without a mineral still gets its bar. */
-export const DEFAULT_MINERAL: MineralName = 'cobalt';
+/** Any of the 21 Mzizi families can be chosen (the CMS select is generated from the palette); cobalt is the fallback so an entry without a mineral still gets its bar. */
+export const DEFAULT_MINERAL: ToneName = 'cobalt';

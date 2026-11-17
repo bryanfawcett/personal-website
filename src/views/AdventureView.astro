@@ -9,7 +9,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Panel from '../components/Panel.astro';
-import { BLOG_CACHE_CONTROL, getAdventure } from '../blog/emdash.js';
+import { getAdventure } from '../blog/emdash.js';
+import { applyOutcome } from '../blog/http.js';
 import { renderBody } from '../blog/portable-text.js';
 import { DEFAULT_MINERAL } from '../blog/types.js';
 import { localizePath } from '../i18n/routing.js';
@@ -34,16 +35,7 @@ const adventure = result.ok ? result.data : null;
  * down is how a blog quietly drops out of an index. Only a found adventure is
  * cacheable; the other two must not be held at the edge.
  */
-if (!result.ok) {
-  Astro.response.status = 503;
-  Astro.response.headers.set('Retry-After', '120');
-  Astro.response.headers.set('Cache-Control', 'no-store');
-} else if (!adventure) {
-  Astro.response.status = 404;
-  Astro.response.headers.set('Cache-Control', 'no-store');
-} else {
-  Astro.response.headers.set('Cache-Control', BLOG_CACHE_CONTROL);
-}
+applyOutcome(Astro.response, !result.ok ? 'unavailable' : adventure ? 'found' : 'missing');
 
 const listPath = localizePath('/adventures', lang);
 
@@ -85,6 +77,16 @@ const body = adventure ? renderBody(adventure.body) : '';
   {...(adventure ? { alternates } : {})}
   sheet="03 / 06"
   ogType="article"
+  image={cover
+    ? { url: cover.src, width: cover.width, height: cover.height, alt: cover.alt || adventure?.title }
+    : undefined}
+  article={adventure
+    ? {
+        headline: adventure.title,
+        publishedTime: adventure.date,
+        modifiedTime: adventure.updatedAt,
+      }
+    : undefined}
 >
   {
     adventure ? (

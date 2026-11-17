@@ -17,7 +17,7 @@ import Schematics from '../components/Schematics.astro';
 import MziziHeader from '../components/mzizi/MziziHeader.astro';
 import MziziFooter from '../components/mzizi/MziziFooter.astro';
 import SeoHead from 'rust:seo-head';
-import { seoHeadProps } from './seo-head.js';
+import { seoHeadProps, type SeoHeadInput } from './seo-head.js';
 import { alternatePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, direction, useTranslations, type Lang } from '../i18n/ui.js';
 
@@ -43,6 +43,9 @@ interface Props {
   /** Sheet number shown in the title block, e.g. "02 / 06". */
   sheet?: string;
   ogType?: 'website' | 'profile' | 'article';
+  /** A page's own share image, and a post's article metadata (see seo-head.ts). */
+  image?: SeoHeadInput['image'];
+  article?: SeoHeadInput['article'];
 }
 
 const {
@@ -53,6 +56,8 @@ const {
   alternates,
   sheet = '01 / 06',
   ogType = 'website',
+  image,
+  article,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://bryanfawcett.com');
@@ -62,7 +67,7 @@ const site = Astro.site ?? new URL('https://bryanfawcett.com');
  * rendered in Rust by `mzizi-discovery`, through `rust:seo-head`. `seoHeadProps` works out
  * which URLs and languages from the routing tables; see src/layouts/seo-head.ts.
  */
-const seoProps = seoHeadProps({ title, description, path, lang, alternates, ogType, site });
+const seoProps = seoHeadProps({ title, description, path, lang, alternates, ogType, site, image, article });
 
 /*
  * Where the language switcher goes.
