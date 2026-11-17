@@ -11,11 +11,6 @@ overrides:
 minimumReleaseAgeExclude:
   - "@cloudflare/workers-types@5.20261116.1"
   - "@testing-library/user-event@14.6.12"
-  - "@cloudflare/build-output-utils@1.0.0-rc.0"
-  - "@cloudflare/config@1.0.0-rc.0"
-  - "@cloudflare/runtime-types@0.1.29"
-  - cf@1.0.0-rc.0
-  - miniflare@5.20261116.0-beta
 
 # Native binaries that need their postinstall to run.
 allowBuilds:
