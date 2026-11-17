@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["verify-stylesheet", "verify-image-urls", "contact-card", "components", "nav-portrait", "components-wasm"]
+members = ["verify-stylesheet", "verify-image-urls", "contact-card", "components", "nav-portrait", "theme-client", "components-wasm"]
 
 [workspace.package]
 edition = "2024"
@@ -11,11 +11,14 @@ regex = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
-# The WebAssembly build: small before fast, since it ships to a Worker.
-[profile.wasm]
-inherits = "release"
+[profile.release]
+# The theme client is a few hundred bytes of logic; keep it that way.
 opt-level = "z"
 lto = true
 codegen-units = 1
 panic = "abort"
 strip = "debuginfo"
+
+# The WebAssembly build for Astro: small before fast, since it ships to a Worker.
+[profile.wasm]
+inherits = "release"

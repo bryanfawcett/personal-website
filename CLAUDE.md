@@ -891,6 +891,16 @@ same pattern `@bundu/ui`'s own mineral strip uses, and it means a page can keep
 **Corner brackets are opt-in.** `<Panel frame>` draws them, for something that frames
 something larger (the deck embed). A card is a hairline at `--radius-lg` and nothing else.
 
+### The theme toggle is Rust, compiled to WebAssembly
+
+`tools/theme-client` (wasm-bindgen + web-sys) is the header's toggle: click, `localStorage('theme')`,
+`<html data-theme>`, the button's `aria-label`, and following `prefers-color-scheme`. Delegated from
+`document`, so it binds once and survives router swaps. `pnpm theme` builds it into `src/theme/`
+(committed: Cloudflare's image has no Rust; `theme:check` runs in CI and compares the generated glue).
+`MziziHeader.astro` imports it and Vite hashes the .wasm. The pre-paint snippet in `BaseLayout` stays
+inline JS on purpose: wasm loads async and would flash the wrong theme. `wasm-opt` needs
+`--disable-compact-imports` (binaryen 133 emits an import section browsers reject).
+
 ### Components in Rust are proven against Astro, not eyeballed
 
 `tools/components` is the Rust port of the site's components. Each one renders the same

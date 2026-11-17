@@ -26,36 +26,18 @@ const html = fill(fragment(`header.${lang}.${routeKey(path)}`), {
 
 <script>
   /*
-   * The theme toggle. Delegated from `document`, so it survives the router's
-   * document swaps without re-binding — the same reason the analytics
-   * listener is delegated.
+   * The theme toggle is Rust (`tools/theme-client`), compiled to WebAssembly and
+   * committed under `src/theme/` (`pnpm theme`). It binds once, delegated from
+   * `document`, so it survives the router's document swaps. The pre-paint snippet
+   * in BaseLayout stays inline JS: wasm loads async and would flash the wrong theme.
    */
-  const effective = (): 'light' | 'dark' => {
-    const chosen = document.documentElement.dataset['theme'];
-    if (chosen === 'light' || chosen === 'dark') return chosen;
-    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  };
+  import load, { bind } from '../../theme/theme_client.js';
 
-  const label = () => {
-    const next = effective() === 'dark' ? 'light' : 'dark';
-    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
-      const text = button.dataset[next === 'light' ? 'labelLight' : 'labelDark'];
-      if (text) button.setAttribute('aria-label', text);
-    }
-  };
-
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof Element) || !target.closest('[data-theme-toggle]')) return;
-    const next = effective() === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset['theme'] = next;
-    try {
-      localStorage.setItem('theme', next);
-    } catch {
-      /* Private mode: the choice holds for this page only. */
-    }
-    label();
-  });
+  load()
+    .then(bind)
+    .catch(() => {
+      /* No wasm: the page still follows the device; only the toggle is lost. */
+    });
 
   /*
    * A reader on /minerals should not land with their own page scrolled out of
@@ -69,9 +51,5 @@ const html = fill(fragment(`header.${lang}.${routeKey(path)}`), {
     if (overflow > 0) row.scrollLeft = overflow + 16;
   };
 
-  document.addEventListener('astro:page-load', () => {
-    label();
-    reveal();
-  });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label);
+  document.addEventListener('astro:page-load', reveal);
 </script>
