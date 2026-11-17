@@ -119,6 +119,10 @@ jobs:
       - name: Verify APCA contrast
         run: pnpm exec vp run verify:contrast
 
+      # Text on top of text at phone and tablet sizes, both orientations.
+      - name: Verify nothing overlaps on devices
+        run: pnpm exec vp run verify:overlap
+
   audit:
     name: Security audit
     runs-on: ubuntu-latest

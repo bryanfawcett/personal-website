@@ -1320,7 +1320,7 @@ body:lang(zh) {
 }
 
 /*
- * The phone row. Hidden on desktop; below 68rem it holds the navigation,
+ * The phone row. Hidden on desktop; below 49rem it holds the navigation,
  * scrolled sideways rather than folded into a menu. The links are pills so a
  * thumb has a 44px target, and the row's own scrollbar is hidden — the link
  * cut off at the edge is what says there is more.
@@ -1376,6 +1376,13 @@ body:lang(zh) {
   font-family: var(--cjk);
 }
 
+/* Tablet widths: tighter link padding so brand, three links, switcher, toggle and pill share one bar. */
+@media (min-width: 49.0625rem) and (max-width: 63.99rem) {
+  .mzizi-header__link {
+    padding-inline: var(--space-2);
+  }
+}
+
 @media (min-width: 64rem) {
   .mzizi-header__inner {
     min-height: 80px;
@@ -1387,11 +1394,12 @@ body:lang(zh) {
 }
 
 /*
- * 68rem, not 56rem. Measured on the live site: between about 900px and 1090px the single
- * bar had the brand name running into the first link and the last link into the language
- * switcher. The two-row layout takes over wherever the one-row bar no longer fits.
+ * 49rem. The menu is slim now (Profile, Experience, Adventures, plus the Book pill), so the
+ * single bar fits from a portrait tablet up: brand, three links, switcher, toggle, pill. It
+ * was 68rem when the bar carried six links, and a tablet then spent 118px of its height on
+ * two rows. The two-row layout takes over wherever the one-row bar no longer fits.
  */
-@media (max-width: 68rem) {
+@media (max-width: 49rem) {
   .mzizi-header__nav,
   .mzizi-header__lang {
     display: none;
@@ -1842,6 +1850,8 @@ figcaption {
 
 .caption {
   display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-3);
   justify-content: space-between;
   font-family: var(--mono);
   font-size: var(--label);
@@ -3482,5 +3492,93 @@ code {
   .mzizi-footer__strip span,
   .mzizi-footer__dots span {
     forced-color-adjust: none;
+  }
+}
+
+
+/*
+ * A short screen (a phone held sideways) cannot spare a sticky header: the two rows took 30% of
+ * a 390px-high viewport and left the page a slot to read through. It scrolls away instead.
+ */
+@media (max-height: 32rem) {
+  .mzizi-header {
+    position: static;
+  }
+}
+
+/* A link that stands alone, not one inside a sentence, so it takes the 44px target. */
+.prose--action a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+
+/*
+ * Phones: the figure tag flows in the card instead of notching into its top rule. Notched, a
+ * long tag ("Fig. 04 - The wider drawing") wraps to two lines and the second line lands on the
+ * heading below it. In flow it can wrap as much as it likes and nothing sits under it.
+ */
+@media (max-width: 40rem) {
+  .fig {
+    position: static;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin-block-end: var(--space-3);
+    border-radius: var(--radius-lg);
+    letter-spacing: 0.14em;
+    line-height: 1.35;
+  }
+}
+
+/*
+ * The mineral key on a phone or a small tablet: stacked, not columned. Index, name, then each
+ * label above its value, so the text gets the card's whole width. Side by side, a 90px label
+ * column and a 120px value column wrapped "Katanga (DRC) and the Zambian Copperbelt" onto four lines.
+ */
+@media (max-width: 44rem) {
+  .key .key__item {
+    grid-template-columns: 4px 1fr;
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+  }
+
+  .key .key__item > .key__index {
+    grid-column: 2;
+    grid-row: 1;
+    padding-block-start: 0;
+  }
+
+  .key .key__item > .key__swatch {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+  }
+
+  .key .key__item > .key__body {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .key .key__item > .key__figures {
+    grid-column: 2;
+    grid-row: 3;
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+  }
+
+  .key__body dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .key__body dt {
+    padding-block-start: var(--space-2);
+  }
+
+  .key__body dd {
+    margin-block-end: var(--space-1);
   }
 }
