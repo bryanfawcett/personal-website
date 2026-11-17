@@ -93,7 +93,7 @@ pnpm verify:stylesheet:rs # Rust port of verify:stylesheet (lightningcss); stric
 pnpm cjk            # re-cut the vendored Han subset (rarely; see below)
 ```
 
-**Requirements:** Node.js 22.16+ (EmDash's floor; Astro 7's own is 22.12), pnpm 10+.
+**Requirements:** Node.js 24.18+ (Cloudflare's build image has 24.18.0; use 24.22+ locally, not 25), pnpm 10+.
 
 ## Project Overview
 
@@ -701,7 +701,7 @@ referencing files that were never downloaded. `scripts/verify-fonts.py` guards t
    `minmax(20rem, 1fr)` forces horizontal scroll on a 390px screen.
 4. **Hard-coded colours.** Use the custom properties.
 5. **Adding a client framework.** Don't; this is a content site. The one exception is the EmDash admin (see "Everything is Astro and TypeScript"): React lives there and nowhere public.
-6. **Node < 22.16** will not run EmDash (and < 22.12 will not run Astro 7). `package.json` `engines` and CI agree. Cloudflare's build image takes its Node version from the dashboard (a `NODE_VERSION` build variable), not from the repo: a `.node-version` file made the Workers Build fail on 17 November 2026, so there isn't one. Set `NODE_VERSION` to 22.16 or later there before EmDash lands.
+6. **Node below 24.18** will not build on Cloudflare or run EmDash. Workers Builds defaults to Node 24.18.0 (Cloudflare changelog, 30 July 2026) and preinstalls only 22.23.2 and 24.18.0, so `package.json` `engines` is `>=24.18.0`. Locally and in CI use 24.22 or later, never an odd-numbered Node (25). Do not add a `.node-version` file: an unavailable version (22.16.0) failed the Workers Build, and the default needs no help. **`cf` stays at 1.0.0-beta.32.** `cf` 1.0.0-rc.0 rejects the Build Output that `@astrojs/cloudflare` 15.0.0-beta.5 (the newest adapter) writes ("This Build Output uses the older v0 format"; withastro/astro#18760), and that is what failed the Workers Build on 17 November 2026, not Node. Use `pnpm exec cf` (the project's), not a global `cf`, in this repo.
 7. **`mix-blend-mode: multiply` on the sheet layers.** On a cyanotype the ruling
    is lighter than the ground, so the grid needs `plus-lighter` and the grain
    needs `soft-light`. Multiply makes both vanish.
