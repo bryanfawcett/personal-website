@@ -15,6 +15,7 @@ use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 mod hero;
+mod seo_head;
 
 /// The exported site data is compiled in: a Worker has no filesystem, and the markup must
 /// not depend on a fetch. `pnpm site-data` rewrites these; `pnpm rust:wasm:check` fails if
@@ -97,6 +98,7 @@ macro_rules! registry {
 
 registry! {
     "hero" => hero,
+    "seo-head" => seo_head,
 }
 
 /// Render one component to an HTML string.

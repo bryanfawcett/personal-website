@@ -124,3 +124,17 @@ a `registry!` over `mzizi-ui`/`mzizi-brand` components compiles to one wasm modu
 import and the generated `components.d.ts`, replacing the Astro twin that today ships beside the
 Rust build. The contract (`data-slot`, tokens) is already shared, so the Rust build can stand in for
 the `.astro` build under the same contract.
+
+## `rust:seo-head`: the page head, from `mzizi-discovery`
+
+`BaseLayout` no longer hand-builds the title, description, canonical, hreflang, Open Graph and
+Twitter tags or the JSON-LD. `src/layouts/seo-head.ts` works out the URLs from the routing tables
+and `rust:seo-head` (`tools/components-wasm/src/seo_head.rs`) renders them with the published
+`mzizi-discovery = "=0.7.0"` crate (`generate_metadata`, `Metadata::to_head_html`, `SchemaOrg`,
+`generate_schema_ld`). The crate is Mukoko's and hard-codes `mukoko.com`, the site name, a title
+suffix and the default image, so the component overwrites those fields on the returned `Metadata`
+and adds what the crate cannot say (`og:site_name`, `og:locale:alternate`, `twitter:creator`).
+`pnpm verify:seo` proves the head is unchanged (tag set, attribute values, parsed JSON-LD): a frozen
+copy of the old head for every route, both languages and every blog-post shape, plus a baseline of
+every prerendered page as it shipped before. The only additions are `twitter:title`,
+`twitter:description` and `twitter:image`, which the crate always emits.

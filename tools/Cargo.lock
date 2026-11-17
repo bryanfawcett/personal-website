@@ -167,6 +167,7 @@ version = "0.1.0"
 dependencies = [
  "components",
  "maud",
+ "mzizi-discovery",
  "serde",
  "serde_json",
  "ts-rs",
@@ -808,6 +809,12 @@ dependencies = [
  "num-traits",
  "pxfm",
 ]
+
+[[package]]
+name = "mzizi-discovery"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee4615aef78b3d06da77a51a3d2ad566c632cd999b85ce34214ef1a6298370d2"
 
 [[package]]
 name = "nav-portrait"
