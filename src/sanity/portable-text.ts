@@ -33,6 +33,11 @@ const OWN_HOSTS = new Set(['bryanfawcett.com', 'www.bryanfawcett.com']);
  */
 export function classifyLink(href: string): { external: boolean } | null {
   if (!href) return null;
+  // No backslash, space or control character anywhere. Browsers read `\` as `/` and drop tabs and
+  // newlines inside a URL, so `/\evil.example` and `/<tab>/evil.example` both mean `//evil.example`
+  // while looking like an on-site path to a regex. A real link has none of them.
+  // eslint-disable-next-line no-control-regex
+  if (/[\\\u0000-\u0020\u007f-\u009f]/.test(href)) return null;
   // A relative path or fragment: stays on the site. `//host` is protocol-relative, so it is not one.
   if (/^(\/(?!\/)|#|\?)/.test(href)) return { external: false };
   let url: URL;
