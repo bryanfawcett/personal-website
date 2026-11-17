@@ -30,6 +30,10 @@ use crate::image::resolve_image;
 
 const MAX_LIST_DEPTH: usize = 12;
 
+/// Marks one span may carry. `render_spans` recurses once per mark, so a span with thousands of
+/// marks would recurse thousands deep: past this, the rest are ignored, and repeats are dropped.
+const MAX_MARKS_PER_SPAN: usize = 16;
+
 /// Escape text for an element body: `& < > " '`, and runs of spaces as `&nbsp;` + space
 /// (what `to-html`'s `escapeHTML` does, so whitespace in a verse survives).
 pub fn escape_text(s: &str) -> String {
@@ -83,7 +87,9 @@ fn push_escaped(out: &mut String, c: char) {
 /// `uriLooksSafe`, tightened: control characters anywhere refuse the link.
 pub fn uri_is_safe(uri: &str) -> bool {
     let url = uri.trim();
-    if url.is_empty() || url.chars().any(|c| c.is_control()) {
+    // A backslash is a slash to a browser: `/\evil.example` is `//evil.example`, which looks like an
+    // on-site path to a prefix test. No real link carries one.
+    if url.is_empty() || url.chars().any(|c| c.is_control() || c == '\\') {
         return false;
     }
     if url.starts_with('#') || url.starts_with('/') {
@@ -129,8 +135,18 @@ fn sort_marks<'a>(spans: &[(&'a str, Vec<&'a str>)]) -> Vec<Span<'a>> {
             let run = |m: &str| {
                 1 + spans[i + 1..].iter().take_while(|(_, sibling)| sibling.contains(&m)).count()
             };
+            // Distinct marks only, and a bounded number of them: untrusted input sets this depth.
+            let mut distinct: Vec<&str> = Vec::new();
+            for m in marks {
+                if distinct.len() == MAX_MARKS_PER_SPAN {
+                    break;
+                }
+                if !distinct.contains(m) {
+                    distinct.push(*m);
+                }
+            }
             let mut keyed: Vec<(usize, usize, &str)> =
-                marks.iter().enumerate().map(|(pos, m)| (run(m), pos, *m)).collect();
+                distinct.iter().enumerate().map(|(pos, m)| (run(m), pos, *m)).collect();
             keyed.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
             Span { text, marks: keyed.into_iter().map(|(_, _, m)| m).collect() }
         })
@@ -396,6 +412,27 @@ mod tests {
             { "_type": "block", "style": "p onmouseover=alert(1) x", "children": [{ "_type": "span", "text": "t", "marks": [] }] }
         ]));
         assert_eq!(out, "<p>t</p>");
+    }
+
+    #[test]
+    fn a_span_with_thousands_of_marks_is_bounded_not_a_deep_recursion() {
+        let marks: Vec<String> = (0..5000).map(|i| if i % 2 == 0 { "strong".into() } else { format!("k{i}") }).collect();
+        let out = render(json!([{
+            "_type": "block", "style": "normal", "markDefs": [],
+            "children": [{ "_type": "span", "text": "x", "marks": marks }]
+        }]));
+        assert!(out.contains('x'));
+        assert!(out.matches("<strong>").count() <= 1, "repeats are dropped");
+        assert!(out.len() < 1000, "the output is bounded too");
+    }
+
+    #[test]
+    fn backslash_links_are_refused() {
+        for bad in ["/\\evil.example/x", "\\\\evil.example", "https://bryanfawcett.com\\@evil.example/"] {
+            let out = link(bad, "words");
+            assert!(!out.contains("<a"), "{bad:?} must lose its anchor: {out}");
+            assert!(out.contains("words"));
+        }
     }
 
     fn link(href: &str, text: &str) -> String {

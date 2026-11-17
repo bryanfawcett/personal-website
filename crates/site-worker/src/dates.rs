@@ -78,7 +78,9 @@ pub fn utc_date(iso: &str) -> Option<(i64, i64, i64)> {
         minutes = hh * 60 + mm;
         if let Some(sign) = offset.chars().next().filter(|c| *c == '+' || *c == '-') {
             let body = offset[1..].replace(':', "");
-            if body.len() != 4 && body.len() != 2 {
+            // ASCII digits only. The length below is in bytes, and slicing a string with a
+            // multi-byte character in it at a byte index panics: untrusted input must not.
+            if !body.bytes().all(|b| b.is_ascii_digit()) || (body.len() != 4 && body.len() != 2) {
                 return None;
             }
             let oh = num(&body[..2])?;
@@ -107,6 +109,14 @@ pub fn year_of(epoch_ms: u64) -> i64 {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn a_multibyte_offset_is_refused_not_a_panic() {
+        // Four bytes, so the old length check passed and slicing at byte 2 split a character.
+        for t in ["2026-11-17T10:00:00+a\u{20ac}", "2026-11-17T10:00:00-\u{20ac}a", "2026-11-17T10:00:00+\u{e9}\u{e9}", "2026-11-17T10:00:00+1\u{e9}1"] {
+            assert_eq!(utc_date(t), None, "{t:?} must be refused, not panic");
+        }
+    }
+
     use super::*;
 
     #[test]

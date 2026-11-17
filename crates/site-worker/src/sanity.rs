@@ -115,6 +115,12 @@ impl Guard {
     }
 
     fn remember(&mut self, url: &str, now: u64, value: &Value) {
+        // A "not found" (null) answer is not a last-good page. Anyone can ask for a thousand slugs
+        // that do not exist, and caching each would push the list's real last-good copy out of this
+        // bounded map, leaving the next Sanity outage with nothing to serve.
+        if value.is_null() {
+            return;
+        }
         if self.stale.len() >= STALE_MAX_ENTRIES && !self.stale.contains_key(url) {
             if let Some(oldest) = self.stale.iter().min_by_key(|(_, (t, _))| *t).map(|(k, _)| k.clone()) {
                 self.stale.remove(&oldest);
@@ -402,6 +408,24 @@ mod tests {
         assert!(matches!(block_on(s.groq("q", &[])), Outcome::Stale(_)));
         c.advance(1);
         assert_eq!(block_on(s.groq("q", &[])), Outcome::Unavailable);
+    }
+
+    #[test]
+    fn requests_for_missing_pages_cannot_evict_the_last_good_list() {
+        // One good list, then far more not-found lookups than the stale map holds.
+        let mut script = vec![Script::ok("[1]")];
+        for _ in 0..(STALE_MAX_ENTRIES * 3) {
+            script.push(Script::ok("null"));
+        }
+        script.push(Err(FetchError::Network));
+        let (t, c, g) = (Script::new(script), FakeClock::at(0), RefCell::new(Guard::new()));
+        let s = sanity(&t, &c, &g);
+        block_on(s.groq("list", &[]));
+        for i in 0..(STALE_MAX_ENTRIES * 3) {
+            block_on(s.groq("one", &[("slug", &format!("no-such-post-{i}"))]));
+        }
+        // Sanity goes down: the list is still served stale.
+        assert_eq!(block_on(s.groq("list", &[])).source(), "stale");
     }
 
     #[test]
