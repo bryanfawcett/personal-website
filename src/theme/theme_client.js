@@ -107,7 +107,7 @@ function __wbg_get_imports() {
         },
         __wbindgen_generic_0000000000000001: function(arg0, arg1) {
             // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [NamedExternref("Event")], shim_idx: 1, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
-            const ret = makeMutClosure(arg0, arg1, wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_2510f06c8569d0f9___features__gen_Event__Event______true_);
+            const ret = makeMutClosure(arg0, arg1, wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_9db5ae8563aad086___features__gen_Event__Event______true_);
             return ret;
         },
         __wbindgen_init_externref_table: function() {
@@ -125,8 +125,8 @@ function __wbg_get_imports() {
     };
 }
 
-function wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_2510f06c8569d0f9___features__gen_Event__Event______true_(arg0, arg1, arg2) {
-    wasm.wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_2510f06c8569d0f9___features__gen_Event__Event______true_(arg0, arg1, arg2);
+function wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_9db5ae8563aad086___features__gen_Event__Event______true_(arg0, arg1, arg2) {
+    wasm.wasm_bindgen_2ba3d6b0c7c76edd___convert__closures_____invoke___web_sys_9db5ae8563aad086___features__gen_Event__Event______true_(arg0, arg1, arg2);
 }
 
 function addToExternrefTable0(obj) {

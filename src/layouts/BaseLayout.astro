@@ -17,6 +17,7 @@ import Schematics from '../components/Schematics.astro';
 import MziziHeader from '../components/mzizi/MziziHeader.astro';
 import MziziFooter from '../components/mzizi/MziziFooter.astro';
 import SeoHead from 'rust:seo-head';
+import { SITE_URL } from '../data/site.js';
 import { seoHeadProps, type SeoHeadInput } from './seo-head.js';
 import { alternatePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, direction, useTranslations, type Lang } from '../i18n/ui.js';
@@ -60,7 +61,7 @@ const {
   article,
 } = Astro.props;
 
-const site = Astro.site ?? new URL('https://bryanfawcett.com');
+const site = Astro.site ?? new URL(SITE_URL);
 
 /*
  * The SEO head (title, description, canonical, hreflang, Open Graph, Twitter, JSON-LD) is

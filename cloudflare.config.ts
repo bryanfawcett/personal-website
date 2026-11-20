@@ -25,6 +25,7 @@ export default defineConfig({
 			// Astro session store; EmDash keeps the signed-in admin user in it.
 			SESSION: bindings.kv({ id: '230958898f024b46a206a99e3fad8dc4' }),
 			// Passkeys are bound to the hostname they were created on.
+			// Literal on purpose: importing src/data/site.ts here makes the dev server refuse that file (403).
 			EMDASH_SITE_URL: bindings.text('https://bryanfawcett.com'),
 		},
 		observability: { enabled: true },

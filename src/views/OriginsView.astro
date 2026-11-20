@@ -11,6 +11,7 @@ import {
   pinkAptitudes,
   schoolWork,
 } from '../data/origins.js';
+import { subdomainUrl } from '../data/site.js';
 import { localizePath } from '../i18n/routing.js';
 import { useTranslations, type Lang } from '../i18n/ui.js';
 
@@ -21,7 +22,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const PRESENTATION_URL = 'https://origins-deck.bryanfawcett.com';
+const PRESENTATION_URL = subdomainUrl('origins-deck');
 const PINK_URL = 'https://www.danpink.com/books/whole-new-mind/';
 ---
 

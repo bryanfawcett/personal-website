@@ -58,17 +58,17 @@
     "@emdash-cms/auth-atproto": "^0.2.51",
     "@emdash-cms/cloudflare": "^1.5.0",
     "@portabletext/to-html": "^6.0.0",
-    "astro": "^7.4.12",
+    "astro": "^7.4.13",
     "emdash": "^1.5.0",
     "kysely": "^0.29.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "wrangler": "^4.162.0"
+    "wrangler": "^4.165.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "@astrojs/cloudflare": "^15.0.0-beta.5",
-    "@astrojs/sitemap": "^3.7.5",
+    "@astrojs/cloudflare": "^15.0.0-beta.6",
+    "@astrojs/sitemap": "^3.7.6",
     "@types/qrcode": "^1.5.6",
     "apca-w3": "^0.1.9",
     "cf": "1.0.0-beta.32",
@@ -77,6 +77,6 @@
     "qrcode": "^1.5.4",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
-    "vite-plus": "^1.6.0"
+    "vite-plus": "^1.7.0"
   }
 }

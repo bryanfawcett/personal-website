@@ -88,6 +88,11 @@ export const PROFILE = {
   tagline: 'I craft digital ecosystems that unite and empower communities.',
   summary:
     'A systems thinker who designs for the whole: people, data, tools and the constraints they live under. Founder & CEO of Nyuchi Africa and founder of The Bundu Foundation.',
+  /** The organisations he founded, for the Person's `founder` in the JSON-LD. */
+  founderOf: [
+    { name: 'Nyuchi Africa', url: 'https://nyuchi.com' },
+    { name: 'The Bundu Foundation', url: 'https://www.bundu.org' },
+  ],
   knowsAbout: [
     'Education Technology',
     'Systems Architecture',
@@ -110,6 +115,7 @@ export const PROFILE = {
   email: string;
   tagline: string;
   summary: string;
+  founderOf: readonly { name: string; url: string }[];
   knowsAbout: readonly string[];
   roles: readonly Bilingual<Role, 'title' | 'org'>[];
   socials: readonly Bilingual<SocialLink, 'name'>[];

@@ -1,7 +1,9 @@
 # Moving the blog from Sanity to EmDash (spike)
 
-Status: a working spike on a branch, run locally only. Nothing was deployed, no Cloudflare
-resource was created, and the live Cloudflare config and build commands are untouched on `main`.
+Status: **live.** This began as a local spike; EmDash now runs in production on Cloudflare with
+D1 (`bryanfawcett-site-db`), R2 (`bryanfawcett-site-media`) and KV sessions, behind a Cloudflare
+Access gate on `/_emdash/*` (bypassed for `/_emdash/api/media/file/*` and the sitemap). The text
+below is the original spike record and still reads in the past tense where it was written then.
 Versions: `emdash` 1.5.0, `@emdash-cms/cloudflare` 1.5.0, `@astrojs/react` 7.1.9, Astro 7.4.12,
 `@astrojs/cloudflare` 15.0.0-beta.5, `cf` 1.0.0-beta.32, wrangler 4.162.0, Node 25.9 locally.
 
@@ -13,7 +15,7 @@ Proven (local, with miniflare/workerd D1, R2 and KV; no account):
   `@astrojs/cloudflare` 15 beta + the `cf` config. EmDash is just `react()` + `emdash({ database: d1(), storage: r2() })`.
 - **`output: 'static'` is kept.** EmDash's docs say `output: "server"` is required; it is not.
   Every non-blog page stays prerendered, the build output is still
-  `.cloudflare/output/v0/workers/default/{assets,bundle}`, and the on-demand EmDash routes
+  `.cloudflare/output/v<N>/workers/default/{assets,bundle}`, and the on-demand EmDash routes
   (`/_emdash/*`, sitemap, robots) are added by the integration.
 - **The built Worker runs on workerd** (wrangler dev against the build output, local state): D1
   migrations apply on the first request, `/` and `/experience` are served from assets, the blog
@@ -127,7 +129,7 @@ Tested locally, no auth:
   token; `dev-bypass` routes answer 403 in a production build (they exist only when `import.meta.env.DEV`).
 - Passkeys are bound to the hostname they were created on; set `EMDASH_SITE_URL` for the custom domain.
 
-Recommended order (owner action, nothing done): put Cloudflare Access in front of `/_emdash/*`
+Recommended order (done before the first deploy): put Cloudflare Access in front of `/_emdash/*`
 *before* the first deploy (`@emdash-cms/cloudflare` exports an `access()` auth config), or complete the
 setup wizard in the same minute as the first deploy. **Access must not cover
 `/_emdash/api/media/file/*`**, because every blog image is served from that path, nor

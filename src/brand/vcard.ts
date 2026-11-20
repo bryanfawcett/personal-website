@@ -9,6 +9,7 @@
  * several older Android scanners still choke on 4.0's `KIND` and typed URLs.
  */
 import { PROFILE } from '../data/profile.js';
+import { SITE_URL } from '../data/site.js';
 
 /**
  * RFC 6350 §3.4 — escape the delimiters, then fold to 75 octets.
@@ -42,7 +43,7 @@ export function vcard(): string {
     `TITLE:${escape(primary?.title ?? PROFILE.title)}`,
     `ROLE:${escape(PROFILE.title)}`,
     `EMAIL;TYPE=INTERNET,PREF:${PROFILE.email}`,
-    'URL:https://bryanfawcett.com',
+    `URL:${SITE_URL}`,
     ...PROFILE.socials
       .filter((s) => s.href.startsWith('http'))
       .map((s) => `URL;TYPE=${s.name.toUpperCase()}:${s.href}`),

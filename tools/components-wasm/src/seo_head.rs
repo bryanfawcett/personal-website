@@ -329,7 +329,9 @@ pub fn render(call: Call) -> Result<String, String> {
                 meta property="article:tag" content=(t);
             }
         }
-        meta name="twitter:creator" content=(p.twitter_creator);
+        @if !p.twitter_creator.is_empty() {
+            meta name="twitter:creator" content=(p.twitter_creator);
+        }
         // generate_schema_ld escapes < > & as \u escapes, so it is inert inside a script.
         script type="application/ld+json" { (PreEscaped(ld)) }
     };

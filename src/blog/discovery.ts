@@ -7,10 +7,11 @@
  * excerpts and slugs come from the CMS, so they are untrusted: markdown and XML are escaped, and
  * line breaks are flattened (an excerpt with a newline must not start a new list item).
  */
+import { SITE_URL } from '../data/site.js';
 import { bcp47 } from '../i18n/ui.js';
 import type { AdventureCard } from './types.js';
 
-const SITE = 'https://bryanfawcett.com';
+const SITE = SITE_URL;
 
 /** One line of text: control characters and runs of whitespace become single spaces. */
 function oneLine(value: string, max = 300): string {

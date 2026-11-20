@@ -8,6 +8,7 @@
  */
 import type { Props as SeoHeadProps } from 'rust:seo-head';
 import { PROFILE, profileInLang } from '../data/profile.js';
+import { OG_IMAGE, SITE_URL } from '../data/site.js';
 import { allPaths, localizePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, ogLocale, type Lang } from '../i18n/ui.js';
 import type { Byline } from '../blog/types.js';
@@ -42,8 +43,14 @@ export interface SeoHeadInput {
     | undefined;
 }
 
-const IMAGE = 'https://bryanfawcett.com/og-bryan-fawcett.jpg';
-const ORIGIN = 'https://bryanfawcett.com';
+const IMAGE = `${SITE_URL}${OG_IMAGE.path}`;
+const ORIGIN = SITE_URL;
+/** `@handle` from the Twitter entry in the profile's socials, not retyped. */
+const TWITTER_HANDLE = PROFILE.socials.find((s) => s.name === 'Twitter')?.handle;
+/** "Bryan Fawcett" -> given "Bryan", family "Fawcett" (the last word is the family name). */
+const NAME_PARTS = PROFILE.name.split(' ');
+const FAMILY_NAME = NAME_PARTS.at(-1) ?? PROFILE.name;
+const GIVEN_NAME = NAME_PARTS.slice(0, -1).join(' ') || PROFILE.name;
 
 /** An absolute https URL or null. Re-checked here although `bylineOf` already did: the head must not depend on the caller having cleaned its input. */
 function httpsOnly(value: string | undefined, site: URL): string | null {
@@ -119,12 +126,12 @@ export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
     ogLocaleAlternates: localized.filter((e) => e.lang !== lang).map((e) => ogLocale[e.lang]),
     // A page's own image keeps its own size (or none, when unknown); the default card is 1200x630.
     image: cover ?? IMAGE,
-    imageAlt: cover ? (image?.alt || title) : 'Bryan Fawcett — Digital Craftsman',
+    imageAlt: cover ? (image?.alt || title) : `${PROFILE.name} — ${PROFILE.title}`,
     ...(cover
       ? image?.width && image.height
         ? { imageWidth: image.width, imageHeight: image.height }
         : {}
-      : { imageWidth: 1200, imageHeight: 630 }),
+      : { imageWidth: OG_IMAGE.width, imageHeight: OG_IMAGE.height }),
     ...(article
       ? {
           article: {
@@ -141,28 +148,26 @@ export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
           },
         }
       : {}),
-    twitterCreator: '@bryanfawcett',
+    // Empty means no twitter:creator tag (the head omits it).
+    twitterCreator: TWITTER_HANDLE ?? '',
     person: {
-      id: 'https://bryanfawcett.com/#person',
+      id: `${ORIGIN}/#person`,
       name: PROFILE.name,
-      givenName: 'Bryan',
-      familyName: 'Fawcett',
+      givenName: GIVEN_NAME,
+      familyName: FAMILY_NAME,
       jobTitle: profile.roles.map((r) => r.title),
       description: profile.summary,
-      url: 'https://bryanfawcett.com',
+      url: ORIGIN,
       email: `mailto:${PROFILE.email}`,
       image: IMAGE,
       sameAs: PROFILE.socials.map((s) => s.href),
       worksFor: profile.roles.map((r) => ({ name: r.org })),
-      founder: [
-        { name: 'Nyuchi Africa', url: 'https://nyuchi.com' },
-        { name: 'The Bundu Foundation', url: 'https://www.bundu.org' },
-      ],
+      founder: PROFILE.founderOf.map((f) => ({ ...f })),
       knowsAbout: [...PROFILE.knowsAbout],
     },
     webSite: {
-      id: 'https://bryanfawcett.com/#website',
-      url: 'https://bryanfawcett.com',
+      id: `${ORIGIN}/#website`,
+      url: ORIGIN,
       name: `${PROFILE.name} — ${profile.title}`,
       inLanguage: bcp47[lang],
     },

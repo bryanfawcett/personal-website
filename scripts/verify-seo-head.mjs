@@ -23,7 +23,10 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const DIST = join(root, '.cloudflare/output/v0/workers/default/assets');
+// `cf` writes to .cloudflare/output/v<N>/, N following the adapter's Build Output version: take the newest.
+const OUT = join(root, '.cloudflare/output');
+const OUT_VERSIONS = existsSync(OUT) ? readdirSync(OUT).filter((d) => /^v\d+$/.test(d)).sort((a, b) => Number(b.slice(1)) - Number(a.slice(1))) : [];
+const DIST = join(OUT, OUT_VERSIONS[0] ?? 'v1', 'workers/default/assets');
 const FIXTURE = join(root, 'scripts/fixtures/seo-head.baseline.json');
 const ADDITIONS = new Set(['meta name=twitter:title', 'meta name=twitter:description', 'meta name=twitter:image']);
 

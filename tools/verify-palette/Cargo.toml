@@ -7,6 +7,6 @@ default-run = "verify-palette"
 
 [dependencies]
 # Exact pin: the gate compares against precisely this release of the Mzizi palette.
-mzizi-tokens = "=0.7.0"
+mzizi-tokens = "=0.11.0"
 serde.workspace = true
 serde_json.workspace = true

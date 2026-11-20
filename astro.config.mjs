@@ -15,12 +15,12 @@ import { translationPolicy } from './packages/emdash-plugins/translation-policy/
  * the sitemap integration cannot see them. EmDash serves its own child sitemap for the collection
  * at /sitemap-adventures.xml; the index lists it through `customSitemaps` below.
  */
-const SITE = 'https://bryanfawcett.com';
+import { SITE_URL as SITE } from './src/data/site.ts';
 const buildDate = new Date().toISOString();
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://bryanfawcett.com',
+  site: SITE,
   adapter: cloudflare({
     // The portrait is the only raster on the site, and every route prerenders,
     // so sharp resizes it once at build time and the Worker just serves files.

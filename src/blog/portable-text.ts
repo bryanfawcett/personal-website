@@ -12,6 +12,7 @@
  */
 import { toHTML, type PortableTextHtmlComponents } from '@portabletext/to-html';
 
+import { OWN_HOSTS } from '../data/site.js';
 import { pixels } from './normalize.js';
 import { classifyLink as classify } from '../../packages/emdash-plugins/core/src/index.ts';
 
@@ -26,8 +27,6 @@ function escape(value: string): string {
     .replace(/'/g, '&#39;');
 }
 
-/** The hosts that count as this site. Exact match: a prefix test lets bryanfawcett.com.evil.example in. */
-const OWN_HOSTS = ['bryanfawcett.com', 'www.bryanfawcett.com'] as const;
 
 /**
  * What a link is allowed to be: web, mail, phone, or a path/fragment on this site. Anything else

@@ -14,7 +14,10 @@ from the stylesheet's own :hover/:focus-visible/:active rules.
 import argparse, base64, datetime, filecmp, json, os, re, shutil, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-BUILT = [os.path.join(ROOT, '.cloudflare/output/v0/workers/default/assets'), os.path.join(ROOT, 'dist/client')]
+# `cf` writes the build to .cloudflare/output/v<N>/ and N follows the adapter's Build Output
+# version, so take whichever exist, newest first, rather than naming one.
+import glob
+BUILT = sorted(glob.glob(os.path.join(ROOT, '.cloudflare/output/v*/workers/default/assets')), reverse=True) + [os.path.join(ROOT, 'dist/client')]
 SKILL = os.path.join(ROOT, 'skills/fawcett-design-system')
 
 ap = argparse.ArgumentParser()

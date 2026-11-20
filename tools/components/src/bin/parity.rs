@@ -39,9 +39,24 @@ fn main() {
     // Where `astro build` puts the pages: under `cf`'s output when `cloudflare.config.ts`
     // is in effect, otherwise the adapter's own `dist/client`.
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let candidates = [".cloudflare/output/v0/workers/default/assets", "dist/client"];
+    // The `v<N>` follows the adapter's Build Output version, so take the newest that exists.
+    let mut candidates: Vec<PathBuf> = std::fs::read_dir(root.join(".cloudflare/output"))
+        .into_iter()
+        .flatten()
+        .flatten()
+        .filter_map(|e| {
+            let n = e.file_name().to_str()?.strip_prefix('v')?.parse::<u32>().ok()?;
+            Some((n, e.path().join("workers/default/assets")))
+        })
+        .collect::<Vec<_>>()
+        .into_iter()
+        .map(|(n, p)| (std::cmp::Reverse(n), p))
+        .collect::<std::collections::BTreeMap<_, _>>()
+        .into_values()
+        .collect();
+    candidates.push(root.join("dist/client"));
     let Some(dir) = env::args().nth(1).map(PathBuf::from).or_else(|| {
-        candidates.iter().map(|c| root.join(c)).find(|p| p.join("index.html").exists())
+        candidates.iter().find(|p| p.join("index.html").exists()).cloned()
     }) else {
         eprintln!("no built site found; run `pnpm build` first, or pass the directory");
         exit(2)
