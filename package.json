@@ -29,6 +29,8 @@
     "nav-portrait": "cargo run -q --manifest-path tools/Cargo.toml -p nav-portrait",
     "cjk": "node scripts/build-cjk-subset.mjs",
     "fmt": "vp fmt",
+    "brand": "node scripts/build-brand-icons.mjs",
+    "brand:check": "node scripts/build-brand-icons.mjs --check",
     "palette": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette --bin generate",
     "palette:check": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette --bin generate -- --check",
     "verify:palette": "cargo run -q --manifest-path tools/Cargo.toml -p verify-palette",

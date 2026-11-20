@@ -857,6 +857,15 @@ For context, the broader ecosystem uses:
 - **Deployment:** Cloudflare Workers
 - **Brand system:** Mzizi (mzizi.dev)
 
+### The logo and favicon are supplied vectors, rendered to size
+
+`public/brand/` holds the brand vectors exactly as supplied (River heritage set: `logo-primary`, `logo-horizontal-{dark,light,river}`,
+`wordmark-stacked`, `monogram-bf`, `app-icon`, `favicon-64`, `favicon-32`, `pattern-heritage`) and `palette.txt`. They are the source of
+truth: do not redraw or trace them, and only their `<title>`s were edited. `pnpm brand` renders the sizes the web asks for from them
+(`public/icon.svg`, `favicon.ico`, `icon-192/512`, maskable, `apple-touch-icon`, `mstile-150x150`, `brand/logo-primary.png`) and
+`brand:check` runs in CI. The palette is River `#4DD0E1`, River Deep `#006064`, Hematite `#90A4AE`, Kalahari `#E5D3AB`, dark surface
+`#131211`. A new set of vectors needs no code change: copy them over, run `pnpm brand`.
+
 ### Tokens are a generated file
 
 `src/styles/tokens.css` is written by `pnpm tokens` from `src/brand/tokens.ts` and
