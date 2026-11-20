@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the Bryan Fawcett design system from the site's own sources.
 
-    python3 scripts/build-design-system.py                  # writes the skill, .claude/skills/fawcett-design-system/
+    python3 scripts/build-design-system.py                  # writes the skill, skills/fawcett-design-system/
     python3 scripts/build-design-system.py --artifact DIR   # also writes DIR/project/..., the Claude design-system artifact
     python3 scripts/build-design-system.py --check          # fail if the committed skill is stale (CI)
 
@@ -15,7 +15,7 @@ import argparse, base64, datetime, filecmp, json, os, re, shutil, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 BUILT = [os.path.join(ROOT, '.cloudflare/output/v0/workers/default/assets'), os.path.join(ROOT, 'dist/client')]
-SKILL = os.path.join(ROOT, '.claude/skills/fawcett-design-system')
+SKILL = os.path.join(ROOT, 'skills/fawcett-design-system')
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--artifact', help='also write the Claude design-system artifact tree here')

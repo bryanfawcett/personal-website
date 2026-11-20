@@ -41,7 +41,7 @@ Rules that came from getting it wrong:
   Two stylesheet verifiers (JavaScript and Rust) catch the things pixels cannot see:
   a `var()` that resolves to nothing, and a base rule that outranks a class.
 - The site generates its own **design-system skill**
-  (`.claude/skills/fawcett-design-system/`) and a Claude artifact from the built pages.
+  (`skills/fawcett-design-system/`) and a Claude artifact from the built pages.
 
 ## Fonts, images and the card
 
