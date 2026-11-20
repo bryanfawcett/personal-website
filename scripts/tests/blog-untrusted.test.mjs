@@ -234,6 +234,78 @@ test('adventures sitemap: hreflang is zh-Hans like every other page, never a bar
   assert.ok(xml.includes('<lastmod>2026-06-03T00:00:00.000Z</lastmod>'));
 });
 
+/* ---------------------------------------------------------------- 5. bylines */
+
+const { bylineOf, bylinesOf, plainText, webUrl, BYLINE_LIMITS } = await src('blog/normalize.ts');
+const BYL = { slug: 'jane-doe', displayName: 'Jane Doe', bio: 'Hi', websiteUrl: 'https://jane.example/', customFields: {} };
+
+test('a well-formed byline maps every field, with the avatar served by the file route', () => {
+  const b = bylineOf({
+    ...BYL, avatarStorageKey: 'j.webp', avatarAlt: 'Jane',
+    customFields: { job_title: 'Editor', linkedin_url: 'https://www.linkedin.com/in/j/', github_url: 'https://github.com/j', x_url: 'https://x.com/j', same_as_other: 'https://a.example/\nhttps://b.example/' },
+  });
+  assert.equal(b.name, 'Jane Doe');
+  assert.equal(b.role, 'Editor');
+  assert.equal(b.url, 'https://jane.example/');
+  assert.equal(b.image.src, '/_emdash/api/media/file/j.webp');
+  assert.equal(b.sameAs.length, 5);
+});
+
+test('a byline URL that is not https, or fails classifyLink, is dropped', () => {
+  for (const bad of ['javascript:alert(1)', 'JaVaScRiPt:alert(1)', 'data:text/html,x', 'http://insecure.example/', '//evil.example', '/on-site-path', 'mailto:a@b.c', 'https://u:p@evil.example/', 'https://a.exa\tmple/','https://a.example/\\x', ` ${'https://a.example/'}${'x'.repeat(400)}`, 5, null])
+    assert.equal(webUrl(bad), undefined, String(bad));
+  assert.equal(bylineOf({ ...BYL, websiteUrl: 'javascript:alert(1)' }).url, undefined);
+  const b = bylineOf({ ...BYL, customFields: { linkedin_url: 'javascript:1', x_url: 'http://x.example', same_as_other: 'javascript:2\nhttps://ok.example/' } });
+  assert.deepEqual(b.sameAs, ['https://ok.example/']);
+});
+
+test('markup in a byline text field never survives, script contents included', () => {
+  assert.equal(plainText('<script>alert(1)</script>Hello <b>there</b>', 100), 'Hello there');
+  assert.equal(plainText('<style>*{x:y}</style>ok', 100), 'ok');
+  assert.equal(plainText('<script>alert(1)', 100), undefined);
+  assert.equal(plainText('a < b > c', 100), 'a c');
+  assert.equal(plainText('x‮y\u0000z​', 100), 'x y z');
+  const b = bylineOf({ ...BYL, bio: '<img src=x onerror=alert(1)>real bio', customFields: { job_title: '<i>Boss</i>' } });
+  assert.equal(b.bio, 'real bio');
+  assert.equal(b.role, 'Boss');
+});
+
+test('an overlong byline name, bio and list are capped', () => {
+  const b = bylineOf({ ...BYL, displayName: 'N'.repeat(5000), bio: 'b'.repeat(5000), customFields: { job_title: 'j'.repeat(5000), same_as_other: Array.from({ length: 50 }, (_, i) => `https://s${i}.example/`).join('\n') } });
+  assert.equal(Array.from(b.name).length, BYLINE_LIMITS.name);
+  assert.equal(Array.from(b.bio).length, BYLINE_LIMITS.bio);
+  assert.equal(Array.from(b.role).length, BYLINE_LIMITS.role);
+  assert.equal(b.sameAs.length, BYLINE_LIMITS.sameAs);
+  const many = Array.from({ length: 30 }, (_, i) => ({ sortOrder: i, byline: { ...BYL, slug: `a${i}` } }));
+  assert.equal(bylinesOf(many).length, BYLINE_LIMITS.bylines);
+});
+
+test('a byline image must be an on-site path or https: a hostile storage key gives none', () => {
+  for (const key of ['http://evil.example/p.jpg', 'javascript:alert(1)', '../../x', 'a b', 'a/b', '//evil.example/x'])
+    assert.equal(bylineOf({ ...BYL, avatarStorageKey: key }).image, undefined, key);
+});
+
+test('a byline without a safe slug or a name is not a byline, and junk credits are ignored', () => {
+  for (const bad of [{ ...BYL, slug: 'Bad Slug' }, { ...BYL, slug: '1abc' }, { ...BYL, slug: '__proto__' }, { ...BYL, displayName: '   ' }, { ...BYL, displayName: '<b></b>' }, { ...BYL, displayName: 5 }, null, 5, 'x'])
+    assert.equal(bylineOf(bad), undefined, JSON.stringify(bad));
+  assert.deepEqual(bylinesOf(undefined), []);
+  assert.deepEqual(bylinesOf({}), []);
+  assert.deepEqual(bylinesOf([null, 5, { byline: 5 }, { byline: { slug: 'a', displayName: { toString() { throw new Error('x'); } } } }]), []);
+});
+
+test('credits come out in sortOrder, once per slug', () => {
+  const out = bylinesOf([{ sortOrder: 2, byline: { ...BYL, slug: 'b', displayName: 'B' } }, { sortOrder: 1, byline: { ...BYL, slug: 'a', displayName: 'A' } }, { sortOrder: 3, byline: { ...BYL, slug: 'a', displayName: 'A again' } }]);
+  assert.deepEqual(out.map((b) => b.name), ['A', 'B']);
+});
+
+test('seed/seed.json defines the byline fields the reader maps, and EmDash still accepts the seed', async () => {
+  const seed = JSON.parse(readFileSync(`${root}seed/seed.json`, 'utf8'));
+  const slugs = seed['x-bylineFields'].fields.map((f) => f.slug);
+  assert.deepEqual(slugs, ['job_title', 'linkedin_url', 'github_url', 'x_url', 'same_as_other']);
+  const { validateSeed } = await import('emdash/seed');
+  assert.equal(validateSeed(seed).valid, true);
+});
+
 test('adventures sitemap escapes what the CMS controls', () => {
   const xml = adventuresSitemap([card({ slug: 'a&b<c>"d\'', updatedAt: '"><x/>' })]);
   assert.ok(!/<x\/>|<c>/.test(xml), xml);

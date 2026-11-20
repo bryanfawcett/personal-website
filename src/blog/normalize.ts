@@ -7,7 +7,8 @@
  */
 import { MZIZI_PALETTE } from '../brand/mzizi-palette.generated.js';
 import type { ToneName } from '../brand/palette.js';
-import type { BlogImage } from './types.js';
+import { classifyLink } from '../../packages/emdash-plugins/core/src/index.ts';
+import type { BlogImage, Byline } from './types.js';
 
 /** Every family the palette has: the CMS select is generated from the same keys (scripts/build-seed-minerals.mjs). */
 const FAMILIES: ReadonlySet<string> = new Set(Object.keys(MZIZI_PALETTE));
@@ -80,4 +81,108 @@ export const MAX_SLUG_LENGTH = 200;
 export function isPlausibleSlug(slug: string): boolean {
   // eslint-disable-next-line no-control-regex
   return slug.length > 0 && slug.length <= MAX_SLUG_LENGTH && !/[\u0000-\u001f\u007f-\u009f/\\]/.test(slug);
+}
+
+/* ------------------------------------------------------------------ bylines */
+
+/** Caps on what a byline may say: far above any real author, low enough that no field can swell a page or a JSON-LD block. */
+export const BYLINE_LIMITS = { name: 80, role: 120, bio: 500, url: 300, sameAs: 6, bylines: 5 } as const;
+
+/** Control, zero-width and bidi-override characters: no business in a name or a bio. */
+// eslint-disable-next-line no-control-regex
+const INVISIBLE = new RegExp('[\\u0000-\\u001f\\u007f-\\u009f\\u200b-\\u200f\\u202a-\\u202e\\u2028\\u2029\\u2060-\\u2064\\u2066-\\u2069\\ufeff]', 'g');
+
+/**
+ * Plain text from an untrusted string: no markup, no control or bidi characters, one line, at most
+ * `max` code points. `<script>` and `<style>` lose their contents along with their tags; any other
+ * tag loses only itself. Output is still escaped by whoever writes it; this is what makes "no
+ * markup" true of the value itself (a bio that is a `<script>` tag must not survive as `alert(1)`).
+ */
+export function plainText(value: unknown, max: number, ellipsis = false): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  // Bound the work before any regex: a megabyte of `<` must not cost a megabyte of scanning.
+  const text = value
+    .slice(0, max * 8 + 64)
+    .replace(/<\s*(script|style)\b[\s\S]*?(<\s*\/\s*\1\s*>|$)/gi, ' ')
+    .replace(/<[^<>]*>/g, ' ')
+    .replace(/[<>]/g, ' ')
+    .replace(INVISIBLE, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!text) return undefined;
+  const points = Array.from(text);
+  if (points.length <= max) return text;
+  return ellipsis ? `${points.slice(0, max - 1).join('').trimEnd()}…` : points.slice(0, max).join('').trimEnd();
+}
+
+/** An https URL for a person's page or profile: it passed `classifyLink`, has no credentials, and is bounded. Otherwise undefined. */
+export function webUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const href = value.trim();
+  if (!href || href.length > BYLINE_LIMITS.url) return undefined;
+  if (!classifyLink(href)) return undefined;
+  try {
+    const url = new URL(href);
+    if (url.protocol !== 'https:' || url.username || url.password) return undefined;
+    return url.href;
+  } catch {
+    return undefined;
+  }
+}
+
+const BYLINE_SLUG = /^[a-z][a-z0-9-]{0,62}$/;
+
+/**
+ * One EmDash byline (`BylineSummary`, as `entry.data.bylines[].byline` carries it) made safe, or
+ * undefined when it cannot be one: no usable slug or no name. Fixed columns: `displayName` -> name,
+ * `websiteUrl` -> url, `bio`, the avatar's storage key -> image. Custom fields: `job_title`,
+ * `linkedin_url`, `github_url`, `x_url`, `same_as_other` (one URL per line).
+ */
+export function bylineOf(value: unknown): Byline | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+  const v = value as Record<string, unknown>;
+  const slug = typeof v['slug'] === 'string' && BYLINE_SLUG.test(v['slug']) ? v['slug'] : undefined;
+  const name = plainText(v['displayName'], BYLINE_LIMITS.name);
+  if (!slug || !name) return undefined;
+
+  const fields = (v['customFields'] && typeof v['customFields'] === 'object' ? v['customFields'] : {}) as Record<string, unknown>;
+  const url = webUrl(v['websiteUrl']);
+  const lines = typeof fields['same_as_other'] === 'string' ? fields['same_as_other'].slice(0, 4000).split(/\r?\n/) : [];
+  const sameAs = [
+    ...new Set(
+      [fields['linkedin_url'], fields['github_url'], fields['x_url'], ...lines]
+        .map(webUrl)
+        .filter((u): u is string => u !== undefined && u !== url),
+    ),
+  ].slice(0, BYLINE_LIMITS.sameAs);
+
+  const key = str(v['avatarStorageKey']) ?? str(v['avatarMediaId']);
+  const image = key ? imageOf({ meta: { storageKey: key }, alt: plainText(v['avatarAlt'], 200) }) : undefined;
+
+  return {
+    slug,
+    name,
+    url,
+    role: plainText(fields['job_title'], BYLINE_LIMITS.role),
+    bio: plainText(v['bio'], BYLINE_LIMITS.bio, true),
+    image,
+    sameAs,
+  };
+}
+
+/** The credits on an entry (`entry.data.bylines`): in `sortOrder`, de-duplicated by slug, at most `BYLINE_LIMITS.bylines`. */
+export function bylinesOf(value: unknown): Byline[] {
+  if (!Array.isArray(value)) return [];
+  const credits = value
+    .slice(0, 50)
+    .filter((c): c is Record<string, unknown> => !!c && typeof c === 'object')
+    .map((c, i) => ({ c, order: typeof c['sortOrder'] === 'number' && Number.isFinite(c['sortOrder']) ? c['sortOrder'] : i }))
+    .sort((a, b) => a.order - b.order);
+  const out: Byline[] = [];
+  for (const { c } of credits) {
+    const b = bylineOf(c['byline']);
+    if (b && !out.some((o) => o.slug === b.slug)) out.push(b);
+    if (out.length >= BYLINE_LIMITS.bylines) break;
+  }
+  return out;
 }

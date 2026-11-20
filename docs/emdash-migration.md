@@ -475,6 +475,38 @@ Gaps found (upstream candidates):
    links) can no longer be published through the API, so render-time defence is tested by `verify:links`
    rather than by a live post.
 
+## Bylines: the author comes from the CMS
+
+Before, `seo-head.ts` hard-coded the author of every post. Now the post's EmDash byline is the source,
+and a post with none falls back to the site profile, byte for byte as before (`verify:seo` pins it).
+
+- **What a byline carries.** EmDash's fixed columns do most of it: `display_name`, `bio`,
+  `avatar_media_id` (the photo), `website_url` (the profile URL: `article:author` and Person `url`),
+  `user_id` (keys the byline to an admin user: an entry with no explicit credit is credited to the byline
+  linked to its author, `source: "inferred"`), `locale`. Custom fields, defined in
+  `seed/seed.json` under `x-bylineFields`: `job_title` (string, translatable), `linkedin_url`,
+  `github_url`, `x_url` (url, shared across locales), `same_as_other` (text, one https URL per line, because byline
+  fields have no repeater; the types are only string, text, url, boolean, select).
+- **Gap: EmDash's seed cannot define byline fields**, and its `bylines[]` carry no custom values, so
+  `x-bylineFields` is a key EmDash ignores (`validateSeed` still passes) and
+  `scripts/emdash-byline-migrate.mjs` applies it through the admin API, on any database.
+- **Reading.** `getAdventure` maps `entry.data.bylines` through `bylinesOf` (`src/blog/normalize.ts`):
+  plain text with caps (name 80, role 120, bio 500, 6 sameAs, 5 bylines), every URL https and through
+  `classifyLink`, the photo an on-site or https path, a slug of `[a-z][a-z0-9-]*` or the byline is dropped.
+  Hydration is strict per locale: a Chinese post needs the Chinese variant of the byline (the script creates both),
+  otherwise it has none and falls back to the site profile.
+- **Rendering.** `AdventureView` shows "By name, role" (and the photo) under the mineral rule, in both languages.
+  The head: one `article:author` per byline URL and one Person per byline in the Article's `author`
+  (`@id` `https://bryanfawcett.com/#author-<slug>`), the site Person and WebSite nodes untouched.
+- **Gap: a byline PUT replaces every omitted field with null**, including `userId` and the photo. Send the whole record.
+  The script therefore never updates an existing byline. `twitter:creator` stays `@bryanfawcett` for every post.
+
+Applying to production (owner, after review): create an API token with the `admin` scope in the admin,
+then `EMDASH_TOKEN=ec_pat_... node scripts/emdash-byline-migrate.mjs https://bryanfawcett.com --remote --probe`
+(reports only), then without `--probe` but with `--create-byline --user-email <the admin's email>`, then set the photo in the admin
+(Bylines). Rollback: delete the two bylines in the admin (posts fall back to the site profile at once), and
+the five fields under Bylines, Fields (values are deleted with them).
+
 ## Deno
 
 Not tested: Deno is not installed on this machine, so there is no run to report. Evidence from the

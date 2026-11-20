@@ -9,6 +9,16 @@
     "title": "Bryan Fawcett",
     "tagline": "Digital Craftsman, builder of communities"
   },
+  "x-bylineFields": {
+    "description": "Custom fields of an EmDash byline. NOT part of EmDash's seed format (a seed has no way to define byline fields, and its `bylines[]` carry no custom values), so EmDash ignores this key; scripts/emdash-byline-migrate.mjs reads it and applies the fields through the admin API, on a fresh database and on an existing one alike. The byline's fixed columns are not listed because they exist already: display_name (name), bio, avatar_media_id (photo), website_url (profile URL, Person.url and article:author), user_id (the admin user it is keyed to), locale.",
+    "fields": [
+      { "slug": "job_title", "label": "Job title", "type": "string", "translatable": true },
+      { "slug": "linkedin_url", "label": "LinkedIn URL", "type": "url", "translatable": false },
+      { "slug": "github_url", "label": "GitHub URL", "type": "url", "translatable": false },
+      { "slug": "x_url", "label": "X (Twitter) URL", "type": "url", "translatable": false },
+      { "slug": "same_as_other", "label": "Other profile links (one https URL per line, up to 6 in all)", "type": "text", "translatable": false }
+    ]
+  },
   "collections": [
     {
       "slug": "adventures",

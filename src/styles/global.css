@@ -3242,6 +3242,45 @@ code {
   background: var(--mineral);
 }
 
+/* Who wrote it: one line per byline under the mineral rule. Ink, never the mineral, as lettering. */
+.adventure__bylines {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-end: var(--space-7);
+}
+
+.adventure__byline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink-body);
+  font-size: var(--text-card);
+}
+
+.adventure__byline-photo {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.adventure__byline-name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+a.adventure__byline-name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.adventure__byline-role {
+  display: block;
+  color: var(--ink-body);
+}
+
 .adventure__cover {
   position: relative;
   margin-block-end: var(--space-8);
