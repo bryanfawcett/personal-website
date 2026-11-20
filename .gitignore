@@ -40,3 +40,6 @@ yarn-error.log*
 # rust tools
 tools/target/
 .playwright-mcp/
+
+# agent worktrees are local scratch, never committed
+.claude/worktrees/
