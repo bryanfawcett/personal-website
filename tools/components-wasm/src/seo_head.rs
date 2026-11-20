@@ -74,6 +74,30 @@ pub struct WebSiteProp {
     pub in_language: String,
 }
 
+/// One credited author, as a Person node in the Article's `author`. Built from an EmDash byline by
+/// `src/layouts/seo-head.ts`, which has already restricted every URL to absolute https.
+#[derive(Debug, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct AuthorProp {
+    /// Stable `@id`, e.g. `https://bryanfawcett.com/#author-<byline slug>`.
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    #[ts(optional)]
+    pub url: Option<String>,
+    #[serde(default)]
+    #[ts(optional)]
+    pub job_title: Option<String>,
+    #[serde(default)]
+    #[ts(optional)]
+    pub description: Option<String>,
+    #[serde(default)]
+    #[ts(optional)]
+    pub image: Option<String>,
+    #[serde(default)]
+    pub same_as: Vec<String>,
+}
+
 /// What only a post has: Open Graph `article:*` tags and an `Article` node in the JSON-LD.
 /// Built from the CMS entry by `src/layouts/seo-head.ts`; every value is escaped on the way out.
 #[derive(Debug, Deserialize, TS)]
@@ -96,6 +120,10 @@ pub struct ArticleProp {
     pub tags: Vec<String>,
     /// A BCP 47 tag, `inLanguage`.
     pub in_language: String,
+    /// The post's bylines. Non-empty: one `article:author` per author with a URL, and the Article's
+    /// `author` is one Person per entry. Empty: `author` / `author_url` above, the site's owner.
+    #[serde(default)]
+    pub authors: Vec<AuthorProp>,
 }
 
 #[derive(Debug, Deserialize, TS)]
@@ -156,6 +184,30 @@ fn orgs(items: &[OrgProp]) -> Json {
             })
             .collect(),
     )
+}
+
+fn author_json(a: &AuthorProp) -> Json {
+    let mut pairs = vec![
+        ("@type", Json::s("Person")),
+        ("@id", Json::s(&a.id)),
+        ("name", Json::s(&a.name)),
+    ];
+    if let Some(u) = &a.url {
+        pairs.push(("url", Json::s(u)));
+    }
+    if let Some(j) = &a.job_title {
+        pairs.push(("jobTitle", Json::s(j)));
+    }
+    if let Some(d) = &a.description {
+        pairs.push(("description", Json::s(d)));
+    }
+    if let Some(i) = &a.image {
+        pairs.push(("image", Json::s(i)));
+    }
+    if !a.same_as.is_empty() {
+        pairs.push(("sameAs", strs(&a.same_as)));
+    }
+    Json::obj(pairs)
 }
 
 pub fn render(call: Call) -> Result<String, String> {
@@ -228,7 +280,18 @@ pub fn render(call: Call) -> Result<String, String> {
         // `article()` covers headline, author, datePublished and image. The rest is added with
         // `with`, so nothing the crate offers is dropped: dateModified, inLanguage, the page it
         // is the main entity of, and the person as publisher (the WebSite node does the same).
-        let mut node = article(&a.headline, &a.author, &a.published_time, Some(&p.image))
+        // With bylines the crate's `article()` is not used: it writes `author` itself and `with`
+        // appends, which would repeat the key. Same properties, same order otherwise.
+        let base = if a.authors.is_empty() {
+            article(&a.headline, &a.author, &a.published_time, Some(&p.image))
+        } else {
+            SchemaOrg::new("Article")
+                .with("headline", Json::s(&a.headline))
+                .with("author", Json::Arr(a.authors.iter().map(author_json).collect()))
+                .with("datePublished", Json::s(&a.published_time))
+                .with("image", Json::s(&p.image))
+        };
+        let mut node = base
             .with("inLanguage", Json::s(&a.in_language))
             .with("mainEntityOfPage", Json::s(&p.canonical))
             .with("publisher", Json::obj([("@id", Json::s(&p.person.id))]));
@@ -250,7 +313,15 @@ pub fn render(call: Call) -> Result<String, String> {
             @if let Some(m) = &a.modified_time {
                 meta property="article:modified_time" content=(m);
             }
-            meta property="article:author" content=(a.author_url);
+            @if a.authors.is_empty() {
+                meta property="article:author" content=(a.author_url);
+            } @else {
+                @for au in &a.authors {
+                    @if let Some(u) = &au.url {
+                        meta property="article:author" content=(u);
+                    }
+                }
+            }
             @if let Some(sec) = &a.section {
                 meta property="article:section" content=(sec);
             }

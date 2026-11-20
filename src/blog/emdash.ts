@@ -11,7 +11,7 @@
 import { getEmDashCollection, getEmDashEntry, getTranslations } from 'emdash';
 
 import type { Lang } from '../i18n/ui.js';
-import { imageOf, isPlausibleSlug, isoDate, mineralOf, str } from './normalize.js';
+import { bylinesOf, imageOf, isPlausibleSlug, isoDate, mineralOf, str } from './normalize.js';
 import type { Adventure, AdventureCard } from './types.js';
 
 /** The data layer was reachable and answered. */
@@ -129,6 +129,10 @@ export async function getAdventure(lang: Lang, slug: string): Promise<Result<Adv
         ...base,
         language: lang,
         body: Array.isArray(body) ? body : undefined,
+        // Hydrated by EmDash onto `data.bylines`: the explicit credits, or the byline linked to the
+        // entry's author when there are none. Strict per locale, so a Chinese post is credited by
+        // the Chinese variant of a byline, and a post with no variant in its language has none.
+        bylines: bylinesOf(row.data['bylines']),
         translation: lang === 'en' && other ? { slug: other.slug } : null,
         original: lang === 'zh' && other ? { slug: other.slug } : null,
       },

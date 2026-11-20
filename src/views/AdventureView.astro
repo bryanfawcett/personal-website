@@ -85,6 +85,7 @@ const body = adventure ? renderBody(adventure.body) : '';
         headline: adventure.title,
         publishedTime: adventure.date,
         modifiedTime: adventure.updatedAt,
+        authors: adventure.bylines,
       }
     : undefined}
 >
@@ -103,6 +104,39 @@ const body = adventure ? renderBody(adventure.body) : '';
           data-mineral={adventure.mineral ?? DEFAULT_MINERAL}
         >
           <span class="adventure__bar" aria-hidden="true" />
+
+          {
+            adventure.bylines.length > 0 && (
+              <div class="adventure__bylines">
+                {adventure.bylines.map((b) => (
+                  <p class="adventure__byline">
+                    {b.image && (
+                      <img
+                        class="adventure__byline-photo"
+                        src={b.image.src}
+                        alt=""
+                        width="40"
+                        height="40"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <span>
+                      {t('adv.by')}{' '}
+                      {b.url ? (
+                        <a class="adventure__byline-name" href={b.url} rel="author">
+                          {b.name}
+                        </a>
+                      ) : (
+                        <span class="adventure__byline-name">{b.name}</span>
+                      )}
+                      {b.role && <span class="adventure__byline-role">{b.role}</span>}
+                    </span>
+                  </p>
+                ))}
+              </div>
+            )
+          }
 
           {cover && (
             <figure class="adventure__cover">

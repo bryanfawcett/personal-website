@@ -115,6 +115,7 @@ register(pathToFileURL(join(root, 'scripts/ts-resolve-hook.mjs')));
 const { initSync, render } = await import(pathToFileURL(join(root, 'src/integrations/rust/pkg/components_wasm.js')));
 initSync({ module: readFileSync(join(root, 'src/integrations/rust/pkg/components_wasm_bg.wasm')) });
 const { seoHeadProps } = await import(pathToFileURL(join(root, 'src/layouts/seo-head.ts')));
+const { bylinesOf } = await import(pathToFileURL(join(root, 'src/blog/normalize.ts')));
 const { PROFILE, profileInLang } = await import(pathToFileURL(join(root, 'src/data/profile.ts')));
 const { allPaths, localizePath } = await import(pathToFileURL(join(root, 'src/i18n/routing.ts')));
 const { bcp47, defaultLang, ogLocale } = await import(pathToFileURL(join(root, 'src/i18n/ui.ts')));
@@ -204,6 +205,73 @@ cases.push(
   post('post, hostile title', { title: '"><script>alert(1)</script>', article: { headline: '"><script>alert(1)</script>', publishedTime: '2026-06-01T00:00:00.000Z' } }),
 );
 
+/* Bylines: EmDash-shaped credits in, Person nodes and article:author out. No credit means the site profile (asserted in the loop). */
+const credit = (byline, sortOrder = 0) => ({ byline, sortOrder, roleLabel: null, source: 'explicit' });
+const FULL = {
+  id: '01JTEST', slug: 'jane-doe', displayName: 'Jane Doe', bio: 'Writes about "roads" & rivers.',
+  avatarMediaId: 'm1', avatarStorageKey: 'jane.webp', avatarAlt: 'Jane', websiteUrl: 'https://jane.example/about',
+  userId: 'u1', isGuest: false, locale: 'en', translationGroup: 'g1',
+  customFields: { job_title: 'Field editor', linkedin_url: 'https://www.linkedin.com/in/jane/', github_url: 'https://github.com/jane', x_url: 'https://x.com/jane', same_as_other: 'https://mastodon.example/@jane\nhttps://jane.example/about\njavascript:alert(1)' },
+};
+const OTHER = { ...FULL, id: '01JTWO', slug: 'sam-roe', displayName: 'Sam Roe', websiteUrl: 'https://sam.example/', avatarStorageKey: null, avatarMediaId: null, customFields: { job_title: 'Photographer' } };
+cases.push(
+  post('byline, every field', {
+    credits: [credit(FULL)],
+    check: ({ authors, authorTags, expect }) => {
+      const a = authors[0];
+      expect(authors.length === 1 && a?.['@type'] === 'Person', 'one Person per byline');
+      expect(a?.['@id'] === 'https://bryanfawcett.com/#author-jane-doe', 'author @id is not stable');
+      expect(a?.name === 'Jane Doe' && a?.url === 'https://jane.example/about' && a?.jobTitle === 'Field editor', 'author name, url or jobTitle wrong');
+      expect(a?.description === 'Writes about "roads" & rivers.', 'author description wrong');
+      expect(a?.image === 'https://bryanfawcett.com/_emdash/api/media/file/jane.webp', 'author image is not the absolute media URL');
+      expect(JSON.stringify(a?.sameAs) === JSON.stringify(['https://www.linkedin.com/in/jane/', 'https://github.com/jane', 'https://x.com/jane', 'https://mastodon.example/@jane']), `sameAs wrong: ${JSON.stringify(a?.sameAs)}`);
+      expect(JSON.stringify(authorTags) === JSON.stringify(['https://jane.example/about']), 'article:author is not the byline URL');
+    },
+  }),
+  post('two bylines, in sortOrder', {
+    credits: [credit(OTHER, 1), credit(FULL, 0)],
+    check: ({ authors, authorTags, expect }) => {
+      expect(authors.length === 2 && authors[0]?.name === 'Jane Doe' && authors[1]?.name === 'Sam Roe', 'two Persons in sortOrder expected');
+      expect(authors[0]?.['@id'] !== authors[1]?.['@id'], 'two bylines share an @id');
+      expect(authors[1]?.image === undefined && authors[1]?.sameAs === undefined, 'a byline with no photo or links invented them');
+      expect(JSON.stringify([...authorTags].sort()) === JSON.stringify(['https://jane.example/about', 'https://sam.example/']), 'two article:author tags expected');
+    },
+  }),
+  post('byline, zh', { lang: 'zh', title: '火与冰', credits: [credit({ ...FULL, locale: 'zh', displayName: '简', customFields: { job_title: '编辑' } })], check: ({ authors, expect }) => expect(authors[0]?.name === '简' && authors[0]?.jobTitle === '编辑', 'zh byline wrong') }),
+  post('byline, hostile values', {
+    credits: [credit({
+      ...FULL, slug: 'evil', displayName: `X${'y'.repeat(300)}`,
+      bio: '<script>alert(1)</script><b>bio</b> </script><img src=x onerror=alert(1)>',
+      websiteUrl: 'javascript:alert(1)',
+      avatarStorageKey: 'http://evil.example/p.jpg',
+      customFields: { job_title: '<i>Boss</i>', linkedin_url: 'javascript:alert(2)', github_url: 'data:text/html,x', x_url: 'http://insecure.example/x', same_as_other: 'https://user:pw@evil.example/\nhttps://ok.example/p' },
+    })],
+    check: ({ authors, authorTags, rust, expect }) => {
+      const a = authors[0];
+      expect(a && a.name.length <= 80 && a.name.startsWith('Xyy'), 'an overlong name was not capped');
+      expect(a?.url === undefined && authorTags.length === 0, 'a javascript: profile URL got out');
+      expect(a?.image === undefined, 'a non-https image got out');
+      expect(a?.description === 'bio', `markup survived in the bio: ${a?.description}`);
+      expect(a?.jobTitle === 'Boss', `markup survived in the job title: ${a?.jobTitle}`);
+      expect(JSON.stringify(a?.sameAs) === JSON.stringify(['https://ok.example/p']), `hostile sameAs survived: ${JSON.stringify(a?.sameAs)}`);
+      expect(!/javascript:|data:text|onerror/.test(rust.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '')), 'a hostile value reached a tag');
+    },
+  }),
+  // Straight into seoHeadProps, with what `bylineOf` would have refused: the head must not rely on its caller.
+  post('byline, hostile values handed straight to the head', {
+    authors: [{ slug: 'raw', name: 'Raw', url: 'javascript:alert(1)', image: { src: 'http://evil.example/p.jpg', alt: '' }, sameAs: ['javascript:alert(2)', 'http://insecure.example/', 'https://fine.example/'] }],
+    check: ({ authors, authorTags, expect }) => {
+      const a = authors[0];
+      expect(a?.url === undefined && authorTags.length === 0, 'head let a javascript: URL through');
+      expect(a?.image === undefined, 'head let a non-https image through');
+      expect(JSON.stringify(a?.sameAs) === JSON.stringify(['https://fine.example/']), 'head let a non-https sameAs through');
+    },
+  }),
+  post('byline, none usable falls back to the site profile', { credits: [credit({ slug: 'Bad Slug', displayName: 'No' }), credit({ slug: 'ok', displayName: '   ' })] }),
+  post('credits is an empty list', { credits: [] }),
+  post('credits is hostile junk', { credits: [null, 5, 'x', { byline: 5 }, { byline: { slug: 'a', displayName: { toString() { throw new Error('boom'); } } } }] }),
+);
+
 /** Article node out of the JSON-LD graph, so the rest can be compared with the frozen reference. */
 function withoutArticle(head) {
   const ld = head.ld.map((doc) => ({ ...doc, '@graph': doc['@graph']?.filter((n) => n['@type'] !== 'Article') }));
@@ -212,7 +280,12 @@ function withoutArticle(head) {
 
 let failures = 0;
 for (const c of cases) {
-  const rust = render('seo-head', JSON.stringify(seoHeadProps(c)));
+  // A case may carry EmDash-shaped byline credits (run through the real `bylinesOf`, as the page does)
+  // or hand-built `authors` (to reach `seoHeadProps` with values `bylineOf` would already have refused).
+  const input = c.credits !== undefined
+    ? { ...c, article: { ...c.article, authors: bylinesOf(c.credits) } }
+    : c.authors ? { ...c, article: { ...c.article, authors: c.authors } } : c;
+  const rust = render('seo-head', JSON.stringify(seoHeadProps(input)));
   const got = parseHead(`<head>${rust}</head>`);
   const problems = c.article
     ? diffHeads(parseHead(referenceHtml(c)), withoutArticle(got), ['meta property=article:published_time', 'meta property=article:modified_time', 'meta property=article:author'])
@@ -223,7 +296,14 @@ for (const c of cases) {
     const expect = (cond, msg) => { if (!cond) problems.push(msg); };
     expect(t('meta property=article:published_time') === c.article.publishedTime, 'article:published_time wrong');
     expect(t('meta property=article:modified_time') === c.article.modifiedTime, 'article:modified_time wrong');
-    expect(t('meta property=article:author') === 'https://bryanfawcett.com', 'article:author wrong');
+    if ((input.article.authors ?? []).length === 0) {
+      // No byline: the site's owner, exactly as before bylines existed.
+      expect(t('meta property=article:author') === 'https://bryanfawcett.com', 'article:author wrong');
+      expect(JSON.stringify(node?.author) === JSON.stringify({ '@type': 'Person', name: PROFILE.name }), 'no-byline Article author is not the site profile');
+    }
+    expect(got.ld[0]?.['@graph']?.some((n) => n['@id'] === 'https://bryanfawcett.com/#person' && n['@type'] === 'Person'), 'the site Person node is gone');
+    expect(got.ld[0]?.['@graph']?.some((n) => n['@type'] === 'WebSite' && n.publisher?.['@id'] === 'https://bryanfawcett.com/#person'), 'the WebSite publisher is gone');
+    if (c.check) c.check({ got, node, rust, expect, authorTags: got.tags['meta property=article:author'] ?? [], authors: [].concat(node?.author ?? []) });
     expect(node && node.headline === c.article.headline && node.datePublished === c.article.publishedTime, 'Article JSON-LD missing or wrong');
     expect(node && node.dateModified === c.article.modifiedTime, 'Article dateModified wrong');
     expect(node && node.mainEntityOfPage === got.tags['link rel=canonical'][0], 'Article mainEntityOfPage is not the canonical URL');

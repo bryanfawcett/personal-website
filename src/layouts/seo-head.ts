@@ -10,6 +10,7 @@ import type { Props as SeoHeadProps } from 'rust:seo-head';
 import { PROFILE, profileInLang } from '../data/profile.js';
 import { allPaths, localizePath } from '../i18n/routing.js';
 import { bcp47, defaultLang, ogLocale, type Lang } from '../i18n/ui.js';
+import type { Byline } from '../blog/types.js';
 
 export interface SeoHeadInput {
   title: string;
@@ -32,11 +33,41 @@ export interface SeoHeadInput {
         modifiedTime?: string | undefined;
         section?: string | undefined;
         tags?: readonly string[] | undefined;
+        /**
+         * The post's credited bylines (already normalised by `bylinesOf`). Empty or absent: the
+         * author is the site's owner, as it was before bylines existed.
+         */
+        authors?: readonly Byline[] | undefined;
       }
     | undefined;
 }
 
 const IMAGE = 'https://bryanfawcett.com/og-bryan-fawcett.jpg';
+const ORIGIN = 'https://bryanfawcett.com';
+
+/** An absolute https URL or null. Re-checked here although `bylineOf` already did: the head must not depend on the caller having cleaned its input. */
+function httpsOnly(value: string | undefined, site: URL): string | null {
+  if (!value) return null;
+  const abs = absoluteImage(value, site);
+  if (!abs) return null;
+  const url = new URL(abs);
+  return url.protocol === 'https:' && !url.username && !url.password ? url.href : null;
+}
+
+/** A byline as the Rust component wants its Person: absolute https URLs only, no empty fields. */
+function authorProps(b: Byline, site: URL) {
+  const url = httpsOnly(b.url, site);
+  const image = httpsOnly(b.image?.src, site);
+  return {
+    id: `${ORIGIN}/#author-${b.slug}`,
+    name: b.name,
+    ...(url ? { url } : {}),
+    ...(b.role ? { jobTitle: b.role } : {}),
+    ...(b.bio ? { description: b.bio } : {}),
+    ...(image ? { image } : {}),
+    sameAs: b.sameAs.map((u) => httpsOnly(u, site)).filter((u): u is string => u !== null && u !== url),
+  };
+}
 
 /** An absolute http(s) URL for a share image, or null (a `javascript:` or `data:` URL is never one). */
 export function absoluteImage(url: string, site: URL): string | null {
@@ -68,6 +99,7 @@ export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
   const here = localized.find((entry) => entry.lang === lang)?.path ?? localizePath(path, lang);
   const abs = (p: string) => new URL(p, site).href;
   const profile = profileInLang(lang);
+  const authors = (article?.authors ?? []).map((b) => authorProps(b, site));
 
   return {
     title: here === '/' || here === '/zh' ? title : `${title} | ${PROFILE.name}`,
@@ -99,8 +131,10 @@ export function seoHeadProps(input: SeoHeadInput): SeoHeadProps {
             headline: article.headline,
             publishedTime: article.publishedTime,
             ...(article.modifiedTime ? { modifiedTime: article.modifiedTime } : {}),
-            author: PROFILE.name,
-            authorUrl: 'https://bryanfawcett.com',
+            // With bylines, the first one is the fallback pair too; the real list is `authors`.
+            author: authors[0]?.name ?? PROFILE.name,
+            authorUrl: authors[0]?.url ?? ORIGIN,
+            authors,
             ...(article.section ? { section: article.section } : {}),
             tags: [...(article.tags ?? [])],
             inLanguage: bcp47[lang],
