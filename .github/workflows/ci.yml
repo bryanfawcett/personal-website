@@ -71,6 +71,10 @@ jobs:
       - name: Generated palette is current
         run: pnpm exec vp run palette:check
 
+      # The logo and favicon: public/brand/ holds the supplied vectors, `pnpm brand` renders the sizes.
+      - name: Brand icons are current
+        run: pnpm exec vp run brand:check
+
       - name: Verify the palette against mzizi-tokens
         run: pnpm exec vp run verify:palette
 
